@@ -1,0 +1,970 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>17.2. socket — Low-level networking interface &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="17. Interprocess Communication and Networking" href="ipc.html" />
+    <link rel="next" title="17.3. ssl — SSL wrapper for socket objects" href="ssl.html" />
+    <link rel="prev" title="17.1. subprocess — Subprocess management" href="subprocess.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="ssl.html" title="17.3. ssl — SSL wrapper for socket objects"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="subprocess.html" title="17.1. subprocess — Subprocess management"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="ipc.html" accesskey="U">17. Interprocess Communication and Networking</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">17.2. <tt class="docutils literal"><span class="pre">socket</span></tt> &#8212; Low-level networking interface</a><ul>
+<li><a class="reference external" href="#socket-objects">17.2.1. Socket Objects</a></li>
+<li><a class="reference external" href="#example">17.2.2. Example</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="subprocess.html"
+                                  title="previous chapter">17.1. <tt class="docutils literal docutils literal"><span class="pre">subprocess</span></tt> &#8212; Subprocess management</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="ssl.html"
+                                  title="next chapter">17.3. <tt class="docutils literal docutils literal"><span class="pre">ssl</span></tt> &#8212; SSL wrapper for socket objects</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/socket.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="socket-low-level-networking-interface">
+<h1>17.2. <tt class="docutils literal"><span class="pre">socket</span></tt> &#8212; Low-level networking interface<a class="headerlink" href="#socket-low-level-networking-interface" title="Permalink to this headline">¶</a></h1>
+<p>This module provides access to the BSD <em>socket</em> interface. It is
+available on all modern Unix systems, Windows, Mac OS X, BeOS, OS/2,
+and probably additional platforms.</p>
+<dl class="docutils">
+<dt>Note: Some behavior may be platform dependent, since calls are made to the</dt>
+<dd>operating system socket APIs.</dd>
+</dl>
+<p>For an introduction to socket programming (in C), see the following
+papers: An Introductory 4.3BSD Interprocess Communication Tutorial, by
+Stuart Sechrest and An Advanced 4.3BSD Interprocess Communication
+Tutorial, by Samuel J.  Leffler et al, both in the UNIX Programmer&#8217;s
+Manual, Supplementary Documents 1 (sections PS1:7 and PS1:8).  The
+platform-specific reference material for the various socket-related
+system calls are also a valuable source of information on the details
+of socket semantics.  For Unix, refer to the manual pages; for
+Windows, see the WinSock (or Winsock 2) specification. For IPv6-ready
+APIs, readers may want to refer to <strong>RFC 3493</strong> titled Basic Socket
+Interface Extensions for IPv6.</p>
+<p>The Python interface is a straightforward transliteration of the Unix
+system call and library interface for sockets to Python&#8217;s object-
+oriented style: the <tt class="docutils literal"><span class="pre">socket()</span></tt> function returns a <em>socket object</em>
+whose methods implement the various socket system calls.  Parameter
+types are somewhat higher-level than in the C interface: as with
+<tt class="docutils literal"><span class="pre">read()</span></tt> and <tt class="docutils literal"><span class="pre">write()</span></tt> operations on Python files, buffer
+allocation on receive operations is automatic, and buffer length is
+implicit on send operations.</p>
+<p>Socket addresses are represented as follows: A single string is used
+for the <tt class="docutils literal"><span class="pre">AF_UNIX</span></tt> address family. A pair <tt class="docutils literal"><span class="pre">(host,</span> <span class="pre">port)</span></tt> is used
+for the <tt class="docutils literal"><span class="pre">AF_INET</span></tt> address family, where <em>host</em> is a string
+representing either a hostname in Internet domain notation like
+<tt class="docutils literal"><span class="pre">'daring.cwi.nl'</span></tt> or an IPv4 address like <tt class="docutils literal"><span class="pre">'100.50.200.5'</span></tt>, and
+<em>port</em> is an integral port number. For <tt class="docutils literal"><span class="pre">AF_INET6</span></tt> address family, a
+four-tuple <tt class="docutils literal"><span class="pre">(host,</span> <span class="pre">port,</span> <span class="pre">flowinfo,</span> <span class="pre">scopeid)</span></tt> is used, where
+<em>flowinfo</em> and <em>scopeid</em> represents <tt class="docutils literal"><span class="pre">sin6_flowinfo</span></tt> and
+<tt class="docutils literal"><span class="pre">sin6_scope_id</span></tt> member in <tt class="docutils literal"><span class="pre">struct</span> <span class="pre">sockaddr_in6</span></tt> in C. For
+<tt class="docutils literal"><span class="pre">socket</span></tt> module methods, <em>flowinfo</em> and <em>scopeid</em> can be omitted
+just for backward compatibility. Note, however, omission of <em>scopeid</em>
+can cause problems in manipulating scoped IPv6 addresses. Other
+address families are currently not supported. The address format
+required by a particular socket object is automatically selected based
+on the address family specified when the socket object was created.</p>
+<p>For IPv4 addresses, two special forms are accepted instead of a host
+address: the empty string represents <tt class="docutils literal"><span class="pre">INADDR_ANY</span></tt>, and the string
+<tt class="docutils literal"><span class="pre">'&lt;broadcast&gt;'</span></tt> represents <tt class="docutils literal"><span class="pre">INADDR_BROADCAST</span></tt>. The behavior is not
+available for IPv6 for backward compatibility, therefore, you may want
+to avoid these if you intend to support IPv6 with your Python
+programs.</p>
+<p>If you use a hostname in the <em>host</em> portion of IPv4/v6 socket address,
+the program may show a nondeterministic behavior, as Python uses the
+first address returned from the DNS resolution.  The socket address
+will be resolved differently into an actual IPv4/v6 address, depending
+on the results from DNS resolution and/or the host configuration.  For
+deterministic behavior use a numeric address in <em>host</em> portion.</p>
+<p>New in version 2.5: AF_NETLINK sockets are represented as  pairs
+<tt class="docutils literal"><span class="pre">pid,</span> <span class="pre">groups</span></tt>.</p>
+<p>New in version 2.6: Linux-only support for TIPC is also available
+using the <tt class="docutils literal"><span class="pre">AF_TIPC</span></tt> address family. TIPC is an open, non-IP based
+networked protocol designed for use in clustered computer
+environments.  Addresses are represented by a tuple, and the fields
+depend on the address type. The general tuple form is <tt class="docutils literal"><span class="pre">(addr_type,</span>
+<span class="pre">v1,</span> <span class="pre">v2,</span> <span class="pre">v3</span> <span class="pre">[,</span> <span class="pre">scope])</span></tt>, where:</p>
+<blockquote>
+<ul>
+<li><p class="first"><em>addr_type</em> is one of TIPC_ADDR_NAMESEQ, TIPC_ADDR_NAME, or
+TIPC_ADDR_ID.</p>
+</li>
+<li><p class="first"><em>scope</em> is one of TIPC_ZONE_SCOPE, TIPC_CLUSTER_SCOPE, and
+TIPC_NODE_SCOPE.</p>
+</li>
+<li><p class="first">If <em>addr_type</em> is TIPC_ADDR_NAME, then <em>v1</em> is the server type,
+<em>v2</em> is the port identifier, and <em>v3</em> should be 0.</p>
+<p>If <em>addr_type</em> is TIPC_ADDR_NAMESEQ, then <em>v1</em> is the server
+type, <em>v2</em> is the lower port number, and <em>v3</em> is the upper port
+number.</p>
+<p>If <em>addr_type</em> is TIPC_ADDR_ID, then <em>v1</em> is the node, <em>v2</em> is
+the reference, and <em>v3</em> should be set to 0.</p>
+</li>
+</ul>
+</blockquote>
+<p>All errors raise exceptions.  The normal exceptions for invalid
+argument types and out-of-memory conditions can be raised; errors
+related to socket or address semantics raise the error
+<tt class="docutils literal"><span class="pre">socket.error</span></tt>.</p>
+<p>Non-blocking mode is supported through <tt class="docutils literal"><span class="pre">setblocking()</span></tt>.  A
+generalization of this based on timeouts is supported through
+<tt class="docutils literal"><span class="pre">settimeout()</span></tt>.</p>
+<p>The module <tt class="docutils literal"><span class="pre">socket</span></tt> exports the following constants and functions:</p>
+<p>exception exception socket.error</p>
+<blockquote>
+<p>This exception is raised for socket-related errors. The
+accompanying value is either a string telling what went wrong or a
+pair <tt class="docutils literal"><span class="pre">(errno,</span> <span class="pre">string)</span></tt> representing an error returned by a system
+call, similar to the value accompanying <tt class="docutils literal"><span class="pre">os.error</span></tt>. See the
+module <tt class="docutils literal"><span class="pre">errno</span></tt>, which contains names for the error codes defined
+by the underlying operating system.</p>
+<p>Changed in version 2.6: <tt class="docutils literal"><span class="pre">socket.error</span></tt> is now a child class of
+<tt class="docutils literal"><span class="pre">IOError</span></tt>.</p>
+</blockquote>
+<p>exception exception socket.herror</p>
+<blockquote>
+<p>This exception is raised for address-related errors, i.e. for
+functions that use <em>h_errno</em> in the C API, including
+<tt class="docutils literal"><span class="pre">gethostbyname_ex()</span></tt> and <tt class="docutils literal"><span class="pre">gethostbyaddr()</span></tt>.</p>
+<p>The accompanying value is a pair <tt class="docutils literal"><span class="pre">(h_errno,</span> <span class="pre">string)</span></tt> representing
+an error returned by a library call. <em>string</em> represents the
+description of <em>h_errno</em>, as returned by the <tt class="docutils literal"><span class="pre">hstrerror()</span></tt> C
+function.</p>
+</blockquote>
+<p>exception exception socket.gaierror</p>
+<blockquote>
+This exception is raised for address-related errors, for
+<tt class="docutils literal"><span class="pre">getaddrinfo()</span></tt> and <tt class="docutils literal"><span class="pre">getnameinfo()</span></tt>. The accompanying value is
+a pair <tt class="docutils literal"><span class="pre">(error,</span> <span class="pre">string)</span></tt> representing an error returned by a
+library call. <em>string</em> represents the description of <em>error</em>, as
+returned by the <tt class="docutils literal"><span class="pre">gai_strerror()</span></tt> C function. The <em>error</em> value
+will match one of the <tt class="docutils literal"><span class="pre">EAI_*</span></tt> constants defined in this module.</blockquote>
+<p>exception exception socket.timeout</p>
+<blockquote>
+<p>This exception is raised when a timeout occurs on a socket which
+has had timeouts enabled via a prior call to <tt class="docutils literal"><span class="pre">settimeout()</span></tt>.  The
+accompanying value is a string whose value is currently always
+&#8220;timed out&#8221;.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>socket.AF_UNIX
+socket.AF_INET
+socket.AF_INET6</p>
+<blockquote>
+These constants represent the address (and protocol) families, used
+for the first argument to <tt class="docutils literal"><span class="pre">socket()</span></tt>.  If the <tt class="docutils literal"><span class="pre">AF_UNIX</span></tt>
+constant is not defined then this protocol is unsupported.</blockquote>
+<p>socket.SOCK_STREAM
+socket.SOCK_DGRAM
+socket.SOCK_RAW
+socket.SOCK_RDM
+socket.SOCK_SEQPACKET</p>
+<blockquote>
+These constants represent the socket types, used for the second
+argument to <tt class="docutils literal"><span class="pre">socket()</span></tt>. (Only <tt class="docutils literal"><span class="pre">SOCK_STREAM</span></tt> and <tt class="docutils literal"><span class="pre">SOCK_DGRAM</span></tt>
+appear to be generally useful.)</blockquote>
+<p>SO_*
+socket.SOMAXCONN
+MSG_*
+SOL_*
+IPPROTO_*
+IPPORT_*
+INADDR_*
+IP_*
+IPV6_*
+EAI_*
+AI_*
+NI_*
+TCP_*</p>
+<blockquote>
+Many constants of these forms, documented in the Unix documentation
+on sockets and/or the IP protocol, are also defined in the socket
+module. They are generally used in arguments to the
+<tt class="docutils literal"><span class="pre">setsockopt()</span></tt> and <tt class="docutils literal"><span class="pre">getsockopt()</span></tt> methods of socket objects.
+In most cases, only those symbols that are defined in the Unix
+header files are defined; for a few symbols, default values are
+provided.</blockquote>
+<p>SIO_*
+RCVALL_*</p>
+<blockquote>
+<p>Constants for Windows&#8217; WSAIoctl(). The constants are used as
+arguments to the <tt class="docutils literal"><span class="pre">ioctl()</span></tt> method of socket objects.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>TIPC_*</p>
+<blockquote>
+<p>TIPC related constants, matching the ones exported by the C socket
+API. See the TIPC documentation for more information.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>socket.has_ipv6</p>
+<blockquote>
+<p>This constant contains a boolean value which indicates if IPv6 is
+supported on this platform.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>socket.create_connection(address[, timeout])</p>
+<blockquote>
+<p>Convenience function.  Connect to <em>address</em> (a 2-tuple <tt class="docutils literal"><span class="pre">(host,</span>
+<span class="pre">port)</span></tt>), and return the socket object.  Passing the optional
+<em>timeout</em> parameter will set the timeout on the socket instance
+before attempting to connect.  If no <em>timeout</em> is supplied, the
+global default timeout setting returned by <tt class="docutils literal"><span class="pre">getdefaulttimeout()</span></tt>
+is used.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>socket.getaddrinfo(host, port[, family[, socktype[, proto[, flags]]]])</p>
+<blockquote>
+<p>Resolves the <em>host</em>/<em>port</em> argument, into a sequence of 5-tuples
+that contain all the necessary arguments for creating the
+corresponding socket. <em>host</em> is a domain name, a string
+representation of an IPv4/v6 address or <tt class="xref docutils literal"><span class="pre">None</span></tt>. <em>port</em> is a
+string service name such as <tt class="docutils literal"><span class="pre">'http'</span></tt>, a numeric port number or
+<tt class="xref docutils literal"><span class="pre">None</span></tt>. The rest of the arguments are optional and must be
+numeric if specified. By passing <tt class="xref docutils literal"><span class="pre">None</span></tt> as the value of <em>host</em>
+and <em>port</em>, , you can pass <tt class="docutils literal"><span class="pre">NULL</span></tt> to the C API.</p>
+<p>The <tt class="docutils literal"><span class="pre">getaddrinfo()</span></tt> function returns a list of 5-tuples with the
+following structure:</p>
+<p><tt class="docutils literal"><span class="pre">(family,</span> <span class="pre">socktype,</span> <span class="pre">proto,</span> <span class="pre">canonname,</span> <span class="pre">sockaddr)</span></tt></p>
+<p><em>family</em>, <em>socktype</em>, <em>proto</em> are all integers and are meant to be
+passed to the <tt class="docutils literal"><span class="pre">socket()</span></tt> function. <em>canonname</em> is a string
+representing the canonical name of the <em>host</em>. It can be a numeric
+IPv4/v6 address when <tt class="docutils literal"><span class="pre">AI_CANONNAME</span></tt> is specified for a numeric
+<em>host</em>. <em>sockaddr</em> is a tuple describing a socket address, as
+described above. See the source for <tt class="docutils literal"><span class="pre">socket</span></tt> and other library
+modules for a typical usage of the function.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>socket.getfqdn([name])</p>
+<blockquote>
+<p>Return a fully qualified domain name for <em>name</em>. If <em>name</em> is
+omitted or empty, it is interpreted as the local host.  To find the
+fully qualified name, the hostname returned by <tt class="docutils literal"><span class="pre">gethostbyaddr()</span></tt>
+is checked, followed by aliases for the host, if available.  The
+first name which includes a period is selected.  In case no fully
+qualified domain name is available, the hostname as returned by
+<tt class="docutils literal"><span class="pre">gethostname()</span></tt> is returned.</p>
+<p>New in version 2.0.</p>
+</blockquote>
+<p>socket.gethostbyname(hostname)</p>
+<blockquote>
+Translate a host name to IPv4 address format.  The IPv4 address is
+returned as a string, such as  <tt class="docutils literal"><span class="pre">'100.50.200.5'</span></tt>.  If the host
+name is an IPv4 address itself it is returned unchanged.  See
+<tt class="docutils literal"><span class="pre">gethostbyname_ex()</span></tt> for a more complete interface.
+<tt class="docutils literal"><span class="pre">gethostbyname()</span></tt> does not support IPv6 name resolution, and
+<tt class="docutils literal"><span class="pre">getaddrinfo()</span></tt> should be used instead for IPv4/v6 dual stack
+support.</blockquote>
+<p>socket.gethostbyname_ex(hostname)</p>
+<blockquote>
+Translate a host name to IPv4 address format, extended interface.
+Return a triple <tt class="docutils literal"><span class="pre">(hostname,</span> <span class="pre">aliaslist,</span> <span class="pre">ipaddrlist)</span></tt> where
+<em>hostname</em> is the primary host name responding to the given
+<em>ip_address</em>, <em>aliaslist</em> is a (possibly empty) list of alternative
+host names for the same address, and <em>ipaddrlist</em> is a list of IPv4
+addresses for the same interface on the same host (often but not
+always a single address). <tt class="docutils literal"><span class="pre">gethostbyname_ex()</span></tt> does not support
+IPv6 name resolution, and <tt class="docutils literal"><span class="pre">getaddrinfo()</span></tt> should be used instead
+for IPv4/v6 dual stack support.</blockquote>
+<p>socket.gethostname()</p>
+<blockquote>
+<p>Return a string containing the hostname of the machine where  the
+Python interpreter is currently executing.</p>
+<p>If you want to know the current machine&#8217;s IP address, you may want
+to use <tt class="docutils literal"><span class="pre">gethostbyname(gethostname())</span></tt>. This operation assumes
+that there is a valid address-to-host mapping for the host, and the
+assumption does not always hold.</p>
+<p>Note: <tt class="docutils literal"><span class="pre">gethostname()</span></tt> doesn&#8217;t always return the fully qualified
+domain name; use <tt class="docutils literal"><span class="pre">getfqdn()</span></tt> (see above).</p>
+</blockquote>
+<p>socket.gethostbyaddr(ip_address)</p>
+<blockquote>
+Return a triple <tt class="docutils literal"><span class="pre">(hostname,</span> <span class="pre">aliaslist,</span> <span class="pre">ipaddrlist)</span></tt> where
+<em>hostname</em> is the primary host name responding to the given
+<em>ip_address</em>, <em>aliaslist</em> is a (possibly empty) list of alternative
+host names for the same address, and <em>ipaddrlist</em> is a list of
+IPv4/v6 addresses for the same interface on the same host (most
+likely containing only a single address). To find the fully
+qualified domain name, use the function <tt class="docutils literal"><span class="pre">getfqdn()</span></tt>.
+<tt class="docutils literal"><span class="pre">gethostbyaddr()</span></tt> supports both IPv4 and IPv6.</blockquote>
+<p>socket.getnameinfo(sockaddr, flags)</p>
+<blockquote>
+<p>Translate a socket address <em>sockaddr</em> into a 2-tuple <tt class="docutils literal"><span class="pre">(host,</span>
+<span class="pre">port)</span></tt>. Depending on the settings of <em>flags</em>, the result can
+contain a fully-qualified domain name or numeric address
+representation in <em>host</em>.  Similarly, <em>port</em> can contain a string
+port name or a numeric port number.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>socket.getprotobyname(protocolname)</p>
+<blockquote>
+Translate an Internet protocol name (for example, <tt class="docutils literal"><span class="pre">'icmp'</span></tt>) to a
+constant suitable for passing as the (optional) third argument to
+the <tt class="docutils literal"><span class="pre">socket()</span></tt> function.  This is usually only needed for sockets
+opened in &#8220;raw&#8221; mode (<tt class="docutils literal"><span class="pre">SOCK_RAW</span></tt>); for the normal socket modes,
+the correct protocol is chosen automatically if the protocol is
+omitted or zero.</blockquote>
+<p>socket.getservbyname(servicename[, protocolname])</p>
+<blockquote>
+Translate an Internet service name and protocol name to a port
+number for that service.  The optional protocol name, if given,
+should be <tt class="docutils literal"><span class="pre">'tcp'</span></tt> or <tt class="docutils literal"><span class="pre">'udp'</span></tt>, otherwise any protocol will
+match.</blockquote>
+<p>socket.getservbyport(port[, protocolname])</p>
+<blockquote>
+Translate an Internet port number and protocol name to a service
+name for that service.  The optional protocol name, if given,
+should be <tt class="docutils literal"><span class="pre">'tcp'</span></tt> or <tt class="docutils literal"><span class="pre">'udp'</span></tt>, otherwise any protocol will
+match.</blockquote>
+<p>socket.socket([family[, type[, proto]]])</p>
+<blockquote>
+Create a new socket using the given address family, socket type and
+protocol number.  The address family should be <tt class="docutils literal"><span class="pre">AF_INET</span></tt> (the
+default), <tt class="docutils literal"><span class="pre">AF_INET6</span></tt> or <tt class="docutils literal"><span class="pre">AF_UNIX</span></tt>.  The socket type should be
+<tt class="docutils literal"><span class="pre">SOCK_STREAM</span></tt> (the default), <tt class="docutils literal"><span class="pre">SOCK_DGRAM</span></tt> or perhaps one of the
+other <tt class="docutils literal"><span class="pre">SOCK_</span></tt> constants.  The protocol number is usually zero and
+may be omitted in that case.</blockquote>
+<p>socket.socketpair([family[, type[, proto]]])</p>
+<blockquote>
+<p>Build a pair of connected socket objects using the given address
+family, socket type, and protocol number.  Address family, socket
+type, and protocol number are as for the <tt class="docutils literal"><span class="pre">socket()</span></tt> function
+above. The default family is <tt class="docutils literal"><span class="pre">AF_UNIX</span></tt> if defined on the
+platform; otherwise, the default is <tt class="docutils literal"><span class="pre">AF_INET</span></tt>. Availability:
+Unix.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>socket.fromfd(fd, family, type[, proto])</p>
+<blockquote>
+Duplicate the file descriptor <em>fd</em> (an integer as returned by a
+file object&#8217;s <tt class="docutils literal"><span class="pre">fileno()</span></tt> method) and build a socket object from
+the result.  Address family, socket type and protocol number are as
+for the <tt class="docutils literal"><span class="pre">socket()</span></tt> function above. The file descriptor should
+refer to a socket, but this is not checked &#8212; subsequent
+operations on the object may fail if the file descriptor is
+invalid. This function is rarely needed, but can be used to get or
+set socket options on a socket passed to a program as standard
+input or output (such as a server started by the Unix inet daemon).
+The socket is assumed to be in blocking mode. Availability: Unix.</blockquote>
+<p>socket.ntohl(x)</p>
+<blockquote>
+Convert 32-bit positive integers from network to host byte order.
+On machines where the host byte order is the same as network byte
+order, this is a no-op; otherwise, it performs a 4-byte swap
+operation.</blockquote>
+<p>socket.ntohs(x)</p>
+<blockquote>
+Convert 16-bit positive integers from network to host byte order.
+On machines where the host byte order is the same as network byte
+order, this is a no-op; otherwise, it performs a 2-byte swap
+operation.</blockquote>
+<p>socket.htonl(x)</p>
+<blockquote>
+Convert 32-bit positive integers from host to network byte order.
+On machines where the host byte order is the same as network byte
+order, this is a no-op; otherwise, it performs a 4-byte swap
+operation.</blockquote>
+<p>socket.htons(x)</p>
+<blockquote>
+Convert 16-bit positive integers from host to network byte order.
+On machines where the host byte order is the same as network byte
+order, this is a no-op; otherwise, it performs a 2-byte swap
+operation.</blockquote>
+<p>socket.inet_aton(ip_string)</p>
+<blockquote>
+<p>Convert an IPv4 address from dotted-quad string format (for
+example, &#8216;123.45.67.89&#8217;) to 32-bit packed binary format, as a
+string four characters in length.  This is useful when conversing
+with a program that uses the standard C library and needs objects
+of type <tt class="docutils literal"><span class="pre">struct</span> <span class="pre">in_addr</span></tt>, which is the C type for the 32-bit
+packed binary this function returns.</p>
+<p>If the IPv4 address string passed to this function is invalid,
+<tt class="docutils literal"><span class="pre">socket.error</span></tt> will be raised. Note that exactly what is valid
+depends on the underlying C implementation of <tt class="docutils literal"><span class="pre">inet_aton()</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">inet_aton()</span></tt> does not support IPv6, and <tt class="docutils literal"><span class="pre">inet_pton()</span></tt> should
+be used instead for IPv4/v6 dual stack support.</p>
+</blockquote>
+<p>socket.inet_ntoa(packed_ip)</p>
+<blockquote>
+<p>Convert a 32-bit packed IPv4 address (a string four characters in
+length) to its standard dotted-quad string representation (for
+example, &#8216;123.45.67.89&#8217;).  This is useful when conversing with a
+program that uses the standard C library and needs objects of type
+<tt class="docutils literal"><span class="pre">struct</span> <span class="pre">in_addr</span></tt>, which is the C type for the 32-bit packed
+binary data this function takes as an argument.</p>
+<p>If the string passed to this function is not exactly 4 bytes in
+length, <tt class="docutils literal"><span class="pre">socket.error</span></tt> will be raised. <tt class="docutils literal"><span class="pre">inet_ntoa()</span></tt> does not
+support IPv6, and <tt class="docutils literal"><span class="pre">inet_ntop()</span></tt> should be used instead for
+IPv4/v6 dual stack support.</p>
+</blockquote>
+<p>socket.inet_pton(address_family, ip_string)</p>
+<blockquote>
+<p>Convert an IP address from its family-specific string format to a
+packed, binary format. <tt class="docutils literal"><span class="pre">inet_pton()</span></tt> is useful when a library or
+network protocol calls for an object of type <tt class="docutils literal"><span class="pre">struct</span> <span class="pre">in_addr</span></tt>
+(similar to <tt class="docutils literal"><span class="pre">inet_aton()</span></tt>) or <tt class="docutils literal"><span class="pre">struct</span> <span class="pre">in6_addr</span></tt>.</p>
+<p>Supported values for <em>address_family</em> are currently <tt class="docutils literal"><span class="pre">AF_INET</span></tt> and
+<tt class="docutils literal"><span class="pre">AF_INET6</span></tt>. If the IP address string <em>ip_string</em> is invalid,
+<tt class="docutils literal"><span class="pre">socket.error</span></tt> will be raised. Note that exactly what is valid
+depends on both the value of <em>address_family</em> and the underlying
+implementation of <tt class="docutils literal"><span class="pre">inet_pton()</span></tt>.</p>
+<p>Availability: Unix (maybe not all platforms).</p>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">ipaddr.BaseIP.packed()</span></tt></dt>
+<dd>Platform-independent conversion to a packed, binary format.</dd>
+</dl>
+</blockquote>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>socket.inet_ntop(address_family, packed_ip)</p>
+<blockquote>
+<p>Convert a packed IP address (a string of some number of characters)
+to its standard, family-specific string representation (for
+example, <tt class="docutils literal"><span class="pre">'7.10.0.5'</span></tt> or <tt class="docutils literal"><span class="pre">'5aef:2b::8'</span></tt>) <tt class="docutils literal"><span class="pre">inet_ntop()</span></tt> is
+useful when a library or network protocol returns an object of type
+<tt class="docutils literal"><span class="pre">struct</span> <span class="pre">in_addr</span></tt> (similar to <tt class="docutils literal"><span class="pre">inet_ntoa()</span></tt>) or <tt class="docutils literal"><span class="pre">struct</span>
+<span class="pre">in6_addr</span></tt>.</p>
+<p>Supported values for <em>address_family</em> are currently <tt class="docutils literal"><span class="pre">AF_INET</span></tt> and
+<tt class="docutils literal"><span class="pre">AF_INET6</span></tt>. If the string <em>packed_ip</em> is not the correct length
+for the specified address family, <tt class="docutils literal"><span class="pre">ValueError</span></tt> will be raised.  A
+<tt class="docutils literal"><span class="pre">socket.error</span></tt> is raised for errors from the call to
+<tt class="docutils literal"><span class="pre">inet_ntop()</span></tt>.</p>
+<p>Availability: Unix (maybe not all platforms).</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>socket.getdefaulttimeout()</p>
+<blockquote>
+<p>Return the default timeout in floating seconds for new socket
+objects. A value of <tt class="xref docutils literal"><span class="pre">None</span></tt> indicates that new socket objects have
+no timeout. When the socket module is first imported, the default
+is <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>socket.setdefaulttimeout(timeout)</p>
+<blockquote>
+<p>Set the default timeout in floating seconds for new socket objects.
+A value of <tt class="xref docutils literal"><span class="pre">None</span></tt> indicates that new socket objects have no
+timeout. When the socket module is first imported, the default is
+<tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>socket.SocketType</p>
+<blockquote>
+This is a Python type object that represents the socket object
+type. It is the same as <tt class="docutils literal"><span class="pre">type(socket(...))</span></tt>.</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">SocketServer</span></tt></dt>
+<dd>Classes that simplify writing network servers.</dd>
+</dl>
+</blockquote>
+<div class="section" id="socket-objects">
+<h2>17.2.1. Socket Objects<a class="headerlink" href="#socket-objects" title="Permalink to this headline">¶</a></h2>
+<p>Socket objects have the following methods.  Except for <tt class="docutils literal"><span class="pre">makefile()</span></tt>
+these correspond to Unix system calls applicable to sockets.</p>
+<p>socket.accept()</p>
+<blockquote>
+Accept a connection. The socket must be bound to an address and
+listening for connections. The return value is a pair <tt class="docutils literal"><span class="pre">(conn,</span>
+<span class="pre">address)</span></tt> where <em>conn</em> is a <em>new</em> socket object usable to send and
+receive data on the connection, and <em>address</em> is the address bound
+to the socket on the other end of the connection.</blockquote>
+<p>socket.bind(address)</p>
+<blockquote>
+<p>Bind the socket to <em>address</em>.  The socket must not already be
+bound. (The format of <em>address</em> depends on the address family &#8212;
+see above.)</p>
+<dl class="docutils">
+<dt>Note: This method has historically accepted a pair of parameters for</dt>
+<dd><tt class="docutils literal"><span class="pre">AF_INET</span></tt> addresses instead of only a tuple.  This was never
+intentional and is no longer available in Python 2.0 and later.</dd>
+</dl>
+</blockquote>
+<p>socket.close()</p>
+<blockquote>
+Close the socket.  All future operations on the socket object will
+fail. The remote end will receive no more data (after queued data
+is flushed). Sockets are automatically closed when they are
+garbage-collected.</blockquote>
+<p>socket.connect(address)</p>
+<blockquote>
+<p>Connect to a remote socket at <em>address</em>. (The format of <em>address</em>
+depends on the address family &#8212; see above.)</p>
+<dl class="docutils">
+<dt>Note: This method has historically accepted a pair of parameters for</dt>
+<dd><tt class="docutils literal"><span class="pre">AF_INET</span></tt> addresses instead of only a tuple.  This was never
+intentional and is no longer available in Python 2.0 and later.</dd>
+</dl>
+</blockquote>
+<p>socket.connect_ex(address)</p>
+<blockquote>
+<p>Like <tt class="docutils literal"><span class="pre">connect(address)</span></tt>, but return an error indicator instead of
+raising an exception for errors returned by the C-level
+<tt class="docutils literal"><span class="pre">connect()</span></tt> call (other problems, such as &#8220;host not found,&#8221; can
+still raise exceptions).  The error indicator is <tt class="docutils literal"><span class="pre">0</span></tt> if the
+operation succeeded, otherwise the value of the <tt class="docutils literal"><span class="pre">errno</span></tt> variable.
+This is useful to support, for example, asynchronous connects.</p>
+<dl class="docutils">
+<dt>Note: This method has historically accepted a pair of parameters for</dt>
+<dd><tt class="docutils literal"><span class="pre">AF_INET</span></tt> addresses instead of only a tuple. This was never
+intentional and is no longer available in Python 2.0 and later.</dd>
+</dl>
+</blockquote>
+<p>socket.fileno()</p>
+<blockquote>
+<p>Return the socket&#8217;s file descriptor (a small integer).  This is
+useful with <tt class="docutils literal"><span class="pre">select.select()</span></tt>.</p>
+<p>Under Windows the small integer returned by this method cannot be
+used where a file descriptor can be used (such as <tt class="docutils literal"><span class="pre">os.fdopen()</span></tt>).
+Unix does not have this limitation.</p>
+</blockquote>
+<p>socket.getpeername()</p>
+<blockquote>
+Return the remote address to which the socket is connected.  This
+is useful to find out the port number of a remote IPv4/v6 socket,
+for instance. (The format of the address returned depends on the
+address family &#8212; see above.)  On some systems this function is
+not supported.</blockquote>
+<p>socket.getsockname()</p>
+<blockquote>
+Return the socket&#8217;s own address.  This is useful to find out the
+port number of an IPv4/v6 socket, for instance. (The format of the
+address returned depends on the address family &#8212; see above.)</blockquote>
+<p>socket.getsockopt(level, optname[, buflen])</p>
+<blockquote>
+Return the value of the given socket option (see the Unix man page
+<em>getsockopt(2)</em>).  The needed symbolic constants (<tt class="docutils literal"><span class="pre">SO_*</span></tt> etc.)
+are defined in this module.  If <em>buflen</em> is absent, an integer
+option is assumed and its integer value is returned by the
+function.  If <em>buflen</em> is present, it specifies the maximum length
+of the buffer used to receive the option in, and this buffer is
+returned as a string.  It is up to the caller to decode the
+contents of the buffer (see the optional built-in module <tt class="docutils literal"><span class="pre">struct</span></tt>
+for a way to decode C structures encoded as strings).</blockquote>
+<p>socket.ioctl(control, option)</p>
+<blockquote>
+<dl class="docutils">
+<dt>Platform:</dt>
+<dd>Windows</dd>
+</dl>
+<p>The <tt class="docutils literal"><span class="pre">ioctl()</span></tt> method is a limited interface to the WSAIoctl
+system interface. Please refer to the MSDN documentation for more
+information.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>socket.listen(backlog)</p>
+<blockquote>
+Listen for connections made to the socket.  The <em>backlog</em> argument
+specifies the maximum number of queued connections and should be at
+least 1; the maximum value is system-dependent (usually 5).</blockquote>
+<p>socket.makefile([mode[, bufsize]])</p>
+<blockquote>
+Return a <em>file object</em> associated with the socket.  (File objects
+are described in <em>File Objects</em>.) The file object references a
+<tt class="docutils literal"><span class="pre">dup()``ped</span> <span class="pre">version</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">socket</span> <span class="pre">file</span> <span class="pre">descriptor,</span> <span class="pre">so</span> <span class="pre">the</span> <span class="pre">file</span>
+<span class="pre">object</span> <span class="pre">and</span> <span class="pre">socket</span> <span class="pre">object</span> <span class="pre">may</span> <span class="pre">be</span> <span class="pre">closed</span> <span class="pre">or</span> <span class="pre">garbage-collected</span>
+<span class="pre">independently.</span> <span class="pre">The</span> <span class="pre">socket</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">in</span> <span class="pre">blocking</span> <span class="pre">mode</span> <span class="pre">(it</span> <span class="pre">can</span> <span class="pre">not</span> <span class="pre">have</span>
+<span class="pre">a</span> <span class="pre">timeout).</span> <span class="pre">The</span> <span class="pre">optional</span> <span class="pre">*mode*</span> <span class="pre">and</span> <span class="pre">*bufsize*</span> <span class="pre">arguments</span> <span class="pre">are</span>
+<span class="pre">interpreted</span> <span class="pre">the</span> <span class="pre">same</span> <span class="pre">way</span> <span class="pre">as</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">built-in</span> <span class="pre">``file()</span></tt> function.</blockquote>
+<p>socket.recv(bufsize[, flags])</p>
+<blockquote>
+<p>Receive data from the socket.  The return value is a string
+representing the data received.  The maximum amount of data to be
+received at once is specified by <em>bufsize</em>.  See the Unix manual
+page <em>recv(2)</em> for the meaning of the optional argument <em>flags</em>; it
+defaults to zero.</p>
+<dl class="docutils">
+<dt>Note: For best match with hardware and network realities, the value of</dt>
+<dd><em>bufsize</em> should be a relatively small power of 2, for example,
+4096.</dd>
+</dl>
+</blockquote>
+<p>socket.recvfrom(bufsize[, flags])</p>
+<blockquote>
+Receive data from the socket.  The return value is a pair
+<tt class="docutils literal"><span class="pre">(string,</span> <span class="pre">address)</span></tt> where <em>string</em> is a string representing the
+data received and <em>address</em> is the address of the socket sending
+the data.  See the Unix manual page <em>recv(2)</em> for the meaning of
+the optional argument <em>flags</em>; it defaults to zero. (The format of
+<em>address</em> depends on the address family &#8212; see above.)</blockquote>
+<p>socket.recvfrom_into(buffer[, nbytes[, flags]])</p>
+<blockquote>
+<p>Receive data from the socket, writing it into <em>buffer</em> instead of
+creating a new string.  The return value is a pair <tt class="docutils literal"><span class="pre">(nbytes,</span>
+<span class="pre">address)</span></tt> where <em>nbytes</em> is the number of bytes received and
+<em>address</em> is the address of the socket sending the data.  See the
+Unix manual page <em>recv(2)</em> for the meaning of the optional argument
+<em>flags</em>; it defaults to zero.  (The format of <em>address</em> depends on
+the address family &#8212; see above.)</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>socket.recv_into(buffer[, nbytes[, flags]])</p>
+<blockquote>
+<p>Receive up to <em>nbytes</em> bytes from the socket, storing the data into
+a buffer rather than creating a new string.     If <em>nbytes</em> is not
+specified (or 0), receive up to the size available in the given
+buffer. See the Unix manual page <em>recv(2)</em> for the meaning of the
+optional argument <em>flags</em>; it defaults to zero.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>socket.send(string[, flags])</p>
+<blockquote>
+Send data to the socket.  The socket must be connected to a remote
+socket.  The optional <em>flags</em> argument has the same meaning as for
+<tt class="docutils literal"><span class="pre">recv()</span></tt> above. Returns the number of bytes sent. Applications
+are responsible for checking that all data has been sent; if only
+some of the data was transmitted, the application needs to attempt
+delivery of the remaining data.</blockquote>
+<p>socket.sendall(string[, flags])</p>
+<blockquote>
+Send data to the socket.  The socket must be connected to a remote
+socket.  The optional <em>flags</em> argument has the same meaning as for
+<tt class="docutils literal"><span class="pre">recv()</span></tt> above. Unlike <tt class="docutils literal"><span class="pre">send()</span></tt>, this method continues to send
+data from <em>string</em> until either all data has been sent or an error
+occurs.  <tt class="xref docutils literal"><span class="pre">None</span></tt> is returned on success.  On error, an exception
+is raised, and there is no way to determine how much data, if any,
+was successfully sent.</blockquote>
+<p>socket.sendto(string[, flags], address)</p>
+<blockquote>
+Send data to the socket.  The socket should not be connected to a
+remote socket, since the destination socket is specified by
+<em>address</em>.  The optional <em>flags</em> argument has the same meaning as
+for <tt class="docutils literal"><span class="pre">recv()</span></tt> above.  Return the number of bytes sent. (The format
+of <em>address</em> depends on the address family &#8212; see above.)</blockquote>
+<p>socket.setblocking(flag)</p>
+<blockquote>
+Set blocking or non-blocking mode of the socket: if <em>flag</em> is 0,
+the socket is set to non-blocking, else to blocking mode.
+Initially all sockets are in blocking mode.  In non-blocking mode,
+if a <tt class="docutils literal"><span class="pre">recv()</span></tt> call doesn&#8217;t find any data, or if a <tt class="docutils literal"><span class="pre">send()</span></tt> call
+can&#8217;t immediately dispose of the data, a <tt class="docutils literal"><span class="pre">error</span></tt> exception is
+raised; in blocking mode, the calls block until they can proceed.
+<tt class="docutils literal"><span class="pre">s.setblocking(0)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">s.settimeout(0)</span></tt>;
+<tt class="docutils literal"><span class="pre">s.setblocking(1)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">s.settimeout(None)</span></tt>.</blockquote>
+<p>socket.settimeout(value)</p>
+<blockquote>
+<p>Set a timeout on blocking socket operations.  The <em>value</em> argument
+can be a nonnegative float expressing seconds, or <tt class="xref docutils literal"><span class="pre">None</span></tt>. If a
+float is given, subsequent socket operations will raise an
+<tt class="docutils literal"><span class="pre">timeout</span></tt> exception if the timeout period <em>value</em> has elapsed
+before the operation has completed.  Setting a timeout of <tt class="xref docutils literal"><span class="pre">None</span></tt>
+disables timeouts on socket operations. <tt class="docutils literal"><span class="pre">s.settimeout(0.0)</span></tt> is
+equivalent to <tt class="docutils literal"><span class="pre">s.setblocking(0)</span></tt>; <tt class="docutils literal"><span class="pre">s.settimeout(None)</span></tt> is
+equivalent to <tt class="docutils literal"><span class="pre">s.setblocking(1)</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>socket.gettimeout()</p>
+<blockquote>
+<p>Return the timeout in floating seconds associated with socket
+operations, or <tt class="xref docutils literal"><span class="pre">None</span></tt> if no timeout is set.  This reflects the
+last call to <tt class="docutils literal"><span class="pre">setblocking()</span></tt> or <tt class="docutils literal"><span class="pre">settimeout()</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>Some notes on socket blocking and timeouts: A socket object can be in
+one of three modes: blocking, non-blocking, or timeout.  Sockets are
+always created in blocking mode.  In blocking mode, operations block
+until complete.  In non-blocking mode, operations fail (with an error
+that is unfortunately system-dependent) if they cannot be completed
+immediately.  In timeout mode, operations fail if they cannot be
+completed within the timeout specified for the socket.  The
+<tt class="docutils literal"><span class="pre">setblocking()</span></tt> method is simply a shorthand for certain
+<tt class="docutils literal"><span class="pre">settimeout()</span></tt> calls.</p>
+<p>Timeout mode internally sets the socket in non-blocking mode.  The
+blocking and timeout modes are shared between file descriptors and
+socket objects that refer to the same network endpoint.  A consequence
+of this is that file objects returned by the <tt class="docutils literal"><span class="pre">makefile()</span></tt> method
+must only be used when the socket is in blocking mode; in timeout or
+non-blocking mode file operations that cannot be completed immediately
+will fail.</p>
+<p>Note that the <tt class="docutils literal"><span class="pre">connect()</span></tt> operation is subject to the timeout
+setting, and in general it is recommended to call <tt class="docutils literal"><span class="pre">settimeout()</span></tt>
+before calling <tt class="docutils literal"><span class="pre">connect()</span></tt>.</p>
+<p>socket.setsockopt(level, optname, value)</p>
+<blockquote>
+Set the value of the given socket option (see the Unix manual page
+<em>setsockopt(2)</em>).  The needed symbolic constants are defined in the
+<tt class="docutils literal"><span class="pre">socket</span></tt> module (<tt class="docutils literal"><span class="pre">SO_*</span></tt> etc.).  The value can be an integer or
+a string representing a buffer.  In the latter case it is up to the
+caller to ensure that the string contains the proper bits (see the
+optional built-in module <tt class="docutils literal"><span class="pre">struct</span></tt> for a way to encode C
+structures as strings).</blockquote>
+<p>socket.shutdown(how)</p>
+<blockquote>
+Shut down one or both halves of the connection.  If <em>how</em> is
+<tt class="docutils literal"><span class="pre">SHUT_RD</span></tt>, further receives are disallowed.  If <em>how</em> is
+<tt class="docutils literal"><span class="pre">SHUT_WR</span></tt>, further sends are disallowed.  If <em>how</em> is
+<tt class="docutils literal"><span class="pre">SHUT_RDWR</span></tt>, further sends and receives are disallowed.</blockquote>
+<p>Note that there are no methods <tt class="docutils literal"><span class="pre">read()</span></tt> or <tt class="docutils literal"><span class="pre">write()</span></tt>; use
+<tt class="docutils literal"><span class="pre">recv()</span></tt> and <tt class="docutils literal"><span class="pre">send()</span></tt> without <em>flags</em> argument instead.</p>
+<p>Socket objects also have these (read-only) attributes that correspond
+to the values given to the <tt class="docutils literal"><span class="pre">socket</span></tt> constructor.</p>
+<p>socket.family</p>
+<blockquote>
+<p>The socket family.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>socket.type</p>
+<blockquote>
+<p>The socket type.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>socket.proto</p>
+<blockquote>
+<p>The socket protocol.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+</div>
+<div class="section" id="example">
+<h2>17.2.2. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Here are four minimal example programs using the TCP/IP protocol: a
+server that echoes all data that it receives back (servicing only one
+client), and a client using it.  Note that a server must perform the
+sequence <tt class="docutils literal"><span class="pre">socket()</span></tt>, <tt class="docutils literal"><span class="pre">bind()</span></tt>, <tt class="docutils literal"><span class="pre">listen()</span></tt>, <tt class="docutils literal"><span class="pre">accept()</span></tt>
+(possibly repeating the <tt class="docutils literal"><span class="pre">accept()</span></tt> to service more than one client),
+while a client only needs the sequence <tt class="docutils literal"><span class="pre">socket()</span></tt>, <tt class="docutils literal"><span class="pre">connect()</span></tt>.
+Also note that the server does not <tt class="docutils literal"><span class="pre">send()</span></tt>/<tt class="docutils literal"><span class="pre">recv()</span></tt> on the
+socket it is listening on but on the new socket returned by
+<tt class="docutils literal"><span class="pre">accept()</span></tt>.</p>
+<p>The first two examples support IPv4 only.</p>
+<blockquote>
+<p># Echo server program
+import socket</p>
+<p>HOST = &#8216;&#8217;                 # Symbolic name meaning all available interfaces
+PORT = 50007              # Arbitrary non-privileged port
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((HOST, PORT))
+s.listen(1)
+conn, addr = s.accept()
+print &#8216;Connected by&#8217;, addr
+while 1:</p>
+<blockquote>
+data = conn.recv(1024)
+if not data: break
+conn.send(data)</blockquote>
+<p>conn.close()</p>
+<p># Echo client program
+import socket</p>
+<p>HOST = &#8216;daring.cwi.nl&#8217;    # The remote host
+PORT = 50007              # The same port as used by the server
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((HOST, PORT))
+s.send(&#8216;Hello, world&#8217;)
+data = s.recv(1024)
+s.close()
+print &#8216;Received&#8217;, repr(data)</p>
+</blockquote>
+<p>The next two examples are identical to the above two, but support both
+IPv4 and IPv6. The server side will listen to the first address family
+available (it should listen to both instead). On most of IPv6-ready
+systems, IPv6 will take precedence and the server may not accept IPv4
+traffic. The client side will try to connect to the all addresses
+returned as a result of the name resolution, and sends traffic to the
+first one connected successfully.</p>
+<blockquote>
+<p># Echo server program
+import socket
+import sys</p>
+<p>HOST = None               # Symbolic name meaning all available interfaces
+PORT = 50007              # Arbitrary non-privileged port
+s = None
+for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC,</p>
+<blockquote>
+<blockquote>
+socket.SOCK_STREAM, 0, socket.AI_PASSIVE):</blockquote>
+<p>af, socktype, proto, canonname, sa = res
+try:</p>
+<blockquote>
+s = socket.socket(af, socktype, proto)</blockquote>
+<dl class="docutils">
+<dt>except socket.error, msg:</dt>
+<dd>s = None
+continue</dd>
+<dt>try:</dt>
+<dd>s.bind(sa)
+s.listen(1)</dd>
+<dt>except socket.error, msg:</dt>
+<dd>s.close()
+s = None
+continue</dd>
+</dl>
+<p>break</p>
+</blockquote>
+<dl class="docutils">
+<dt>if s is None:</dt>
+<dd>print &#8216;could not open socket&#8217;
+sys.exit(1)</dd>
+</dl>
+<p>conn, addr = s.accept()
+print &#8216;Connected by&#8217;, addr
+while 1:</p>
+<blockquote>
+data = conn.recv(1024)
+if not data: break
+conn.send(data)</blockquote>
+<p>conn.close()</p>
+<p># Echo client program
+import socket
+import sys</p>
+<p>HOST = &#8216;daring.cwi.nl&#8217;    # The remote host
+PORT = 50007              # The same port as used by the server
+s = None
+for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):</p>
+<blockquote>
+<p>af, socktype, proto, canonname, sa = res
+try:</p>
+<blockquote>
+s = socket.socket(af, socktype, proto)</blockquote>
+<dl class="docutils">
+<dt>except socket.error, msg:</dt>
+<dd>s = None
+continue</dd>
+<dt>try:</dt>
+<dd>s.connect(sa)</dd>
+<dt>except socket.error, msg:</dt>
+<dd>s.close()
+s = None
+continue</dd>
+</dl>
+<p>break</p>
+</blockquote>
+<dl class="docutils">
+<dt>if s is None:</dt>
+<dd>print &#8216;could not open socket&#8217;
+sys.exit(1)</dd>
+</dl>
+<p>s.send(&#8216;Hello, world&#8217;)
+data = s.recv(1024)
+s.close()
+print &#8216;Received&#8217;, repr(data)</p>
+</blockquote>
+<p>The last example shows how to write a very simple network sniffer with
+raw sockets on Windows. The example requires administrator privileges
+to modify the interface:</p>
+<blockquote>
+<p>import socket</p>
+<p># the public network interface
+HOST = socket.gethostbyname(socket.gethostname())</p>
+<p># create a raw socket and bind it to the public interface
+s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_IP)
+s.bind((HOST, 0))</p>
+<p># Include IP headers
+s.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)</p>
+<p># receive all packages
+s.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)</p>
+<p># receive a package
+print s.recvfrom(65565)</p>
+<p># disabled promiscuous mode
+s.ioctl(socket.SIO_RCVALL, socket.RCVALL_OFF)</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ssl.html" title="17.3. ssl — SSL wrapper for socket objects"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="subprocess.html" title="17.1. subprocess — Subprocess management"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="ipc.html" >17. Interprocess Communication and Networking</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

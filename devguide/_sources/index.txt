@@ -1,0 +1,222 @@
+========================
+Jython Developer's Guide
+========================
+
+.. note::
+    These instrctions are a modified version of the
+    `CPython devguide <http://docs.python.org/devguide/>`_
+
+This guide is a comprehensive resource for :ref:`contributing <contributing>`
+to Jython_ -- for both new and experienced contributors.  It is
+:ref:`maintained <helping-with-the-developers-guide>` by the same community
+that maintains Jython.  We welcome your contributions to Jython!
+
+
+Quick Start
+-----------
+
+Here are the basic steps needed to get :ref:`set up <setup>` and contribute a
+patch:
+
+1. :ref:`Get the source code <checkout>`::
+
+      hg clone http://hg.python.org/jython
+
+2. :ref:`Build Jython <compiling>`::
+
+      ant
+
+3. :doc:`Run the tests <runtests>`::
+
+      ant regrtest
+
+4. Make the :doc:`patch <patch>`.
+5. Submit it to the `issue tracker`_.
+
+
+Quick Links
+-----------
+
+Here are some links that you probably will reference frequently while
+contributing to Jython.
+
+.. FIXME: * `Buildbot status`_
+
+* `Issue tracker`_
+* :doc:`faq`
+* PEPs_ (Python Enhancement Proposals)
+
+
+.. _contributing:
+
+Contributing
+------------
+
+We encourage everyone to contribute to Jython and that's why we have put up this
+developer's guide.  If you still have questions after reviewing the material in
+this guide, then the `Python Mentors`_ group is available to help guide new
+contributors through the process.  The :doc:`Developer FAQ <faq>` is another
+useful source of information.
+
+Guide for contributing to Jython:
+
+* :doc:`setup`
+* :doc:`help`
+* :doc:`patch`
+* :doc:`runtests`
+* Beginner tasks to become familiar with the development process
+    * :doc:`docquality`
+    * :doc:`coverage`
+* Advanced tasks for once you are comfortable
+    * :doc:`silencewarnings`
+    * Fixing issues found by the :doc:`buildbots <buildbots>`
+    * :doc:`fixingissues`
+* :ref:`tracker` and :ref:`helptriage`
+    * :doc:`triaging`
+* :doc:`communication`
+* :doc:`coredev`
+    * :doc:`committing`
+    * :doc:`devcycle`
+    * :doc:`buildbots`
+    * :doc:`coverity`
+
+It is **recommended** that the above documents be read in the order listed.  You
+can stop where you feel comfortable and begin contributing immediately without
+reading and understanding these documents all at once.  If you do choose to skip
+around within the documentation, be aware that it is written assuming preceding
+documentation has been read so you may find it necessary to backtrack to fill in
+missing concepts and terminology.
+
+
+
+
+Other Interpreter Implementations
+---------------------------------
+
+This guide is specifically for contributing to Jython_: A Python interpreter
+focused on good integration with the Java Virtual Machine (JVM) environment.
+
+There are other Python implementations, each with a different focus.  Like
+CPython, they always have more things they would like to do than they have
+developers to work on them.  Some major example that may be of interest are:
+
+* CPython_: The Python reference interpreter, also called simply "Python"
+* PyPy_: A Python interpreter focused on high speed (JIT-compiled) operation
+  on major platforms
+* IronPython_: A Python interpreter focused on good integration with the
+  Common Language Runtime (CLR) provided by .NET and Mono
+* Stackless_: A Python interpreter focused on providing lightweight
+  microthreads while remaining largely compatible with CPython specific
+  extension modules
+
+
+Key Resources
+-------------
+
+* Coding style guides
+    * :PEP:`8` (Style Guide for Python Code)
+    * Oracle's Java guidelines #TODO need link
+* `Issue tracker`_
+    * `Meta tracker <http://psf.upfronthosting.co.za/roundup/meta>`_ (issue
+      tracker for the issue tracker)
+    * :doc:`experts`
+    * `Firefox search engine plug-in`_
+* `Buildbot status`_
+* Source code
+    * `Browse online <http://hg.python.org/jython/file/default/>`_
+* PEPs_ (Python Enhancement Proposals)
+* :doc:`faq`
+* :doc:`developers`
+
+
+.. _resources:
+
+Additional Resources
+--------------------
+
+* Anyone can clone the sources for this guide.  See
+  :ref:`helping-with-the-developers-guide`.
+* Help with ...
+    * :doc:`grammar`
+    * :doc:`compiler`
+* Tool support
+    * :doc:`emacs`
+    * Various tools with configuration files as found in the `Misc directory`_
+* `python.org maintenance`_
+
+* :ref:`Search this guide <search>`
+
+
+.. _contents:
+
+Full Table of Contents
+----------------------
+
+.. toctree::
+   :numbered:
+
+   setup
+   help
+   patch
+   runtests
+   coverage
+   docquality
+   documenting
+   silencewarnings
+   fixingissues
+   tracker
+   triaging
+   communication
+   coredev
+   developers
+   committing
+   devcycle
+   buildbots
+   experts
+   emacs
+   faq
+   releasejython
+
+.. original toctree TODO: get missing sections ported over.
+   setup
+   help
+   patch
+   runtests
+   coverage
+   docquality
+   documenting
+   silencewarnings
+   fixingissues
+   tracker
+   triaging
+   communication
+   coredev
+   developers
+   committing
+   devcycle
+   buildbots
+   stdlibchanges
+   langchanges
+   experts
+   emacs
+   gdb
+   grammar
+   compiler
+   coverity
+   clang
+   faq
+
+.. _Buildbot status: http://python.org/dev/buildbot/
+.. _Firefox search engine plug-in: http://www.python.org/dev/searchplugin/
+.. _Misc directory: http://hg.python.org/cpython/file/default/Misc
+.. _PEPs: http://www.python.org/dev/peps/
+.. _python.org maintenance: http://python.org/dev/pydotorg/
+.. _CPython: http://www.python.org/
+.. _Python Mentors: http://pythonmentors.com/
+.. _PyPy: http://www.pypy.org/
+.. _Jython: http://www.jython.org/
+.. _IronPython: http://ironpython.net/
+.. _Stackless: http://www.stackless.com/
+.. _Issue tracker: http://bugs.jython.org/
+.. _CPython dev guide: http://docs.python.org/devguide/
+.. _Style Guide for Java code: http://www.oracle.com/technetwork/java/codeconvtoc-136057.html

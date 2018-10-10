@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4. Running &amp; Writing Tests &mdash; Jython Developer&#39;s Guide </title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Developer&#39;s Guide " href="index.html" />
+    <link rel="next" title="5. Note for Jython" href="coverage.html" />
+    <link rel="prev" title="3. Lifecycle of a Patch" href="patch.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="coverage.html" title="5. Note for Jython"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="patch.html" title="3. Lifecycle of a Patch"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Developer&#39;s Guide </a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="admonition note" id="runtests">
+<p class="first admonition-title">Note</p>
+<p class="last">These instrctions are a modified version of the
+<a class="reference external" href="http://docs.python.org/devguide/">CPython devguide</a></p>
+</div>
+<div class="section" id="running-writing-tests">
+<h1>4. Running &amp; Writing Tests<a class="headerlink" href="#running-writing-tests" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This document assumes you are working from an
+<a class="reference internal" href="devcycle.html#indevbranch"><em>in-development</em></a> checkout of Jython. If you
+are not then some things presented here may not work as they may depend
+on new features not available in earlier versions of Jython.</p>
+</div>
+<div class="section" id="running">
+<h2>4.1. Running<a class="headerlink" href="#running" title="Permalink to this headline">¶</a></h2>
+<p>The shortest, simplest way of running the test suite is the following command
+from the root directory of your checkout:</p>
+<div class="highlight-python"><div class="highlight"><pre>ant regrtest
+</pre></div>
+</div>
+<p>To run a single test case, use the <tt class="docutils literal"><span class="pre">unittest</span></tt> module, providing the import
+path to the test case:</p>
+<div class="highlight-python"><div class="highlight"><pre>./python -m unittest -v test.test_abc.TestABC
+</pre></div>
+</div>
+<p>If you have a multi-core or multi-CPU machine, you can enable parallel testing
+using several Python processes so as to speed up things:</p>
+<div class="highlight-python"><div class="highlight"><pre>   ./python -m test -j0
+
+If you are running a version of Python prior to 3.3 you must specify the number
+of processes to run simultaneously (e.g. ``-j2``).
+
+.. _strenuous_testing:
+
+Finally, if you want to run tests under a more strenuous set of settings, you
+can run ``test`` as::
+
+    ./python -bb -E -Wd -m test -r -w -uall
+
+The various extra flags passed to Python cause it to be much stricter about
+various things (the ``-Wd`` flag should be ``-W error`` at some point, but the
+test suite has not reached a point where all warnings have been dealt with and
+so we cannot guarantee that a bug-free Python will properly complete a test run
+with ``-W error``). The ``-r`` flag to the test runner causes it to run tests in
+a more random order which helps to check that the various tests do not interfere
+with each other.  The ``-w`` flag causes failing tests to be run again to see
+if the failures are transient or consistent.
+The ``-uall`` flag allows the use of all available
+resources so as to not skip tests requiring, e.g., Internet access.
+
+You can also execute the ``Tools/scripts/run_tests.py`` script as  found in a
+CPython checkout. The script tries to balance speed with thoroughness. But if
+you want the most thorough tests you should use the strenuous approach shown
+above.
+</pre></div>
+</div>
+</div>
+<div class="section" id="writing">
+<h2>4.2. Writing<a class="headerlink" href="#writing" title="Permalink to this headline">¶</a></h2>
+<p>Writing tests for Python is much like writing tests for your own code. Tests
+need to be thorough, fast, isolated, consistently repeatable, and as simple as
+possible. We try to have tests both for normal behaviour and for error
+conditions.  Tests live in the <tt class="docutils literal"><span class="pre">Lib/test</span></tt> directory, where every file that
+includes tests has a <tt class="docutils literal"><span class="pre">test_</span></tt> prefix.</p>
+<p>One difference with ordinary testing is that you are encouraged to rely on the
+<a class="reference external" href="http://docs.python.org/3/library/test.html#module-test.support" title="(in Python v3.4)"><tt class="xref py py-mod docutils literal"><span class="pre">test.support</span></tt></a> module. It contains various helpers that are tailored to
+Python&#8217;s test suite and help smooth out common problems such as platform
+differences, resource consumption and cleanup, or warnings management.
+That module is not suitable for use outside of the standard library.</p>
+<p>When you are adding tests to an existing test file, it is also recommended
+that you study the other tests in that file; it will teach you which precautions
+you have to take to make your tests robust and portable.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4. Running &amp; Writing Tests</a><ul>
+<li><a class="reference internal" href="#running">4.1. Running</a></li>
+<li><a class="reference internal" href="#writing">4.2. Writing</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="patch.html"
+                        title="previous chapter">3. Lifecycle of a Patch</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="coverage.html"
+                        title="next chapter">5. Note for Jython</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/runtests.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="coverage.html" title="5. Note for Jython"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="patch.html" title="3. Lifecycle of a Patch"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Developer&#39;s Guide </a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Python Software Foundation.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

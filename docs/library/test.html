@@ -1,0 +1,463 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>24.3. test — Regression tests package for Python &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="24. Development Tools" href="development.html" />
+    <link rel="next" title="25. Debugging and Profiling" href="debug.html" />
+    <link rel="prev" title="24.2. doctest — Test interactive Python examples" href="doctest.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="debug.html" title="25. Debugging and Profiling"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="doctest.html" title="24.2. doctest — Test interactive Python examples"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="development.html" accesskey="U">24. Development Tools</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">24.3. <tt class="docutils literal"><span class="pre">test</span></tt> &#8212; Regression tests package for Python</a><ul>
+<li><a class="reference external" href="#writing-unit-tests-for-the-test-package">24.3.1. Writing Unit Tests for the <tt class="docutils literal"><span class="pre">test</span></tt> package</a></li>
+<li><a class="reference external" href="#running-tests-using-test-regrtest">24.3.2. Running tests using <tt class="docutils literal"><span class="pre">test.regrtest</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#test-test-support-utility-functions-for-tests">24.4. <tt class="docutils literal"><span class="pre">test.test_support</span></tt> &#8212; Utility functions for tests</a></li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="doctest.html"
+                                  title="previous chapter">24.2. <tt class="docutils literal docutils literal docutils literal"><span class="pre">doctest</span></tt> &#8212; Test interactive Python examples</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="debug.html"
+                                  title="next chapter">25. Debugging and Profiling</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/test.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="test-regression-tests-package-for-python">
+<h1>24.3. <tt class="docutils literal"><span class="pre">test</span></tt> &#8212; Regression tests package for Python<a class="headerlink" href="#test-regression-tests-package-for-python" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">test</span></tt> package contains all regression tests for Python as well
+as the modules <tt class="docutils literal"><span class="pre">test.test_support</span></tt> and <tt class="docutils literal"><span class="pre">test.regrtest</span></tt>.
+<tt class="docutils literal"><span class="pre">test.test_support</span></tt> is used to enhance your tests while
+<tt class="docutils literal"><span class="pre">test.regrtest</span></tt> drives the testing suite.</p>
+<p>Each module in the <tt class="docutils literal"><span class="pre">test</span></tt> package whose name starts with <tt class="docutils literal"><span class="pre">test_</span></tt>
+is a testing suite for a specific module or feature. All new tests
+should be written using the <tt class="docutils literal"><span class="pre">unittest</span></tt> or <tt class="docutils literal"><span class="pre">doctest</span></tt> module.  Some
+older tests are written using a &#8220;traditional&#8221; testing style that
+compares output printed to <tt class="docutils literal"><span class="pre">sys.stdout</span></tt>; this style of test is
+considered deprecated.</p>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">unittest</span></tt></dt>
+<dd>Writing PyUnit regression tests.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">doctest</span></tt></dt>
+<dd>Tests embedded in documentation strings.</dd>
+</dl>
+</blockquote>
+<div class="section" id="writing-unit-tests-for-the-test-package">
+<h2>24.3.1. Writing Unit Tests for the <tt class="docutils literal"><span class="pre">test</span></tt> package<a class="headerlink" href="#writing-unit-tests-for-the-test-package" title="Permalink to this headline">¶</a></h2>
+<p>It is preferred that tests that use the <tt class="docutils literal"><span class="pre">unittest</span></tt> module follow a
+few guidelines. One is to name the test module by starting it with
+<tt class="docutils literal"><span class="pre">test_</span></tt> and end it with the name of the module being tested. The
+test methods in the test module should start with <tt class="docutils literal"><span class="pre">test_</span></tt> and end
+with a description of what the method is testing. This is needed so
+that the methods are recognized by the test driver as test methods.
+Also, no documentation string for the method should be included. A
+comment (such as <tt class="docutils literal"><span class="pre">#</span> <span class="pre">Tests</span> <span class="pre">function</span> <span class="pre">returns</span> <span class="pre">only</span> <span class="pre">True</span> <span class="pre">or</span> <span class="pre">False</span></tt>)
+should be used to provide documentation for test methods. This is done
+because documentation strings get printed out if they exist and thus
+what test is being run is not stated.</p>
+<p>A basic boilerplate is often used:</p>
+<blockquote>
+<p>import unittest
+from test import test_support</p>
+<p>class MyTestCase1(unittest.TestCase):</p>
+<blockquote>
+<p># Only use setUp() and tearDown() if necessary</p>
+<dl class="docutils">
+<dt>def setUp(self):</dt>
+<dd>... code to execute in preparation for tests ...</dd>
+<dt>def tearDown(self):</dt>
+<dd>... code to execute to clean up after tests ...</dd>
+<dt>def test_feature_one(self):</dt>
+<dd># Test feature one.
+... testing code ...</dd>
+<dt>def test_feature_two(self):</dt>
+<dd># Test feature two.
+... testing code ...</dd>
+</dl>
+<p>... more test methods ...</p>
+</blockquote>
+<dl class="docutils">
+<dt>class MyTestCase2(unittest.TestCase):</dt>
+<dd>... same structure as MyTestCase1 ...</dd>
+</dl>
+<p>... more test classes ...</p>
+<dl class="docutils">
+<dt>def test_main():</dt>
+<dd><dl class="first last docutils">
+<dt>test_support.run_unittest(MyTestCase1,</dt>
+<dd><blockquote class="first">
+MyTestCase2,
+... list other tests ...</blockquote>
+<p class="last">)</p>
+</dd>
+</dl>
+</dd>
+<dt>if __name__ == &#8216;__main__&#8217;:</dt>
+<dd>test_main()</dd>
+</dl>
+</blockquote>
+<p>This boilerplate code allows the testing suite to be run by
+<tt class="docutils literal"><span class="pre">test.regrtest</span></tt> as well as on its own as a script.</p>
+<p>The goal for regression testing is to try to break code. This leads to
+a few guidelines to be followed:</p>
+<ul>
+<li><p class="first">The testing suite should exercise all classes, functions, and
+constants. This includes not just the external API that is to be
+presented to the outside world but also &#8220;private&#8221; code.</p>
+</li>
+<li><p class="first">Whitebox testing (examining the code being tested when the tests are
+being written) is preferred. Blackbox testing (testing only the
+published user interface) is not complete enough to make sure all
+boundary and edge cases are tested.</p>
+</li>
+<li><p class="first">Make sure all possible values are tested including invalid ones.
+This makes sure that not only all valid values are acceptable but
+also that improper values are handled correctly.</p>
+</li>
+<li><p class="first">Exhaust as many code paths as possible. Test where branching occurs
+and thus tailor input to make sure as many different paths through
+the code are taken.</p>
+</li>
+<li><p class="first">Add an explicit test for any bugs discovered for the tested code.
+This will make sure that the error does not crop up again if the
+code is changed in the future.</p>
+</li>
+<li><p class="first">Make sure to clean up after your tests (such as close and remove all
+temporary files).</p>
+</li>
+<li><p class="first">If a test is dependent on a specific condition of the operating
+system then verify the condition already exists before attempting
+the test.</p>
+</li>
+<li><p class="first">Import as few modules as possible and do it as soon as possible.
+This minimizes external dependencies of tests and also minimizes
+possible anomalous behavior from side-effects of importing a module.</p>
+</li>
+<li><p class="first">Try to maximize code reuse. On occasion, tests will vary by
+something as small as what type of input is used. Minimize code
+duplication by subclassing a basic test class with a class that
+specifies the input:</p>
+<blockquote>
+<p>class TestFuncAcceptsSequences(unittest.TestCase):</p>
+<blockquote>
+<p>func = mySuperWhammyFunction</p>
+<dl class="docutils">
+<dt>def test_func(self):</dt>
+<dd><p class="first last">self.func(self.arg)</p>
+</dd>
+</dl>
+</blockquote>
+<dl class="docutils">
+<dt>class AcceptLists(TestFuncAcceptsSequences):</dt>
+<dd><p class="first last">arg = [1,2,3]</p>
+</dd>
+<dt>class AcceptStrings(TestFuncAcceptsSequences):</dt>
+<dd><p class="first last">arg = &#8216;abc&#8217;</p>
+</dd>
+<dt>class AcceptTuples(TestFuncAcceptsSequences):</dt>
+<dd><p class="first last">arg = (1,2,3)</p>
+</dd>
+</dl>
+</blockquote>
+</li>
+</ul>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Test Driven Development</dt>
+<dd>A book by Kent Beck on writing tests before code.</dd>
+</dl>
+</blockquote>
+</div>
+<div class="section" id="running-tests-using-test-regrtest">
+<h2>24.3.2. Running tests using <tt class="docutils literal"><span class="pre">test.regrtest</span></tt><a class="headerlink" href="#running-tests-using-test-regrtest" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">test.regrtest</span></tt> can be used as a script to drive Python&#8217;s regression
+test suite. Running the script by itself automatically starts running
+all regression tests in the <tt class="docutils literal"><span class="pre">test</span></tt> package. It does this by finding
+all modules in the package whose name starts with <tt class="docutils literal"><span class="pre">test_</span></tt>, importing
+them, and executing the function <tt class="docutils literal"><span class="pre">test_main()</span></tt> if present. The names
+of tests to execute may also be passed to the script. Specifying a
+single regression test (<strong>python regrtest.py</strong> <em>test_spam.py</em>) will
+minimize output and only print whether the test passed or failed and
+thus minimize output.</p>
+<p>Running <tt class="docutils literal"><span class="pre">test.regrtest</span></tt> directly allows what resources are available
+for tests to use to be set. You do this by using the <em>-u</em> command-line
+option. Run <strong>python regrtest.py</strong> <em>-uall</em> to turn on all resources;
+specifying <em>all</em> as an option for <em>-u</em> enables all possible resources.
+If all but one resource is desired (a more common case), a comma-
+separated list of resources that are not desired may be listed after
+<em>all</em>. The command <strong>python regrtest.py</strong> <em>-uall,-audio,-largefile</em>
+will run <tt class="docutils literal"><span class="pre">test.regrtest</span></tt> with all resources except the <em>audio</em> and
+<em>largefile</em> resources. For a list of all resources and more command-
+line options, run <strong>python regrtest.py</strong> <em>-h</em>.</p>
+<p>Some other ways to execute the regression tests depend on what
+platform the tests are being executed on. On Unix, you can run
+<strong>make</strong> <em>test</em> at the top-level directory where Python was built. On
+Windows, executing <strong>rt.bat</strong> from your <tt class="docutils literal"><span class="pre">PCBuild</span></tt> directory will run
+all regression tests.</p>
+</div>
+</div>
+<div class="section" id="test-test-support-utility-functions-for-tests">
+<h1>24.4. <tt class="docutils literal"><span class="pre">test.test_support</span></tt> &#8212; Utility functions for tests<a class="headerlink" href="#test-test-support-utility-functions-for-tests" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">test.test_support</span></tt> module has been renamed to</dt>
+<dd><tt class="docutils literal"><span class="pre">test.support</span></tt> in Python 3.0.  The <em>2to3</em> tool will automatically
+adapt imports when converting your sources to 3.0.</dd>
+</dl>
+<p>The <tt class="docutils literal"><span class="pre">test.test_support</span></tt> module provides support for Python&#8217;s
+regression tests.</p>
+<p>This module defines the following exceptions:</p>
+<p>exception exception test.test_support.TestFailed</p>
+<blockquote>
+Exception to be raised when a test fails. This is deprecated in
+favor of <tt class="docutils literal"><span class="pre">unittest</span></tt>-based tests and <tt class="docutils literal"><span class="pre">unittest.TestCase</span></tt>&#8216;s
+assertion methods.</blockquote>
+<p>exception exception test.test_support.TestSkipped</p>
+<blockquote>
+Subclass of <tt class="docutils literal"><span class="pre">TestFailed</span></tt>. Raised when a test is skipped. This
+occurs when a needed resource (such as a network connection) is not
+available at the time of testing.</blockquote>
+<p>exception exception test.test_support.ResourceDenied</p>
+<blockquote>
+Subclass of <tt class="docutils literal"><span class="pre">TestSkipped</span></tt>. Raised when a resource (such as a
+network connection) is not available. Raised by the <tt class="docutils literal"><span class="pre">requires()</span></tt>
+function.</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">test.test_support</span></tt> module defines the following constants:</p>
+<p>test.test_support.verbose</p>
+<blockquote>
+<tt class="xref docutils literal"><span class="pre">True</span></tt> when verbose output is enabled. Should be checked when
+more detailed information is desired about a running test.
+<em>verbose</em> is set by <tt class="docutils literal"><span class="pre">test.regrtest</span></tt>.</blockquote>
+<p>test.test_support.have_unicode</p>
+<blockquote>
+<tt class="xref docutils literal"><span class="pre">True</span></tt> when Unicode support is available.</blockquote>
+<p>test.test_support.is_jython</p>
+<blockquote>
+<tt class="xref docutils literal"><span class="pre">True</span></tt> if the running interpreter is Jython.</blockquote>
+<p>test.test_support.TESTFN</p>
+<blockquote>
+Set to the path that a temporary file may be created at. Any
+temporary that is created should be closed and unlinked (removed).</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">test.test_support</span></tt> module defines the following functions:</p>
+<p>test.test_support.forget(module_name)</p>
+<blockquote>
+Removes the module named <em>module_name</em> from <tt class="docutils literal"><span class="pre">sys.modules</span></tt> and
+deletes any byte-compiled files of the module.</blockquote>
+<p>test.test_support.is_resource_enabled(resource)</p>
+<blockquote>
+Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>resource</em> is enabled and available. The list
+of available resources is only set when <tt class="docutils literal"><span class="pre">test.regrtest</span></tt> is
+executing the tests.</blockquote>
+<p>test.test_support.requires(resource[, msg])</p>
+<blockquote>
+Raises <tt class="docutils literal"><span class="pre">ResourceDenied</span></tt> if <em>resource</em> is not available. <em>msg</em> is
+the argument to <tt class="docutils literal"><span class="pre">ResourceDenied</span></tt> if it is raised. Always returns
+true if called by a function whose <tt class="docutils literal"><span class="pre">__name__</span></tt> is <tt class="docutils literal"><span class="pre">'__main__'</span></tt>.
+Used when tests are executed by <tt class="docutils literal"><span class="pre">test.regrtest</span></tt>.</blockquote>
+<p>test.test_support.findfile(filename)</p>
+<blockquote>
+Return the path to the file named <em>filename</em>. If no match is found
+<em>filename</em> is returned. This does not equal a failure since it
+could be the path to the file.</blockquote>
+<p>test.test_support.run_unittest(<a href="#id1"><span class="problematic" id="id2">*</span></a>classes)</p>
+<blockquote>
+<p>Execute <tt class="docutils literal"><span class="pre">unittest.TestCase</span></tt> subclasses passed to the function.
+The function scans the classes for methods starting with the prefix
+<tt class="docutils literal"><span class="pre">test_</span></tt> and executes the tests individually.</p>
+<p>It is also legal to pass strings as parameters; these should be
+keys in <tt class="docutils literal"><span class="pre">sys.modules</span></tt>. Each associated module will be scanned by
+<tt class="docutils literal"><span class="pre">unittest.TestLoader.loadTestsFromModule()</span></tt>. This is usually seen
+in the following <tt class="docutils literal"><span class="pre">test_main()</span></tt> function:</p>
+<blockquote>
+<dl class="docutils">
+<dt>def test_main():</dt>
+<dd>test_support.run_unittest(__name__)</dd>
+</dl>
+</blockquote>
+<p>This will run all tests defined in the named module.</p>
+</blockquote>
+<p>test.test_support.check_warnings()</p>
+<blockquote>
+<p>A convenience wrapper for <tt class="docutils literal"><span class="pre">warnings.catch_warnings()</span></tt> that makes
+it easier to test that a warning was correctly raised with a single
+assertion. It is approximately equivalent to calling
+<tt class="docutils literal"><span class="pre">warnings.catch_warnings(record=True)</span></tt>.</p>
+<p>The main difference is that on entry to the context manager, a
+<tt class="docutils literal"><span class="pre">WarningRecorder</span></tt> instance is returned instead of a simple list.
+The underlying warnings list is available via the recorder object&#8217;s
+<tt class="docutils literal"><span class="pre">warnings</span></tt> attribute, while the attributes of the last raised
+warning are also accessible directly on the object. If no warning
+has been raised, then the latter attributes will all be <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<p>A <tt class="docutils literal"><span class="pre">reset()</span></tt> method is also provided on the recorder object. This
+method simply clears the warning list.</p>
+<p>The context manager is used like this:</p>
+<blockquote>
+<dl class="docutils">
+<dt>with check_warnings() as w:</dt>
+<dd>warnings.simplefilter(&#8220;always&#8221;)
+warnings.warn(&#8220;foo&#8221;)
+assert str(w.message) == &#8220;foo&#8221;
+warnings.warn(&#8220;bar&#8221;)
+assert str(w.message) == &#8220;bar&#8221;
+assert str(w.warnings[0].message) == &#8220;foo&#8221;
+assert str(w.warnings[1].message) == &#8220;bar&#8221;
+w.reset()
+assert len(w.warnings) == 0</dd>
+</dl>
+</blockquote>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>test.test_support.captured_stdout()</p>
+<blockquote>
+<p>This is a context manager than runs the <tt class="docutils literal"><span class="pre">with</span></tt> statement body
+using a <tt class="docutils literal"><span class="pre">StringIO.StringIO</span></tt> object as sys.stdout.  That object
+can be retrieved using the <tt class="docutils literal"><span class="pre">as</span></tt> clause of the <tt class="docutils literal"><span class="pre">with</span></tt> statement.</p>
+<p>Example use:</p>
+<blockquote>
+<dl class="docutils">
+<dt>with captured_stdout() as s:</dt>
+<dd>print &#8220;hello&#8221;</dd>
+</dl>
+<p>assert s.getvalue() == &#8220;hello&#8221;</p>
+</blockquote>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">test.test_support</span></tt> module defines the following classes:</p>
+<p>class class test.test_support.TransientResource(exc[, <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs])</p>
+<blockquote>
+<p>Instances are a context manager that raises <tt class="docutils literal"><span class="pre">ResourceDenied</span></tt> if
+the specified exception type is raised.  Any keyword arguments are
+treated as attribute/value pairs to be compared against any
+exception raised within the <tt class="docutils literal"><span class="pre">with</span></tt> statement.  Only if all pairs
+match properly against attributes on the exception is
+<tt class="docutils literal"><span class="pre">ResourceDenied</span></tt> raised.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>class class test.test_support.EnvironmentVarGuard</p>
+<blockquote>
+<p>Class used to temporarily set or unset environment variables.
+Instances can be used as a context manager.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>EnvironmentVarGuard.set(envvar, value)</p>
+<blockquote>
+Temporarily set the environment variable <tt class="docutils literal"><span class="pre">envvar</span></tt> to the value of
+<tt class="docutils literal"><span class="pre">value</span></tt>.</blockquote>
+<p>EnvironmentVarGuard.unset(envvar)</p>
+<blockquote>
+Temporarily unset the environment variable <tt class="docutils literal"><span class="pre">envvar</span></tt>.</blockquote>
+<p>class class test.test_support.WarningsRecorder</p>
+<blockquote>
+<p>Class used to record warnings for unit tests. See documentation of
+<tt class="docutils literal"><span class="pre">check_warnings()</span></tt> above for more details.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="debug.html" title="25. Debugging and Profiling"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="doctest.html" title="24.2. doctest — Test interactive Python examples"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="development.html" >24. Development Tools</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

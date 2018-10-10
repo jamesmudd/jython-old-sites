@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.16. new — Creation of runtime internal objects &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="8. Data Types" href="datatypes.html" />
+    <link rel="next" title="8.17. copy — Shallow and deep copy operations" href="copy.html" />
+    <link rel="prev" title="8.15. types — Names for built-in types" href="types.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="copy.html" title="8.17. copy — Shallow and deep copy operations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="types.html" title="8.15. types — Names for built-in types"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" accesskey="U">8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="types.html"
+                                  title="previous chapter">8.15. <tt class="docutils literal"><span class="pre">types</span></tt> &#8212; Names for built-in types</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="copy.html"
+                                  title="next chapter">8.17. <tt class="docutils literal docutils literal"><span class="pre">copy</span></tt> &#8212; Shallow and deep copy operations</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/new.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="new-creation-of-runtime-internal-objects">
+<h1>8.16. <tt class="docutils literal"><span class="pre">new</span></tt> &#8212; Creation of runtime internal objects<a class="headerlink" href="#new-creation-of-runtime-internal-objects" title="Permalink to this headline">¶</a></h1>
+<p>Deprecated since version 2.6: The <tt class="docutils literal"><span class="pre">new</span></tt> module has been removed in
+Python 3.0.  Use the <tt class="docutils literal"><span class="pre">types</span></tt> module&#8217;s classes instead.</p>
+<p>The <tt class="docutils literal"><span class="pre">new</span></tt> module allows an interface to the interpreter object
+creation functions. This is for use primarily in marshal-type
+functions, when a new object needs to be created &#8220;magically&#8221; and not
+by using the regular creation functions. This module provides a low-
+level interface to the interpreter, so care must be exercised when
+using this module. It is possible to supply non-sensical arguments
+which crash the interpreter when the object is used.</p>
+<p>The <tt class="docutils literal"><span class="pre">new</span></tt> module defines the following functions:</p>
+<p>new.instance(class[, dict])</p>
+<blockquote>
+This function creates an instance of <em>class</em> with dictionary <em>dict</em>
+without calling the <tt class="docutils literal"><span class="pre">__init__()</span></tt> constructor.  If <em>dict</em> is
+omitted or <tt class="xref docutils literal"><span class="pre">None</span></tt>, a new, empty dictionary is created for the new
+instance.  Note that there are no guarantees that the object will
+be in a consistent state.</blockquote>
+<p>new.instancemethod(function, instance, class)</p>
+<blockquote>
+This function will return a method object, bound to <em>instance</em>, or
+unbound if <em>instance</em> is <tt class="xref docutils literal"><span class="pre">None</span></tt>.  <em>function</em> must be callable.</blockquote>
+<p>new.function(code, globals[, name[, argdefs[, closure]]])</p>
+<blockquote>
+Returns a (Python) function with the given code and globals. If
+<em>name</em> is given, it must be a string or <tt class="xref docutils literal"><span class="pre">None</span></tt>.  If it is a
+string, the function will have the given name, otherwise the
+function name will be taken from <tt class="docutils literal"><span class="pre">code.co_name</span></tt>.  If <em>argdefs</em> is
+given, it must be a tuple and will be used to determine the default
+values of parameters.  If <em>closure</em> is given, it must be <tt class="xref docutils literal"><span class="pre">None</span></tt>
+or a tuple of cell objects containing objects to bind to the names
+in <tt class="docutils literal"><span class="pre">code.co_freevars</span></tt>.</blockquote>
+<p>new.code(argcount, nlocals, stacksize, flags, codestring, constants, names, varnames, filename, name, firstlineno, lnotab)</p>
+<blockquote>
+This function is an interface to the <tt class="docutils literal"><span class="pre">PyCode_New()</span></tt> C function.</blockquote>
+<p>new.module(name[, doc])</p>
+<blockquote>
+This function returns a new module object with name <em>name</em>. <em>name</em>
+must be a string. The optional <em>doc</em> argument can have any type.</blockquote>
+<p>new.classobj(name, baseclasses, dict)</p>
+<blockquote>
+This function returns a new class object, with name <em>name</em>, derived
+from <em>baseclasses</em> (which should be a tuple of classes) and with
+namespace <em>dict</em>.</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="copy.html" title="8.17. copy — Shallow and deep copy operations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="types.html" title="8.15. types — Names for built-in types"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" >8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

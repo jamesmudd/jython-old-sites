@@ -1,0 +1,411 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>25.1. bdb — Debugger framework &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="25. Debugging and Profiling" href="debug.html" />
+    <link rel="next" title="25.2. pdb — The Python Debugger" href="pdb.html" />
+    <link rel="prev" title="25. Debugging and Profiling" href="debug.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="pdb.html" title="25.2. pdb — The Python Debugger"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="debug.html" title="25. Debugging and Profiling"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="debug.html" accesskey="U">25. Debugging and Profiling</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="debug.html"
+                                  title="previous chapter">25. Debugging and Profiling</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="pdb.html"
+                                  title="next chapter">25.2. <tt class="docutils literal"><span class="pre">pdb</span></tt> &#8212; The Python Debugger</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/bdb.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bdb-debugger-framework">
+<h1>25.1. <tt class="docutils literal"><span class="pre">bdb</span></tt> &#8212; Debugger framework<a class="headerlink" href="#bdb-debugger-framework" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">bdb</span></tt> module handles basic debugger functions, like setting
+breakpoints or managing execution via the debugger.</p>
+<p>The following exception is defined:</p>
+<p>exception exception bdb.BdbQuit</p>
+<blockquote>
+Exception raised by the <tt class="docutils literal"><span class="pre">Bdb</span></tt> class for quitting the debugger.</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">bdb</span></tt> module also defines two classes:</p>
+<p>class class bdb.Breakpoint(self, file, line[, temporary=0[, cond=None[, funcname=None]]])</p>
+<blockquote>
+<p>This class implements temporary breakpoints, ignore counts,
+disabling and (re-)enabling, and conditionals.</p>
+<p>Breakpoints are indexed by number through a list called
+<tt class="docutils literal"><span class="pre">bpbynumber</span></tt> and by <tt class="docutils literal"><span class="pre">(file,</span> <span class="pre">line)</span></tt> pairs through <tt class="docutils literal"><span class="pre">bplist</span></tt>.
+The former points to a single instance of class <tt class="docutils literal"><span class="pre">Breakpoint</span></tt>.
+The latter points to a list of such instances since there may be
+more than one breakpoint per line.</p>
+<p>When creating a breakpoint, its associated filename should be in
+canonical form.  If a <em>funcname</em> is defined, a breakpoint hit will
+be counted when the first line of that function is executed.  A
+conditional breakpoint always counts a hit.</p>
+<p><tt class="docutils literal"><span class="pre">Breakpoint</span></tt> instances have the following methods:</p>
+<p>deleteMe()</p>
+<blockquote>
+Delete the breakpoint from the list associated to a file/line.
+If it is the last breakpoint in that position, it also deletes
+the entry for the file/line.</blockquote>
+<p>enable()</p>
+<blockquote>
+Mark the breakpoint as enabled.</blockquote>
+<p>disable()</p>
+<blockquote>
+Mark the breakpoint as disabled.</blockquote>
+<p>pprint([out])</p>
+<blockquote>
+<p>Print all the information about the breakpoint:</p>
+<ul class="simple">
+<li>The breakpoint number.</li>
+<li>If it is temporary or not.</li>
+<li>Its file,line position.</li>
+<li>The condition that causes a break.</li>
+<li>If it must be ignored the next N times.</li>
+<li>The breakpoint hit count.</li>
+</ul>
+</blockquote>
+</blockquote>
+<p>class class bdb.Bdb</p>
+<blockquote>
+<p>The <tt class="docutils literal"><span class="pre">Bdb</span></tt> acts as a generic Python debugger base class.</p>
+<p>This class takes care of the details of the trace facility; a
+derived class should implement user interaction.  The standard
+debugger class (<tt class="docutils literal"><span class="pre">pdb.Pdb</span></tt>) is an example.</p>
+<p>The following methods of <tt class="docutils literal"><span class="pre">Bdb</span></tt> normally don&#8217;t need to be
+overridden.</p>
+<p>canonic(filename)</p>
+<blockquote>
+Auxiliary method for getting a filename in a canonical form,
+that is, as a case-normalized (on case-insensitive filesystems)
+absolute path, stripped of surrounding angle brackets.</blockquote>
+<p>reset()</p>
+<blockquote>
+Set the <tt class="docutils literal"><span class="pre">botframe</span></tt>, <tt class="docutils literal"><span class="pre">stopframe</span></tt>, <tt class="docutils literal"><span class="pre">returnframe</span></tt> and
+<tt class="docutils literal"><span class="pre">quitting</span></tt> attributes with values ready to start debugging.</blockquote>
+<p>trace_dispatch(frame, event, arg)</p>
+<blockquote>
+<p>This function is installed as the trace function of debugged
+frames.  Its return value is the new trace function (in most
+cases, that is, itself).</p>
+<p>The default implementation decides how to dispatch a frame,
+depending on the type of event (passed as a string) that is
+about to be executed. <em>event</em> can be one of the following:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">&quot;line&quot;</span></tt>: A new line of code is going to be executed.</li>
+<li><tt class="docutils literal"><span class="pre">&quot;call&quot;</span></tt>: A function is about to be called, or another code
+block entered.</li>
+<li><tt class="docutils literal"><span class="pre">&quot;return&quot;</span></tt>: A function or other code block is about to
+return.</li>
+<li><tt class="docutils literal"><span class="pre">&quot;exception&quot;</span></tt>: An exception has occurred.</li>
+<li><tt class="docutils literal"><span class="pre">&quot;c_call&quot;</span></tt>: A C function is about to be called.</li>
+<li><tt class="docutils literal"><span class="pre">&quot;c_return&quot;</span></tt>: A C function has returned.</li>
+<li><tt class="docutils literal"><span class="pre">&quot;c_exception&quot;</span></tt>: A C function has thrown an exception.</li>
+</ul>
+<p>For the Python events, specialized functions (see below) are
+called.  For the C events, no action is taken.</p>
+<p>The <em>arg</em> parameter depends on the previous event.</p>
+<p>See the documentation for <tt class="docutils literal"><span class="pre">sys.settrace()</span></tt> for more
+information on the trace function.  For more information on code
+and frame objects, refer to <em>The standard type hierarchy</em>.</p>
+</blockquote>
+<p>dispatch_line(frame)</p>
+<blockquote>
+If the debugger should stop on the current line, invoke the
+<tt class="docutils literal"><span class="pre">user_line()</span></tt> method (which should be overridden in
+subclasses). Raise a <tt class="docutils literal"><span class="pre">BdbQuit</span></tt> exception if the
+<tt class="docutils literal"><span class="pre">Bdb.quitting</span></tt> flag is set (which can be set from
+<tt class="docutils literal"><span class="pre">user_line()</span></tt>).  Return a reference to the
+<tt class="docutils literal"><span class="pre">trace_dispatch()</span></tt> method for further tracing in that scope.</blockquote>
+<p>dispatch_call(frame, arg)</p>
+<blockquote>
+If the debugger should stop on this function call, invoke the
+<tt class="docutils literal"><span class="pre">user_call()</span></tt> method (which should be overridden in
+subclasses). Raise a <tt class="docutils literal"><span class="pre">BdbQuit</span></tt> exception if the
+<tt class="docutils literal"><span class="pre">Bdb.quitting</span></tt> flag is set (which can be set from
+<tt class="docutils literal"><span class="pre">user_call()</span></tt>).  Return a reference to the
+<tt class="docutils literal"><span class="pre">trace_dispatch()</span></tt> method for further tracing in that scope.</blockquote>
+<p>dispatch_return(frame, arg)</p>
+<blockquote>
+If the debugger should stop on this function return, invoke the
+<tt class="docutils literal"><span class="pre">user_return()</span></tt> method (which should be overridden in
+subclasses). Raise a <tt class="docutils literal"><span class="pre">BdbQuit</span></tt> exception if the
+<tt class="docutils literal"><span class="pre">Bdb.quitting</span></tt> flag is set (which can be set from
+<tt class="docutils literal"><span class="pre">user_return()</span></tt>).  Return a reference to the
+<tt class="docutils literal"><span class="pre">trace_dispatch()</span></tt> method for further tracing in that scope.</blockquote>
+<p>dispatch_exception(frame, arg)</p>
+<blockquote>
+If the debugger should stop at this exception, invokes the
+<tt class="docutils literal"><span class="pre">user_exception()</span></tt> method (which should be overridden in
+subclasses). Raise a <tt class="docutils literal"><span class="pre">BdbQuit</span></tt> exception if the
+<tt class="docutils literal"><span class="pre">Bdb.quitting</span></tt> flag is set (which can be set from
+<tt class="docutils literal"><span class="pre">user_exception()</span></tt>).  Return a reference to the
+<tt class="docutils literal"><span class="pre">trace_dispatch()</span></tt> method for further tracing in that scope.</blockquote>
+<p>Normally derived classes don&#8217;t override the following methods, but
+they may if they want to redefine the definition of stopping and
+breakpoints.</p>
+<p>stop_here(frame)</p>
+<blockquote>
+This method checks if the <em>frame</em> is somewhere below
+<tt class="docutils literal"><span class="pre">botframe</span></tt> in the call stack.  <tt class="docutils literal"><span class="pre">botframe</span></tt> is the frame in
+which debugging started.</blockquote>
+<p>break_here(frame)</p>
+<blockquote>
+This method checks if there is a breakpoint in the filename and
+line belonging to <em>frame</em> or, at least, in the current function.
+If the breakpoint is a temporary one, this method deletes it.</blockquote>
+<p>break_anywhere(frame)</p>
+<blockquote>
+This method checks if there is a breakpoint in the filename of
+the current frame.</blockquote>
+<p>Derived classes should override these methods to gain control over
+debugger operation.</p>
+<p>user_call(frame, argument_list)</p>
+<blockquote>
+This method is called from <tt class="docutils literal"><span class="pre">dispatch_call()</span></tt> when there is the
+possibility that a break might be necessary anywhere inside the
+called function.</blockquote>
+<p>user_line(frame)</p>
+<blockquote>
+This method is called from <tt class="docutils literal"><span class="pre">dispatch_line()</span></tt> when either
+<tt class="docutils literal"><span class="pre">stop_here()</span></tt> or <tt class="docutils literal"><span class="pre">break_here()</span></tt> yields True.</blockquote>
+<p>user_return(frame, return_value)</p>
+<blockquote>
+This method is called from <tt class="docutils literal"><span class="pre">dispatch_return()</span></tt> when
+<tt class="docutils literal"><span class="pre">stop_here()</span></tt> yields True.</blockquote>
+<p>user_exception(frame, exc_info)</p>
+<blockquote>
+This method is called from <tt class="docutils literal"><span class="pre">dispatch_exception()</span></tt> when
+<tt class="docutils literal"><span class="pre">stop_here()</span></tt> yields True.</blockquote>
+<p>do_clear(arg)</p>
+<blockquote>
+<p>Handle how a breakpoint must be removed when it is a temporary
+one.</p>
+<p>This method must be implemented by derived classes.</p>
+</blockquote>
+<p>Derived classes and clients can call the following methods to
+affect the stepping state.</p>
+<p>set_step()</p>
+<blockquote>
+Stop after one line of code.</blockquote>
+<p>set_next(frame)</p>
+<blockquote>
+Stop on the next line in or below the given frame.</blockquote>
+<p>set_return(frame)</p>
+<blockquote>
+Stop when returning from the given frame.</blockquote>
+<p>set_until(frame)</p>
+<blockquote>
+Stop when the line with the line no greater than the current one
+is reached or when returning from current frame</blockquote>
+<p>set_trace([frame])</p>
+<blockquote>
+Start debugging from <em>frame</em>.  If <em>frame</em> is not specified,
+debugging starts from caller&#8217;s frame.</blockquote>
+<p>set_continue()</p>
+<blockquote>
+Stop only at breakpoints or when finished.  If there are no
+breakpoints, set the system trace function to None.</blockquote>
+<p>set_quit()</p>
+<blockquote>
+Set the <tt class="docutils literal"><span class="pre">quitting</span></tt> attribute to True.  This raises <tt class="docutils literal"><span class="pre">BdbQuit</span></tt>
+in the next call to one of the <tt class="docutils literal"><span class="pre">dispatch_*()</span></tt> methods.</blockquote>
+<p>Derived classes and clients can call the following methods to
+manipulate breakpoints.  These methods return a string containing
+an error message if something went wrong, or <tt class="xref docutils literal"><span class="pre">None</span></tt> if all is
+well.</p>
+<p>set_break(filename, lineno[, temporary=0[, cond[, funcname]]])</p>
+<blockquote>
+Set a new breakpoint.  If the <em>lineno</em> line doesn&#8217;t exist for
+the <em>filename</em> passed as argument, return an error message.  The
+<em>filename</em> should be in canonical form, as described in the
+<tt class="docutils literal"><span class="pre">canonic()</span></tt> method.</blockquote>
+<p>clear_break(filename, lineno)</p>
+<blockquote>
+Delete the breakpoints in <em>filename</em> and <em>lineno</em>.  If none were
+set, an error message is returned.</blockquote>
+<p>clear_bpbynumber(arg)</p>
+<blockquote>
+Delete the breakpoint which has the index <em>arg</em> in the
+<tt class="docutils literal"><span class="pre">Breakpoint.bpbynumber</span></tt>.  If <em>arg</em> is not numeric or out of
+range, return an error message.</blockquote>
+<p>clear_all_file_breaks(filename)</p>
+<blockquote>
+Delete all breakpoints in <em>filename</em>.  If none were set, an
+error message is returned.</blockquote>
+<p>clear_all_breaks()</p>
+<blockquote>
+Delete all existing breakpoints.</blockquote>
+<p>get_break(filename, lineno)</p>
+<blockquote>
+Check if there is a breakpoint for <em>lineno</em> of <em>filename</em>.</blockquote>
+<p>get_breaks(filename, lineno)</p>
+<blockquote>
+Return all breakpoints for <em>lineno</em> in <em>filename</em>, or an empty
+list if none are set.</blockquote>
+<p>get_file_breaks(filename)</p>
+<blockquote>
+Return all breakpoints in <em>filename</em>, or an empty list if none
+are set.</blockquote>
+<p>get_all_breaks()</p>
+<blockquote>
+Return all breakpoints that are set.</blockquote>
+<p>Derived classes and clients can call the following methods to get a
+data structure representing a stack trace.</p>
+<p>get_stack(f, t)</p>
+<blockquote>
+Get a list of records for a frame and all higher (calling) and
+lower frames, and the size of the higher part.</blockquote>
+<p>format_stack_entry(frame_lineno[, lprefix=&#8217;: &#8216;])</p>
+<blockquote>
+<p>Return a string with information about a stack entry, identified
+by a <tt class="docutils literal"><span class="pre">(frame,</span> <span class="pre">lineno)</span></tt> tuple:</p>
+<ul class="simple">
+<li>The canonical form of the filename which contains the frame.</li>
+<li>The function name, or <tt class="docutils literal"><span class="pre">&quot;&lt;lambda&gt;&quot;</span></tt>.</li>
+<li>The input arguments.</li>
+<li>The return value.</li>
+<li>The line of code (if it exists).</li>
+</ul>
+</blockquote>
+<p>The following two methods can be called by clients to use a
+debugger to debug a <em>statement</em>, given as a string.</p>
+<p>run(cmd[, globals[, locals]])</p>
+<blockquote>
+Debug a statement executed via the <tt class="docutils literal"><span class="pre">exec</span></tt> statement.
+<em>globals</em> defaults to <tt class="docutils literal"><span class="pre">__main__.__dict__</span></tt>, <em>locals</em> defaults
+to <em>globals</em>.</blockquote>
+<p>runeval(expr[, globals[, locals]])</p>
+<blockquote>
+Debug an expression executed via the <tt class="docutils literal"><span class="pre">eval()</span></tt> function.
+<em>globals</em> and <em>locals</em> have the same meaning as in <tt class="docutils literal"><span class="pre">run()</span></tt>.</blockquote>
+<p>runctx(cmd, globals, locals)</p>
+<blockquote>
+For backwards compatibility.  Calls the <tt class="docutils literal"><span class="pre">run()</span></tt> method.</blockquote>
+<p>runcall(func, <a href="#id1"><span class="problematic" id="id2">*</span></a>args, <a href="#id3"><span class="problematic" id="id4">**</span></a>kwds)</p>
+<blockquote>
+Debug a single function call, and return its result.</blockquote>
+</blockquote>
+<p>Finally, the module defines the following functions:</p>
+<p>bdb.checkfuncname(b, frame)</p>
+<blockquote>
+<p>Check whether we should break here, depending on the way the
+breakpoint <em>b</em> was set.</p>
+<p>If it was set via line number, it checks if <tt class="docutils literal"><span class="pre">b.line</span></tt> is the same
+as the one in the frame also passed as argument.  If the breakpoint
+was set via function name, we have to check we are in the right
+frame (the right function) and if we are in its first executable
+line.</p>
+</blockquote>
+<p>bdb.effective(file, line, frame)</p>
+<blockquote>
+<p>Determine if there is an effective (active) breakpoint at this line
+of code. Return breakpoint number or 0 if none.</p>
+<p>Called only if we know there is a breakpoint at this location.
+Returns the breakpoint that was triggered and a flag that indicates
+if it is ok to delete a temporary breakpoint.</p>
+</blockquote>
+<p>bdb.set_trace()</p>
+<blockquote>
+Starts debugging with a <tt class="docutils literal"><span class="pre">Bdb</span></tt> instance from caller&#8217;s frame.</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pdb.html" title="25.2. pdb — The Python Debugger"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="debug.html" title="25. Debugging and Profiling"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="debug.html" >25. Debugging and Profiling</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

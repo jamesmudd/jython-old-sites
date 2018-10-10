@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>18.14. quopri — Encode and decode MIME quoted-printable data &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="18. Internet Data Handling" href="netdata.html" />
+    <link rel="next" title="18.15. uu — Encode and decode uuencode files" href="uu.html" />
+    <link rel="prev" title="18.13. binascii — Convert between binary and ASCII" href="binascii.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="uu.html" title="18.15. uu — Encode and decode uuencode files"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="binascii.html" title="18.13. binascii — Convert between binary and ASCII"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" accesskey="U">18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="binascii.html"
+                                  title="previous chapter">18.13. <tt class="docutils literal docutils literal docutils literal"><span class="pre">binascii</span></tt> &#8212; Convert between binary and ASCII</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="uu.html"
+                                  title="next chapter">18.15. <tt class="docutils literal docutils literal"><span class="pre">uu</span></tt> &#8212; Encode and decode uuencode files</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/quopri.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="quopri-encode-and-decode-mime-quoted-printable-data">
+<h1>18.14. <tt class="docutils literal"><span class="pre">quopri</span></tt> &#8212; Encode and decode MIME quoted-printable data<a class="headerlink" href="#quopri-encode-and-decode-mime-quoted-printable-data" title="Permalink to this headline">¶</a></h1>
+<p>This module performs quoted-printable transport encoding and decoding,
+as defined in <strong>RFC 1521</strong>: &#8220;MIME (Multipurpose Internet Mail
+Extensions) Part One: Mechanisms for Specifying and Describing the
+Format of Internet Message Bodies&#8221;. The quoted-printable encoding is
+designed for data where there are relatively few nonprintable
+characters; the base64 encoding scheme available via the <tt class="docutils literal"><span class="pre">base64</span></tt>
+module is more compact if there are many such characters, as when
+sending a graphics file.</p>
+<p>quopri.decode(input, output[, header])</p>
+<blockquote>
+Decode the contents of the <em>input</em> file and write the resulting
+decoded binary data to the <em>output</em> file. <em>input</em> and <em>output</em> must
+either be file objects or objects that mimic the file object
+interface. <em>input</em> will be read until <tt class="docutils literal"><span class="pre">input.readline()</span></tt> returns
+an empty string. If the optional argument <em>header</em> is present and
+true, underscore will be decoded as space. This is used to decode
+&#8220;Q&#8221;-encoded headers as described in <strong>RFC 1522</strong>: &#8220;MIME
+(Multipurpose Internet Mail Extensions) Part Two: Message Header
+Extensions for Non-ASCII Text&#8221;.</blockquote>
+<p>quopri.encode(input, output, quotetabs)</p>
+<blockquote>
+Encode the contents of the <em>input</em> file and write the resulting
+quoted-printable data to the <em>output</em> file. <em>input</em> and <em>output</em>
+must either be file objects or objects that mimic the file object
+interface. <em>input</em> will be read until <tt class="docutils literal"><span class="pre">input.readline()</span></tt> returns
+an empty string. <em>quotetabs</em> is a flag which controls whether to
+encode embedded spaces and tabs; when true it encodes such embedded
+whitespace, and when false it leaves them unencoded.  Note that
+spaces and tabs appearing at the end of lines are always encoded,
+as per <strong>RFC 1521</strong>.</blockquote>
+<p>quopri.decodestring(s[, header])</p>
+<blockquote>
+Like <tt class="docutils literal"><span class="pre">decode()</span></tt>, except that it accepts a source string and
+returns the corresponding decoded string.</blockquote>
+<p>quopri.encodestring(s[, quotetabs])</p>
+<blockquote>
+Like <tt class="docutils literal"><span class="pre">encode()</span></tt>, except that it accepts a source string and
+returns the corresponding encoded string.  <em>quotetabs</em> is optional
+(defaulting to 0), and is passed straight through to <tt class="docutils literal"><span class="pre">encode()</span></tt>.</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">mimify</span></tt></dt>
+<dd>General utilities for processing of MIME messages.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">base64</span></tt></dt>
+<dd>Encode and decode MIME base64 data</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="uu.html" title="18.15. uu — Encode and decode uuencode files"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="binascii.html" title="18.13. binascii — Convert between binary and ASCII"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" >18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

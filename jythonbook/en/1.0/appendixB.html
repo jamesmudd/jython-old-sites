@@ -1,0 +1,965 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Appendix B: Jython Cookbook &mdash; Jython Book v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '1.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Book v1.0 documentation" href="index.html" />
+    <link rel="next" title="Appendix C: Built-in Functions" href="appendixC.html" />
+    <link rel="prev" title="Appendix A: Using Other Tools with Jython" href="appendixA.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="appendixC.html" title="Appendix C: Built-in Functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="appendixA.html" title="Appendix A: Using Other Tools with Jython"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="appendix-b-jython-cookbook">
+<h1>Appendix B: Jython Cookbook<a class="headerlink" href="#appendix-b-jython-cookbook" title="Permalink to this headline">¶</a></h1>
+<p>There are a plethora of examples for using Jython that can be found on the web.
+This appendix is a compilation of some of the most useful examples that we have found.
+Those that were chosen are focused on topics that are not widely covered elsewhere on the web.</p>
+<p>Unless otherwise noted, each of these examples have been originally authored for working on versions of Jython prior to 2.5.x, but we have tested each of them using Jython 2.5.1 and they function as advertised.</p>
+<div class="section" id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="using-log4j-with-jython-josh-juneau">
+<h3>Using log4j with Jython, Josh Juneau<a class="headerlink" href="#using-log4j-with-jython-josh-juneau" title="Permalink to this headline">¶</a></h3>
+<p><em>wiki.python.org/jython/JythonMonthly/Articles/August2006/1</em></p>
+<p>Are you still using the Jython print command to show your errors? How about in a production environment, are you using any formal logging? If not, you should be doing so, and the Apache log4j API makes it easy to do so.
+Many Java developers have grown to love the log4j API, and it is utilized throughout much of the community.
+That is great news for Jython developers because we’ve got direct access to Java libraries! There are many Python logging libraries, such as the standard <em>logging</em> module.
+However, sometimes if you are working with Java code it is nice to have the option to integrate with APIs such as log4j.</p>
+<div class="section" id="setting-up-your-environment">
+<h4>Setting Up Your Environment<a class="headerlink" href="#setting-up-your-environment" title="Permalink to this headline">¶</a></h4>
+<p>The most difficult part about using log4j with Jython is the setup.
+You must ensure that the log4j.jar archive resides somewhere within your Jython PATH (usually this entails setting the CLASSPATH to include necessary files).
+You then set up a properties file for use with log4j. Within the properties file, you can include appender information, where logs should reside, and much more.
+For more information, a good place to start is the log4j site manual: logging.apache.org/log4j/1.2/manual.html.</p>
+<p>Listing B-1.</p>
+<div class="highlight-python"><pre>log4j.rootLogger=debug, stdout, R
+
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+
+# Pattern to output the caller's file name and line number.
+log4j.appender.stdout.layout.ConversionPattern=%5p [%t] (%F:%L) - %m%n
+
+log4j.appender.R=org.apache.log4j.RollingFileAppender
+log4j.appender.R.File=C:\\Jython\\testlog4j.log
+
+log4j.appender.R.MaxFileSize=100KB
+# Keep one backup file
+log4j.appender.R.MaxBackupIndex=1
+
+log4j.appender.R.layout=org.apache.log4j.PatternLayout
+log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n</pre>
+</div>
+<p>You are now ready to use log4j in your Jython application.
+As you can see, if you’ve ever used log4j with Java, it is pretty much the same.</p>
+</div>
+<div class="section" id="using-log4j-in-a-jython-application">
+<h4>Using log4j in a Jython Application<a class="headerlink" href="#using-log4j-in-a-jython-application" title="Permalink to this headline">¶</a></h4>
+<p>First, you must import the log4j packages:</p>
+<p>Listing B-2.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">org.apache.log4j</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<p>Second, you obtain a new logger for your class or module and set up a PropertyConfigurator:</p>
+<p>Listing B-3.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;myClass&quot;</span><span class="p">)</span>
+<span class="c"># Assume that the log4j properties resides within a folder named &quot;utilities&quot;</span>
+<span class="n">PropertyConfigurator</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;/utilities/log4j.properties&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Lastly, use log4j:</p>
+<p>Listing B-4.</p>
+<div class="highlight-python"><pre># Example module within the class:
+def submitDocument(self, event):
+    try:
+        # Assume we perform some SQL here
+    except SQLException, ex:
+        self.logger.error("docPanel#submitDocument ERROR: %s" % (ex))</pre>
+</div>
+<p>Your logging will now take place within the file you specified in the properties file for log4j.appender.R.File.</p>
+</div>
+</div>
+</div>
+<div class="section" id="working-with-spreadsheets">
+<h2>Working with Spreadsheets<a class="headerlink" href="#working-with-spreadsheets" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="creating-and-reading-spreadsheets-using-apache-poi">
+<h3>Creating and Reading Spreadsheets Using Apache Poi<a class="headerlink" href="#creating-and-reading-spreadsheets-using-apache-poi" title="Permalink to this headline">¶</a></h3>
+<p><em>Posted to the Jython-users mailing list by Alfonso Reyes on October 14, 2007</em></p>
+<p><em>wiki.python.org/jython/PoiExample</em></p>
+<p>What follows are a few Apache Poi examples.
+Apache Poi is a set of Java APIs for creating and manipulating various file formats based on the Office Open XML standards (OOXML) and Microsoft’s OLE 2 Compound Document Format (OLE2).
+These APIs allow you to do things such as read and write spreadsheet files using Java.
+These examples require Apache Poi to be installed and on the classpath.</p>
+<div class="section" id="create-spreadsheet">
+<h4>Create Spreadsheet<a class="headerlink" href="#create-spreadsheet" title="Permalink to this headline">¶</a></h4>
+<p>This is based on Java code at officewriter.softartisans.com/OfficeWriter-306.aspx and converted to Jython.</p>
+<p>Listing B-5.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#jython poi example. from Jython mailing list</span>
+
+<span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">FileOutputStream</span>
+<span class="kn">from</span> <span class="nn">java.util</span> <span class="kn">import</span> <span class="n">Date</span>
+<span class="kn">from</span> <span class="nn">java.lang</span> <span class="kn">import</span> <span class="n">System</span><span class="p">,</span> <span class="n">Math</span>
+<span class="kn">from</span> <span class="nn">org.apache.poi.hssf.usermodel</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">org.apache.poi.hssf.util</span> <span class="kn">import</span> <span class="n">HSSFColor</span>
+<span class="c"># Obtain the start time</span>
+<span class="n">startTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="n">currentTimeMillis</span><span class="p">()</span>
+<span class="c"># Create a new workbook, HSSFWorkbook is a high level representation of a workbook</span>
+<span class="n">wb</span> <span class="o">=</span> <span class="n">HSSFWorkbook</span><span class="p">()</span>
+<span class="c"># Create file if it doesn&#39;t exist</span>
+<span class="n">fileOut</span> <span class="o">=</span> <span class="n">FileOutputStream</span><span class="p">(</span><span class="s">&quot;POIOut2.xls&quot;</span><span class="p">)</span>
+
+
+<span class="c"># Create 3 sheets</span>
+<span class="n">sheet1</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">createSheet</span><span class="p">(</span><span class="s">&quot;Sheet1&quot;</span><span class="p">)</span>
+<span class="n">sheet2</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">createSheet</span><span class="p">(</span><span class="s">&quot;Sheet2&quot;</span><span class="p">)</span>
+<span class="n">sheet3</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">createSheet</span><span class="p">(</span><span class="s">&quot;Sheet3&quot;</span><span class="p">)</span>
+<span class="n">sheet3</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">createSheet</span><span class="p">(</span><span class="s">&quot;Sheet4&quot;</span><span class="p">)</span>
+
+<span class="c"># Create a header style</span>
+<span class="n">styleHeader</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">createCellStyle</span><span class="p">()</span>
+<span class="n">fontHeader</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">createFont</span><span class="p">()</span>
+<span class="n">fontHeader</span><span class="o">.</span><span class="n">setBoldweight</span><span class="p">(</span><span class="mf">2</span><span class="p">)</span>
+<span class="n">fontHeader</span><span class="o">.</span><span class="n">setFontHeightInPoints</span><span class="p">(</span><span class="mf">14</span><span class="p">)</span>
+<span class="n">fontHeader</span><span class="o">.</span><span class="n">setFontName</span><span class="p">(</span><span class="s">&quot;Arial&quot;</span><span class="p">)</span>
+<span class="n">styleHeader</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">fontHeader</span><span class="p">)</span>
+
+<span class="c"># Create a style used for the first column</span>
+<span class="n">style0</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">createCellStyle</span><span class="p">()</span>
+<span class="n">font0</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">createFont</span><span class="p">()</span>
+<span class="n">font0</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">HSSFColor</span><span class="o">.</span><span class="n">RED</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">style0</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">font0</span><span class="p">)</span>
+
+
+<span class="c"># Create the style used for dates.</span>
+<span class="n">styleDates</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">createCellStyle</span><span class="p">()</span>
+<span class="n">styleDates</span><span class="o">.</span><span class="n">setDataFormat</span><span class="p">(</span><span class="n">HSSFDataFormat</span><span class="o">.</span><span class="n">getBuiltinFormat</span><span class="p">(</span><span class="s">&quot;m/d/yy h:mm&quot;</span><span class="p">))</span>
+
+
+<span class="c"># create the headers</span>
+<span class="n">rowHeader</span> <span class="o">=</span> <span class="n">sheet1</span><span class="o">.</span><span class="n">createRow</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span>
+<span class="c"># String value</span>
+<span class="n">cell0</span> <span class="o">=</span> <span class="n">rowHeader</span><span class="o">.</span><span class="n">createCell</span><span class="p">(</span><span class="mf">0</span><span class="p">)</span>
+<span class="n">cell0</span><span class="o">.</span><span class="n">setCellStyle</span><span class="p">(</span><span class="n">styleHeader</span><span class="p">)</span>
+<span class="n">cell0</span><span class="o">.</span><span class="n">setCellValue</span><span class="p">(</span><span class="s">&quot;Name&quot;</span><span class="p">)</span>
+
+
+<span class="c"># numbers</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">8</span><span class="p">):</span>
+    <span class="n">cell</span> <span class="o">=</span> <span class="n">rowHeader</span><span class="o">.</span><span class="n">createCell</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mf">1</span><span class="p">))</span>
+    <span class="n">cell</span><span class="o">.</span><span class="n">setCellStyle</span><span class="p">(</span><span class="n">styleHeader</span><span class="p">)</span>
+    <span class="n">cell</span><span class="o">.</span><span class="n">setCellValue</span><span class="p">(</span><span class="s">&quot;Data &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mf">1</span><span class="p">))</span> <span class="p">)</span>
+
+<span class="c"># Date</span>
+<span class="n">cell10</span> <span class="o">=</span> <span class="n">rowHeader</span><span class="o">.</span><span class="n">createCell</span><span class="p">(</span><span class="mf">9</span><span class="p">)</span>
+<span class="n">cell10</span><span class="o">.</span><span class="n">setCellValue</span><span class="p">(</span><span class="s">&quot;Date&quot;</span><span class="p">)</span>
+<span class="n">cell10</span><span class="o">.</span><span class="n">setCellStyle</span><span class="p">(</span><span class="n">styleHeader</span><span class="p">)</span>
+<span class="c"># Populate the columns of the spreadsheet</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">100</span><span class="p">):</span>
+    <span class="c"># create a new row</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="n">sheet1</span><span class="o">.</span><span class="n">createRow</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mf">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">10</span><span class="p">):</span>
+        <span class="c"># create each cell</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">createCell</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="c"># Fill the first column with strings</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mf">0</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">setCellValue</span><span class="p">(</span><span class="s">&quot;Product &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">setCellStyle</span><span class="p">(</span><span class="n">style0</span><span class="p">)</span>
+        <span class="c"># Fill the next 8 columns with numbers.</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mf">9</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">setCellValue</span><span class="p">(</span> <span class="p">(</span><span class="n">Math</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="mf">100</span><span class="p">))</span>
+        <span class="c"># Fill the last column with dates.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">setCellValue</span><span class="p">(</span><span class="n">Date</span><span class="p">())</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">setCellStyle</span><span class="p">(</span><span class="n">styleDates</span><span class="p">)</span>
+<span class="c"># Summary row</span>
+<span class="n">rowSummary</span> <span class="o">=</span> <span class="n">sheet1</span><span class="o">.</span><span class="n">createRow</span><span class="p">(</span><span class="mf">102</span><span class="p">)</span>
+<span class="n">sumStyle</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">createCellStyle</span><span class="p">()</span>
+<span class="n">sumFont</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">createFont</span><span class="p">()</span>
+<span class="n">sumFont</span><span class="o">.</span><span class="n">setBoldweight</span><span class="p">(</span> <span class="mf">5</span><span class="p">)</span>
+<span class="n">sumFont</span><span class="o">.</span><span class="n">setFontHeightInPoints</span><span class="p">(</span><span class="mf">12</span><span class="p">)</span>
+<span class="n">sumStyle</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">sumFont</span><span class="p">)</span>
+<span class="n">sumStyle</span><span class="o">.</span><span class="n">setFillPattern</span><span class="p">(</span><span class="n">HSSFCellStyle</span><span class="o">.</span><span class="n">FINE_DOTS</span><span class="p">)</span>
+<span class="n">sumStyle</span><span class="o">.</span><span class="n">setFillForegroundColor</span><span class="p">(</span><span class="n">HSSFColor</span><span class="o">.</span><span class="n">GREEN</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">cellSum0</span> <span class="o">=</span> <span class="n">rowSummary</span><span class="o">.</span><span class="n">createCell</span><span class="p">(</span> <span class="mf">0</span><span class="p">)</span>
+<span class="n">cellSum0</span><span class="o">.</span><span class="n">setCellValue</span><span class="p">(</span><span class="s">&quot;TOTALS:&quot;</span><span class="p">)</span>
+<span class="n">cellSum0</span><span class="o">.</span><span class="n">setCellStyle</span><span class="p">(</span><span class="n">sumStyle</span><span class="p">)</span>
+
+
+<span class="c"># numbers</span>
+<span class="c"># B</span>
+<span class="n">cellB</span> <span class="o">=</span> <span class="n">rowSummary</span><span class="o">.</span><span class="n">createCell</span><span class="p">(</span> <span class="mf">1</span><span class="p">)</span>
+<span class="n">cellB</span><span class="o">.</span><span class="n">setCellStyle</span><span class="p">(</span><span class="n">sumStyle</span><span class="p">)</span>
+<span class="n">cellB</span><span class="o">.</span><span class="n">setCellFormula</span><span class="p">(</span><span class="s">&quot;SUM(B3:B102)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="read-an-excel-file">
+<h4>Read an Excel File<a class="headerlink" href="#read-an-excel-file" title="Permalink to this headline">¶</a></h4>
+<p>This Jython code will open and read an existing Excel file.</p>
+<p>Listing B-6.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;    read.py</span>
+<span class="sd">Read an existing Excel file (Book1.xls) and show it on the screen</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">org.apache.poi.hssf.usermodel</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">FileInputStream</span>
+<span class="c"># Open an existing file and use HSSFWorkbook object to store it</span>
+<span class="nb">file</span> <span class="o">=</span> <span class="s">&quot;H:Book1.xls&quot;</span>
+<span class="k">print</span> <span class="nb">file</span>
+<span class="n">fis</span> <span class="o">=</span> <span class="n">FileInputStream</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+<span class="n">wb</span> <span class="o">=</span> <span class="n">HSSFWorkbook</span><span class="p">(</span><span class="n">fis</span><span class="p">)</span>
+<span class="c"># Obtain reference to the first sheet in the workbook</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">getSheetAt</span><span class="p">(</span><span class="mf">0</span><span class="p">)</span>
+
+<span class="c"># get No. of rows</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">getPhysicalNumberOfRows</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">wb</span><span class="p">,</span> <span class="n">sheet</span><span class="p">,</span> <span class="n">rows</span>
+
+<span class="n">cols</span> <span class="o">=</span> <span class="mf">0</span> <span class="c"># No. of columns</span>
+<span class="n">tmp</span> <span class="o">=</span> <span class="mf">0</span>
+
+<span class="c"># This trick ensures that we obtain the data for future use even if it</span>
+<span class="c"># doesn&#39;t start from first few rows</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">10</span><span class="p">):</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">getRow</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">:</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">getRow</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">getPhysicalNumberOfCells</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">tmp</span> <span class="o">&gt;</span> <span class="n">cols</span><span class="p">:</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="n">tmp</span>
+<span class="k">print</span> <span class="n">cols</span>
+
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">getRow</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">r</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">row</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">getCell</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cell</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">print</span> <span class="n">cell</span>
+
+<span class="n">wb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">fis</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="jython-and-xml">
+<h2>Jython and XML<a class="headerlink" href="#jython-and-xml" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="writing-and-parsing-rss-with-rome-josh-juneau">
+<h3>Writing and Parsing RSS with ROME, Josh Juneau<a class="headerlink" href="#writing-and-parsing-rss-with-rome-josh-juneau" title="Permalink to this headline">¶</a></h3>
+<p><em>wiki.python.org/jython/JythonMonthly/Articles/October2007/1</em></p>
+<p>RSS is an old technology now.  It has been around for years.
+However, it is a technology that remains very useful for disseminating news and other information.
+The ROME project on java.net is helping to make parsing, generating, and publishing RSS and Atom feeds a breeze for any Java developer.</p>
+<p>Because I am particularly fond of translating Java to Jython code, I’ve taken simple examples from the Project ROME Wiki and translated Java RSS reader and writer code into Jython.
+It is quite easy to do, and it only takes a few lines of code.</p>
+<p>Keep in mind that you would still need to build a front-end viewer for such an RSS reader, but I think you will get the idea of how easy it can be just to parse a feed with Project ROME and Jython.</p>
+<div class="section" id="setting-up-the-classpath">
+<h4>Setting up the CLASSPATH<a class="headerlink" href="#setting-up-the-classpath" title="Permalink to this headline">¶</a></h4>
+<p>In order to use this example, you must obtain the ROME and JDOM jar files and place them into your CLASSPATH:</p>
+<p>Listing B-7.</p>
+<div class="highlight-python"><pre>set CLASSPATH=C:\Jython\Jython2.2\rome-0.9.jar;%CLASSPATH%
+set CLASSPATH=C:\Jython\Jython2.2\jdom.jar;%CLASSPATH%</pre>
+</div>
+<p>OSX:</p>
+<div class="highlight-python"><pre>export CLASSPATH=/path/to/rome-0.9.jar:/path/to/jdom.jar</pre>
+</div>
+</div>
+<div class="section" id="parsing-feeds">
+<h4>Parsing Feeds<a class="headerlink" href="#parsing-feeds" title="Permalink to this headline">¶</a></h4>
+<p>Parsing feeds is easy with ROME.
+Using ROME with Jython makes it even easier with the elegant Jython syntax.</p>
+<p>We took the FeedReader example from the ROME site and translated it into Jython (see the following).
+You can copy and paste the code into your own FeedReader.py module and run it to parse feeds.
+However, the output is unformatted and ugly.
+Creating a good looking frontend is up to you.</p>
+<p>Listing B-8.</p>
+<div class="highlight-python"><pre>########################################
+# File: FeedReader.py
+#
+# This module can be used to parse an RSS feed
+########################################
+from java.net import URL
+from java.io import InputStreamReader
+from java.lang import Exception
+from java.lang import Object
+from com.sun.syndication.feed.synd import SyndFeed
+from com.sun.syndication.io import SyndFeedInput
+from com.sun.syndication.io import XmlReader
+
+class FeedReader(Object):
+    def __init__(self, url=None):
+        self.inUrl = url
+
+    def readFeed(self):
+
+        #####################################
+        # If url passed in is blank, then use a default
+        #####################################
+        rssUrl = self.inUrl if self.inUrl else
+        "http://www.dzone.com/feed/frontpage/java/rss.xml"
+
+        #####################################
+        # Parse feed located at given URL
+        #####################################
+        try:
+            feedUrl = URL(rssUrl)
+            input = SyndFeedInput()
+            feed = input.build(XmlReader(feedUrl))
+            ####################################
+            # Do something here with feed data
+            ####################################
+            print(feed)
+
+         except Exception, e:
+            print 'An exception has occurred', e
+
+
+if __name__== "__main__":
+    reader = FeedReader()
+    reader.readFeed()
+    print '****************Command Complete...RSS has been parsed*****************'</pre>
+</div>
+</div>
+<div class="section" id="creating-feeds">
+<h4>Creating Feeds<a class="headerlink" href="#creating-feeds" title="Permalink to this headline">¶</a></h4>
+<p>Similar to parsing a feed, writing a feed is also quite easy.
+When one creates a feed, it appears to be a bit more complex than parsing, but if you are familiar with XML and its general structure, then it should be relatively easy.</p>
+<p>Creating a feed is a three step process.
+You must first create the feed element itself, then you must add individual feed entries, and lastly you must publish the XML.</p>
+<p>Listing B-9.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">########################################</span>
+<span class="c"># File: FeedWriter.py</span>
+<span class="c">#</span>
+<span class="c"># This module can be used to create an RSS feed</span>
+<span class="c">########################################</span>
+<span class="kn">from</span> <span class="nn">com.sun.syndication.feed.synd</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">com.sun.syndication.io</span> <span class="kn">import</span> <span class="n">SyndFeedOutput</span>
+<span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">FileWriter</span>
+<span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">Writer</span>
+<span class="kn">from</span> <span class="nn">java.text</span> <span class="kn">import</span> <span class="n">DateFormat</span>
+<span class="kn">from</span> <span class="nn">java.text</span> <span class="kn">import</span> <span class="n">SimpleDateFormat</span>
+<span class="kn">from</span> <span class="nn">java.util</span> <span class="kn">import</span> <span class="n">ArrayList</span>
+<span class="kn">from</span> <span class="nn">java.util</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">java.lang</span> <span class="kn">import</span> <span class="n">Object</span>
+
+<span class="k">class</span> <span class="nc">FeedWriter</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+    <span class="c">####################################</span>
+    <span class="c"># Set up the date format</span>
+    <span class="c">####################################</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DATE_PARSER</span> <span class="o">=</span> <span class="n">SimpleDateFormat</span><span class="p">(</span><span class="s">&#39;yyyy-MM-dd&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feedType</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fileName</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">writeFeed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c">################################</span>
+            <span class="c"># Create the feed itself</span>
+            <span class="c">################################</span>
+            <span class="n">feed</span> <span class="o">=</span> <span class="n">SyndFeedImpl</span><span class="p">()</span>
+            <span class="n">feed</span><span class="o">.</span><span class="n">feedType</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feedType</span>
+            <span class="n">feed</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&#39;Sample Feed (created with ROME)&#39;</span>
+            <span class="n">feed</span><span class="o">.</span><span class="n">link</span> <span class="o">=</span> <span class="s">&#39;http://rome.dev.java.net&#39;</span>
+            <span class="n">feed</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s">&#39;This feed has been created using ROME and Jython&#39;</span>
+
+            <span class="c">###############################</span>
+            <span class="c"># Add entries to the feed</span>
+            <span class="c">###############################</span>
+            <span class="n">entries</span> <span class="o">=</span> <span class="n">ArrayList</span><span class="p">()</span>
+            <span class="n">entry</span> <span class="o">=</span> <span class="n">SyndEntryImpl</span><span class="p">()</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&#39;ROME v1.0&#39;</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">link</span> <span class="o">=</span> <span class="s">&#39;http://wiki.java.net/bin/view/Javawsxml/Rome01&#39;</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">publishedDate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DATE_PARSER</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;2004-06-08&quot;</span><span class="p">)</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="n">SyndContentImpl</span><span class="p">()</span>
+            <span class="n">description</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s">&#39;text/plain&#39;</span>
+            <span class="n">description</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#39;Initial Release of ROME&#39;</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+            <span class="n">entries</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+
+            <span class="n">entry</span> <span class="o">=</span> <span class="n">SyndEntryImpl</span><span class="p">()</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&#39;ROME v2.0&#39;</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">link</span> <span class="o">=</span> <span class="s">&#39;http://wiki.java.net/bin/view/Javawsxml/Rome02&#39;</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">publishedDate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DATE_PARSER</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;2004-06-16&quot;</span><span class="p">)</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="n">SyndContentImpl</span><span class="p">()</span>
+            <span class="n">description</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s">&#39;text/plain&#39;</span>
+            <span class="n">description</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#39;Bug fixes, minor API changes and some new features&#39;</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+            <span class="n">entries</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+
+            <span class="n">entry</span> <span class="o">=</span> <span class="n">SyndEntryImpl</span><span class="p">()</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&#39;ROME v3.0&#39;</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">link</span> <span class="o">=</span> <span class="s">&#39;http://wiki.java.net/bin/view/Javawsxml/Rome03&#39;</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">publishedDate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DATE_PARSER</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;2004-07-27&quot;</span><span class="p">)</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="n">SyndContentImpl</span><span class="p">()</span>
+            <span class="n">description</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s">&#39;text/plain&#39;</span>
+            <span class="n">description</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#39;&lt;p&gt;More Bug fixes, mor API changes, some new features and some Unit testing&lt;/p&gt;&#39;</span>
+            <span class="n">entry</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+            <span class="n">entries</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+
+            <span class="n">feed</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="n">entries</span>
+            <span class="c">###############################</span>
+            <span class="c"># Publish the XML</span>
+            <span class="c">###############################</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">FileWriter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileName</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">SyndFeedOutput</span><span class="p">()</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">feed</span><span class="p">,</span><span class="n">writer</span><span class="p">)</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The feed has been written to the file&#39;</span><span class="p">)</span>
+
+
+
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;There has been an exception raised&#39;</span><span class="p">,</span><span class="n">e</span>
+
+
+
+<span class="k">if</span> <span class="n">__name__</span><span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c">####################################</span>
+    <span class="c"># You must change his file location</span>
+    <span class="c"># if not using Windows environment</span>
+    <span class="c">####################################</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="n">FeedWriter</span><span class="p">(</span><span class="s">&#39;rss_2.0&#39;</span><span class="p">,</span><span class="s">&#39;C:</span><span class="se">\\</span><span class="s">TEMP</span><span class="se">\\</span><span class="s">testRss.xml&#39;</span><span class="p">)</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">writeFeed</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">&#39;****************Command Complete...RSS XML has been created*****************&#39;</span>
+</pre></div>
+</div>
+<p>After you have created the XML, you’ll obviously need to place it on a web server somewhere so that others can use your feed.
+The FeedWriter.py module would probably be one module among many in an application for creating and managing RSS Feeds, but you get the idea.</p>
+</div>
+<div class="section" id="summary">
+<h4>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h4>
+<p>As you can see, using the ROME library to work with RSS feeds is quite easy.
+Using the ROME library within a Jython application is straightforward.
+As you have now seen how easy it is to create and parse feeds, you can apply these technologies to a more complete RSS management application if you’d like.
+The world of RSS communication is at your fingertips!</p>
+</div>
+</div>
+</div>
+<div class="section" id="working-with-classpath">
+<h2>Working with CLASSPATH<a class="headerlink" href="#working-with-classpath" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="using-the-classpath-steve-langer">
+<h3>Using the CLASSPATH, Steve Langer<a class="headerlink" href="#using-the-classpath-steve-langer" title="Permalink to this headline">¶</a></h3>
+<p><em>wiki.python.org/jython/JythonMonthly/Articles/January2007/3</em></p>
+<p>During October and November of 2006, there was a thread in the Jython-users group called “adding JARs to sys.path.” More accurately, the objective was to add JARs to the sys.path at runtime.
+Several people asked the question, “Why would you want to do that?” Well there are at least two good reasons.
+The first is if you want to distribute a Jython or Java package that includes non-standard Jars in it.
+Perhaps you want to make life easier for the target user and not demand that they know how to set environment variables.
+A second even more compelling reason is when there is no normal user account to provide environment variables.</p>
+<p>“What?” you ask.
+Well, in my case I came upon this problem in the following way.
+I am working on an open source IHE Image Archive Actor and needed a web interface.
+I’m using AJAX on the client side to route database calls through CGI to a Jython-JDBC enabled API.
+Testing the Jython-JDBC API from the command line worked fine; I had the PostgreSQL driver in my CLASSPATH.
+But when called via the web interface, I got “zxJDBC error, PostgreSQL driver not found” errors.
+Why? Because APACHE was calling the API and APACHE is not a normal account with environment variables.</p>
+<div class="section" id="what-to-do">
+<h4>What to Do?<a class="headerlink" href="#what-to-do" title="Permalink to this headline">¶</a></h4>
+<p>The Jython-users thread had many suggestions, but none were found to work.
+Chapter 11 of O’Reilly’s <em>Jython Essentials</em> mentions under “System and File Modules” that “to load a class at runtime, one also needs an appropriate class loader.” Of course, no mention is made beyond that.
+After a while, it occurred to me that perhaps someone in the Java world had found a similar problem and had solved it.
+Then all that would be required is to translate that solution.
+And that is exactly what happened.</p>
+</div>
+<div class="section" id="method">
+<h4>Method<a class="headerlink" href="#method" title="Permalink to this headline">¶</a></h4>
+<p>For brevity, I will not repeat the original Java code here.
+The following shows how I call the Jython class (note that one can use either addFile or addURL depending on whether the Jar is on a locally accessible file system or remote server).</p>
+<p>Listing B-10.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">com.ziclix.python.sql</span> <span class="kn">import</span> <span class="n">zxJDBC</span>
+
+<span class="n">d</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="s">&quot;jdbc:postgresql://localhost/img_arc2&quot;</span><span class="p">,</span><span class="s">&quot;postgres&quot;</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="s">&quot;org.postgresql.Driver&quot;</span>
+
+<span class="k">try</span> <span class="p">:</span>
+    <span class="c"># if called from command line with .login CLASSPATH setup right,this works</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">zxJDBC</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="c"># if called from Apache or account where the .login has not set CLASSPATH</span>
+    <span class="c"># need to use run-time CLASSPATH Hacker</span>
+    <span class="k">try</span> <span class="p">:</span>
+        <span class="n">jarLoad</span> <span class="o">=</span> <span class="n">classPathHacker</span><span class="p">()</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">jarLoad</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span><span class="s">&quot;/usr/share/java/postgresql-jdbc3.jar&quot;</span><span class="p">)</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">zxJDBC</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span> <span class="p">(</span><span class="s">&quot;still failed </span><span class="se">\n</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()))</span>
+</pre></div>
+</div>
+<p>And here is the class “classPathHacker” which is what the original author called his solution.
+In fact, you can simply Google on “classPathHacker” to find the Java solution.</p>
+<p>Listing B-11.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">classPathHacker</span> <span class="p">:</span>
+<span class="c">##########################################################</span>
+<span class="c"># from http://forum.java.sun.com/thread.jspa?threadID=300557</span>
+<span class="c">#</span>
+<span class="c"># Author: SG Langer Jan 2007 translated the above Java to this</span>
+<span class="c">#       Jython class</span>
+<span class="c"># Purpose: Allow runtime additions of new Class/jars either from</span>
+<span class="c">#       local files or URL</span>
+<span class="c">######################################################</span>
+    <span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span>
+    <span class="kn">import</span> <span class="nn">java.io.File</span>
+    <span class="kn">import</span> <span class="nn">java.net.URL</span>
+    <span class="kn">import</span> <span class="nn">java.net.URLClassLoader</span>
+    <span class="kn">import</span> <span class="nn">jarray</span>
+
+    <span class="k">def</span> <span class="nf">addFile</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="c">#############################################</span>
+        <span class="c"># Purpose: If adding a file/jar call this first</span>
+        <span class="c">#       with s = path_to_jar</span>
+        <span class="c">#############################################</span>
+
+        <span class="c"># make a URL out of &#39;s&#39;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">File</span> <span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">toURL</span> <span class="p">()</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addURL</span> <span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span>
+
+    <span class="k">def</span> <span class="nf">addURL</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="c">##################################</span>
+        <span class="c"># Purpose: Call this with u= URL for</span>
+        <span class="c">#       the new Class/jar to be loaded</span>
+        <span class="c">#################################</span>
+
+        <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jarray</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">java</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">URL</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="n">Class</span><span class="p">)</span>
+        <span class="n">sysloader</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="n">ClassLoader</span><span class="o">.</span><span class="n">getSystemClassLoader</span><span class="p">()</span>
+        <span class="n">sysclass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">java</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">URLClassLoader</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">sysclass</span><span class="o">.</span><span class="n">getDeclaredMethod</span><span class="p">(</span><span class="s">&quot;addURL&quot;</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">setAccessible</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span>
+        <span class="n">jar_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jarray</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">u</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="n">Object</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">sysloader</span><span class="p">,</span> <span class="n">jar_a</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">u</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id1">
+<h4>Summary<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>That’s it.
+Depressingly short for what it does, but then that’s more proof of the power of this language.
+I hope you find this as powerful and useful as I have.
+It allows the possibility of distributing Jython packages with all their file dependencies within the installation directory, freeing the user or developer from the need to alter user environment variables, which should lead to more programmer control and thus higher reliability.</p>
+</div>
+</div>
+</div>
+<div class="section" id="ant">
+<h2>Ant<a class="headerlink" href="#ant" title="Permalink to this headline">¶</a></h2>
+<p>The following Ant example works with Jython version 2.2.1 and earlier, only due to the necessary jythonc usage.
+jythonc is no longer distributed with Jython as of 2.5.0. This example could be rewritten using object factories to work with current versions of Jython.</p>
+<div class="section" id="writing-ant-tasks-with-jython-ed-takema">
+<h3>Writing Ant Tasks with Jython, Ed Takema<a class="headerlink" href="#writing-ant-tasks-with-jython-ed-takema" title="Permalink to this headline">¶</a></h3>
+<p><em>fishandcross.com/articles/AntTasksWithJython.html</em></p>
+<p>Ant is the current tool of choice for Java builds.
+This is so partially because it was the first Java-oriented build tool on the scene and because the reigning champion <em>None</em> was getting long in the tooth and had fallen out of favor with the Java crowd.
+But Java builds are getting more and more difficult, and these days there is general dissatisfaction with Ant.
+Note particularly Bruce Eckel’s comments and Martin Fowler’s further comments.
+The comments to Bruce Eckel’s posting show similar frustrations.
+Fowler summarizes the issues like this:</p>
+<p>Simple builds are easy to express as a series of tasks and dependencies.
+For such builds the facilities of Ant/Make work well.
+But more complex builds require conditional logic, and that requires more general programming language constructs.
+And that’s where Ant/Make fall down.
+Ken Arnold’s article, “The Sum of Ant,” led me to Jonathon Simon’s article, “Scripting with Jython Instead of XML,” and got me thinking about extending Ant with Jython.
+Simon’s article presents a technique to drive Ant tasks, testing, etc., all from Jython.
+What I am presenting is a technique to embed Jython scripts into Ant which is admittedly backwards from Simon’s approach, but hopefully adds power and flexibility to Ant builds.</p>
+<p>My experience working with large builds automated through Ant is not dissimilar to what Fowler is referring to.
+Eventually, builds need to do either a lot of odd conditional logic in the xml file and ends up burying the logic in scripts, or in a large number of custom tasks written in Java.
+This is particularly the case if your builds include non-Java source that Ant just isn’t smart about building.
+In one case in particular, the set of custom tasks for the build is really its own system with maintenance and staff costs that are quite substantial.
+A large number of scripts can quickly become a problem for enterprise build systems as they are difficult to standardize and cross platform issues are always looming.</p>
+<blockquote>
+<p>Spille, in his article, “ANT’s Finally a Real Build Tool,” demonstrates that the new &lt;import&gt; tag now allows build managers to write truly modular and standardized build systems based on Ant! As Ant grows up, more and more of these issues will get resolved.</p>
+<p>always had was the ability to easily call scripts and command utilities.</p>
+</blockquote>
+<p>This is something that is definitely possible with Ant script/exec tasks, but it feels very un-Java.
+What we need is an elegant way to add ad-hoc behavior to Ant builds.</p>
+</div>
+<div class="section" id="writing-custom-ant-tasks">
+<h3>Writing Custom Ant Tasks<a class="headerlink" href="#writing-custom-ant-tasks" title="Permalink to this headline">¶</a></h3>
+<p>What I think can do the job is to take a more considered approach to using a scripting tool inside an Ant build.
+Rather than just create a mishmash of scripts that are called from exec or script tasks, I suggest that we write custom Ant build tasks in a high level scripting language.
+In this case, Jython.</p>
+<p>Writing custom Ant tasks allows a build manager to leverage the huge number of already written tasks in their builds, while writing what naturally belongs in a more flexible tool in custom Ant tasks that can themselves then be reused, and are as cross-platform as Java itself, and wholly integrated into Ant.
+Because Ant uses Java introspection to determine the capabilities of custom tasks, Jython is the perfect tool to accomplish this.
+All we need to do is ensure that the methods that Ant expects are present in the Jython classes and Ant won’t notice the difference.</p>
+<p>What we will implement is the perennial SimpleTask which is nothing more than a “Hello World” for ant.
+It should be sufficient to demonstrate the key steps.</p>
+<div class="section" id="setup-development-environment">
+<h4>Setup Development Environment<a class="headerlink" href="#setup-development-environment" title="Permalink to this headline">¶</a></h4>
+<p>To compile the Jython source you will need to add the ant.jar file to your classpath.
+This will make it available to Jython to extend which we’ll do in the following.
+To do that, define your classpath:</p>
+<p>Listing B-12.</p>
+<div class="highlight-python"><pre>&lt;DOS&gt;
+set CLASSPATH=c:\path\to\ant\lib\ant.jar;%CLASSPATH%
+&lt;UNIX&gt;
+export CLASSPATH=/path/to/ant/lib/ant.jar:$CLASSPATH</pre>
+</div>
+</div>
+<div class="section" id="simpletask-jython-class">
+<h4>SimpleTask Jython Class<a class="headerlink" href="#simpletask-jython-class" title="Permalink to this headline">¶</a></h4>
+<p>The following is a very simple Ant task written in Jython.
+Save this as SimpleTask.py.</p>
+<p>Listing B-13.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">org.apache.tools.ant</span> <span class="kn">import</span> <span class="n">Task</span>
+
+<span class="k">class</span> <span class="nc">SimpleTask</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+  <span class="n">message</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+
+  <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+     <span class="sd">&quot;&quot;&quot;@sig public void execute()&quot;&quot;&quot;</span>
+     <span class="n">Task</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;Message: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">setMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aMessage</span><span class="p">):</span>
+     <span class="sd">&quot;&quot;&quot;@sig public void setMessage(java.lang.String str)&quot;&quot;&quot;</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">aMessage</span>
+</pre></div>
+</div>
+<p>This simple Jython class extends the Ant Task superclass.
+For each of the properties we want to support for this task, we write a setXXXXX method where XXXXX corresponds to the property we are going to set in the Ant build file.
+Ant creates an object from the class, calls the setXXXXX methods to set up the properties and then calls the execute method (actually, it calls the perform method on the Task superclass which calls the execute() method).
+So let’s try it out.</p>
+</div>
+<div class="section" id="compiling-jython-code-to-a-jar">
+<h4>Compiling Jython Code to a Jar<a class="headerlink" href="#compiling-jython-code-to-a-jar" title="Permalink to this headline">¶</a></h4>
+<p>To build this into a jar file for use in Ant, do the following:</p>
+<p>Listing B-14.</p>
+<div class="highlight-python"><pre>jythonc -a -c -d -j myTasks.jar SimpleTask.py</pre>
+</div>
+<p>This will produce a jar file myTasks.jar and include the Jython core support classes in the jar.
+Copy this jar file into your Ant installation’s lib directory.
+In my case I copy it to c:toolsantlib.</p>
+</div>
+<div class="section" id="build-xml-file-to-use-the-task">
+<h4>Build.XML File to Use the Task<a class="headerlink" href="#build-xml-file-to-use-the-task" title="Permalink to this headline">¶</a></h4>
+<p>Once you’ve got that working, here is a very simple Ant test build file to test your custom Jython task.</p>
+<p>Listing B-15.</p>
+<div class="highlight-python"><pre>&lt;project name="ant jython demo" default="testit" basedir="."&gt;
+
+  &lt;!-- Define the tasks we are building --&gt;
+  &lt;taskdef name="Simple" classname="SimpleTask" /&gt;
+
+  &lt;!-- Test Case starts here --&gt;
+  &lt;target name="testit"&gt;
+     &lt;Simple message="Hello World!" /&gt;
+  &lt;/target&gt;
+
+&lt;/project&gt;</pre>
+</div>
+</div>
+<div class="section" id="a-task-container-task">
+<h4>A Task Container Task<a class="headerlink" href="#a-task-container-task" title="Permalink to this headline">¶</a></h4>
+<p>All right, that is a pretty simple task.
+What else can we do? Well, the sky is the limit really.
+Here is an example of a task container.
+In this case, the task holds references to a set of other tasks (SimpleTask tasks in this case):</p>
+<p>Listing B-16.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">org.apache.tools.ant</span> <span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span> <span class="nn">org.apache.tools.ant</span> <span class="kn">import</span> <span class="n">TaskContainer</span>
+
+<span class="k">class</span> <span class="nc">SimpleContainer</span><span class="p">(</span><span class="n">TaskContainer</span><span class="p">):</span>
+
+  <span class="n">subtasks</span> <span class="o">=</span> <span class="p">[]</span>
+
+  <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+     <span class="sd">&quot;&quot;&quot;@sig public void execute()&quot;&quot;&quot;</span>
+
+     <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subtasks</span><span class="p">:</span>
+         <span class="n">task</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
+
+  <span class="k">def</span> <span class="nf">createSimpleTask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+     <span class="sd">&quot;&quot;&quot;@sig public java.lang.Object createSimpleTask()&quot;&quot;&quot;</span>
+
+     <span class="n">task</span> <span class="o">=</span> <span class="n">SimpleTask</span><span class="p">()</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">subtasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+     <span class="k">return</span> <span class="n">task</span>
+
+<span class="k">class</span> <span class="nc">SimpleTask</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+
+  <span class="n">message</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+
+  <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+     <span class="sd">&quot;&quot;&quot;@sig public void execute()&quot;&quot;&quot;</span>
+     <span class="n">Task</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;Message: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">setMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aMessage</span><span class="p">):</span>
+     <span class="sd">&quot;&quot;&quot;@sig public void setMessage(java.lang.String str)&quot;&quot;&quot;</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">aMessage</span>
+</pre></div>
+</div>
+<p>The SimpleContainer extends the TaskContainer Java class.
+Its createSimpleTask method creates a SimpleTask object and returns it to Ant so its properties can be set.
+Then when all the tasks have been added to the container and their properties have been set, the execute method on the SimpleContainer class is called, which in turn calls the perform method on each of the contained tasks.
+Note that the perform method is inherited from the Task superclass and it in turn calls the execute method which we have overridden.</p>
+</div>
+<div class="section" id="build-xml-file-to-use-the-taskcontainer">
+<h4>Build.XML File to Use the TaskContainer<a class="headerlink" href="#build-xml-file-to-use-the-taskcontainer" title="Permalink to this headline">¶</a></h4>
+<p>Here is an Ant build file to test your custom jython task container.
+Note that you don’t need to include a task definition for the contained SimpleTask unless you want to use it directly.
+The createSimpleTask factory method does it for you.</p>
+<p>Listing B-17.</p>
+<div class="highlight-python"><pre>&lt;project name="ant jython demo" default="testit" basedir="."&gt;
+
+  &lt;!-- Define the tasks we are building --&gt;
+  &lt;taskdef name="Container" classname="SimpleContainer" /&gt;
+
+  &lt;!-- Test Case starts here --&gt;
+  &lt;target name="testit"&gt;
+
+     &lt;Container&gt;
+
+         &lt;SimpleTask message="hello" /&gt;
+         &lt;SimpleTask message="there" /&gt;
+
+     &lt;/Container&gt;
+
+  &lt;/target&gt;
+
+&lt;/project&gt;</pre>
+</div>
+</div>
+<div class="section" id="things-to-look-out-for">
+<h4>Things to Look Out For<a class="headerlink" href="#things-to-look-out-for" title="Permalink to this headline">¶</a></h4>
+<p>As I learned this technique, I discovered that the magic doc strings are really necessary to force Jython to put the right methods in the generated Java classes.
+For example:</p>
+<p>Listing B-18.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;@sig public void execute()&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>This is primarily due to Ant’s introspection that looks for those specific methods and signatures.
+These docstrings are required or Ant won’t recognize the classes as Ant tasks.</p>
+<p>I also learned that for Jython to extend a Java class, it must specifically import the Java classes using this syntax:</p>
+<p>Listing B-19.</p>
+<div class="highlight-python"><pre>from org.apache.tools.ant import Task
+from org.apache.tools.ant import TaskContainer
+
+class MyTask(Task):
+   ...
+You can not use this syntax:
+
+import org.apache.tools.ant.Task
+import org.apache.tools.ant.TaskContainer
+
+ class MyTask(org.apache.tools.ant.Task):
+    ...</pre>
+</div>
+<p>This is because, for some reason, Jython doesn’t figure out that MyTask is extending this Java class and so doesn’t generate the right Java wrapper classes.
+You will know that this working right when you see output like the following when you run the jythonc compiler:</p>
+<p>Listing B-20.</p>
+<div class="highlight-python"><pre>processing SimpleTask
+
+Required packages:
+  org.apache.tools.ant
+
+Creating adapters:
+
+Creating .java files:
+  SimpleTask module
+    SimpleTask extends org.apache.tools.ant.Task &lt;&lt;&lt;</pre>
+</div>
+</div>
+<div class="section" id="id2">
+<h4>Summary<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<p>Here is a quick summary then of why this is a helpful technique.</p>
+<p>First, it is a lot faster to write Ant tasks that integrate with third party tools and systems using a glue language; Jython is excellent at that.
+That is really my prime motivation for trying out this technique.</p>
+<p>Secondly, Jython has an advantage over other scripting languages (which could be run using Ant’s exec or script tasks), because it can be tightly integrated with Ant (use the same logging methods, same settings, and so on).
+This makes it easier to build a standardized build environment.</p>
+<p>Finally, and related to the last point, Jython can be compiled to Java byte code, which runs like any Java class file.
+This means you don’t have to have Jython installed to use the custom tasks and your custom task, if written well, can run on a wide variety of platforms.</p>
+<p>I think this is a reasonable way to add flexibility and additional integration points to Ant builds.</p>
+</div>
+</div>
+</div>
+<div class="section" id="developing-django-web-apps">
+<h2>Developing Django Web Apps<a class="headerlink" href="#developing-django-web-apps" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="using-django-in-netbeans-josh-juneau">
+<h3>Using Django in Netbeans, Josh Juneau<a class="headerlink" href="#using-django-in-netbeans-josh-juneau" title="Permalink to this headline">¶</a></h3>
+<p>It is not a very straightforward task if you wish to develop Jython web applications utilizing a standard framework from within Netbeans.
+However, with a little extra configuration and some manual procedures, it is easy enough to do.
+In this section I will demonstrate how we can make use of Netbeans for developing a Django application without using any Netbeans plug-ins above and beyond the standard Python support.
+This section will cover the setup for a Django project within Netbeans, but it will not cover any Django features.
+For complete details on using Django with Jython, please refer to Chapter 14. You will see that Jython applications can be run, tested, and verified from within the IDE with very little work.
+Because there are a few steps in this section that may be more difficult to visualize, please use the provided screen shots to follow along if you are not using Netbeans while reading this text.</p>
+<p>In order to effectively create and maintain a Django web site, you need to have the ability to run commands against <em>manage.py</em>.
+Unfortunately, there is no built-in way to easily do this within the IDE, so we have to use the terminal or command line along with the IDE to accomplish things.
+Once we create the project and set it up within Netbeans, we can work with developing it from within Netbeans and you can also set up the project <em>Run</em> feature to startup the Django server.</p>
+<p>Assuming that you already have Django setup and configured along with the Django-Jython project on your machine, the first step in using a Django project from within Netbeans is actually creating the project.
+If you are working with a Django project that has already been created then you can skip this step, but if not then you will need to go to the terminal or command-line and create the project using <em>django-admin.py</em>.
+For the purposes of this tutorial, let’s call our Django site <em>NetbeansDjango</em>.</p>
+<p>Listing B-21.</p>
+<div class="highlight-python"><pre>django-admin.py startproject NetbeansDjango</pre>
+</div>
+<p>Now we should have the default Django site setup and we’re ready to bring it into Netbeans. To do this, start a new Python project within Netbeans using the Python Project with Existing Sources option, and be sure to set your Python Platform to Jython 2.5.1 so we are using Jython. After hitting the Next button, we have the ability to add sources to our project. Hit the Add button and choose the main project folder, so in our case select the NetbeansDjango folder. This will add our project root as the source root for our application. In turn, it adds our Django setup files such as manage.py to our project. After doing so your project should look something like Figure B-1.</p>
+<p><img alt="picture_17" src="_images/picture_17.jpg" /></p>
+<p><a href="#id3"><span class="problematic" id="id4">**</span></a>Figure B-1. <a href="#id5"><span class="problematic" id="id6">**</span></a>Adding Django files to your project</p>
+<p>In this next step, we will configure the Netbeans project Run option so that it starts up the Django web server for us. To do so, right-click (Cntrl+Click) on the newly created project and go to Properties. From there, choose the Python option in the left-hand menu and add the Django directory (containing the bin, conf, contrib, core, and so on files) to your path. For this tutorial we will also make use of the PostgreSQL database, so you’ll want to also add the postgresql.jar to your Python path.
+Next, select the Run option from the left-hand menu and add manage.py as the main module, and add runserver as the application argument. This will essentially hook up the Run project option to the Django manage.py such that it will invoke the Django web server to start up.
+At this point, we are ready to begin developing our Django application. So with a little minor setup and some use of the terminal or command-line we are able to easily use Netbeans for developing Django projects. There are a few minor inconsistencies with this process; however, note that there is no real integrated way to turn off the webserver as yet so once it is started we can either leave it running or stop it via your system process manager. Otherwise you can hook up different options to the Netbeans Run project command such as syncdb by simply choosing a different application argument in the project properties. If you use this methodology, then you can simply start and stop the Django web server via the terminal as normal. I have also found that after running the Django web server you will have to manually delete the settings$.py.class file that is generated before you can run the server again or else it will complain.
+In future versions of Netbeans, it is expected that Django functionality will be built into the Python support. We will have to take another look at using Django from within Netbeans at that time. For now, this procedure works and it does a fine job. You can make use of similar procedures to use other web frameworks such as Pylons from within Netbeans.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Appendix B: Jython Cookbook</a><ul>
+<li><a class="reference external" href="#logging">Logging</a><ul>
+<li><a class="reference external" href="#using-log4j-with-jython-josh-juneau">Using log4j with Jython, Josh Juneau</a><ul>
+<li><a class="reference external" href="#setting-up-your-environment">Setting Up Your Environment</a></li>
+<li><a class="reference external" href="#using-log4j-in-a-jython-application">Using log4j in a Jython Application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference external" href="#working-with-spreadsheets">Working with Spreadsheets</a><ul>
+<li><a class="reference external" href="#creating-and-reading-spreadsheets-using-apache-poi">Creating and Reading Spreadsheets Using Apache Poi</a><ul>
+<li><a class="reference external" href="#create-spreadsheet">Create Spreadsheet</a></li>
+<li><a class="reference external" href="#read-an-excel-file">Read an Excel File</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference external" href="#jython-and-xml">Jython and XML</a><ul>
+<li><a class="reference external" href="#writing-and-parsing-rss-with-rome-josh-juneau">Writing and Parsing RSS with ROME, Josh Juneau</a><ul>
+<li><a class="reference external" href="#setting-up-the-classpath">Setting up the CLASSPATH</a></li>
+<li><a class="reference external" href="#parsing-feeds">Parsing Feeds</a></li>
+<li><a class="reference external" href="#creating-feeds">Creating Feeds</a></li>
+<li><a class="reference external" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference external" href="#working-with-classpath">Working with CLASSPATH</a><ul>
+<li><a class="reference external" href="#using-the-classpath-steve-langer">Using the CLASSPATH, Steve Langer</a><ul>
+<li><a class="reference external" href="#what-to-do">What to Do?</a></li>
+<li><a class="reference external" href="#method">Method</a></li>
+<li><a class="reference external" href="#id1">Summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference external" href="#ant">Ant</a><ul>
+<li><a class="reference external" href="#writing-ant-tasks-with-jython-ed-takema">Writing Ant Tasks with Jython, Ed Takema</a></li>
+<li><a class="reference external" href="#writing-custom-ant-tasks">Writing Custom Ant Tasks</a><ul>
+<li><a class="reference external" href="#setup-development-environment">Setup Development Environment</a></li>
+<li><a class="reference external" href="#simpletask-jython-class">SimpleTask Jython Class</a></li>
+<li><a class="reference external" href="#compiling-jython-code-to-a-jar">Compiling Jython Code to a Jar</a></li>
+<li><a class="reference external" href="#build-xml-file-to-use-the-task">Build.XML File to Use the Task</a></li>
+<li><a class="reference external" href="#a-task-container-task">A Task Container Task</a></li>
+<li><a class="reference external" href="#build-xml-file-to-use-the-taskcontainer">Build.XML File to Use the TaskContainer</a></li>
+<li><a class="reference external" href="#things-to-look-out-for">Things to Look Out For</a></li>
+<li><a class="reference external" href="#id2">Summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference external" href="#developing-django-web-apps">Developing Django Web Apps</a><ul>
+<li><a class="reference external" href="#using-django-in-netbeans-josh-juneau">Using Django in Netbeans, Josh Juneau</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="appendixA.html"
+                                  title="previous chapter">Appendix A: Using Other Tools with Jython</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="appendixC.html"
+                                  title="next chapter">Appendix C: Built-in Functions</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/appendixB.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="appendixC.html" title="Appendix C: Built-in Functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="appendixA.html" title="Appendix A: Using Other Tools with Jython"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+    <div class="footer">
+      &copy; Copyright 2009,2010, Josh Juneau, Frank Wierzbicki, Jim Baker, Leo Soto, Victor Ng.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-13131153-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  </body>
+</html>

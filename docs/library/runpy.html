@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>28.5. runpy — Locating and executing Python modules &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="28. Importing Modules" href="modules.html" />
+    <link rel="next" title="29. Python Language Services" href="language.html" />
+    <link rel="prev" title="28.4. modulefinder — Find modules used by a script" href="modulefinder.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="language.html" title="29. Python Language Services"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modulefinder.html" title="28.4. modulefinder — Find modules used by a script"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">28. Importing Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="modulefinder.html"
+                                  title="previous chapter">28.4. <tt class="docutils literal docutils literal docutils literal"><span class="pre">modulefinder</span></tt> &#8212; Find modules used by a script</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="language.html"
+                                  title="next chapter">29. Python Language Services</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/runpy.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="runpy-locating-and-executing-python-modules">
+<h1>28.5. <tt class="docutils literal"><span class="pre">runpy</span></tt> &#8212; Locating and executing Python modules<a class="headerlink" href="#runpy-locating-and-executing-python-modules" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.5.</p>
+<p>The <tt class="docutils literal"><span class="pre">runpy</span></tt> module is used to locate and run Python modules without
+importing them first. Its main use is to implement the <em>-m</em> command
+line switch that allows scripts to be located using the Python module
+namespace rather than the filesystem.</p>
+<p>When executed as a script, the module effectively operates as follows:</p>
+<blockquote>
+del sys.argv[0]  # Remove the runpy module from the arguments
+run_module(sys.argv[0], run_name=&#8221;__main__&#8221;, alter_sys=True)</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">runpy</span></tt> module provides a single function:</p>
+<p>runpy.run_module(mod_name[, init_globals][, run_name][, alter_sys])</p>
+<blockquote>
+<p>Execute the code of the specified module and return the resulting
+module globals dictionary. The module&#8217;s code is first located using
+the standard import mechanism (refer to PEP 302 for details) and
+then executed in a fresh module namespace.</p>
+<p>The optional dictionary argument <em>init_globals</em> may be used to pre-
+populate the globals dictionary before the code is executed. The
+supplied dictionary will not be modified. If any of the special
+global variables below are defined in the supplied dictionary,
+those definitions are overridden by the <tt class="docutils literal"><span class="pre">run_module</span></tt> function.</p>
+<p>The special global variables <tt class="docutils literal"><span class="pre">__name__</span></tt>, <tt class="docutils literal"><span class="pre">__file__</span></tt>,
+<tt class="docutils literal"><span class="pre">__loader__</span></tt> and <tt class="docutils literal"><span class="pre">__builtins__</span></tt> are set in the globals
+dictionary before the module code is executed.</p>
+<p><tt class="docutils literal"><span class="pre">__name__</span></tt> is set to <em>run_name</em> if this optional argument is
+supplied, and the <em>mod_name</em> argument otherwise.</p>
+<p><tt class="docutils literal"><span class="pre">__loader__</span></tt> is set to the PEP 302 module loader used to retrieve
+the code for the module (This loader may be a wrapper around the
+standard import mechanism).</p>
+<p><tt class="docutils literal"><span class="pre">__file__</span></tt> is set to the name provided by the module loader. If
+the loader does not make filename information available, this
+variable is set to <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">__builtins__</span></tt> is automatically initialised with a reference to
+the top level namespace of the <tt class="docutils literal"><span class="pre">__builtin__</span></tt> module.</p>
+<p>If the argument <em>alter_sys</em> is supplied and evaluates to <tt class="xref docutils literal"><span class="pre">True</span></tt>,
+then <tt class="docutils literal"><span class="pre">sys.argv[0]</span></tt> is updated with the value of <tt class="docutils literal"><span class="pre">__file__</span></tt> and
+<tt class="docutils literal"><span class="pre">sys.modules[__name__]</span></tt> is updated with a temporary module object
+for the module being executed. Both <tt class="docutils literal"><span class="pre">sys.argv[0]</span></tt> and
+<tt class="docutils literal"><span class="pre">sys.modules[__name__]</span></tt> are restored to their original values
+before the function returns.</p>
+<p>Note that this manipulation of <tt class="docutils literal"><span class="pre">sys</span></tt> is not thread-safe. Other
+threads may see the partially initialised module, as well as the
+altered list of arguments. It is recommended that the <tt class="docutils literal"><span class="pre">sys</span></tt>
+module be left alone when invoking this function from threaded
+code.</p>
+</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt><strong>PEP 338</strong> - Executing modules as scripts</dt>
+<dd>PEP written and  implemented by Nick Coghlan.</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="language.html" title="29. Python Language Services"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modulefinder.html" title="28.4. modulefinder — Find modules used by a script"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="modules.html" >28. Importing Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

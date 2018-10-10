@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>26.9. gc — Garbage Collector interface &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="26. Python Runtime Services" href="python.html" />
+    <link rel="next" title="26.10. inspect — Inspect live objects" href="inspect.html" />
+    <link rel="prev" title="26.8. __future__ — Future statement definitions" href="__future__.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="inspect.html" title="26.10. inspect — Inspect live objects"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="__future__.html" title="26.8. __future__ — Future statement definitions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="python.html" accesskey="U">26. Python Runtime Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="__future__.html"
+                                  title="previous chapter">26.8. <tt class="docutils literal docutils literal"><span class="pre">__future__</span></tt> &#8212; Future statement definitions</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="inspect.html"
+                                  title="next chapter">26.10. <tt class="docutils literal"><span class="pre">inspect</span></tt> &#8212; Inspect live objects</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/gc.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="gc-garbage-collector-interface">
+<h1>26.9. <tt class="docutils literal"><span class="pre">gc</span></tt> &#8212; Garbage Collector interface<a class="headerlink" href="#gc-garbage-collector-interface" title="Permalink to this headline">¶</a></h1>
+<p>This module provides an interface to the optional garbage collector.
+It provides the ability to disable the collector, tune the collection
+frequency, and set debugging options.  It also provides access to
+unreachable objects that the collector found but cannot free.  Since
+the collector supplements the reference counting already used in
+Python, you can disable the collector if you are sure your program
+does not create reference cycles.  Automatic collection can be
+disabled by calling <tt class="docutils literal"><span class="pre">gc.disable()</span></tt>.  To debug a leaking program call
+<tt class="docutils literal"><span class="pre">gc.set_debug(gc.DEBUG_LEAK)</span></tt>. Notice that this includes
+<tt class="docutils literal"><span class="pre">gc.DEBUG_SAVEALL</span></tt>, causing garbage-collected objects to be saved in
+gc.garbage for inspection.</p>
+<p>The <tt class="docutils literal"><span class="pre">gc</span></tt> module provides the following functions:</p>
+<p>gc.enable()</p>
+<blockquote>
+Enable automatic garbage collection.</blockquote>
+<p>gc.disable()</p>
+<blockquote>
+Disable automatic garbage collection.</blockquote>
+<p>gc.isenabled()</p>
+<blockquote>
+Returns true if automatic collection is enabled.</blockquote>
+<p>gc.collect([generation])</p>
+<blockquote>
+<p>With no arguments, run a full collection.  The optional argument
+<em>generation</em> may be an integer specifying which generation to
+collect (from 0 to 2).  A <tt class="docutils literal"><span class="pre">ValueError</span></tt> is raised if the
+generation number  is invalid. The number of unreachable objects
+found is returned.</p>
+<p>Changed in version 2.5: The optional <em>generation</em> argument was
+added.</p>
+<p>Changed in version 2.6: The free lists maintained for a number of
+builtin types are cleared whenever a full collection or collection
+of the highest generation (2) is run.  Not all items in some free
+lists may be freed due to the particular implementation, in
+particular <tt class="docutils literal"><span class="pre">int</span></tt> and <tt class="docutils literal"><span class="pre">float</span></tt>.</p>
+</blockquote>
+<p>gc.set_debug(flags)</p>
+<blockquote>
+Set the garbage collection debugging flags. Debugging information
+will be written to <tt class="docutils literal"><span class="pre">sys.stderr</span></tt>.  See below for a list of
+debugging flags which can be combined using bit operations to
+control debugging.</blockquote>
+<p>gc.get_debug()</p>
+<blockquote>
+Return the debugging flags currently set.</blockquote>
+<p>gc.get_objects()</p>
+<blockquote>
+<p>Returns a list of all objects tracked by the collector, excluding
+the list returned.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>gc.set_threshold(threshold0[, threshold1[, threshold2]])</p>
+<blockquote>
+<p>Set the garbage collection thresholds (the collection frequency).
+Setting <em>threshold0</em> to zero disables collection.</p>
+<p>The GC classifies objects into three generations depending on how
+many collection sweeps they have survived.  New objects are placed
+in the youngest generation (generation <tt class="docutils literal"><span class="pre">0</span></tt>).  If an object
+survives a collection it is moved into the next older generation.
+Since generation <tt class="docutils literal"><span class="pre">2</span></tt> is the oldest generation, objects in that
+generation remain there after a collection.  In order to decide
+when to run, the collector keeps track of the number object
+allocations and deallocations since the last collection.  When the
+number of allocations minus the number of deallocations exceeds
+<em>threshold0</em>, collection starts.  Initially only generation <tt class="docutils literal"><span class="pre">0</span></tt>
+is examined.  If generation <tt class="docutils literal"><span class="pre">0</span></tt> has been examined more than
+<em>threshold1</em> times since generation <tt class="docutils literal"><span class="pre">1</span></tt> has been examined, then
+generation <tt class="docutils literal"><span class="pre">1</span></tt> is examined as well.  Similarly, <em>threshold2</em>
+controls the number of collections of generation <tt class="docutils literal"><span class="pre">1</span></tt> before
+collecting generation <tt class="docutils literal"><span class="pre">2</span></tt>.</p>
+</blockquote>
+<p>gc.get_count()</p>
+<blockquote>
+<p>Return the current collection  counts as a tuple of <tt class="docutils literal"><span class="pre">(count0,</span>
+<span class="pre">count1,</span> <span class="pre">count2)</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>gc.get_threshold()</p>
+<blockquote>
+Return the current collection thresholds as a tuple of
+<tt class="docutils literal"><span class="pre">(threshold0,</span> <span class="pre">threshold1,</span> <span class="pre">threshold2)</span></tt>.</blockquote>
+<p>gc.get_referrers(<a href="#id1"><span class="problematic" id="id2">*</span></a>objs)</p>
+<blockquote>
+<p>Return the list of objects that directly refer to any of objs. This
+function will only locate those containers which support garbage
+collection; extension types which do refer to other objects but do
+not support garbage collection will not be found.</p>
+<p>Note that objects which have already been dereferenced, but which
+live in cycles and have not yet been collected by the garbage
+collector can be listed among the resulting referrers.  To get only
+currently live objects, call <tt class="docutils literal"><span class="pre">collect()</span></tt> before calling
+<tt class="docutils literal"><span class="pre">get_referrers()</span></tt>.</p>
+<p>Care must be taken when using objects returned by
+<tt class="docutils literal"><span class="pre">get_referrers()</span></tt> because some of them could still be under
+construction and hence in a temporarily invalid state. Avoid using
+<tt class="docutils literal"><span class="pre">get_referrers()</span></tt> for any purpose other than debugging.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>gc.get_referents(<a href="#id3"><span class="problematic" id="id4">*</span></a>objs)</p>
+<blockquote>
+<p>Return a list of objects directly referred to by any of the
+arguments. The referents returned are those objects visited by the
+arguments&#8217; C-level <tt class="docutils literal"><span class="pre">tp_traverse</span></tt> methods (if any), and may not be
+all objects actually directly reachable.  <tt class="docutils literal"><span class="pre">tp_traverse</span></tt> methods
+are supported only by objects that support garbage collection, and
+are only required to visit objects that may be involved in a cycle.
+So, for example, if an integer is directly reachable from an
+argument, that integer object may or may not appear in the result
+list.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>The following variable is provided for read-only access (you can
+mutate its value but should not rebind it):</p>
+<p>gc.garbage</p>
+<blockquote>
+<p>A list of objects which the collector found to be unreachable but
+could not be freed (uncollectable objects).  By default, this list
+contains only objects with <tt class="docutils literal"><span class="pre">__del__()</span></tt> methods. [1] Objects that
+have <tt class="docutils literal"><span class="pre">__del__()</span></tt> methods and are part of a reference cycle cause
+the entire reference cycle to be uncollectable, including objects
+not necessarily in the cycle but reachable only from it. Python
+doesn&#8217;t collect such cycles automatically because, in general, it
+isn&#8217;t possible for Python to guess a safe order in which to run the
+<tt class="docutils literal"><span class="pre">__del__()</span></tt> methods.  If you know a safe order, you can force the
+issue by examining the <em>garbage</em> list, and explicitly breaking
+cycles due to your objects within the list.  Note that these
+objects are kept alive even so by virtue of being in the <em>garbage</em>
+list, so they should be removed from <em>garbage</em> too.  For example,
+after breaking cycles, do <tt class="docutils literal"><span class="pre">del</span> <span class="pre">gc.garbage[:]</span></tt> to empty the list.
+It&#8217;s generally better to avoid the issue by not creating cycles
+containing objects with <tt class="docutils literal"><span class="pre">__del__()</span></tt> methods, and <em>garbage</em> can be
+examined in that case to verify that no such cycles are being
+created.</p>
+<p>If <tt class="docutils literal"><span class="pre">DEBUG_SAVEALL</span></tt> is set, then all unreachable objects will be
+added to this list rather than freed.</p>
+</blockquote>
+<p>The following constants are provided for use with <tt class="docutils literal"><span class="pre">set_debug()</span></tt>:</p>
+<p>gc.DEBUG_STATS</p>
+<blockquote>
+Print statistics during collection.  This information can be useful
+when tuning the collection frequency.</blockquote>
+<p>gc.DEBUG_COLLECTABLE</p>
+<blockquote>
+Print information on collectable objects found.</blockquote>
+<p>gc.DEBUG_UNCOLLECTABLE</p>
+<blockquote>
+Print information of uncollectable objects found (objects which are
+not reachable but cannot be freed by the collector).  These objects
+will be added to the <tt class="docutils literal"><span class="pre">garbage</span></tt> list.</blockquote>
+<p>gc.DEBUG_INSTANCES</p>
+<blockquote>
+When <tt class="docutils literal"><span class="pre">DEBUG_COLLECTABLE</span></tt> or <tt class="docutils literal"><span class="pre">DEBUG_UNCOLLECTABLE</span></tt> is set, print
+information about instance objects found.</blockquote>
+<p>gc.DEBUG_OBJECTS</p>
+<blockquote>
+When <tt class="docutils literal"><span class="pre">DEBUG_COLLECTABLE</span></tt> or <tt class="docutils literal"><span class="pre">DEBUG_UNCOLLECTABLE</span></tt> is set, print
+information about objects other than instance objects found.</blockquote>
+<p>gc.DEBUG_SAVEALL</p>
+<blockquote>
+When set, all unreachable objects found will be appended to
+<em>garbage</em> rather than being freed.  This can be useful for
+debugging a leaking program.</blockquote>
+<p>gc.DEBUG_LEAK</p>
+<blockquote>
+The debugging flags necessary for the collector to print
+information about a leaking program (equal to <tt class="docutils literal"><span class="pre">DEBUG_COLLECTABLE</span> <span class="pre">|</span>
+<span class="pre">DEBUG_UNCOLLECTABLE</span> <span class="pre">|</span> <span class="pre">DEBUG_INSTANCES</span> <span class="pre">|</span> <span class="pre">DEBUG_OBJECTS</span> <span class="pre">|</span>
+<span class="pre">DEBUG_SAVEALL</span></tt>).</blockquote>
+<p>-[ Footnotes ]-</p>
+<dl class="docutils">
+<dt>[1] Prior to Python 2.2, the list contained all instance objects in</dt>
+<dd>unreachable cycles,  not only those with <tt class="docutils literal"><span class="pre">__del__()</span></tt> methods.</dd>
+</dl>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="inspect.html" title="26.10. inspect — Inspect live objects"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="__future__.html" title="26.8. __future__ — Future statement definitions"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="python.html" >26. Python Runtime Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

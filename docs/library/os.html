@@ -1,0 +1,1882 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.1. os — Miscellaneous operating system interfaces &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="15. Generic Operating System Services" href="allos.html" />
+    <link rel="next" title="15.2. time — Time access and conversions" href="time.html" />
+    <link rel="prev" title="15. Generic Operating System Services" href="allos.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="time.html" title="15.2. time — Time access and conversions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="allos.html" title="15. Generic Operating System Services"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="allos.html" accesskey="U">15. Generic Operating System Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">15.1. <tt class="docutils literal"><span class="pre">os</span></tt> &#8212; Miscellaneous operating system interfaces</a><ul>
+<li><a class="reference external" href="#process-parameters">15.1.1. Process Parameters</a></li>
+<li><a class="reference external" href="#file-object-creation">15.1.2. File Object Creation</a></li>
+<li><a class="reference external" href="#file-descriptor-operations">15.1.3. File Descriptor Operations</a></li>
+<li><a class="reference external" href="#files-and-directories">15.1.4. Files and Directories</a></li>
+<li><a class="reference external" href="#process-management">15.1.5. Process Management</a></li>
+<li><a class="reference external" href="#miscellaneous-system-information">15.1.6. Miscellaneous System Information</a></li>
+<li><a class="reference external" href="#miscellaneous-functions">15.1.7. Miscellaneous Functions</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="allos.html"
+                                  title="previous chapter">15. Generic Operating System Services</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="time.html"
+                                  title="next chapter">15.2. <tt class="docutils literal docutils literal"><span class="pre">time</span></tt> &#8212; Time access and conversions</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/os.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="os-miscellaneous-operating-system-interfaces">
+<h1>15.1. <tt class="docutils literal"><span class="pre">os</span></tt> &#8212; Miscellaneous operating system interfaces<a class="headerlink" href="#os-miscellaneous-operating-system-interfaces" title="Permalink to this headline">¶</a></h1>
+<p>This module provides a portable way of using operating system
+dependent functionality.  If you just want to read or write a file see
+<tt class="docutils literal"><span class="pre">open()</span></tt>, if you want to manipulate paths, see the <tt class="docutils literal"><span class="pre">os.path</span></tt>
+module, and if you want to read all the lines in all the files on the
+command line see the <tt class="docutils literal"><span class="pre">fileinput</span></tt> module.  For creating temporary
+files and directories see the <tt class="docutils literal"><span class="pre">tempfile</span></tt> module, and for high-level
+file and directory handling see the <tt class="docutils literal"><span class="pre">shutil</span></tt> module.</p>
+<p>The design of all built-in operating system dependent modules of
+Python is such that as long as the same functionality is available, it
+uses the same interface; for example, the function <tt class="docutils literal"><span class="pre">os.stat(path)</span></tt>
+returns stat information about <em>path</em> in the same format (which
+happens to have originated with the POSIX interface).</p>
+<p>Extensions peculiar to a particular operating system are also
+available through the <tt class="docutils literal"><span class="pre">os</span></tt> module, but using them is of course a
+threat to portability!</p>
+<dl class="docutils">
+<dt>Note: If not separately noted, all functions that claim &#8220;Availability:</dt>
+<dd>Unix&#8221; are supported on Mac OS X, which builds on a Unix core.</dd>
+<dt>Note: All functions in this module raise <tt class="docutils literal"><span class="pre">OSError</span></tt> in the case of</dt>
+<dd>invalid or inaccessible file names and paths, or other arguments
+that have the correct type, but are not accepted by the operating
+system.</dd>
+</dl>
+<p>exception exception os.error</p>
+<blockquote>
+An alias for the built-in <tt class="docutils literal"><span class="pre">OSError</span></tt> exception.</blockquote>
+<p>os.name</p>
+<blockquote>
+The name of the operating system dependent module imported.  The
+following names have currently been registered: <tt class="docutils literal"><span class="pre">'posix'</span></tt>,
+<tt class="docutils literal"><span class="pre">'nt'</span></tt>, <tt class="docutils literal"><span class="pre">'mac'</span></tt>, <tt class="docutils literal"><span class="pre">'os2'</span></tt>, <tt class="docutils literal"><span class="pre">'ce'</span></tt>, <tt class="docutils literal"><span class="pre">'java'</span></tt>, <tt class="docutils literal"><span class="pre">'riscos'</span></tt>.</blockquote>
+<div class="section" id="process-parameters">
+<h2>15.1.1. Process Parameters<a class="headerlink" href="#process-parameters" title="Permalink to this headline">¶</a></h2>
+<p>These functions and data items provide information and operate on the
+current process and user.</p>
+<p>os.environ</p>
+<blockquote>
+<p>A mapping object representing the string environment. For example,
+<tt class="docutils literal"><span class="pre">environ['HOME']</span></tt> is the pathname of your home directory (on some
+platforms), and is equivalent to <tt class="docutils literal"><span class="pre">getenv(&quot;HOME&quot;)</span></tt> in C.</p>
+<p>This mapping is captured the first time the <tt class="docutils literal"><span class="pre">os</span></tt> module is
+imported, typically during Python startup as part of processing
+<tt class="docutils literal"><span class="pre">site.py</span></tt>.  Changes to the environment made after this time are
+not reflected in <tt class="docutils literal"><span class="pre">os.environ</span></tt>, except for changes made by
+modifying <tt class="docutils literal"><span class="pre">os.environ</span></tt> directly.</p>
+<p>If the platform supports the <tt class="docutils literal"><span class="pre">putenv()</span></tt> function, this mapping
+may be used to modify the environment as well as query the
+environment.  <tt class="docutils literal"><span class="pre">putenv()</span></tt> will be called automatically when the
+mapping is modified.</p>
+<dl class="docutils">
+<dt>Note: Calling <tt class="docutils literal"><span class="pre">putenv()</span></tt> directly does not change <tt class="docutils literal"><span class="pre">os.environ</span></tt>, so</dt>
+<dd>it&#8217;s better to modify <tt class="docutils literal"><span class="pre">os.environ</span></tt>.</dd>
+<dt>Note: On some platforms, including FreeBSD and Mac OS X, setting</dt>
+<dd><tt class="docutils literal"><span class="pre">environ</span></tt> may cause memory leaks.  Refer to the system
+documentation for <tt class="docutils literal"><span class="pre">putenv()</span></tt>.</dd>
+</dl>
+<p>If <tt class="docutils literal"><span class="pre">putenv()</span></tt> is not provided, a modified copy of this mapping
+may be passed to the appropriate process-creation functions to
+cause  child processes to use a modified environment.</p>
+<p>If the platform supports the <tt class="docutils literal"><span class="pre">unsetenv()</span></tt> function, you can
+delete items in this mapping to unset environment variables.
+<tt class="docutils literal"><span class="pre">unsetenv()</span></tt> will be called automatically when an item is deleted
+from <tt class="docutils literal"><span class="pre">os.environ</span></tt>, and when one of the <tt class="docutils literal"><span class="pre">pop()</span></tt> or <tt class="docutils literal"><span class="pre">clear()</span></tt>
+methods is called.</p>
+<p>Changed in version 2.6: Also unset environment variables when
+calling <tt class="docutils literal"><span class="pre">os.environ.clear()</span></tt> and <tt class="docutils literal"><span class="pre">os.environ.pop()</span></tt>.</p>
+</blockquote>
+<p>os.chdir(path)
+os.fchdir(fd)
+os.getcwd()</p>
+<blockquote>
+These functions are described in <em>Files and Directories</em>.</blockquote>
+<p>os.ctermid()</p>
+<blockquote>
+Return the filename corresponding to the controlling terminal of
+the process. Availability: Unix.</blockquote>
+<p>os.getegid()</p>
+<blockquote>
+Return the effective group id of the current process.  This
+corresponds to the &#8220;set id&#8221; bit on the file being executed in the
+current process. Availability: Unix.</blockquote>
+<p>os.geteuid()</p>
+<blockquote>
+Return the current process&#8217;s effective user id. Availability: Unix.</blockquote>
+<p>os.getgid()</p>
+<blockquote>
+Return the real group id of the current process. Availability:
+Unix.</blockquote>
+<p>os.getgroups()</p>
+<blockquote>
+Return list of supplemental group ids associated with the current
+process. Availability: Unix.</blockquote>
+<p>os.getlogin()</p>
+<blockquote>
+Return the name of the user logged in on the controlling terminal
+of the process.  For most purposes, it is more useful to use the
+environment variable <strong>LOGNAME</strong> to find out who the user is, or
+<tt class="docutils literal"><span class="pre">pwd.getpwuid(os.getuid())[0]</span></tt> to get the login name of the
+currently effective user id. Availability: Unix.</blockquote>
+<p>os.getpgid(pid)</p>
+<blockquote>
+<p>Return the process group id of the process with process id <em>pid</em>.
+If <em>pid</em> is 0, the process group id of the current process is
+returned. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.getpgrp()</p>
+<blockquote>
+Return the id of the current process group. Availability: Unix.</blockquote>
+<p>os.getpid()</p>
+<blockquote>
+Return the current process id. Availability: Unix, Windows.</blockquote>
+<p>os.getppid()</p>
+<blockquote>
+Return the parent&#8217;s process id. Availability: Unix.</blockquote>
+<p>os.getuid()</p>
+<blockquote>
+Return the current process&#8217;s user id. Availability: Unix.</blockquote>
+<p>os.getenv(varname[, value])</p>
+<blockquote>
+Return the value of the environment variable <em>varname</em> if it
+exists, or <em>value</em> if it doesn&#8217;t.  <em>value</em> defaults to <tt class="xref docutils literal"><span class="pre">None</span></tt>.
+Availability: most flavors of Unix, Windows.</blockquote>
+<p>os.putenv(varname, value)</p>
+<blockquote>
+<p>Set the environment variable named <em>varname</em> to the string <em>value</em>.
+Such changes to the environment affect subprocesses started with
+<tt class="docutils literal"><span class="pre">os.system()</span></tt>, <tt class="docutils literal"><span class="pre">popen()</span></tt> or <tt class="docutils literal"><span class="pre">fork()</span></tt> and <tt class="docutils literal"><span class="pre">execv()</span></tt>.
+Availability: most flavors of Unix, Windows.</p>
+<dl class="docutils">
+<dt>Note: On some platforms, including FreeBSD and Mac OS X, setting</dt>
+<dd><tt class="docutils literal"><span class="pre">environ</span></tt> may cause memory leaks. Refer to the system
+documentation for putenv.</dd>
+</dl>
+<p>When <tt class="docutils literal"><span class="pre">putenv()</span></tt> is supported, assignments to items in
+<tt class="docutils literal"><span class="pre">os.environ</span></tt> are automatically translated into corresponding
+calls to <tt class="docutils literal"><span class="pre">putenv()</span></tt>; however, calls to <tt class="docutils literal"><span class="pre">putenv()</span></tt> don&#8217;t update
+<tt class="docutils literal"><span class="pre">os.environ</span></tt>, so it is actually preferable to assign to items of
+<tt class="docutils literal"><span class="pre">os.environ</span></tt>.</p>
+</blockquote>
+<p>os.setegid(egid)</p>
+<blockquote>
+Set the current process&#8217;s effective group id. Availability: Unix.</blockquote>
+<p>os.seteuid(euid)</p>
+<blockquote>
+Set the current process&#8217;s effective user id. Availability: Unix.</blockquote>
+<p>os.setgid(gid)</p>
+<blockquote>
+Set the current process&#8217; group id. Availability: Unix.</blockquote>
+<p>os.setgroups(groups)</p>
+<blockquote>
+<p>Set the list of supplemental group ids associated with the current
+process to <em>groups</em>. <em>groups</em> must be a sequence, and each element
+must be an integer identifying a group. This operation is typically
+available only to the superuser. Availability: Unix.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>os.setpgrp()</p>
+<blockquote>
+Call the system call <tt class="docutils literal"><span class="pre">setpgrp()</span></tt> or <tt class="docutils literal"><span class="pre">setpgrp(0,</span> <span class="pre">0)()</span></tt> depending
+on which version is implemented (if any).  See the Unix manual for
+the semantics. Availability: Unix.</blockquote>
+<p>os.setpgid(pid, pgrp)</p>
+<blockquote>
+Call the system call <tt class="docutils literal"><span class="pre">setpgid()</span></tt> to set the process group id of
+the process with id <em>pid</em> to the process group with id <em>pgrp</em>.  See
+the Unix manual for the semantics. Availability: Unix.</blockquote>
+<p>os.setreuid(ruid, euid)</p>
+<blockquote>
+Set the current process&#8217;s real and effective user ids.
+Availability: Unix.</blockquote>
+<p>os.setregid(rgid, egid)</p>
+<blockquote>
+Set the current process&#8217;s real and effective group ids.
+Availability: Unix.</blockquote>
+<p>os.getsid(pid)</p>
+<blockquote>
+<p>Call the system call <tt class="docutils literal"><span class="pre">getsid()</span></tt>.  See the Unix manual for the
+semantics. Availability: Unix.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>os.setsid()</p>
+<blockquote>
+Call the system call <tt class="docutils literal"><span class="pre">setsid()</span></tt>.  See the Unix manual for the
+semantics. Availability: Unix.</blockquote>
+<p>os.setuid(uid)</p>
+<blockquote>
+Set the current process&#8217;s user id. Availability: Unix.</blockquote>
+<p>os.strerror(code)</p>
+<blockquote>
+Return the error message corresponding to the error code in <em>code</em>.
+On platforms where <tt class="docutils literal"><span class="pre">strerror()</span></tt> returns <tt class="docutils literal"><span class="pre">NULL</span></tt> when given an
+unknown error number, <tt class="docutils literal"><span class="pre">ValueError</span></tt> is raised.  Availability:
+Unix, Windows.</blockquote>
+<p>os.umask(mask)</p>
+<blockquote>
+Set the current numeric umask and return the previous umask.
+Availability: Unix, Windows.</blockquote>
+<p>os.uname()</p>
+<blockquote>
+Return a 5-tuple containing information identifying the current
+operating system.  The tuple contains 5 strings: <tt class="docutils literal"><span class="pre">(sysname,</span>
+<span class="pre">nodename,</span> <span class="pre">release,</span> <span class="pre">version,</span> <span class="pre">machine)</span></tt>.  Some systems truncate the
+nodename to 8 characters or to the leading component; a better way
+to get the hostname is <tt class="docutils literal"><span class="pre">socket.gethostname()</span></tt>  or even
+<tt class="docutils literal"><span class="pre">socket.gethostbyaddr(socket.gethostname())</span></tt>. Availability:
+recent flavors of Unix.</blockquote>
+<p>os.unsetenv(varname)</p>
+<blockquote>
+<p>Unset (delete) the environment variable named <em>varname</em>. Such
+changes to the environment affect subprocesses started with
+<tt class="docutils literal"><span class="pre">os.system()</span></tt>, <tt class="docutils literal"><span class="pre">popen()</span></tt> or <tt class="docutils literal"><span class="pre">fork()</span></tt> and <tt class="docutils literal"><span class="pre">execv()</span></tt>.
+Availability: most flavors of Unix, Windows.</p>
+<p>When <tt class="docutils literal"><span class="pre">unsetenv()</span></tt> is supported, deletion of items in
+<tt class="docutils literal"><span class="pre">os.environ</span></tt> is automatically translated into a corresponding
+call to <tt class="docutils literal"><span class="pre">unsetenv()</span></tt>; however, calls to <tt class="docutils literal"><span class="pre">unsetenv()</span></tt> don&#8217;t
+update <tt class="docutils literal"><span class="pre">os.environ</span></tt>, so it is actually preferable to delete items
+of <tt class="docutils literal"><span class="pre">os.environ</span></tt>.</p>
+</blockquote>
+</div>
+<div class="section" id="file-object-creation">
+<h2>15.1.2. File Object Creation<a class="headerlink" href="#file-object-creation" title="Permalink to this headline">¶</a></h2>
+<p>These functions create new file objects. (See also <tt class="docutils literal"><span class="pre">open()</span></tt>.)</p>
+<p>os.fdopen(fd[, mode[, bufsize]])</p>
+<blockquote>
+<p>Return an open file object connected to the file descriptor <em>fd</em>.
+The <em>mode</em> and <em>bufsize</em> arguments have the same meaning as the
+corresponding arguments to the built-in <tt class="docutils literal"><span class="pre">open()</span></tt> function.
+Availability: Unix, Windows.</p>
+<p>Changed in version 2.3: When specified, the <em>mode</em> argument must
+now start with one of the letters <tt class="docutils literal"><span class="pre">'r'</span></tt>, <tt class="docutils literal"><span class="pre">'w'</span></tt>, or <tt class="docutils literal"><span class="pre">'a'</span></tt>,
+otherwise a <tt class="docutils literal"><span class="pre">ValueError</span></tt> is raised.</p>
+<p>Changed in version 2.5: On Unix, when the <em>mode</em> argument starts
+with <tt class="docutils literal"><span class="pre">'a'</span></tt>, the <em>O_APPEND</em> flag is set on the file descriptor
+(which the <tt class="docutils literal"><span class="pre">fdopen()</span></tt> implementation already does on most
+platforms).</p>
+</blockquote>
+<p>os.popen(command[, mode[, bufsize]])</p>
+<blockquote>
+<p>Open a pipe to or from <em>command</em>.  The return value is an open file
+object connected to the pipe, which can be read or written
+depending on whether <em>mode</em> is <tt class="docutils literal"><span class="pre">'r'</span></tt> (default) or <tt class="docutils literal"><span class="pre">'w'</span></tt>. The
+<em>bufsize</em> argument has the same meaning as the corresponding
+argument to the built-in <tt class="docutils literal"><span class="pre">open()</span></tt> function.  The exit status of
+the command (encoded in the format specified for <tt class="docutils literal"><span class="pre">wait()</span></tt>) is
+available as the return value of the <tt class="docutils literal"><span class="pre">close()</span></tt> method of the file
+object, except that when the exit status is zero (termination
+without errors), <tt class="xref docutils literal"><span class="pre">None</span></tt> is returned. Availability: Unix, Windows.</p>
+<p>Deprecated since version 2.6: This function is obsolete.  Use the
+<tt class="docutils literal"><span class="pre">subprocess</span></tt> module.  Check especially the <em>Replacing Older
+Functions with the subprocess Module</em> section.</p>
+<p>Changed in version 2.0: This function worked unreliably under
+Windows in earlier versions of Python. This was due to the use of
+the <tt class="docutils literal"><span class="pre">_popen()</span></tt> function from the libraries provided with Windows.
+Newer versions of Python do not use the broken implementation from
+the Windows libraries.</p>
+</blockquote>
+<p>os.tmpfile()</p>
+<blockquote>
+Return a new file object opened in update mode (<tt class="docutils literal"><span class="pre">w+b</span></tt>).  The file
+has no directory entries associated with it and will be
+automatically deleted once there are no file descriptors for the
+file. Availability: Unix, Windows.</blockquote>
+<p>There are a number of different <tt class="docutils literal"><span class="pre">popen*()</span></tt> functions that provide
+slightly different ways to create subprocesses.</p>
+<p>Deprecated since version 2.6: All of the <tt class="docutils literal"><span class="pre">popen*()</span></tt> functions are
+obsolete. Use the <tt class="docutils literal"><span class="pre">subprocess</span></tt> module.</p>
+<p>For each of the <tt class="docutils literal"><span class="pre">popen*()</span></tt> variants, if <em>bufsize</em> is specified, it
+specifies the buffer size for the I/O pipes. <em>mode</em>, if provided,
+should be the string <tt class="docutils literal"><span class="pre">'b'</span></tt> or <tt class="docutils literal"><span class="pre">'t'</span></tt>; on Windows this is needed to
+determine whether the file objects should be opened in binary or text
+mode.  The default value for <em>mode</em> is <tt class="docutils literal"><span class="pre">'t'</span></tt>.</p>
+<p>Also, for each of these variants, on Unix, <em>cmd</em> may be a sequence, in
+which case arguments will be passed directly to the program without
+shell intervention (as with <tt class="docutils literal"><span class="pre">os.spawnv()</span></tt>). If <em>cmd</em> is a string it
+will be passed to the shell (as with <tt class="docutils literal"><span class="pre">os.system()</span></tt>).</p>
+<p>These methods do not make it possible to retrieve the exit status from
+the child processes.  The only way to control the input and output
+streams and also retrieve the return codes is to use the
+<tt class="docutils literal"><span class="pre">subprocess</span></tt> module; these are only available on Unix.</p>
+<p>For a discussion of possible deadlock conditions related to the use of
+these functions, see <em>Flow Control Issues</em>.</p>
+<p>os.popen2(cmd[, mode[, bufsize]])</p>
+<blockquote>
+<p>Execute <em>cmd</em> as a sub-process and return the file objects
+<tt class="docutils literal"><span class="pre">(child_stdin,</span> <span class="pre">child_stdout)</span></tt>.</p>
+<p>Deprecated since version 2.6: This function is obsolete.  Use the
+<tt class="docutils literal"><span class="pre">subprocess</span></tt> module.  Check especially the <em>Replacing Older
+Functions with the subprocess Module</em> section.</p>
+<p>Availability: Unix, Windows.</p>
+<p>New in version 2.0.</p>
+</blockquote>
+<p>os.popen3(cmd[, mode[, bufsize]])</p>
+<blockquote>
+<p>Execute <em>cmd</em> as a sub-process and return the file objects
+<tt class="docutils literal"><span class="pre">(child_stdin,</span> <span class="pre">child_stdout,</span> <span class="pre">child_stderr)</span></tt>.</p>
+<p>Deprecated since version 2.6: This function is obsolete.  Use the
+<tt class="docutils literal"><span class="pre">subprocess</span></tt> module.  Check especially the <em>Replacing Older
+Functions with the subprocess Module</em> section.</p>
+<p>Availability: Unix, Windows.</p>
+<p>New in version 2.0.</p>
+</blockquote>
+<p>os.popen4(cmd[, mode[, bufsize]])</p>
+<blockquote>
+<p>Execute <em>cmd</em> as a sub-process and return the file objects
+<tt class="docutils literal"><span class="pre">(child_stdin,</span> <span class="pre">child_stdout_and_stderr)</span></tt>.</p>
+<p>Deprecated since version 2.6: This function is obsolete.  Use the
+<tt class="docutils literal"><span class="pre">subprocess</span></tt> module.  Check especially the <em>Replacing Older
+Functions with the subprocess Module</em> section.</p>
+<p>Availability: Unix, Windows.</p>
+<p>New in version 2.0.</p>
+</blockquote>
+<p>(Note that <tt class="docutils literal"><span class="pre">child_stdin,</span> <span class="pre">child_stdout,</span> <span class="pre">and</span> <span class="pre">child_stderr</span></tt> are named
+from the point of view of the child process, so <em>child_stdin</em> is the
+child&#8217;s standard input.)</p>
+<p>This functionality is also available in the <tt class="docutils literal"><span class="pre">popen2</span></tt> module using
+functions of the same names, but the return values of those functions
+have a different order.</p>
+</div>
+<div class="section" id="file-descriptor-operations">
+<h2>15.1.3. File Descriptor Operations<a class="headerlink" href="#file-descriptor-operations" title="Permalink to this headline">¶</a></h2>
+<p>These functions operate on I/O streams referenced using file
+descriptors.</p>
+<p>File descriptors are small integers corresponding to a file that has
+been opened by the current process.  For example, standard input is
+usually file descriptor 0, standard output is 1, and standard error is
+2.  Further files opened by a process will then be assigned 3, 4, 5,
+and so forth.  The name &#8220;file descriptor&#8221; is slightly deceptive; on
+Unix platforms, sockets and pipes are also referenced by file
+descriptors.</p>
+<p>os.close(fd)</p>
+<blockquote>
+<p>Close file descriptor <em>fd</em>. Availability: Unix, Windows.</p>
+<dl class="docutils">
+<dt>Note: This function is intended for low-level I/O and must be applied</dt>
+<dd>to a file descriptor as returned by <tt class="docutils literal"><span class="pre">os.open()</span></tt> or <tt class="docutils literal"><span class="pre">pipe()</span></tt>.
+To close a &#8220;file object&#8221; returned by the built-in function
+<tt class="docutils literal"><span class="pre">open()</span></tt> or by <tt class="docutils literal"><span class="pre">popen()</span></tt> or <tt class="docutils literal"><span class="pre">fdopen()</span></tt>, use its <tt class="docutils literal"><span class="pre">close()</span></tt>
+method.</dd>
+</dl>
+</blockquote>
+<p>os.closerange(fd_low, fd_high)</p>
+<blockquote>
+<p>Close all file descriptors from <em>fd_low</em> (inclusive) to <em>fd_high</em>
+(exclusive), ignoring errors. Availability: Unix, Windows.
+Equivalent to:</p>
+<blockquote>
+<dl class="docutils">
+<dt>for fd in xrange(fd_low, fd_high):</dt>
+<dd><dl class="first last docutils">
+<dt>try:</dt>
+<dd>os.close(fd)</dd>
+<dt>except OSError:</dt>
+<dd>pass</dd>
+</dl>
+</dd>
+</dl>
+</blockquote>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>os.dup(fd)</p>
+<blockquote>
+Return a duplicate of file descriptor <em>fd</em>. Availability: Unix,
+Windows.</blockquote>
+<p>os.dup2(fd, fd2)</p>
+<blockquote>
+Duplicate file descriptor <em>fd</em> to <em>fd2</em>, closing the latter first
+if necessary. Availability: Unix, Windows.</blockquote>
+<p>os.fchmod(fd, mode)</p>
+<blockquote>
+<p>Change the mode of the file given by <em>fd</em> to the numeric <em>mode</em>.
+See the docs for <tt class="docutils literal"><span class="pre">chmod()</span></tt> for possible values of <em>mode</em>.
+Availability: Unix.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>os.fchown(fd, uid, gid)</p>
+<blockquote>
+<p>Change the owner and group id of the file given by <em>fd</em> to the
+numeric <em>uid</em> and <em>gid</em>.  To leave one of the ids unchanged, set it
+to -1. Availability: Unix.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>os.fdatasync(fd)</p>
+<blockquote>
+Force write of file with filedescriptor <em>fd</em> to disk. Does not
+force update of metadata. Availability: Unix.</blockquote>
+<p>os.fpathconf(fd, name)</p>
+<blockquote>
+<p>Return system configuration information relevant to an open file.
+<em>name</em> specifies the configuration value to retrieve; it may be a
+string which is the name of a defined system value; these names are
+specified in a number of standards (POSIX.1, Unix 95, Unix 98, and
+others).  Some platforms define additional names as well.  The
+names known to the host operating system are given in the
+<tt class="docutils literal"><span class="pre">pathconf_names</span></tt> dictionary.  For configuration variables not
+included in that mapping, passing an integer for <em>name</em> is also
+accepted. Availability: Unix.</p>
+<p>If <em>name</em> is a string and is not known, <tt class="docutils literal"><span class="pre">ValueError</span></tt> is raised.
+If a specific value for <em>name</em> is not supported by the host system,
+even if it is included in <tt class="docutils literal"><span class="pre">pathconf_names</span></tt>, an <tt class="docutils literal"><span class="pre">OSError</span></tt> is
+raised with <tt class="docutils literal"><span class="pre">errno.EINVAL</span></tt> for the error number.</p>
+</blockquote>
+<p>os.fstat(fd)</p>
+<blockquote>
+Return status for file descriptor <em>fd</em>, like <tt class="docutils literal"><span class="pre">stat()</span></tt>.
+Availability: Unix, Windows.</blockquote>
+<p>os.fstatvfs(fd)</p>
+<blockquote>
+Return information about the filesystem containing the file
+associated with file descriptor <em>fd</em>, like <tt class="docutils literal"><span class="pre">statvfs()</span></tt>.
+Availability: Unix.</blockquote>
+<p>os.fsync(fd)</p>
+<blockquote>
+<p>Force write of file with filedescriptor <em>fd</em> to disk.  On Unix,
+this calls the native <tt class="docutils literal"><span class="pre">fsync()</span></tt> function; on Windows, the MS
+<tt class="docutils literal"><span class="pre">_commit()</span></tt> function.</p>
+<p>If you&#8217;re starting with a Python file object <em>f</em>, first do
+<tt class="docutils literal"><span class="pre">f.flush()</span></tt>, and then do <tt class="docutils literal"><span class="pre">os.fsync(f.fileno())</span></tt>, to ensure that
+all internal buffers associated with <em>f</em> are written to disk.
+Availability: Unix, and Windows starting in 2.2.3.</p>
+</blockquote>
+<p>os.ftruncate(fd, length)</p>
+<blockquote>
+Truncate the file corresponding to file descriptor <em>fd</em>, so that it
+is at most <em>length</em> bytes in size. Availability: Unix.</blockquote>
+<p>os.isatty(fd)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the file descriptor <em>fd</em> is open and connected
+to a tty(-like) device, else <tt class="xref docutils literal"><span class="pre">False</span></tt>. Availability: Unix.</blockquote>
+<p>os.lseek(fd, pos, how)</p>
+<blockquote>
+Set the current position of file descriptor <em>fd</em> to position <em>pos</em>,
+modified by <em>how</em>: <tt class="docutils literal"><span class="pre">SEEK_SET</span></tt> or <tt class="docutils literal"><span class="pre">0</span></tt> to set the position
+relative to the beginning of the file; <tt class="docutils literal"><span class="pre">SEEK_CUR</span></tt> or <tt class="docutils literal"><span class="pre">1</span></tt> to set
+it relative to the current position; <tt class="docutils literal"><span class="pre">os.SEEK_END</span></tt> or <tt class="docutils literal"><span class="pre">2</span></tt> to
+set it relative to the end of the file. Availability: Unix,
+Windows.</blockquote>
+<p>os.open(file, flags[, mode])</p>
+<blockquote>
+<p>Open the file <em>file</em> and set various flags according to <em>flags</em> and
+possibly its mode according to <em>mode</em>. The default <em>mode</em> is
+<tt class="docutils literal"><span class="pre">0777</span></tt> (octal), and the current umask value is first masked out.
+Return the file descriptor for the newly opened file. Availability:
+Unix, Windows.</p>
+<p>For a description of the flag and mode values, see the C run-time
+documentation; flag constants (like <tt class="docutils literal"><span class="pre">O_RDONLY</span></tt> and <tt class="docutils literal"><span class="pre">O_WRONLY</span></tt>)
+are defined in this module too (see below).</p>
+<dl class="docutils">
+<dt>Note: This function is intended for low-level I/O.  For normal usage,</dt>
+<dd>use the built-in function <tt class="docutils literal"><span class="pre">open()</span></tt>, which returns a &#8220;file
+object&#8221; with <tt class="docutils literal"><span class="pre">read()</span></tt> and <tt class="docutils literal"><span class="pre">write()</span></tt> methods (and many more).
+To wrap a file descriptor in a &#8220;file object&#8221;, use <tt class="docutils literal"><span class="pre">fdopen()</span></tt>.</dd>
+</dl>
+</blockquote>
+<p>os.openpty()</p>
+<blockquote>
+Open a new pseudo-terminal pair. Return a pair of file descriptors
+<tt class="docutils literal"><span class="pre">(master,</span> <span class="pre">slave)</span></tt> for the pty and the tty, respectively. For a
+(slightly) more portable approach, use the <tt class="docutils literal"><span class="pre">pty</span></tt> module.
+Availability: some flavors of Unix.</blockquote>
+<p>os.pipe()</p>
+<blockquote>
+Create a pipe.  Return a pair of file descriptors <tt class="docutils literal"><span class="pre">(r,</span> <span class="pre">w)</span></tt> usable
+for reading and writing, respectively. Availability: Unix, Windows.</blockquote>
+<p>os.read(fd, n)</p>
+<blockquote>
+<p>Read at most <em>n</em> bytes from file descriptor <em>fd</em>. Return a string
+containing the bytes read.  If the end of the file referred to by
+<em>fd</em> has been reached, an empty string is returned. Availability:
+Unix, Windows.</p>
+<dl class="docutils">
+<dt>Note: This function is intended for low-level I/O and must be applied</dt>
+<dd>to a file descriptor as returned by <tt class="docutils literal"><span class="pre">os.open()</span></tt> or <tt class="docutils literal"><span class="pre">pipe()</span></tt>.
+To read a &#8220;file object&#8221; returned by the built-in function
+<tt class="docutils literal"><span class="pre">open()</span></tt> or by <tt class="docutils literal"><span class="pre">popen()</span></tt> or <tt class="docutils literal"><span class="pre">fdopen()</span></tt>, or <tt class="docutils literal"><span class="pre">sys.stdin</span></tt>,
+use its <tt class="docutils literal"><span class="pre">read()</span></tt> or <tt class="docutils literal"><span class="pre">readline()</span></tt> methods.</dd>
+</dl>
+</blockquote>
+<p>os.tcgetpgrp(fd)</p>
+<blockquote>
+Return the process group associated with the terminal given by <em>fd</em>
+(an open file descriptor as returned by <tt class="docutils literal"><span class="pre">os.open()</span></tt>).
+Availability: Unix.</blockquote>
+<p>os.tcsetpgrp(fd, pg)</p>
+<blockquote>
+Set the process group associated with the terminal given by <em>fd</em>
+(an open file descriptor as returned by <tt class="docutils literal"><span class="pre">os.open()</span></tt>) to <em>pg</em>.
+Availability: Unix.</blockquote>
+<p>os.ttyname(fd)</p>
+<blockquote>
+Return a string which specifies the terminal device associated with
+file descriptor <em>fd</em>.  If <em>fd</em> is not associated with a terminal
+device, an exception is raised. Availability: Unix.</blockquote>
+<p>os.write(fd, str)</p>
+<blockquote>
+<p>Write the string <em>str</em> to file descriptor <em>fd</em>. Return the number
+of bytes actually written. Availability: Unix, Windows.</p>
+<dl class="docutils">
+<dt>Note: This function is intended for low-level I/O and must be applied</dt>
+<dd>to a file descriptor as returned by <tt class="docutils literal"><span class="pre">os.open()</span></tt> or <tt class="docutils literal"><span class="pre">pipe()</span></tt>.
+To write a &#8220;file object&#8221; returned by the built-in function
+<tt class="docutils literal"><span class="pre">open()</span></tt> or by <tt class="docutils literal"><span class="pre">popen()</span></tt> or <tt class="docutils literal"><span class="pre">fdopen()</span></tt>, or <tt class="docutils literal"><span class="pre">sys.stdout</span></tt>
+or <tt class="docutils literal"><span class="pre">sys.stderr</span></tt>, use its <tt class="docutils literal"><span class="pre">write()</span></tt> method.</dd>
+</dl>
+</blockquote>
+<p>The following constants are options for the <em>flags</em> parameter to the
+<tt class="docutils literal"><span class="pre">open()</span></tt> function.  They can be combined using the bitwise OR
+operator <tt class="docutils literal"><span class="pre">|</span></tt>.  Some of them are not available on all platforms.  For
+descriptions of their availability and use, consult the <em>open(2)</em>
+manual page on Unix or <em>the MSDN &lt;http://msdn.microsoft.com/en-
+us/library/z0kc8e3z.aspx&gt;</em> on Windows.</p>
+<p>os.O_RDONLY
+os.O_WRONLY
+os.O_RDWR
+os.O_APPEND
+os.O_CREAT
+os.O_EXCL
+os.O_TRUNC</p>
+<blockquote>
+These constants are available on Unix and Windows.</blockquote>
+<p>os.O_DSYNC
+os.O_RSYNC
+os.O_SYNC
+os.O_NDELAY
+os.O_NONBLOCK
+os.O_NOCTTY
+os.O_SHLOCK
+os.O_EXLOCK</p>
+<blockquote>
+These constants are only available on Unix.</blockquote>
+<p>os.O_BINARY
+os.O_NOINHERIT
+os.O_SHORT_LIVED
+os.O_TEMPORARY
+os.O_RANDOM
+os.O_SEQUENTIAL
+os.O_TEXT</p>
+<blockquote>
+These constants are only available on Windows.</blockquote>
+<p>os.O_ASYNC
+os.O_DIRECT
+os.O_DIRECTORY
+os.O_NOFOLLOW
+os.O_NOATIME</p>
+<blockquote>
+These constants are GNU extensions and not present if they are not
+defined by the C library.</blockquote>
+<p>os.SEEK_SET
+os.SEEK_CUR
+os.SEEK_END</p>
+<blockquote>
+<p>Parameters to the <tt class="docutils literal"><span class="pre">lseek()</span></tt> function. Their values are 0, 1, and
+2, respectively. Availability: Windows, Unix.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+</div>
+<div class="section" id="files-and-directories">
+<h2>15.1.4. Files and Directories<a class="headerlink" href="#files-and-directories" title="Permalink to this headline">¶</a></h2>
+<p>os.access(path, mode)</p>
+<blockquote>
+<p>Use the real uid/gid to test for access to <em>path</em>.  Note that most
+operations will use the effective uid/gid, therefore this routine
+can be used in a suid/sgid environment to test if the invoking user
+has the specified access to <em>path</em>.  <em>mode</em> should be <tt class="docutils literal"><span class="pre">F_OK</span></tt> to
+test the existence of <em>path</em>, or it can be the inclusive OR of one
+or more of <tt class="docutils literal"><span class="pre">R_OK</span></tt>, <tt class="docutils literal"><span class="pre">W_OK</span></tt>, and <tt class="docutils literal"><span class="pre">X_OK</span></tt> to test permissions.
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if access is allowed, <tt class="xref docutils literal"><span class="pre">False</span></tt> if not. See the
+Unix man page <em>access(2)</em> for more information. Availability: Unix,
+Windows.</p>
+<dl class="docutils">
+<dt>Note: Using <tt class="docutils literal"><span class="pre">access()</span></tt> to check if a user is authorized to e.g. open</dt>
+<dd>a file before actually doing so using <tt class="docutils literal"><span class="pre">open()</span></tt> creates a
+security hole, because the user might exploit the short time
+interval  between checking and opening the file to manipulate it.</dd>
+<dt>Note: I/O operations may fail even when <tt class="docutils literal"><span class="pre">access()</span></tt> indicates that</dt>
+<dd>they would succeed, particularly for operations on network
+filesystems which may have permissions semantics beyond the usual
+POSIX permission-bit model.</dd>
+</dl>
+</blockquote>
+<p>os.F_OK</p>
+<blockquote>
+Value to pass as the <em>mode</em> parameter of <tt class="docutils literal"><span class="pre">access()</span></tt> to test the
+existence of <em>path</em>.</blockquote>
+<p>os.R_OK</p>
+<blockquote>
+Value to include in the <em>mode</em> parameter of <tt class="docutils literal"><span class="pre">access()</span></tt> to test
+the readability of <em>path</em>.</blockquote>
+<p>os.W_OK</p>
+<blockquote>
+Value to include in the <em>mode</em> parameter of <tt class="docutils literal"><span class="pre">access()</span></tt> to test
+the writability of <em>path</em>.</blockquote>
+<p>os.X_OK</p>
+<blockquote>
+Value to include in the <em>mode</em> parameter of <tt class="docutils literal"><span class="pre">access()</span></tt> to
+determine if <em>path</em> can be executed.</blockquote>
+<p>os.chdir(path)</p>
+<blockquote>
+Change the current working directory to <em>path</em>. Availability: Unix,
+Windows.</blockquote>
+<p>os.fchdir(fd)</p>
+<blockquote>
+<p>Change the current working directory to the directory represented
+by the file descriptor <em>fd</em>.  The descriptor must refer to an
+opened directory, not an open file. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.getcwd()</p>
+<blockquote>
+Return a string representing the current working directory.
+Availability: Unix, Windows.</blockquote>
+<p>os.getcwdu()</p>
+<blockquote>
+<p>Return a Unicode object representing the current working directory.
+Availability: Unix, Windows.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.chflags(path, flags)</p>
+<blockquote>
+<p>Set the flags of <em>path</em> to the numeric <em>flags</em>. <em>flags</em> may take a
+combination (bitwise OR) of the following values (as defined in the
+<tt class="docutils literal"><span class="pre">stat</span></tt> module):</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">UF_NODUMP</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">UF_IMMUTABLE</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">UF_APPEND</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">UF_OPAQUE</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">UF_NOUNLINK</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">SF_ARCHIVED</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">SF_IMMUTABLE</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">SF_APPEND</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">SF_NOUNLINK</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">SF_SNAPSHOT</span></tt></li>
+</ul>
+<p>Availability: Unix.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>os.chroot(path)</p>
+<blockquote>
+<p>Change the root directory of the current process to <em>path</em>.
+Availability: Unix.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>os.chmod(path, mode)</p>
+<blockquote>
+<p>Change the mode of <em>path</em> to the numeric <em>mode</em>. <em>mode</em> may take
+one of the following values (as defined in the <tt class="docutils literal"><span class="pre">stat</span></tt> module) or
+bitwise ORed combinations of them:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">stat.S_ISUID</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_ISGID</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_ENFMT</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_ISVTX</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IREAD</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IWRITE</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IEXEC</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IRWXU</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IRUSR</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IWUSR</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IXUSR</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IRWXG</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IRGRP</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IWGRP</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IXGRP</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IRWXO</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IROTH</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IWOTH</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">stat.S_IXOTH</span></tt></li>
+</ul>
+<p>Availability: Unix, Windows.</p>
+<dl class="docutils">
+<dt>Note: Although Windows supports <tt class="docutils literal"><span class="pre">chmod()</span></tt>, you can only  set the</dt>
+<dd>file&#8217;s read-only flag with it (via the <tt class="docutils literal"><span class="pre">stat.S_IWRITE</span></tt>  and
+<tt class="docutils literal"><span class="pre">stat.S_IREAD</span></tt> constants or a corresponding integer value).
+All other bits are ignored.</dd>
+</dl>
+</blockquote>
+<p>os.chown(path, uid, gid)</p>
+<blockquote>
+Change the owner and group id of <em>path</em> to the numeric <em>uid</em> and
+<em>gid</em>. To leave one of the ids unchanged, set it to -1.
+Availability: Unix.</blockquote>
+<p>os.lchflags(path, flags)</p>
+<blockquote>
+<p>Set the flags of <em>path</em> to the numeric <em>flags</em>, like <tt class="docutils literal"><span class="pre">chflags()</span></tt>,
+but do not follow symbolic links. Availability: Unix.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>os.lchmod(path, mode)</p>
+<blockquote>
+<p>Change the mode of <em>path</em> to the numeric <em>mode</em>. If path is a
+symlink, this affects the symlink rather than the target. See the
+docs for <tt class="docutils literal"><span class="pre">chmod()</span></tt> for possible values of <em>mode</em>.  Availability:
+Unix.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>os.lchown(path, uid, gid)</p>
+<blockquote>
+<p>Change the owner and group id of <em>path</em> to the numeric <em>uid</em> and
+<em>gid</em>. This function will not follow symbolic links. Availability:
+Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.link(src, dst)</p>
+<blockquote>
+Create a hard link pointing to <em>src</em> named <em>dst</em>. Availability:
+Unix.</blockquote>
+<p>os.listdir(path)</p>
+<blockquote>
+<p>Return a list containing the names of the entries in the directory
+given by <em>path</em>.  The list is in arbitrary order.  It does not
+include the special entries <tt class="docutils literal"><span class="pre">'.'</span></tt> and <tt class="docutils literal"><span class="pre">'..'</span></tt> even if they are
+present in the directory.  Availability: Unix, Windows.</p>
+<p>Changed in version 2.3: On Windows NT/2k/XP and Unix, if <em>path</em> is
+a Unicode object, the result will be a list of Unicode objects.
+Undecodable filenames will still be returned as string objects.</p>
+</blockquote>
+<p>os.lstat(path)</p>
+<blockquote>
+Like <tt class="docutils literal"><span class="pre">stat()</span></tt>, but do not follow symbolic links.  This is an
+alias for <tt class="docutils literal"><span class="pre">stat()</span></tt> on platforms that do not support symbolic
+links, such as Windows.</blockquote>
+<p>os.mkfifo(path[, mode])</p>
+<blockquote>
+<p>Create a FIFO (a named pipe) named <em>path</em> with numeric mode <em>mode</em>.
+The default <em>mode</em> is <tt class="docutils literal"><span class="pre">0666</span></tt> (octal).  The current umask value is
+first masked out from the mode. Availability: Unix.</p>
+<p>FIFOs are pipes that can be accessed like regular files.  FIFOs
+exist until they are deleted (for example with <tt class="docutils literal"><span class="pre">os.unlink()</span></tt>).
+Generally, FIFOs are used as rendezvous between &#8220;client&#8221; and
+&#8220;server&#8221; type processes: the server opens the FIFO for reading, and
+the client opens it for writing.  Note that <tt class="docutils literal"><span class="pre">mkfifo()</span></tt> doesn&#8217;t
+open the FIFO &#8212; it just creates the rendezvous point.</p>
+</blockquote>
+<p>os.mknod(filename[, mode=0600, device])</p>
+<blockquote>
+<p>Create a filesystem node (file, device special file or named pipe)
+named <em>filename</em>. <em>mode</em> specifies both the permissions to use and
+the type of node to be created, being combined (bitwise OR) with
+one of <tt class="docutils literal"><span class="pre">stat.S_IFREG</span></tt>, <tt class="docutils literal"><span class="pre">stat.S_IFCHR</span></tt>, <tt class="docutils literal"><span class="pre">stat.S_IFBLK</span></tt>, and
+<tt class="docutils literal"><span class="pre">stat.S_IFIFO</span></tt> (those constants are available in <tt class="docutils literal"><span class="pre">stat</span></tt>). For
+<tt class="docutils literal"><span class="pre">stat.S_IFCHR</span></tt> and <tt class="docutils literal"><span class="pre">stat.S_IFBLK</span></tt>, <em>device</em> defines the newly
+created device special file (probably using <tt class="docutils literal"><span class="pre">os.makedev()</span></tt>),
+otherwise it is ignored.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.major(device)</p>
+<blockquote>
+<p>Extract the device major number from a raw device number (usually
+the <tt class="docutils literal"><span class="pre">st_dev</span></tt> or <tt class="docutils literal"><span class="pre">st_rdev</span></tt> field from <tt class="docutils literal"><span class="pre">stat</span></tt>).</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.minor(device)</p>
+<blockquote>
+<p>Extract the device minor number from a raw device number (usually
+the <tt class="docutils literal"><span class="pre">st_dev</span></tt> or <tt class="docutils literal"><span class="pre">st_rdev</span></tt> field from <tt class="docutils literal"><span class="pre">stat</span></tt>).</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.makedev(major, minor)</p>
+<blockquote>
+<p>Compose a raw device number from the major and minor device
+numbers.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.mkdir(path[, mode])</p>
+<blockquote>
+<p>Create a directory named <em>path</em> with numeric mode <em>mode</em>. The
+default <em>mode</em> is <tt class="docutils literal"><span class="pre">0777</span></tt> (octal).  On some systems, <em>mode</em> is
+ignored.  Where it is used, the current umask value is first masked
+out. Availability: Unix, Windows.</p>
+<p>It is also possible to create temporary directories; see the
+<tt class="docutils literal"><span class="pre">tempfile</span></tt> module&#8217;s <tt class="docutils literal"><span class="pre">tempfile.mkdtemp()</span></tt> function.</p>
+</blockquote>
+<p>os.makedirs(path[, mode])</p>
+<blockquote>
+<p>Recursive directory creation function.  Like <tt class="docutils literal"><span class="pre">mkdir()</span></tt>, but makes
+all intermediate-level directories needed to contain the leaf
+directory.  Throws an <tt class="docutils literal"><span class="pre">error</span></tt> exception if the leaf directory
+already exists or cannot be created.  The default <em>mode</em> is
+<tt class="docutils literal"><span class="pre">0777</span></tt> (octal).  On some systems, <em>mode</em> is ignored. Where it is
+used, the current umask value is first masked out.</p>
+<dl class="docutils">
+<dt>Note: <tt class="docutils literal"><span class="pre">makedirs()</span></tt> will become confused if the path elements to</dt>
+<dd>create include <tt class="docutils literal"><span class="pre">os.pardir</span></tt>.</dd>
+</dl>
+<p>New in version 1.5.2.</p>
+<p>Changed in version 2.3: This function now handles UNC paths
+correctly.</p>
+</blockquote>
+<p>os.pathconf(path, name)</p>
+<blockquote>
+<p>Return system configuration information relevant to a named file.
+<em>name</em> specifies the configuration value to retrieve; it may be a
+string which is the name of a defined system value; these names are
+specified in a number of standards (POSIX.1, Unix 95, Unix 98, and
+others).  Some platforms define additional names as well.  The
+names known to the host operating system are given in the
+<tt class="docutils literal"><span class="pre">pathconf_names</span></tt> dictionary.  For configuration variables not
+included in that mapping, passing an integer for <em>name</em> is also
+accepted. Availability: Unix.</p>
+<p>If <em>name</em> is a string and is not known, <tt class="docutils literal"><span class="pre">ValueError</span></tt> is raised.
+If a specific value for <em>name</em> is not supported by the host system,
+even if it is included in <tt class="docutils literal"><span class="pre">pathconf_names</span></tt>, an <tt class="docutils literal"><span class="pre">OSError</span></tt> is
+raised with <tt class="docutils literal"><span class="pre">errno.EINVAL</span></tt> for the error number.</p>
+</blockquote>
+<p>os.pathconf_names</p>
+<blockquote>
+Dictionary mapping names accepted by <tt class="docutils literal"><span class="pre">pathconf()</span></tt> and
+<tt class="docutils literal"><span class="pre">fpathconf()</span></tt> to the integer values defined for those names by
+the host operating system.  This can be used to determine the set
+of names known to the system. Availability: Unix.</blockquote>
+<p>os.readlink(path)</p>
+<blockquote>
+<p>Return a string representing the path to which the symbolic link
+points.  The result may be either an absolute or relative pathname;
+if it is relative, it may be converted to an absolute pathname
+using <tt class="docutils literal"><span class="pre">os.path.join(os.path.dirname(path),</span> <span class="pre">result)</span></tt>.</p>
+<p>Changed in version 2.6: If the <em>path</em> is a Unicode object the
+result will also be a Unicode object.</p>
+<p>Availability: Unix.</p>
+</blockquote>
+<p>os.remove(path)</p>
+<blockquote>
+Remove the file <em>path</em>.  If <em>path</em> is a directory, <tt class="docutils literal"><span class="pre">OSError</span></tt> is
+raised; see <tt class="docutils literal"><span class="pre">rmdir()</span></tt> below to remove a directory.  This is
+identical to the <tt class="docutils literal"><span class="pre">unlink()</span></tt> function documented below.  On
+Windows, attempting to remove a file that is in use causes an
+exception to be raised; on Unix, the directory entry is removed but
+the storage allocated to the file is not made available until the
+original file is no longer in use. Availability: Unix, Windows.</blockquote>
+<p>os.removedirs(path)</p>
+<blockquote>
+<p>Remove directories recursively.  Works like <tt class="docutils literal"><span class="pre">rmdir()</span></tt> except
+that, if the leaf directory is successfully removed,
+<tt class="docutils literal"><span class="pre">removedirs()</span></tt>  tries to successively remove every parent
+directory mentioned in  <em>path</em> until an error is raised (which is
+ignored, because it generally means that a parent directory is not
+empty). For example, <tt class="docutils literal"><span class="pre">os.removedirs('foo/bar/baz')</span></tt> will first
+remove the directory <tt class="docutils literal"><span class="pre">'foo/bar/baz'</span></tt>, and then remove
+<tt class="docutils literal"><span class="pre">'foo/bar'</span></tt> and <tt class="docutils literal"><span class="pre">'foo'</span></tt> if they are empty. Raises <tt class="docutils literal"><span class="pre">OSError</span></tt>
+if the leaf directory could not be successfully removed.</p>
+<p>New in version 1.5.2.</p>
+</blockquote>
+<p>os.rename(src, dst)</p>
+<blockquote>
+Rename the file or directory <em>src</em> to <em>dst</em>.  If <em>dst</em> is a
+directory, <tt class="docutils literal"><span class="pre">OSError</span></tt> will be raised.  On Unix, if <em>dst</em> exists
+and is a file, it will be replaced silently if the user has
+permission.  The operation may fail on some Unix flavors if <em>src</em>
+and <em>dst</em> are on different filesystems.  If successful, the
+renaming will be an atomic operation (this is a POSIX requirement).
+On Windows, if <em>dst</em> already exists, <tt class="docutils literal"><span class="pre">OSError</span></tt> will be raised
+even if it is a file; there may be no way to implement an atomic
+rename when <em>dst</em> names an existing file. Availability: Unix,
+Windows.</blockquote>
+<p>os.renames(old, new)</p>
+<blockquote>
+<p>Recursive directory or file renaming function. Works like
+<tt class="docutils literal"><span class="pre">rename()</span></tt>, except creation of any intermediate directories
+needed to make the new pathname good is attempted first. After the
+rename, directories corresponding to rightmost path segments of the
+old name will be pruned away using <tt class="docutils literal"><span class="pre">removedirs()</span></tt>.</p>
+<p>New in version 1.5.2.</p>
+<dl class="docutils">
+<dt>Note: This function can fail with the new directory structure made if</dt>
+<dd>you lack permissions needed to remove the leaf directory or file.</dd>
+</dl>
+</blockquote>
+<p>os.rmdir(path)</p>
+<blockquote>
+Remove the directory <em>path</em>. Availability: Unix, Windows.</blockquote>
+<p>os.stat(path)</p>
+<blockquote>
+<p>Perform a <tt class="docutils literal"><span class="pre">stat()</span></tt> system call on the given path.  The return
+value is an object whose attributes correspond to the members of
+the <tt class="docutils literal"><span class="pre">stat</span></tt> structure, namely: <tt class="docutils literal"><span class="pre">st_mode</span></tt> (protection bits),
+<tt class="docutils literal"><span class="pre">st_ino</span></tt> (inode number), <tt class="docutils literal"><span class="pre">st_dev</span></tt> (device), <tt class="docutils literal"><span class="pre">st_nlink</span></tt>
+(number of hard links), <tt class="docutils literal"><span class="pre">st_uid</span></tt> (user id of owner), <tt class="docutils literal"><span class="pre">st_gid</span></tt>
+(group id of owner), <tt class="docutils literal"><span class="pre">st_size</span></tt> (size of file, in bytes),
+<tt class="docutils literal"><span class="pre">st_atime</span></tt> (time of most recent access), <tt class="docutils literal"><span class="pre">st_mtime</span></tt> (time of
+most recent content modification), <tt class="docutils literal"><span class="pre">st_ctime</span></tt> (platform
+dependent; time of most recent metadata change on Unix, or the time
+of creation on Windows):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">statinfo</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="s">&#39;somefile.txt&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">statinfo</span>
+<span class="go">(33188, 422511L, 769L, 1, 1032, 100, 926L, 1105022698,1105022732, 1105022732)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span>
+<span class="go">926L</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>Changed in version 2.3: If <tt class="docutils literal"><span class="pre">stat_float_times()</span></tt> returns <tt class="xref docutils literal"><span class="pre">True</span></tt>,
+the time values are floats, measuring seconds. Fractions of a
+second may be reported if the system supports that. On Mac OS, the
+times are always floats. See <tt class="docutils literal"><span class="pre">stat_float_times()</span></tt> for further
+discussion.</p>
+<p>On some Unix systems (such as Linux), the following attributes may
+also be available: <tt class="docutils literal"><span class="pre">st_blocks</span></tt> (number of blocks allocated for
+file), <tt class="docutils literal"><span class="pre">st_blksize</span></tt> (filesystem blocksize), <tt class="docutils literal"><span class="pre">st_rdev</span></tt> (type of
+device if an inode device). <tt class="docutils literal"><span class="pre">st_flags</span></tt> (user defined flags for
+file).</p>
+<p>On other Unix systems (such as FreeBSD), the following attributes
+may be available (but may be only filled out if root tries to use
+them): <tt class="docutils literal"><span class="pre">st_gen</span></tt> (file generation number), <tt class="docutils literal"><span class="pre">st_birthtime</span></tt> (time
+of file creation).</p>
+<p>On Mac OS systems, the following attributes may also be available:
+<tt class="docutils literal"><span class="pre">st_rsize</span></tt>, <tt class="docutils literal"><span class="pre">st_creator</span></tt>, <tt class="docutils literal"><span class="pre">st_type</span></tt>.</p>
+<p>On RISCOS systems, the following attributes are also available:
+<tt class="docutils literal"><span class="pre">st_ftype</span></tt> (file type), <tt class="docutils literal"><span class="pre">st_attrs</span></tt> (attributes), <tt class="docutils literal"><span class="pre">st_obtype</span></tt>
+(object type).</p>
+<p>For backward compatibility, the return value of <tt class="docutils literal"><span class="pre">stat()</span></tt> is also
+accessible as a tuple of at least 10 integers giving the most
+important (and portable) members of the <tt class="docutils literal"><span class="pre">stat</span></tt> structure, in the
+order <tt class="docutils literal"><span class="pre">st_mode</span></tt>, <tt class="docutils literal"><span class="pre">st_ino</span></tt>, <tt class="docutils literal"><span class="pre">st_dev</span></tt>, <tt class="docutils literal"><span class="pre">st_nlink</span></tt>,
+<tt class="docutils literal"><span class="pre">st_uid</span></tt>, <tt class="docutils literal"><span class="pre">st_gid</span></tt>, <tt class="docutils literal"><span class="pre">st_size</span></tt>, <tt class="docutils literal"><span class="pre">st_atime</span></tt>, <tt class="docutils literal"><span class="pre">st_mtime</span></tt>,
+<tt class="docutils literal"><span class="pre">st_ctime</span></tt>. More items may be added at the end by some
+implementations. The standard module <tt class="docutils literal"><span class="pre">stat</span></tt> defines functions and
+constants that are useful for extracting information from a
+<tt class="docutils literal"><span class="pre">stat</span></tt> structure. (On Windows, some items are filled with dummy
+values.)</p>
+<dl class="docutils">
+<dt>Note: The exact meaning and resolution of the <tt class="docutils literal"><span class="pre">st_atime</span></tt>,</dt>
+<dd><tt class="docutils literal"><span class="pre">st_mtime</span></tt>, and <tt class="docutils literal"><span class="pre">st_ctime</span></tt> members depends on the operating
+system and the file system. For example, on Windows systems using
+the FAT or FAT32 file systems, <tt class="docutils literal"><span class="pre">st_mtime</span></tt> has 2-second
+resolution, and <tt class="docutils literal"><span class="pre">st_atime</span></tt> has only 1-day resolution.  See your
+operating system documentation for details.</dd>
+</dl>
+<p>Availability: Unix, Windows.</p>
+<p>Changed in version 2.2: Added access to values as attributes of the
+returned object.</p>
+<p>Changed in version 2.5: Added <tt class="docutils literal"><span class="pre">st_gen</span></tt> and <tt class="docutils literal"><span class="pre">st_birthtime</span></tt>.</p>
+</blockquote>
+<p>os.stat_float_times([newvalue])</p>
+<blockquote>
+<p>Determine whether <tt class="docutils literal"><span class="pre">stat_result</span></tt> represents time stamps as float
+objects. If <em>newvalue</em> is <tt class="xref docutils literal"><span class="pre">True</span></tt>, future calls to <tt class="docutils literal"><span class="pre">stat()</span></tt>
+return floats, if it is <tt class="xref docutils literal"><span class="pre">False</span></tt>, future calls return ints. If
+<em>newvalue</em> is omitted, return the current setting.</p>
+<p>For compatibility with older Python versions, accessing
+<tt class="docutils literal"><span class="pre">stat_result</span></tt> as a tuple always returns integers.</p>
+<p>Changed in version 2.5: Python now returns float values by default.
+Applications which do not work correctly with floating point time
+stamps can use this function to restore the old behaviour.</p>
+<p>The resolution of the timestamps (that is the smallest possible
+fraction) depends on the system. Some systems only support second
+resolution; on these systems, the fraction will always be zero.</p>
+<p>It is recommended that this setting is only changed at program
+startup time in the <em>__main__</em> module; libraries should never
+change this setting. If an application uses a library that works
+incorrectly if floating point time stamps are processed, this
+application should turn the feature off until the library has been
+corrected.</p>
+</blockquote>
+<p>os.statvfs(path)</p>
+<blockquote>
+<p>Perform a <tt class="docutils literal"><span class="pre">statvfs()</span></tt> system call on the given path.  The return
+value is an object whose attributes describe the filesystem on the
+given path, and correspond to the members of the <tt class="docutils literal"><span class="pre">statvfs</span></tt>
+structure, namely: <tt class="docutils literal"><span class="pre">f_bsize</span></tt>, <tt class="docutils literal"><span class="pre">f_frsize</span></tt>, <tt class="docutils literal"><span class="pre">f_blocks</span></tt>,
+<tt class="docutils literal"><span class="pre">f_bfree</span></tt>, <tt class="docutils literal"><span class="pre">f_bavail</span></tt>, <tt class="docutils literal"><span class="pre">f_files</span></tt>, <tt class="docutils literal"><span class="pre">f_ffree</span></tt>, <tt class="docutils literal"><span class="pre">f_favail</span></tt>,
+<tt class="docutils literal"><span class="pre">f_flag</span></tt>, <tt class="docutils literal"><span class="pre">f_namemax</span></tt>. Availability: Unix.</p>
+<p>For backward compatibility, the return value is also accessible as
+a tuple whose values correspond to the attributes, in the order
+given above. The standard module <tt class="docutils literal"><span class="pre">statvfs</span></tt> defines constants that
+are useful for extracting information from a <tt class="docutils literal"><span class="pre">statvfs</span></tt> structure
+when accessing it as a sequence; this remains useful when writing
+code that needs to work with versions of Python that don&#8217;t support
+accessing the fields as attributes.</p>
+<p>Changed in version 2.2: Added access to values as attributes of the
+returned object.</p>
+</blockquote>
+<p>os.symlink(src, dst)</p>
+<blockquote>
+Create a symbolic link pointing to <em>src</em> named <em>dst</em>. Availability:
+Unix.</blockquote>
+<p>os.tempnam([dir[, prefix]])</p>
+<blockquote>
+<p>Return a unique path name that is reasonable for creating a
+temporary file. This will be an absolute path that names a
+potential directory entry in the directory <em>dir</em> or a common
+location for temporary files if <em>dir</em> is omitted or <tt class="xref docutils literal"><span class="pre">None</span></tt>.  If
+given and not <tt class="xref docutils literal"><span class="pre">None</span></tt>, <em>prefix</em> is used to provide a short prefix
+to the filename.  Applications are responsible for properly
+creating and managing files created using paths returned by
+<tt class="docutils literal"><span class="pre">tempnam()</span></tt>; no automatic cleanup is provided. On Unix, the
+environment variable <strong>TMPDIR</strong> overrides <em>dir</em>, while on Windows
+<strong>TMP</strong> is used.  The specific behavior of this function depends on
+the C library implementation; some aspects are underspecified in
+system documentation.</p>
+<dl class="docutils">
+<dt>Warning: Use of <tt class="docutils literal"><span class="pre">tempnam()</span></tt> is vulnerable to symlink attacks; consider</dt>
+<dd>using <tt class="docutils literal"><span class="pre">tmpfile()</span></tt> (section <em>File Object Creation</em>) instead.</dd>
+</dl>
+<p>Availability: Unix, Windows.</p>
+</blockquote>
+<p>os.tmpnam()</p>
+<blockquote>
+<p>Return a unique path name that is reasonable for creating a
+temporary file. This will be an absolute path that names a
+potential directory entry in a common location for temporary files.
+Applications are responsible for properly creating and managing
+files created using paths returned by <tt class="docutils literal"><span class="pre">tmpnam()</span></tt>; no automatic
+cleanup is provided.</p>
+<dl class="docutils">
+<dt>Warning: Use of <tt class="docutils literal"><span class="pre">tmpnam()</span></tt> is vulnerable to symlink attacks; consider</dt>
+<dd>using <tt class="docutils literal"><span class="pre">tmpfile()</span></tt> (section <em>File Object Creation</em>) instead.</dd>
+</dl>
+<p>Availability: Unix, Windows.  This function probably shouldn&#8217;t be
+used on Windows, though: Microsoft&#8217;s implementation of <tt class="docutils literal"><span class="pre">tmpnam()</span></tt>
+always creates a name in the root directory of the current drive,
+and that&#8217;s generally a poor location for a temp file (depending on
+privileges, you may not even be able to open a file using this
+name).</p>
+</blockquote>
+<p>os.TMP_MAX</p>
+<blockquote>
+The maximum number of unique names that <tt class="docutils literal"><span class="pre">tmpnam()</span></tt> will generate
+before reusing names.</blockquote>
+<p>os.unlink(path)</p>
+<blockquote>
+Remove the file <em>path</em>.  This is the same function as <tt class="docutils literal"><span class="pre">remove()</span></tt>;
+the <tt class="docutils literal"><span class="pre">unlink()</span></tt> name is its traditional Unix name. Availability:
+Unix, Windows.</blockquote>
+<p>os.utime(path, times)</p>
+<blockquote>
+<p>Set the access and modified times of the file specified by <em>path</em>.
+If <em>times</em> is <tt class="xref docutils literal"><span class="pre">None</span></tt>, then the file&#8217;s access and modified times
+are set to the current time. (The effect is similar to running the
+Unix program <strong>touch</strong> on the path.)  Otherwise, <em>times</em> must be a
+2-tuple of numbers, of the form <tt class="docutils literal"><span class="pre">(atime,</span> <span class="pre">mtime)</span></tt> which is used to
+set the access and modified times, respectively. Whether a
+directory can be given for <em>path</em> depends on whether the operating
+system implements directories as files (for example, Windows does
+not).  Note that the exact times you set here may not be returned
+by a subsequent <tt class="docutils literal"><span class="pre">stat()</span></tt> call, depending on the resolution with
+which your operating system records access and modification times;
+see <tt class="docutils literal"><span class="pre">stat()</span></tt>.</p>
+<p>Changed in version 2.0: Added support for <tt class="xref docutils literal"><span class="pre">None</span></tt> for <em>times</em>.</p>
+<p>Availability: Unix, Windows.</p>
+</blockquote>
+<p>os.walk(top[, topdown=True[, onerror=None[, followlinks=False]]])</p>
+<blockquote>
+<p>Generate the file names in a directory tree by walking the tree
+either top-down or bottom-up. For each directory in the tree rooted
+at directory <em>top</em> (including <em>top</em> itself), it yields a 3-tuple
+<tt class="docutils literal"><span class="pre">(dirpath,</span> <span class="pre">dirnames,</span> <span class="pre">filenames)</span></tt>.</p>
+<p><em>dirpath</em> is a string, the path to the directory.  <em>dirnames</em> is a
+list of the names of the subdirectories in <em>dirpath</em> (excluding
+<tt class="docutils literal"><span class="pre">'.'</span></tt> and <tt class="docutils literal"><span class="pre">'..'</span></tt>). <em>filenames</em> is a list of the names of the
+non-directory files in <em>dirpath</em>. Note that the names in the lists
+contain no path components.  To get a full path (which begins with
+<em>top</em>) to a file or directory in <em>dirpath</em>, do
+<tt class="docutils literal"><span class="pre">os.path.join(dirpath,</span> <span class="pre">name)</span></tt>.</p>
+<p>If optional argument <em>topdown</em> is <tt class="xref docutils literal"><span class="pre">True</span></tt> or not specified, the
+triple for a directory is generated before the triples for any of
+its subdirectories (directories are generated top-down).  If
+<em>topdown</em> is <tt class="xref docutils literal"><span class="pre">False</span></tt>, the triple for a directory is generated
+after the triples for all of its subdirectories (directories are
+generated bottom-up).</p>
+<p>When <em>topdown</em> is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the caller can modify the <em>dirnames</em>
+list in-place (perhaps using <tt class="docutils literal"><span class="pre">del</span></tt> or slice assignment), and
+<tt class="docutils literal"><span class="pre">walk()</span></tt> will only recurse into the subdirectories whose names
+remain in <em>dirnames</em>; this can be used to prune the search, impose
+a specific order of visiting, or even to inform <tt class="docutils literal"><span class="pre">walk()</span></tt> about
+directories the caller creates or renames before it resumes
+<tt class="docutils literal"><span class="pre">walk()</span></tt> again.  Modifying <em>dirnames</em> when <em>topdown</em> is <tt class="xref docutils literal"><span class="pre">False</span></tt>
+is ineffective, because in bottom-up mode the directories in
+<em>dirnames</em> are generated before <em>dirpath</em> itself is generated.</p>
+<p>By default errors from the <tt class="docutils literal"><span class="pre">listdir()</span></tt> call are ignored.  If
+optional argument <em>onerror</em> is specified, it should be a function;
+it will be called with one argument, an <tt class="docutils literal"><span class="pre">OSError</span></tt> instance.  It
+can report the error to continue with the walk, or raise the
+exception to abort the walk.  Note that the filename is available
+as the <tt class="docutils literal"><span class="pre">filename</span></tt> attribute of the exception object.</p>
+<p>By default, <tt class="docutils literal"><span class="pre">walk()</span></tt> will not walk down into symbolic links that
+resolve to directories. Set <em>followlinks</em> to <tt class="xref docutils literal"><span class="pre">True</span></tt> to visit
+directories pointed to by symlinks, on systems that support them.</p>
+<p>New in version 2.6: The <em>followlinks</em> parameter.</p>
+<dl class="docutils">
+<dt>Note: Be aware that setting <em>followlinks</em> to <tt class="xref docutils literal"><span class="pre">True</span></tt> can lead to</dt>
+<dd>infinite recursion if a link points to a parent directory of
+itself. <tt class="docutils literal"><span class="pre">walk()</span></tt> does not keep track of the directories it
+visited already.</dd>
+<dt>Note: If you pass a relative pathname, don&#8217;t change the current working</dt>
+<dd>directory between resumptions of <tt class="docutils literal"><span class="pre">walk()</span></tt>.  <tt class="docutils literal"><span class="pre">walk()</span></tt> never
+changes the current directory, and assumes that its caller
+doesn&#8217;t either.</dd>
+</dl>
+<p>This example displays the number of bytes taken by non-directory
+files in each directory under the starting directory, except that
+it doesn&#8217;t look under any CVS subdirectory:</p>
+<blockquote>
+<p>import os
+from os.path import join, getsize
+for root, dirs, files in os.walk(&#8216;python/Lib/email&#8217;):</p>
+<blockquote>
+<p>print root, &#8220;consumes&#8221;,
+print sum(getsize(join(root, name)) for name in files),
+print &#8220;bytes in&#8221;, len(files), &#8220;non-directory files&#8221;
+if &#8216;CVS&#8217; in dirs:</p>
+<blockquote>
+dirs.remove(&#8216;CVS&#8217;)  # don&#8217;t visit CVS directories</blockquote>
+</blockquote>
+</blockquote>
+<p>In the next example, walking the tree bottom-up is essential:
+<tt class="docutils literal"><span class="pre">rmdir()</span></tt> doesn&#8217;t allow deleting a directory before the directory
+is empty:</p>
+<blockquote>
+<p># Delete everything reachable from the directory named in &#8220;top&#8221;,
+# assuming there are no symbolic links.
+# CAUTION:  This is dangerous!  For example, if top == &#8216;/&#8217;, it
+# could delete all your disk files.
+import os
+for root, dirs, files in os.walk(top, topdown=False):</p>
+<blockquote>
+<dl class="docutils">
+<dt>for name in files:</dt>
+<dd>os.remove(os.path.join(root, name))</dd>
+<dt>for name in dirs:</dt>
+<dd>os.rmdir(os.path.join(root, name))</dd>
+</dl>
+</blockquote>
+</blockquote>
+<p>New in version 2.3.</p>
+</blockquote>
+</div>
+<div class="section" id="process-management">
+<h2>15.1.5. Process Management<a class="headerlink" href="#process-management" title="Permalink to this headline">¶</a></h2>
+<p>These functions may be used to create and manage processes.</p>
+<p>The various <tt class="docutils literal"><span class="pre">exec*()</span></tt> functions take a list of arguments for the new
+program loaded into the process.  In each case, the first of these
+arguments is passed to the new program as its own name rather than as
+an argument a user may have typed on a command line.  For the C
+programmer, this is the <tt class="docutils literal"><span class="pre">argv[0]</span></tt> passed to a program&#8217;s <tt class="docutils literal"><span class="pre">main()</span></tt>.
+For example, <tt class="docutils literal"><span class="pre">os.execv('/bin/echo',</span> <span class="pre">['foo',</span> <span class="pre">'bar'])</span></tt> will only print
+<tt class="docutils literal"><span class="pre">bar</span></tt> on standard output; <tt class="docutils literal"><span class="pre">foo</span></tt> will seem to be ignored.</p>
+<p>os.abort()</p>
+<blockquote>
+Generate a <tt class="docutils literal"><span class="pre">SIGABRT</span></tt> signal to the current process.  On Unix, the
+default behavior is to produce a core dump; on Windows, the process
+immediately returns an exit code of <tt class="docutils literal"><span class="pre">3</span></tt>.  Be aware that programs
+which use <tt class="docutils literal"><span class="pre">signal.signal()</span></tt> to register a handler for <tt class="docutils literal"><span class="pre">SIGABRT</span></tt>
+will behave differently. Availability: Unix, Windows.</blockquote>
+<p>os.execl(path, arg0, arg1, ...)
+os.execle(path, arg0, arg1, ..., env)
+os.execlp(file, arg0, arg1, ...)
+os.execlpe(file, arg0, arg1, ..., env)
+os.execv(path, args)
+os.execve(path, args, env)
+os.execvp(file, args)
+os.execvpe(file, args, env)</p>
+<blockquote>
+<p>These functions all execute a new program, replacing the current
+process; they do not return.  On Unix, the new executable is loaded
+into the current process, and will have the same process id as the
+caller.  Errors will be reported as <tt class="docutils literal"><span class="pre">OSError</span></tt> exceptions.</p>
+<p>The current process is replaced immediately. Open file objects and
+descriptors are not flushed, so if there may be data buffered on
+these open files, you should flush them using
+<tt class="docutils literal"><span class="pre">sys.stdout.flush()</span></tt> or <tt class="docutils literal"><span class="pre">os.fsync()</span></tt> before calling an
+<tt class="docutils literal"><span class="pre">exec*()</span></tt> function.</p>
+<p>The &#8220;l&#8221; and &#8220;v&#8221; variants of the <tt class="docutils literal"><span class="pre">exec*()</span></tt> functions differ in how
+command-line arguments are passed.  The &#8220;l&#8221; variants are perhaps
+the easiest to work with if the number of parameters is fixed when
+the code is written; the individual parameters simply become
+additional parameters to the <tt class="docutils literal"><span class="pre">execl*()</span></tt> functions.  The &#8220;v&#8221;
+variants are good when the number of parameters is variable, with
+the arguments being passed in a list or tuple as the <em>args</em>
+parameter.  In either case, the arguments to the child process
+should start with the name of the command being run, but this is
+not enforced.</p>
+<p>The variants which include a &#8220;p&#8221; near the end (<tt class="docutils literal"><span class="pre">execlp()</span></tt>,
+<tt class="docutils literal"><span class="pre">execlpe()</span></tt>, <tt class="docutils literal"><span class="pre">execvp()</span></tt>, and <tt class="docutils literal"><span class="pre">execvpe()</span></tt>) will use the
+<strong>PATH</strong> environment variable to locate the program <em>file</em>.  When
+the environment is being replaced (using one of the <tt class="docutils literal"><span class="pre">exec*e()</span></tt>
+variants, discussed in the next paragraph), the new environment is
+used as the source of the <strong>PATH</strong> variable. The other variants,
+<tt class="docutils literal"><span class="pre">execl()</span></tt>, <tt class="docutils literal"><span class="pre">execle()</span></tt>, <tt class="docutils literal"><span class="pre">execv()</span></tt>, and <tt class="docutils literal"><span class="pre">execve()</span></tt>, will not
+use the <strong>PATH</strong> variable to locate the executable; <em>path</em> must
+contain an appropriate absolute or relative path.</p>
+<p>For <tt class="docutils literal"><span class="pre">execle()</span></tt>, <tt class="docutils literal"><span class="pre">execlpe()</span></tt>, <tt class="docutils literal"><span class="pre">execve()</span></tt>, and <tt class="docutils literal"><span class="pre">execvpe()</span></tt>
+(note that these all end in &#8220;e&#8221;), the <em>env</em> parameter must be a
+mapping which is used to define the environment variables for the
+new process (these are used instead of the current process&#8217;
+environment); the functions <tt class="docutils literal"><span class="pre">execl()</span></tt>, <tt class="docutils literal"><span class="pre">execlp()</span></tt>, <tt class="docutils literal"><span class="pre">execv()</span></tt>,
+and <tt class="docutils literal"><span class="pre">execvp()</span></tt> all cause the new process to inherit the
+environment of the current process.</p>
+<p>Availability: Unix, Windows.</p>
+</blockquote>
+<p>os._exit(n)</p>
+<blockquote>
+<p>Exit to the system with status <em>n</em>, without calling cleanup
+handlers, flushing stdio buffers, etc. Availability: Unix, Windows.</p>
+<dl class="docutils">
+<dt>Note: The standard way to exit is <tt class="docutils literal"><span class="pre">sys.exit(n)</span></tt>. <tt class="docutils literal"><span class="pre">_exit()</span></tt> should</dt>
+<dd>normally only be used in the child process after a <tt class="docutils literal"><span class="pre">fork()</span></tt>.</dd>
+</dl>
+</blockquote>
+<p>The following exit codes are defined and can be used with <tt class="docutils literal"><span class="pre">_exit()</span></tt>,
+although they are not required.  These are typically used for system
+programs written in Python, such as a mail server&#8217;s external command
+delivery program.</p>
+<dl class="docutils">
+<dt>Note: Some of these may not be available on all Unix platforms, since</dt>
+<dd>there is some variation.  These constants are defined where they are
+defined by the underlying platform.</dd>
+</dl>
+<p>os.EX_OK</p>
+<blockquote>
+<p>Exit code that means no error occurred. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_USAGE</p>
+<blockquote>
+<p>Exit code that means the command was used incorrectly, such as when
+the wrong number of arguments are given. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_DATAERR</p>
+<blockquote>
+<p>Exit code that means the input data was incorrect. Availability:
+Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_NOINPUT</p>
+<blockquote>
+<p>Exit code that means an input file did not exist or was not
+readable. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_NOUSER</p>
+<blockquote>
+<p>Exit code that means a specified user did not exist. Availability:
+Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_NOHOST</p>
+<blockquote>
+<p>Exit code that means a specified host did not exist. Availability:
+Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_UNAVAILABLE</p>
+<blockquote>
+<p>Exit code that means that a required service is unavailable.
+Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_SOFTWARE</p>
+<blockquote>
+<p>Exit code that means an internal software error was detected.
+Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_OSERR</p>
+<blockquote>
+<p>Exit code that means an operating system error was detected, such
+as the inability to fork or create a pipe. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_OSFILE</p>
+<blockquote>
+<p>Exit code that means some system file did not exist, could not be
+opened, or had some other kind of error. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_CANTCREAT</p>
+<blockquote>
+<p>Exit code that means a user specified output file could not be
+created. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_IOERR</p>
+<blockquote>
+<p>Exit code that means that an error occurred while doing I/O on some
+file. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_TEMPFAIL</p>
+<blockquote>
+<p>Exit code that means a temporary failure occurred.  This indicates
+something that may not really be an error, such as a network
+connection that couldn&#8217;t be made during a retryable operation.
+Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_PROTOCOL</p>
+<blockquote>
+<p>Exit code that means that a protocol exchange was illegal, invalid,
+or not understood. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_NOPERM</p>
+<blockquote>
+<p>Exit code that means that there were insufficient permissions to
+perform the operation (but not intended for file system problems).
+Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_CONFIG</p>
+<blockquote>
+<p>Exit code that means that some kind of configuration error
+occurred. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.EX_NOTFOUND</p>
+<blockquote>
+<p>Exit code that means something like &#8220;an entry was not found&#8221;.
+Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.fork()</p>
+<blockquote>
+<p>Fork a child process.  Return <tt class="docutils literal"><span class="pre">0</span></tt> in the child and the child&#8217;s
+process id in the parent.  If an error occurs <tt class="docutils literal"><span class="pre">OSError</span></tt> is
+raised.</p>
+<p>Note that some platforms including FreeBSD &lt;= 6.3, Cygwin and OS/2
+EMX have known issues when using fork() from a thread.</p>
+<p>Availability: Unix.</p>
+</blockquote>
+<p>os.forkpty()</p>
+<blockquote>
+Fork a child process, using a new pseudo-terminal as the child&#8217;s
+controlling terminal. Return a pair of <tt class="docutils literal"><span class="pre">(pid,</span> <span class="pre">fd)</span></tt>, where <em>pid</em>
+is <tt class="docutils literal"><span class="pre">0</span></tt> in the child, the new child&#8217;s process id in the parent,
+and <em>fd</em> is the file descriptor of the master end of the pseudo-
+terminal.  For a more portable approach, use the <tt class="docutils literal"><span class="pre">pty</span></tt> module.
+If an error occurs <tt class="docutils literal"><span class="pre">OSError</span></tt> is raised. Availability: some
+flavors of Unix.</blockquote>
+<p>os.kill(pid, sig)</p>
+<blockquote>
+Send signal <em>sig</em> to the process <em>pid</em>.  Constants for the specific
+signals available on the host platform are defined in the
+<tt class="docutils literal"><span class="pre">signal</span></tt> module. Availability: Unix.</blockquote>
+<p>os.killpg(pgid, sig)</p>
+<blockquote>
+<p>Send the signal <em>sig</em> to the process group <em>pgid</em>. Availability:
+Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.nice(increment)</p>
+<blockquote>
+Add <em>increment</em> to the process&#8217;s &#8220;niceness&#8221;.  Return the new
+niceness. Availability: Unix.</blockquote>
+<p>os.plock(op)</p>
+<blockquote>
+Lock program segments into memory.  The value of <em>op</em> (defined in
+<tt class="docutils literal"><span class="pre">&lt;sys/lock.h&gt;</span></tt>) determines which segments are locked.
+Availability: Unix.</blockquote>
+<p>os.popen(...)
+os.popen2(...)
+os.popen3(...)
+os.popen4(...)</p>
+<blockquote>
+Run child processes, returning opened pipes for communications.
+These functions are described in section <em>File Object Creation</em>.</blockquote>
+<p>os.spawnl(mode, path, ...)
+os.spawnle(mode, path, ..., env)
+os.spawnlp(mode, file, ...)
+os.spawnlpe(mode, file, ..., env)
+os.spawnv(mode, path, args)
+os.spawnve(mode, path, args, env)
+os.spawnvp(mode, file, args)
+os.spawnvpe(mode, file, args, env)</p>
+<blockquote>
+<p>Execute the program <em>path</em> in a new process.</p>
+<p>(Note that the <tt class="docutils literal"><span class="pre">subprocess</span></tt> module provides more powerful
+facilities for spawning new processes and retrieving their results;
+using that module is preferable to using these functions.  Check
+especially the <em>Replacing Older Functions with the subprocess
+Module</em> section.)</p>
+<p>If <em>mode</em> is <tt class="docutils literal"><span class="pre">P_NOWAIT</span></tt>, this function returns the process id of
+the new process; if <em>mode</em> is <tt class="docutils literal"><span class="pre">P_WAIT</span></tt>, returns the process&#8217;s
+exit code if it exits normally, or <tt class="docutils literal"><span class="pre">-signal</span></tt>, where <em>signal</em> is
+the signal that killed the process.  On Windows, the process id
+will actually be the process handle, so can be used with the
+<tt class="docutils literal"><span class="pre">waitpid()</span></tt> function.</p>
+<p>The &#8220;l&#8221; and &#8220;v&#8221; variants of the <tt class="docutils literal"><span class="pre">spawn*()</span></tt> functions differ in
+how command-line arguments are passed.  The &#8220;l&#8221; variants are
+perhaps the easiest to work with if the number of parameters is
+fixed when the code is written; the individual parameters simply
+become additional parameters to the <tt class="docutils literal"><span class="pre">spawnl*()</span></tt> functions.  The
+&#8220;v&#8221; variants are good when the number of parameters is variable,
+with the arguments being passed in a list or tuple as the <em>args</em>
+parameter.  In either case, the arguments to the child process must
+start with the name of the command being run.</p>
+<p>The variants which include a second &#8220;p&#8221; near the end
+(<tt class="docutils literal"><span class="pre">spawnlp()</span></tt>, <tt class="docutils literal"><span class="pre">spawnlpe()</span></tt>, <tt class="docutils literal"><span class="pre">spawnvp()</span></tt>, and <tt class="docutils literal"><span class="pre">spawnvpe()</span></tt>)
+will use the <strong>PATH</strong> environment variable to locate the program
+<em>file</em>.  When the environment is being replaced (using one of the
+<tt class="docutils literal"><span class="pre">spawn*e()</span></tt> variants, discussed in the next paragraph), the new
+environment is used as the source of the <strong>PATH</strong> variable.  The
+other variants, <tt class="docutils literal"><span class="pre">spawnl()</span></tt>, <tt class="docutils literal"><span class="pre">spawnle()</span></tt>, <tt class="docutils literal"><span class="pre">spawnv()</span></tt>, and
+<tt class="docutils literal"><span class="pre">spawnve()</span></tt>, will not use the <strong>PATH</strong> variable to locate the
+executable; <em>path</em> must contain an appropriate absolute or relative
+path.</p>
+<p>For <tt class="docutils literal"><span class="pre">spawnle()</span></tt>, <tt class="docutils literal"><span class="pre">spawnlpe()</span></tt>, <tt class="docutils literal"><span class="pre">spawnve()</span></tt>, and
+<tt class="docutils literal"><span class="pre">spawnvpe()</span></tt> (note that these all end in &#8220;e&#8221;), the <em>env</em>
+parameter must be a mapping which is used to define the environment
+variables for the new process (they are used instead of the current
+process&#8217; environment); the functions <tt class="docutils literal"><span class="pre">spawnl()</span></tt>, <tt class="docutils literal"><span class="pre">spawnlp()</span></tt>,
+<tt class="docutils literal"><span class="pre">spawnv()</span></tt>, and <tt class="docutils literal"><span class="pre">spawnvp()</span></tt> all cause the new process to
+inherit the environment of the current process.  Note that keys and
+values in the <em>env</em> dictionary must be strings; invalid keys or
+values will cause the function to fail, with a return value of
+<tt class="docutils literal"><span class="pre">127</span></tt>.</p>
+<p>As an example, the following calls to <tt class="docutils literal"><span class="pre">spawnlp()</span></tt> and
+<tt class="docutils literal"><span class="pre">spawnvpe()</span></tt> are equivalent:</p>
+<blockquote>
+<p>import os
+os.spawnlp(os.P_WAIT, &#8216;cp&#8217;, &#8216;cp&#8217;, &#8216;index.html&#8217;, &#8216;/dev/null&#8217;)</p>
+<p>L = [&#8216;cp&#8217;, &#8216;index.html&#8217;, &#8216;/dev/null&#8217;]
+os.spawnvpe(os.P_WAIT, &#8216;cp&#8217;, L, os.environ)</p>
+</blockquote>
+<p>Availability: Unix, Windows.  <tt class="docutils literal"><span class="pre">spawnlp()</span></tt>, <tt class="docutils literal"><span class="pre">spawnlpe()</span></tt>,
+<tt class="docutils literal"><span class="pre">spawnvp()</span></tt> and <tt class="docutils literal"><span class="pre">spawnvpe()</span></tt> are not available on Windows.</p>
+<p>New in version 1.6.</p>
+</blockquote>
+<p>os.P_NOWAIT
+os.P_NOWAITO</p>
+<blockquote>
+<p>Possible values for the <em>mode</em> parameter to the <tt class="docutils literal"><span class="pre">spawn*()</span></tt> family
+of functions.  If either of these values is given, the <tt class="docutils literal"><span class="pre">spawn*()</span></tt>
+functions will return as soon as the new process has been created,
+with the process id as the return value. Availability: Unix,
+Windows.</p>
+<p>New in version 1.6.</p>
+</blockquote>
+<p>os.P_WAIT</p>
+<blockquote>
+<p>Possible value for the <em>mode</em> parameter to the <tt class="docutils literal"><span class="pre">spawn*()</span></tt> family
+of functions.  If this is given as <em>mode</em>, the <tt class="docutils literal"><span class="pre">spawn*()</span></tt>
+functions will not return until the new process has run to
+completion and will return the exit code of the process the run is
+successful, or <tt class="docutils literal"><span class="pre">-signal</span></tt> if a signal kills the process.
+Availability: Unix, Windows.</p>
+<p>New in version 1.6.</p>
+</blockquote>
+<p>os.P_DETACH
+os.P_OVERLAY</p>
+<blockquote>
+<p>Possible values for the <em>mode</em> parameter to the <tt class="docutils literal"><span class="pre">spawn*()</span></tt> family
+of functions.  These are less portable than those listed above.
+<tt class="docutils literal"><span class="pre">P_DETACH</span></tt> is similar to <tt class="docutils literal"><span class="pre">P_NOWAIT</span></tt>, but the new process is
+detached from the console of the calling process. If <tt class="docutils literal"><span class="pre">P_OVERLAY</span></tt>
+is used, the current process will be replaced; the <tt class="docutils literal"><span class="pre">spawn*()</span></tt>
+function will not return. Availability: Windows.</p>
+<p>New in version 1.6.</p>
+</blockquote>
+<p>os.startfile(path[, operation])</p>
+<blockquote>
+<p>Start a file with its associated application.</p>
+<p>When <em>operation</em> is not specified or <tt class="docutils literal"><span class="pre">'open'</span></tt>, this acts like
+double-clicking the file in Windows Explorer, or giving the file
+name as an argument to the <strong>start</strong> command from the interactive
+command shell: the file is opened with whatever application (if
+any) its extension is associated.</p>
+<p>When another <em>operation</em> is given, it must be a &#8220;command verb&#8221; that
+specifies what should be done with the file. Common verbs
+documented by Microsoft are <tt class="docutils literal"><span class="pre">'print'</span></tt> and  <tt class="docutils literal"><span class="pre">'edit'</span></tt> (to be used
+on files) as well as <tt class="docutils literal"><span class="pre">'explore'</span></tt> and <tt class="docutils literal"><span class="pre">'find'</span></tt> (to be used on
+directories).</p>
+<p><tt class="docutils literal"><span class="pre">startfile()</span></tt> returns as soon as the associated application is
+launched. There is no option to wait for the application to close,
+and no way to retrieve the application&#8217;s exit status.  The <em>path</em>
+parameter is relative to the current directory.  If you want to use
+an absolute path, make sure the first character is not a slash
+(<tt class="docutils literal"><span class="pre">'/'</span></tt>); the underlying Win32 <tt class="docutils literal"><span class="pre">ShellExecute()</span></tt> function doesn&#8217;t
+work if it is.  Use the <tt class="docutils literal"><span class="pre">os.path.normpath()</span></tt> function to ensure
+that the path is properly encoded for Win32. Availability: Windows.</p>
+<p>New in version 2.0.</p>
+<p>New in version 2.5: The <em>operation</em> parameter.</p>
+</blockquote>
+<p>os.system(command)</p>
+<blockquote>
+<p>Execute the command (a string) in a subshell.  This is implemented
+by calling the Standard C function <tt class="docutils literal"><span class="pre">system()</span></tt>, and has the same
+limitations.  Changes to <tt class="docutils literal"><span class="pre">os.environ</span></tt>, <tt class="docutils literal"><span class="pre">sys.stdin</span></tt>, etc. are
+not reflected in the environment of the executed command.</p>
+<p>On Unix, the return value is the exit status of the process encoded
+in the format specified for <tt class="docutils literal"><span class="pre">wait()</span></tt>.  Note that POSIX does not
+specify the meaning of the return value of the C <tt class="docutils literal"><span class="pre">system()</span></tt>
+function, so the return value of the Python function is system-
+dependent.</p>
+<p>On Windows, the return value is that returned by the system shell
+after running <em>command</em>, given by the Windows environment variable
+<strong>COMSPEC</strong>: on <strong>command.com</strong> systems (Windows 95, 98 and ME)
+this is always <tt class="docutils literal"><span class="pre">0</span></tt>; on <strong>cmd.exe</strong> systems (Windows NT, 2000 and
+XP) this is the exit status of the command run; on systems using a
+non-native shell, consult your shell documentation.</p>
+<p>Availability: Unix, Windows.</p>
+<p>The <tt class="docutils literal"><span class="pre">subprocess</span></tt> module provides more powerful facilities for
+spawning new processes and retrieving their results; using that
+module is preferable to using this function.  Use the
+<tt class="docutils literal"><span class="pre">subprocess</span></tt> module.  Check especially the <em>Replacing Older
+Functions with the subprocess Module</em> section.</p>
+</blockquote>
+<p>os.times()</p>
+<blockquote>
+Return a 5-tuple of floating point numbers indicating accumulated
+(processor or other) times, in seconds.  The items are: user time,
+system time, children&#8217;s user time, children&#8217;s system time, and
+elapsed real time since a fixed point in the past, in that order.
+See the Unix manual page <em>times(2)</em> or the corresponding Windows
+Platform API documentation. Availability: Unix, Windows.  On
+Windows, only the first two items are filled, the others are zero.</blockquote>
+<p>os.wait()</p>
+<blockquote>
+Wait for completion of a child process, and return a tuple
+containing its pid and exit status indication: a 16-bit number,
+whose low byte is the signal number that killed the process, and
+whose high byte is the exit status (if the signal number is zero);
+the high bit of the low byte is set if a core file was produced.
+Availability: Unix.</blockquote>
+<p>os.waitpid(pid, options)</p>
+<blockquote>
+<p>The details of this function differ on Unix and Windows.</p>
+<p>On Unix: Wait for completion of a child process given by process id
+<em>pid</em>, and return a tuple containing its process id and exit status
+indication (encoded as for <tt class="docutils literal"><span class="pre">wait()</span></tt>).  The semantics of the call
+are affected by the value of the integer <em>options</em>, which should be
+<tt class="docutils literal"><span class="pre">0</span></tt> for normal operation.</p>
+<p>If <em>pid</em> is greater than <tt class="docutils literal"><span class="pre">0</span></tt>, <tt class="docutils literal"><span class="pre">waitpid()</span></tt> requests status
+information for that specific process.  If <em>pid</em> is <tt class="docutils literal"><span class="pre">0</span></tt>, the
+request is for the status of any child in the process group of the
+current process.  If <em>pid</em> is <tt class="docutils literal"><span class="pre">-1</span></tt>, the request pertains to any
+child of the current process.  If <em>pid</em> is less than <tt class="docutils literal"><span class="pre">-1</span></tt>, status
+is requested for any process in the process group <tt class="docutils literal"><span class="pre">-pid</span></tt> (the
+absolute value of <em>pid</em>).</p>
+<p>An <tt class="docutils literal"><span class="pre">OSError</span></tt> is raised with the value of errno when the syscall
+returns -1.</p>
+<p>On Windows: Wait for completion of a process given by process
+handle <em>pid</em>, and return a tuple containing <em>pid</em>, and its exit
+status shifted left by 8 bits (shifting makes cross-platform use of
+the function easier). A <em>pid</em> less than or equal to <tt class="docutils literal"><span class="pre">0</span></tt> has no
+special meaning on Windows, and raises an exception. The value of
+integer <em>options</em> has no effect. <em>pid</em> can refer to any process
+whose id is known, not necessarily a child process. The <tt class="docutils literal"><span class="pre">spawn()</span></tt>
+functions called with <tt class="docutils literal"><span class="pre">P_NOWAIT</span></tt> return suitable process handles.</p>
+</blockquote>
+<p>os.wait3([options])</p>
+<blockquote>
+<p>Similar to <tt class="docutils literal"><span class="pre">waitpid()</span></tt>, except no process id argument is given
+and a 3-element tuple containing the child&#8217;s process id, exit
+status indication, and resource usage information is returned.
+Refer to <tt class="docutils literal"><span class="pre">resource</span></tt>.``getrusage()`` for details on resource usage
+information.  The option argument is the same as that provided to
+<tt class="docutils literal"><span class="pre">waitpid()</span></tt> and <tt class="docutils literal"><span class="pre">wait4()</span></tt>. Availability: Unix.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>os.wait4(pid, options)</p>
+<blockquote>
+<p>Similar to <tt class="docutils literal"><span class="pre">waitpid()</span></tt>, except a 3-element tuple, containing the
+child&#8217;s process id, exit status indication, and resource usage
+information is returned. Refer to <tt class="docutils literal"><span class="pre">resource</span></tt>.``getrusage()`` for
+details on resource usage information.  The arguments to
+<tt class="docutils literal"><span class="pre">wait4()</span></tt> are the same as those provided to <tt class="docutils literal"><span class="pre">waitpid()</span></tt>.
+Availability: Unix.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>os.WNOHANG</p>
+<blockquote>
+The option for <tt class="docutils literal"><span class="pre">waitpid()</span></tt> to return immediately if no child
+process status is available immediately. The function returns <tt class="docutils literal"><span class="pre">(0,</span>
+<span class="pre">0)</span></tt> in this case. Availability: Unix.</blockquote>
+<p>os.WCONTINUED</p>
+<blockquote>
+<p>This option causes child processes to be reported if they have been
+continued from a job control stop since their status was last
+reported. Availability: Some Unix systems.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.WUNTRACED</p>
+<blockquote>
+<p>This option causes child processes to be reported if they have been
+stopped but their current state has not been reported since they
+were stopped. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>The following functions take a process status code as returned by
+<tt class="docutils literal"><span class="pre">system()</span></tt>, <tt class="docutils literal"><span class="pre">wait()</span></tt>, or <tt class="docutils literal"><span class="pre">waitpid()</span></tt> as a parameter.  They may
+be used to determine the disposition of a process.</p>
+<p>os.WCOREDUMP(status)</p>
+<blockquote>
+<p>Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if a core dump was generated for the process,
+otherwise return <tt class="xref docutils literal"><span class="pre">False</span></tt>. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.WIFCONTINUED(status)</p>
+<blockquote>
+<p>Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the process has been continued from a job
+control stop, otherwise return <tt class="xref docutils literal"><span class="pre">False</span></tt>. Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.WIFSTOPPED(status)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the process has been stopped, otherwise return
+<tt class="xref docutils literal"><span class="pre">False</span></tt>. Availability: Unix.</blockquote>
+<p>os.WIFSIGNALED(status)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the process exited due to a signal, otherwise
+return <tt class="xref docutils literal"><span class="pre">False</span></tt>. Availability: Unix.</blockquote>
+<p>os.WIFEXITED(status)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the process exited using the <em>exit(2)</em> system
+call, otherwise return <tt class="xref docutils literal"><span class="pre">False</span></tt>. Availability: Unix.</blockquote>
+<p>os.WEXITSTATUS(status)</p>
+<blockquote>
+If <tt class="docutils literal"><span class="pre">WIFEXITED(status)</span></tt> is true, return the integer parameter to
+the <em>exit(2)</em> system call.  Otherwise, the return value is
+meaningless. Availability: Unix.</blockquote>
+<p>os.WSTOPSIG(status)</p>
+<blockquote>
+Return the signal which caused the process to stop. Availability:
+Unix.</blockquote>
+<p>os.WTERMSIG(status)</p>
+<blockquote>
+Return the signal which caused the process to exit. Availability:
+Unix.</blockquote>
+</div>
+<div class="section" id="miscellaneous-system-information">
+<h2>15.1.6. Miscellaneous System Information<a class="headerlink" href="#miscellaneous-system-information" title="Permalink to this headline">¶</a></h2>
+<p>os.confstr(name)</p>
+<blockquote>
+<p>Return string-valued system configuration values. <em>name</em> specifies
+the configuration value to retrieve; it may be a string which is
+the name of a defined system value; these names are specified in a
+number of standards (POSIX, Unix 95, Unix 98, and others).  Some
+platforms define additional names as well. The names known to the
+host operating system are given as the keys of the
+<tt class="docutils literal"><span class="pre">confstr_names</span></tt> dictionary.  For configuration variables not
+included in that mapping, passing an integer for <em>name</em> is also
+accepted. Availability: Unix.</p>
+<p>If the configuration value specified by <em>name</em> isn&#8217;t defined,
+<tt class="xref docutils literal"><span class="pre">None</span></tt> is returned.</p>
+<p>If <em>name</em> is a string and is not known, <tt class="docutils literal"><span class="pre">ValueError</span></tt> is raised.
+If a specific value for <em>name</em> is not supported by the host system,
+even if it is included in <tt class="docutils literal"><span class="pre">confstr_names</span></tt>, an <tt class="docutils literal"><span class="pre">OSError</span></tt> is
+raised with <tt class="docutils literal"><span class="pre">errno.EINVAL</span></tt> for the error number.</p>
+</blockquote>
+<p>os.confstr_names</p>
+<blockquote>
+Dictionary mapping names accepted by <tt class="docutils literal"><span class="pre">confstr()</span></tt> to the integer
+values defined for those names by the host operating system. This
+can be used to determine the set of names known to the system.
+Availability: Unix.</blockquote>
+<p>os.getloadavg()</p>
+<blockquote>
+<p>Return the number of processes in the system run queue averaged
+over the last 1, 5, and 15 minutes or raises <tt class="docutils literal"><span class="pre">OSError</span></tt> if the
+load average was unobtainable.  Availability: Unix.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.sysconf(name)</p>
+<blockquote>
+Return integer-valued system configuration values. If the
+configuration value specified by <em>name</em> isn&#8217;t defined, <tt class="docutils literal"><span class="pre">-1</span></tt> is
+returned.  The comments regarding the <em>name</em> parameter for
+<tt class="docutils literal"><span class="pre">confstr()</span></tt> apply here as well; the dictionary that provides
+information on the known names is given by <tt class="docutils literal"><span class="pre">sysconf_names</span></tt>.
+Availability: Unix.</blockquote>
+<p>os.sysconf_names</p>
+<blockquote>
+Dictionary mapping names accepted by <tt class="docutils literal"><span class="pre">sysconf()</span></tt> to the integer
+values defined for those names by the host operating system. This
+can be used to determine the set of names known to the system.
+Availability: Unix.</blockquote>
+<p>The following data values are used to support path manipulation
+operations.  These are defined for all platforms.</p>
+<p>Higher-level operations on pathnames are defined in the <tt class="docutils literal"><span class="pre">os.path</span></tt>
+module.</p>
+<p>os.curdir</p>
+<blockquote>
+The constant string used by the operating system to refer to the
+current directory. This is <tt class="docutils literal"><span class="pre">'.'</span></tt> for Windows and POSIX. Also
+available via <tt class="docutils literal"><span class="pre">os.path</span></tt>.</blockquote>
+<p>os.pardir</p>
+<blockquote>
+The constant string used by the operating system to refer to the
+parent directory. This is <tt class="docutils literal"><span class="pre">'..'</span></tt> for Windows and POSIX. Also
+available via <tt class="docutils literal"><span class="pre">os.path</span></tt>.</blockquote>
+<p>os.sep</p>
+<blockquote>
+The character used by the operating system to separate pathname
+components. This is <tt class="docutils literal"><span class="pre">'/'</span></tt> for POSIX and <tt class="docutils literal"><span class="pre">'\\'</span></tt> for Windows.
+Note that knowing this is not sufficient to be able to parse or
+concatenate pathnames &#8212; use <tt class="docutils literal"><span class="pre">os.path.split()</span></tt> and
+<tt class="docutils literal"><span class="pre">os.path.join()</span></tt> &#8212; but it is occasionally useful. Also
+available via <tt class="docutils literal"><span class="pre">os.path</span></tt>.</blockquote>
+<p>os.altsep</p>
+<blockquote>
+An alternative character used by the operating system to separate
+pathname components, or <tt class="xref docutils literal"><span class="pre">None</span></tt> if only one separator character
+exists.  This is set to <tt class="docutils literal"><span class="pre">'/'</span></tt> on Windows systems where <tt class="docutils literal"><span class="pre">sep</span></tt> is
+a backslash. Also available via <tt class="docutils literal"><span class="pre">os.path</span></tt>.</blockquote>
+<p>os.extsep</p>
+<blockquote>
+<p>The character which separates the base filename from the extension;
+for example, the <tt class="docutils literal"><span class="pre">'.'</span></tt> in <tt class="docutils literal"><span class="pre">os.py</span></tt>. Also available via
+<tt class="docutils literal"><span class="pre">os.path</span></tt>.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>os.pathsep</p>
+<blockquote>
+The character conventionally used by the operating system to
+separate search path components (as in <strong>PATH</strong>), such as <tt class="docutils literal"><span class="pre">':'</span></tt>
+for POSIX or <tt class="docutils literal"><span class="pre">';'</span></tt> for Windows. Also available via <tt class="docutils literal"><span class="pre">os.path</span></tt>.</blockquote>
+<p>os.defpath</p>
+<blockquote>
+The default search path used by <tt class="docutils literal"><span class="pre">exec*p*()</span></tt> and <tt class="docutils literal"><span class="pre">spawn*p*()</span></tt> if
+the environment doesn&#8217;t have a <tt class="docutils literal"><span class="pre">'PATH'</span></tt> key. Also available via
+<tt class="docutils literal"><span class="pre">os.path</span></tt>.</blockquote>
+<p>os.linesep</p>
+<blockquote>
+The string used to separate (or, rather, terminate) lines on the
+current platform.  This may be a single character, such as <tt class="docutils literal"><span class="pre">'\n'</span></tt>
+for POSIX, or multiple characters, for example, <tt class="docutils literal"><span class="pre">'\r\n'</span></tt> for
+Windows. Do not use <em>os.linesep</em> as a line terminator when writing
+files opened in text mode (the default); use a single <tt class="docutils literal"><span class="pre">'\n'</span></tt>
+instead, on all platforms.</blockquote>
+<p>os.devnull</p>
+<blockquote>
+<p>The file path of the null device. For example: <tt class="docutils literal"><span class="pre">'/dev/null'</span></tt> for
+POSIX. Also available via <tt class="docutils literal"><span class="pre">os.path</span></tt>.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+</div>
+<div class="section" id="miscellaneous-functions">
+<h2>15.1.7. Miscellaneous Functions<a class="headerlink" href="#miscellaneous-functions" title="Permalink to this headline">¶</a></h2>
+<p>os.urandom(n)</p>
+<blockquote>
+<p>Return a string of <em>n</em> random bytes suitable for cryptographic use.</p>
+<p>This function returns random bytes from an OS-specific randomness
+source.  The returned data should be unpredictable enough for
+cryptographic applications, though its exact quality depends on the
+OS implementation.  On a UNIX-like system this will query
+/dev/urandom, and on Windows it will use CryptGenRandom. If a
+randomness source is not found, <tt class="docutils literal"><span class="pre">NotImplementedError</span></tt> will be
+raised.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="time.html" title="15.2. time — Time access and conversions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="allos.html" title="15. Generic Operating System Services"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="allos.html" >15. Generic Operating System Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,225 @@
+The Jython Project
+++++++++++++++++++
+
+Latest News
+===========
+
+**Jython 2.7.0 Final Released** (May 2015)
+
+Please see the `NEWS <https://hg.python.org/jython/file/412a8f9445f7/NEWS>`__
+file for detailed release notes.
+
+Read more on `Frank Wierzbickis Weblog
+<http://fwierzbicki.blogspot.fi/2015/05/jython-270-final-released.html>`__.
+
+**Jython 2.7 Release Candidate 3 Released** (April 2015)
+
+Please see the `NEWS <https://hg.python.org/jython/file/40ea8d57ec6a/NEWS>`__
+file for detailed release notes.
+
+Read more on `Frank Wierzbickis Weblog
+<http://fwierzbicki.blogspot.fi/2015/04/jython-27-release-candidate-3-available.html>`__.
+
+**Jython 2.7 PyCon 2015 Talk** (April 2015)
+
+Jim Baker gave a `talk
+<https://www.youtube.com/watch?v=hLm3garVQFo>`__ at PyCon 2015 in Montreal
+about how we got to Jython 2.7 and what's coming next.
+
+**Jython 2.7 Release Candidate 2 Released** (April 2015)
+
+Please see the `NEWS <https://hg.python.org/jython/file/0213400c518f/NEWS>`__
+file for detailed release notes.
+
+Read more on `Frank Wierzbickis Weblog
+<http://fwierzbicki.blogspot.com/2015/04/jython-27-release-candidate-2-available.html>`__.
+
+**Jython 2.7 Release Candidate 1 Released** (March 2015)
+
+Read more on `Frank Wierzbickis Weblog
+<http://fwierzbicki.blogspot.com/2015/03/jython-27-release-candidate-1-available.html>`__.
+
+**Jython 2.7 Beta 4 Released** (February 2015)
+
+Please see the `NEWS <https://hg.python.org/jython/file/17d18c6dde96/NEWS>`__
+file for detailed release notes.
+
+Read more on `Frank Wierzbickis Weblog
+<http://fwierzbicki.blogspot.com/2015/02/jython-27-beta4-released.html>`__.
+
+**Jython 2.7 Beta 3 Released** (August 2014)
+
+Please see the `NEWS <http://hg.python.org/jython/file/744d673392b4/NEWS>`__
+file for detailed release notes.
+
+Read more on `Frank Wierzbickis Weblog
+<http://fwierzbicki.blogspot.com/2014/08/jython-27-beta3-released.html>`__.
+
+**Jython 2.7 Beta 2 Released** (May 2013)
+
+Jython 2.7b2 brings us up to language level compatibility with the 2.7 version
+of CPython. We have focused largely on CPython compatibility, and so this
+release of Jython can run more pure Python apps then any previous release.
+Please see the NEWS file for detailed release notes. This is primarily a bugfix
+release, with numerous improvements, including much improvement on Windows
+support.
+
+Read more on `Frank Wierzbickis Weblog
+<http://fwierzbicki.blogspot.fi/2014/05/jython-27-beta2-released.html>`__
+
+**PyDev 3.4.1 Available** (May 2013)
+
+Please visit the `PyDev Site`_ for more information.
+
+**PyDev 3.0 Released** (November 2013)
+
+From now on, PyDev requires Eclipse 3.7 or 4.3 onwards and Java 7! For older versions, keep using PyDev 2.x.
+
+Interpreter is now kept up to date with changes to the interpreter, so, pip-installing packages will automatically update internal caches without requiring a manual step.
+
+Fixed issue connecting to shell for code-completion (which could halt the IDE).
+Please visit the `PyDev Site`_ for more information.
+
+**JyNI 2.7-alpha 2 Released** (October 2013)
+
+JyNI is a compatibility layer with the goal to enable Jython to use native CPython extensions like NumPy or SciPy. This way we aim to enable scientific Python code to run on Jython. Since Java is rather present in industry, while Python is more present in science, JyNI is an important step to lower the cost of using scientific code in industrial environments.
+
+Our philosophy is to integrate JyNI with Jython and CPython extensions as seamless as possible. So JyNI aims to work without any recompilation of Jython or the desired CPython extensions. It neither requires a customized Jython version, nor customized versions of the CPython extensions (of course your JyNI version must meet the platform your CPython extension was build for). Simply put JyNI.jar on the classpath (along with its native libraries) and Jython should �magically� be able to load native extensions, as far as the needed Python C-API is already implemented by JyNI.
+
+Read More at `JyNI.org`_ 
+
+**Jython 2.5.4rc 1 Has Been Released** (February 10, 2013)
+
+This release fixes numerous bugs since the 2.5.3 release of Jython. Some highlights include:
+
+ -The file upload fix for Tomcat and Jetty has been changed
+
+ -Some NullPointerExceptions where fixed.
+
+For more information, see the `Release Notes`_.
+
+**Jython 2.7beta 1 Has Been Released** (February 10, 2013)
+
+The Jython development team is proud to announce the 2.7beta 1 release!  Jython 2.7b1 brings us up to language level compatibility with the 2.7 version
+of CPython. We have focused largely on CPython compatibility, and so this
+release of Jython can run more pure Python apps then any previous release.
+
+Some notable new features
+in this release are: a bytearray implementation, a buffer api, memoryview, and a
+bz2 module.  Please see the `Release Notes`_ for detailed release notes.
+
+**Jython 2.5.3 Final Has Been Released** (August 13, 2012)
+
+The Jython development team is proud to announce the final 2.5.3 release!  For a complete listing of changes, please visit the `Release Notes`_. 
+
+
+
+
+
+Latest Blogs and Interesting Stuff
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Jython 101 - A Refreshing Look at a Mature Alternative - Part 2** (May/June 2013)
+
+Article covering the integration of Jython and Java - Part 2 of 2
+
+Read `Jython 101 - Part 2`_
+
+**Jython 101 - A Refreshing Look at a Mature Alternative** (March/April 2013)
+
+Article on Jython that was published in Java Magazine - Part 1 of 2
+
+Read `Jython 101 - Part 1`_
+
+**Customizing Jython ProxyMaker** (Wednesday, January 9, 2013)
+
+I just got a set of patches under "Customizable ProxyMaker" umbrella committed into Jython 2.7. In this post i will try to explain a bit of what Jython's ProxyMaker is and what benefits the ability to customize/override brings for interop with Java.
+
+Visit Post: `Customizing ProxyMaker`_
+
+
+**Jython Dev Notes Part 2:  Adding a New Builtin Type** (Monday February 13, 2012)
+
+Releases of Python (and so releases of Jython) sometimes add new built-in types. In 2.6, a new such buitin is the "bytes" type. In the 2.x series, "bytes" is just a synonym for "str". In 3.x "bytes" is the name used for 8 bit strings while "str" is a unicode string (and so the "unicode" type disappears in 3.x). This will make it a great example for adding a builtin since there is no added functionality to obscure the basics.  `Visit Post - Jython Dev Notes Part 2`_
+
+**Jython Dev Notes Part 1:  The Jython Exposer** (Monday January 2, 2012)
+
+One of my new years resolutions is to make Jython more friendly to new developers. One way to do that is to write up some notes on bits of Jython that are particularly mysterious to newcomers. I've boldly titled this post "Jython dev notes part I" to push myself to create more than one of these :) `Visit Post -  Jython Dev Notes Part 1`_
+
+
+**The Definitive Guide to Jython is Published** (February 6, 2010)
+
+`The Definitive Guide to Jython`_ , written by the official Jython team leads, covers the latest Jython 2.5 (or 2.5.x) from the basics to the advanced features. This book begins with a brief introduction to the language and then journeys through Jythons different features and uses.
+
+`The Definitive Guide to Jython`_ is organized for beginners as well as advanced users of the language. The book provides a general overview of the Jython language itself, but it also includes intermediate and advanced topics regarding database, web, and GUI applications; frameworks; and integration, concurrency, and parallelism, to name a few.
+
+This book is available in open-source format at `jythonbook.com`_.
+
+**Websphere Application Server Administration Using Jython** (January 30, 2010)
+
+Utilizing Jython scripting, you can dramatically reduce the effort, resources, and expense associated with managing WebSphere Application Server. WebSphere Application Server Administration Using Jython will show you how.  Read more about it at `ibmpressbooks.com`_ today.
+
+**Project Sikuli Released** (January 28, 2010)
+
+Sikuli is a visual technology to search and automate graphical user interfaces (GUI) using images (screenshots). The first release of Sikuli contains Sikuli Script, a visual scripting API for Jython, and Sikuli IDE, an integrated development environment for writing visual scripts with screenshots easily. Sikuli Script automates anything you see on the screen without internal API's support. You can programmatically control a web page, a desktop application running on Windows/Linux/Mac OS X, or even an iphone application running in an emulator.  For more information, please visit the `Sikuli`_ project site.
+
+
+**Jython Doc Set Updated** (November 08, 2009)
+
+The Jython `documentation`_ set has been updated to include all modules contained within the Jython standard library.  However, it should be noted that this is still a work in progress since many of these documents have not yet been parsed and tested completely with Jython 2.5.1.  Stay tuned for more updates on the doc set!
+
+Please report all found bugs to the `jython bug tracker`_.
+
+
+Jython 2.5 Documentation
+------------------------
+
+The documentation for Jython 2.5 is being developed on our wiki_.  Please help
+Jython by adding content and updating our wiki. As the content matures for 2.5
+it will be pulled back into this website.
+
+You may also wish to check the `jython-users`_ mailing list archives as many questions and answers can be found there.
+
+
+.. _wiki: http://wiki.python.org/jython
+.. _Jython 2.1: ./archive/21/index.html
+.. _Jython 2.2: ./archive/22/index.html
+.. _Installation instructions: http://wiki.python.org/jython/InstallationInstructions
+.. _Download location: http://downloads.sourceforge.net/jython/jython_installer-2.2.1.jar
+.. _jython-users: http://sourceforge.net/mailarchive/forum.php?forum_name=jython-users
+.. _jython bug tracker: http://bugs.jython.org/
+.. _jython-users subscribe: https://lists.sourceforge.net/lists/listinfo/jython-users
+.. _wiki examples page: http://wiki.python.org/jython/DocumentationAndEducation
+.. _"The Definitive Guide to Jython": http://developers.apress.com/book/view/9781430225270
+.. _Download 2.5.1 rc1 today: https://sourceforge.net/projects/jython/files/jython/2.5.1rc1/jython_installer-2.5.1rc1.jar/download
+.. _wiki instructions: http://wiki.python.org/jython/InstallationInstructions
+.. _Download 2.5.1 rc2 today: https://sourceforge.net/projects/jython/files/jython-dev/2.5.1rc2/jython_installer-2.5.1rc2.jar/download
+.. _Jython 2.5.1: https://sourceforge.net/projects/jython/files/jython/2.5.1/jython_installer-2.5.1.jar/download
+.. _Download 2.5.1 rc3: https://sourceforge.net/projects/jython/files/jython-dev/2.5.1rc3/jython_installer-2.5.1rc3.jar/download
+.. _django-jython: http://code.google.com/p/django-jython/
+.. _ibmpressbooks.com: http://www.ibmpressbooks.com/bookstore/product.asp?isbn=9780137009527
+.. _Sikuli:  http://groups.csail.mit.edu/uid/sikuli/
+.. _documentation: http://jython.org/currentdocs.html
+.. _The Definitive Guide to Jython: http://apress.com/book/view/9781430225270
+.. _jythonbook.com:  http://jythonbook.com
+.. _this post: http://blog.springpython.webfactional.com/2009/10/15/see-how-spring-python-works-with-jython/
+.. _Release Notes: http://www.jython.org/latest.html
+.. _the bug tracker: http://bugs.jython.org
+.. _download the installer by clicking here: http://sourceforge.net/projects/jython/files/jython/2.5.2/jython_installer-2.5.2.jar/download
+.. _Django-Jython project: http://code.google.com/p/django-jython/
+.. _Visit Post - Jython Dev Notes Part 1: http://fwierzbicki.blogspot.com/2012/01/jython-dev-notes-part-i-jython-exposer.html
+.. _Visit Post - Jython Dev Notes Part 2: http://fwierzbicki.blogspot.com/2012/02/jython-dev-notes-part-ii-adding-new.html
+.. _See More About Jenkins Jython Plugin: https://wiki.jenkins-ci.org/display/JENKINS/Jython+Plugin
+.. _installation instructions: http://wiki.python.org/jython/InstallationInstructions
+.. _2.7a1 release here: http://sourceforge.net/projects/jython/files/jython-dev/2.7.0a1/jython_installer-2.7a1.jar/download5
+.. _blog post on the 2.7a1 release: http://fwierzbicki.blogspot.co.uk/2012/05/jython-27-alpha1-released.html
+.. _2.7a2 release here: http://sourceforge.net/projects/jython/files/jython-dev/2.7.0a2/jython_installer-2.7a2.jar/download5
+.. _blog post on the 2.7a2 release: http://fwierzbicki.blogspot.com/2012/05/on-behalf-of-jython-development-team-im.html
+.. _Download PyDev 2.6.0: http://pydev.org/download.html
+.. _PyDev Site: http://pydev.org
+.. _Customizing ProxyMaker: http://darjus.blogspot.com/2013/01/customizing-jython-proxymaker.html
+.. _Jython 101 - Part 1: http://www.oraclejavamagazine-digital.com/javamagazine_open/20130304#pg67
+.. _Jython 101 - Part 2: http://www.oraclejavamagazine-digital.com/javamagazine_open/20130506#pg83
+.. _NEWS: 
+.. _JyNI.org: http://jyni.org
+

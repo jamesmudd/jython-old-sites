@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.4. getopt — Parser for command line options &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="15. Generic Operating System Services" href="allos.html" />
+    <link rel="next" title="15.5. logging — Logging facility for Python" href="logging.html" />
+    <link rel="prev" title="15.3. optparse — More powerful command line option parser" href="optparse.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="logging.html" title="15.5. logging — Logging facility for Python"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="optparse.html" title="15.3. optparse — More powerful command line option parser"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="allos.html" accesskey="U">15. Generic Operating System Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="optparse.html"
+                                  title="previous chapter">15.3. <tt class="docutils literal"><span class="pre">optparse</span></tt> &#8212; More powerful command line option parser</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="logging.html"
+                                  title="next chapter">15.5. <tt class="docutils literal"><span class="pre">logging</span></tt> &#8212; Logging facility for Python</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/getopt.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getopt-parser-for-command-line-options">
+<h1>15.4. <tt class="docutils literal"><span class="pre">getopt</span></tt> &#8212; Parser for command line options<a class="headerlink" href="#getopt-parser-for-command-line-options" title="Permalink to this headline">¶</a></h1>
+<p>This module helps scripts to parse the command line arguments in
+<tt class="docutils literal"><span class="pre">sys.argv</span></tt>. It supports the same conventions as the Unix
+<tt class="docutils literal"><span class="pre">getopt()</span></tt> function (including the special meanings of arguments of
+the form &#8216;<tt class="docutils literal"><span class="pre">-</span></tt>&#8216; and &#8216;<tt class="docutils literal"><span class="pre">--</span></tt>&#8216;).  Long options similar to those
+supported by GNU software may be used as well via an optional third
+argument.</p>
+<p>A more convenient, flexible, and powerful alternative is the
+<tt class="docutils literal"><span class="pre">optparse</span></tt> module.</p>
+<p>This module provides two functions and an exception:</p>
+<p>getopt.getopt(args, options[, long_options])</p>
+<blockquote>
+<p>Parses command line options and parameter list.  <em>args</em> is the
+argument list to be parsed, without the leading reference to the
+running program. Typically, this means <tt class="docutils literal"><span class="pre">sys.argv[1:]</span></tt>. <em>options</em>
+is the string of option letters that the script wants to recognize,
+with options that require an argument followed by a colon (<tt class="docutils literal"><span class="pre">':'</span></tt>;
+i.e., the same format that Unix <tt class="docutils literal"><span class="pre">getopt()</span></tt> uses).</p>
+<dl class="docutils">
+<dt>Note: Unlike GNU <tt class="docutils literal"><span class="pre">getopt()</span></tt>, after a non-option argument, all further</dt>
+<dd>arguments are considered also non-options. This is similar to the
+way non-GNU Unix systems work.</dd>
+</dl>
+<p><em>long_options</em>, if specified, must be a list of strings with the
+names of the long options which should be supported.  The leading
+<tt class="docutils literal"><span class="pre">'-``</span></tt>-&#8216;`` characters should not be included in the option name.
+Long options which require an argument should be followed by an
+equal sign (<tt class="docutils literal"><span class="pre">'='</span></tt>).  To accept only long options, <em>options</em>
+should be an empty string.  Long options on the command line can be
+recognized so long as they provide a prefix of the option name that
+matches exactly one of the accepted options.  For example, if
+<em>long_options</em> is <tt class="docutils literal"><span class="pre">['foo',</span> <span class="pre">'frob']</span></tt>, the option <em>&#8211;fo</em> will match
+as <em>&#8211;foo</em>, but <em>&#8211;f</em> will not match uniquely, so <tt class="docutils literal"><span class="pre">GetoptError</span></tt>
+will be raised.</p>
+<p>The return value consists of two elements: the first is a list of
+<tt class="docutils literal"><span class="pre">(option,</span> <span class="pre">value)</span></tt> pairs; the second is the list of program
+arguments left after the option list was stripped (this is a
+trailing slice of <em>args</em>).  Each option-and-value pair returned has
+the option as its first element, prefixed with a hyphen for short
+options (e.g., <tt class="docutils literal"><span class="pre">'-x'</span></tt>) or two hyphens for long options (e.g.,
+<tt class="docutils literal"><span class="pre">'-``</span></tt>-long-option&#8217;<a href="#id1"><span class="problematic" id="id2">``</span></a>), and the option argument as its second
+element, or an empty string if the option has no argument.  The
+options occur in the list in the same order in which they were
+found, thus allowing multiple occurrences.  Long and short options
+may be mixed.</p>
+</blockquote>
+<p>getopt.gnu_getopt(args, options[, long_options])</p>
+<blockquote>
+<p>This function works like <tt class="docutils literal"><span class="pre">getopt()</span></tt>, except that GNU style
+scanning mode is used by default. This means that option and non-
+option arguments may be intermixed. The <tt class="docutils literal"><span class="pre">getopt()</span></tt> function stops
+processing options as soon as a non-option argument is encountered.</p>
+<p>If the first character of the option string is &#8216;+&#8217;, or if the
+environment variable <strong>POSIXLY_CORRECT</strong> is set, then option
+processing stops as soon as a non-option argument is encountered.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>exception exception getopt.GetoptError</p>
+<blockquote>
+<p>This is raised when an unrecognized option is found in the argument
+list or when an option requiring an argument is given none. The
+argument to the exception is a string indicating the cause of the
+error.  For long options, an argument given to an option which does
+not require one will also cause this exception to be raised.  The
+attributes <tt class="docutils literal"><span class="pre">msg</span></tt> and <tt class="docutils literal"><span class="pre">opt</span></tt> give the error message and related
+option; if there is no specific option to which the exception
+relates, <tt class="docutils literal"><span class="pre">opt</span></tt> is an empty string.</p>
+<p>Changed in version 1.6: Introduced <tt class="docutils literal"><span class="pre">GetoptError</span></tt> as a synonym for
+<tt class="docutils literal"><span class="pre">error</span></tt>.</p>
+</blockquote>
+<p>exception exception getopt.error</p>
+<blockquote>
+Alias for <tt class="docutils literal"><span class="pre">GetoptError</span></tt>; for backward compatibility.</blockquote>
+<p>An example using only Unix style options:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">getopt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">args</span> <span class="o">=</span> <span class="s">&#39;-a -b -cfoo -d bar a1 a2&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">args</span>
+<span class="go">[&#39;-a&#39;, &#39;-b&#39;, &#39;-cfoo&#39;, &#39;-d&#39;, &#39;bar&#39;, &#39;a1&#39;, &#39;a2&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">optlist</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">getopt</span><span class="o">.</span><span class="n">getopt</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s">&#39;abc:d:&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">optlist</span>
+<span class="go">[(&#39;-a&#39;, &#39;&#39;), (&#39;-b&#39;, &#39;&#39;), (&#39;-c&#39;, &#39;foo&#39;), (&#39;-d&#39;, &#39;bar&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">args</span>
+<span class="go">[&#39;a1&#39;, &#39;a2&#39;]</span>
+</pre></div>
+</div>
+<p>Using long option names is equally easy:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="s">&#39;--condition=foo --testing --output-file abc.def -x a1 a2&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">args</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">args</span>
+<span class="go">[&#39;--condition=foo&#39;, &#39;--testing&#39;, &#39;--output-file&#39;, &#39;abc.def&#39;, &#39;-x&#39;, &#39;a1&#39;, &#39;a2&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">optlist</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">getopt</span><span class="o">.</span><span class="n">getopt</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="s">&#39;condition=&#39;</span><span class="p">,</span> <span class="s">&#39;output-file=&#39;</span><span class="p">,</span> <span class="s">&#39;testing&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">optlist</span>
+<span class="go">[(&#39;--condition&#39;, &#39;foo&#39;), (&#39;--testing&#39;, &#39;&#39;), (&#39;--output-file&#39;, &#39;abc.def&#39;), (&#39;-x&#39;, &#39;&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">args</span>
+<span class="go">[&#39;a1&#39;, &#39;a2&#39;]</span>
+</pre></div>
+</div>
+<p>In a script, typical usage is something like this:</p>
+<blockquote>
+<p>import getopt, sys</p>
+<dl class="docutils">
+<dt>def main():</dt>
+<dd><dl class="first docutils">
+<dt>try:</dt>
+<dd>opts, args = getopt.getopt(sys.argv[1:], &#8220;ho:v&#8221;, [&#8220;help&#8221;, &#8220;output=&#8221;])</dd>
+<dt>except getopt.GetoptError, err:</dt>
+<dd># print help information and exit:
+print str(err) # will print something like &#8220;option -a not recognized&#8221;
+usage()
+sys.exit(2)</dd>
+</dl>
+<p>output = None
+verbose = False
+for o, a in opts:</p>
+<blockquote>
+<dl class="docutils">
+<dt>if o == &#8220;-v&#8221;:</dt>
+<dd>verbose = True</dd>
+<dt>elif o in (&#8220;-h&#8221;, &#8220;&#8211;help&#8221;):</dt>
+<dd>usage()
+sys.exit()</dd>
+<dt>elif o in (&#8220;-o&#8221;, &#8220;&#8211;output&#8221;):</dt>
+<dd>output = a</dd>
+<dt>else:</dt>
+<dd>assert False, &#8220;unhandled option&#8221;</dd>
+</dl>
+</blockquote>
+<p class="last"># ...</p>
+</dd>
+<dt>if __name__ == &#8220;__main__&#8221;:</dt>
+<dd>main()</dd>
+</dl>
+</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">optparse</span></tt></dt>
+<dd>More object-oriented command line option parsing.</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="logging.html" title="15.5. logging — Logging facility for Python"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="optparse.html" title="15.3. optparse — More powerful command line option parser"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="allos.html" >15. Generic Operating System Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

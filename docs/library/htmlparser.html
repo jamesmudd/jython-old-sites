@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>19.1. HTMLParser — Simple HTML and XHTML parser &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="19. Structured Markup Processing Tools" href="markup.html" />
+    <link rel="next" title="19.2. sgmllib — Simple SGML parser" href="sgmllib.html" />
+    <link rel="prev" title="19. Structured Markup Processing Tools" href="markup.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="sgmllib.html" title="19.2. sgmllib — Simple SGML parser"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="markup.html" title="19. Structured Markup Processing Tools"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="markup.html" accesskey="U">19. Structured Markup Processing Tools</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">19.1. <tt class="docutils literal"><span class="pre">HTMLParser</span></tt> &#8212; Simple HTML and XHTML parser</a><ul>
+<li><a class="reference external" href="#example-html-parser-application">19.1.1. Example HTML Parser Application</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="markup.html"
+                                  title="previous chapter">19. Structured Markup Processing Tools</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="sgmllib.html"
+                                  title="next chapter">19.2. <tt class="docutils literal docutils literal"><span class="pre">sgmllib</span></tt> &#8212; Simple SGML parser</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/htmlparser.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="htmlparser-simple-html-and-xhtml-parser">
+<h1>19.1. <tt class="docutils literal"><span class="pre">HTMLParser</span></tt> &#8212; Simple HTML and XHTML parser<a class="headerlink" href="#htmlparser-simple-html-and-xhtml-parser" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">HTMLParser</span></tt> module has been renamed to <tt class="docutils literal"><span class="pre">html.parser</span></tt> in</dt>
+<dd>Python 3.0.  The <em>2to3</em> tool will automatically adapt imports when
+converting your sources to 3.0.</dd>
+</dl>
+<p>New in version 2.2.</p>
+<p>This module defines a class <tt class="docutils literal"><span class="pre">HTMLParser</span></tt> which serves as the basis
+for parsing text files formatted in HTML (HyperText Mark-up Language)
+and XHTML. Unlike the parser in <tt class="docutils literal"><span class="pre">htmllib</span></tt>, this parser is not based
+on the SGML parser in <tt class="docutils literal"><span class="pre">sgmllib</span></tt>.</p>
+<p>class class HTMLParser.HTMLParser</p>
+<blockquote>
+<p>The <tt class="docutils literal"><span class="pre">HTMLParser</span></tt> class is instantiated without arguments.</p>
+<p>An <tt class="docutils literal"><span class="pre">HTMLParser</span></tt> instance is fed HTML data and calls handler
+functions when tags begin and end.  The <tt class="docutils literal"><span class="pre">HTMLParser</span></tt> class is
+meant to be overridden by the user to provide a desired behavior.</p>
+<p>Unlike the parser in <tt class="docutils literal"><span class="pre">htmllib</span></tt>, this parser does not check that
+end tags match start tags or call the end-tag handler for elements
+which are closed implicitly by closing an outer element.</p>
+</blockquote>
+<p>An exception is defined as well:</p>
+<p>exception exception HTMLParser.HTMLParseError</p>
+<blockquote>
+Exception raised by the <tt class="docutils literal"><span class="pre">HTMLParser</span></tt> class when it encounters an
+error while parsing.  This exception provides three attributes:
+<tt class="docutils literal"><span class="pre">msg</span></tt> is a brief message explaining the error, <tt class="docutils literal"><span class="pre">lineno</span></tt> is the
+number of the line on which the broken construct was detected, and
+<tt class="docutils literal"><span class="pre">offset</span></tt> is the number of characters into the line at which the
+construct starts.</blockquote>
+<p><tt class="docutils literal"><span class="pre">HTMLParser</span></tt> instances have the following methods:</p>
+<p>HTMLParser.reset()</p>
+<blockquote>
+Reset the instance.  Loses all unprocessed data.  This is called
+implicitly at instantiation time.</blockquote>
+<p>HTMLParser.feed(data)</p>
+<blockquote>
+Feed some text to the parser.  It is processed insofar as it
+consists of complete elements; incomplete data is buffered until
+more data is fed or <tt class="docutils literal"><span class="pre">close()</span></tt> is called.</blockquote>
+<p>HTMLParser.close()</p>
+<blockquote>
+Force processing of all buffered data as if it were followed by an
+end-of-file mark.  This method may be redefined by a derived class
+to define additional processing at the end of the input, but the
+redefined version should always call the <tt class="docutils literal"><span class="pre">HTMLParser</span></tt> base class
+method <tt class="docutils literal"><span class="pre">close()</span></tt>.</blockquote>
+<p>HTMLParser.getpos()</p>
+<blockquote>
+Return current line number and offset.</blockquote>
+<p>HTMLParser.get_starttag_text()</p>
+<blockquote>
+Return the text of the most recently opened start tag.  This should
+not normally be needed for structured processing, but may be useful
+in dealing with HTML &#8220;as deployed&#8221; or for re-generating input with
+minimal changes (whitespace between attributes can be preserved,
+etc.).</blockquote>
+<p>HTMLParser.handle_starttag(tag, attrs)</p>
+<blockquote>
+<p>This method is called to handle the start of a tag.  It is intended
+to be overridden by a derived class; the base class implementation
+does nothing.</p>
+<p>The <em>tag</em> argument is the name of the tag converted to lower case.
+The <em>attrs</em> argument is a list of <tt class="docutils literal"><span class="pre">(name,</span> <span class="pre">value)</span></tt> pairs
+containing the attributes found inside the tag&#8217;s <tt class="docutils literal"><span class="pre">&lt;&gt;</span></tt> brackets.
+The <em>name</em> will be translated to lower case, and quotes in the
+<em>value</em> have been removed, and character and entity references have
+been replaced.  For instance, for the tag <tt class="docutils literal"><span class="pre">&lt;A</span>
+<span class="pre">HREF=&quot;http://www.cwi.nl/&quot;&gt;</span></tt>, this method would be called as
+<tt class="docutils literal"><span class="pre">handle_starttag('a',</span> <span class="pre">[('href',</span> <span class="pre">'http://www.cwi.nl/')])</span></tt>.</p>
+<p>Changed in version 2.6: All entity references from
+<tt class="docutils literal"><span class="pre">htmlentitydefs</span></tt> are now replaced in the attribute values.</p>
+</blockquote>
+<p>HTMLParser.handle_startendtag(tag, attrs)</p>
+<blockquote>
+Similar to <tt class="docutils literal"><span class="pre">handle_starttag()</span></tt>, but called when the parser
+encounters an XHTML-style empty tag (<tt class="docutils literal"><span class="pre">&lt;a</span> <span class="pre">.../&gt;</span></tt>).  This method
+may be overridden by subclasses which require this particular
+lexical information; the default implementation simple calls
+<tt class="docutils literal"><span class="pre">handle_starttag()</span></tt> and <tt class="docutils literal"><span class="pre">handle_endtag()</span></tt>.</blockquote>
+<p>HTMLParser.handle_endtag(tag)</p>
+<blockquote>
+This method is called to handle the end tag of an element.  It is
+intended to be overridden by a derived class; the base class
+implementation does nothing.  The <em>tag</em> argument is the name of the
+tag converted to lower case.</blockquote>
+<p>HTMLParser.handle_data(data)</p>
+<blockquote>
+This method is called to process arbitrary data.  It is intended to
+be overridden by a derived class; the base class implementation
+does nothing.</blockquote>
+<p>HTMLParser.handle_charref(name)</p>
+<blockquote>
+This method is called to process a character reference of the form
+<tt class="docutils literal"><span class="pre">&amp;#ref;</span></tt>. It is intended to be overridden by a derived class; the
+base class implementation does nothing.</blockquote>
+<p>HTMLParser.handle_entityref(name)</p>
+<blockquote>
+This method is called to process a general entity reference of the
+form <tt class="docutils literal"><span class="pre">&amp;name;</span></tt> where <em>name</em> is an general entity reference.  It is
+intended to be overridden by a derived class; the base class
+implementation does nothing.</blockquote>
+<p>HTMLParser.handle_comment(data)</p>
+<blockquote>
+This method is called when a comment is encountered.  The <em>comment</em>
+argument is a string containing the text between the <tt class="docutils literal"><span class="pre">--</span></tt> and
+<tt class="docutils literal"><span class="pre">--</span></tt> delimiters, but not the delimiters themselves.  For example,
+the comment <tt class="docutils literal"><span class="pre">&lt;!--text--&gt;</span></tt> will cause this method to be called
+with the argument <tt class="docutils literal"><span class="pre">'text'</span></tt>.  It is intended to be overridden by a
+derived class; the base class implementation does nothing.</blockquote>
+<p>HTMLParser.handle_decl(decl)</p>
+<blockquote>
+Method called when an SGML declaration is read by the parser.  The
+<em>decl</em> parameter will be the entire contents of the declaration
+inside the <tt class="docutils literal"><span class="pre">&lt;!</span></tt>...``&gt;`` markup.  It is intended to be overridden
+by a derived class; the base class implementation does nothing.</blockquote>
+<p>HTMLParser.handle_pi(data)</p>
+<blockquote>
+<p>Method called when a processing instruction is encountered.  The
+<em>data</em> parameter will contain the entire processing instruction.
+For example, for the processing instruction <tt class="docutils literal"><span class="pre">&lt;?proc</span>
+<span class="pre">color='red'&gt;</span></tt>, this method would be called as <tt class="docutils literal"><span class="pre">handle_pi(&quot;proc</span>
+<span class="pre">color='red'&quot;)</span></tt>.  It is intended to be overridden by a derived
+class; the base class implementation does nothing.</p>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">HTMLParser</span></tt> class uses the SGML syntactic rules for</dt>
+<dd>processing instructions.  An XHTML processing instruction using
+the trailing <tt class="docutils literal"><span class="pre">'?'</span></tt> will cause the <tt class="docutils literal"><span class="pre">'?'</span></tt> to be included in
+<em>data</em>.</dd>
+</dl>
+</blockquote>
+<div class="section" id="example-html-parser-application">
+<h2>19.1.1. Example HTML Parser Application<a class="headerlink" href="#example-html-parser-application" title="Permalink to this headline">¶</a></h2>
+<p>As a basic example, below is a very basic HTML parser that uses the
+<tt class="docutils literal"><span class="pre">HTMLParser</span></tt> class to print out tags as they are encountered:</p>
+<blockquote>
+<p>from HTMLParser import HTMLParser</p>
+<p>class MyHTMLParser(HTMLParser):</p>
+<blockquote>
+<dl class="docutils">
+<dt>def handle_starttag(self, tag, attrs):</dt>
+<dd>print &#8220;Encountered the beginning of a %s tag&#8221; % tag</dd>
+<dt>def handle_endtag(self, tag):</dt>
+<dd>print &#8220;Encountered the end of a %s tag&#8221; % tag</dd>
+</dl>
+</blockquote>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sgmllib.html" title="19.2. sgmllib — Simple SGML parser"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="markup.html" title="19. Structured Markup Processing Tools"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="markup.html" >19. Structured Markup Processing Tools</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

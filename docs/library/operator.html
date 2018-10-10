@@ -1,0 +1,733 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9.7. operator — Standard operators as functions &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="9. Numeric and Mathematical Modules" href="numeric.html" />
+    <link rel="next" title="10. File and Directory Access" href="filesys.html" />
+    <link rel="prev" title="9.6. functools — Higher order functions and operations on callable objects" href="functools.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="filesys.html" title="10. File and Directory Access"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="functools.html" title="9.6. functools — Higher order functions and operations on callable objects"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="numeric.html" accesskey="U">9. Numeric and Mathematical Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">9.7. <tt class="docutils literal"><span class="pre">operator</span></tt> &#8212; Standard operators as functions</a><ul>
+<li><a class="reference external" href="#mapping-operators-to-functions">9.7.1. Mapping Operators to Functions</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="functools.html"
+                                  title="previous chapter">9.6. <tt class="docutils literal docutils literal docutils literal"><span class="pre">functools</span></tt> &#8212; Higher order functions and operations on callable objects</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="filesys.html"
+                                  title="next chapter">10. File and Directory Access</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/operator.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="operator-standard-operators-as-functions">
+<h1>9.7. <tt class="docutils literal"><span class="pre">operator</span></tt> &#8212; Standard operators as functions<a class="headerlink" href="#operator-standard-operators-as-functions" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">operator</span></tt> module exports a set of functions implemented in C
+corresponding to the intrinsic operators of Python.  For example,
+<tt class="docutils literal"><span class="pre">operator.add(x,</span> <span class="pre">y)</span></tt> is equivalent to the expression <tt class="docutils literal"><span class="pre">x+y</span></tt>.  The
+function names are those used for special class methods; variants
+without leading and trailing <tt class="docutils literal"><span class="pre">__</span></tt> are also provided for convenience.</p>
+<p>The functions fall into categories that perform object comparisons,
+logical operations, mathematical operations, sequence operations, and
+abstract type tests.</p>
+<p>The object comparison functions are useful for all objects, and are
+named after the rich comparison operators they support:</p>
+<p>operator.lt(a, b)
+operator.le(a, b)
+operator.eq(a, b)
+operator.ne(a, b)
+operator.ge(a, b)
+operator.gt(a, b)
+operator.__lt__(a, b)
+operator.__le__(a, b)
+operator.__eq__(a, b)
+operator.__ne__(a, b)
+operator.__ge__(a, b)
+operator.__gt__(a, b)</p>
+<blockquote>
+<p>Perform &#8220;rich comparisons&#8221; between <em>a</em> and <em>b</em>. Specifically,
+<tt class="docutils literal"><span class="pre">lt(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">&lt;</span> <span class="pre">b</span></tt>, <tt class="docutils literal"><span class="pre">le(a,</span> <span class="pre">b)</span></tt> is equivalent
+to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">&lt;=</span> <span class="pre">b</span></tt>, <tt class="docutils literal"><span class="pre">eq(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">==</span> <span class="pre">b</span></tt>, <tt class="docutils literal"><span class="pre">ne(a,</span>
+<span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">!=</span> <span class="pre">b</span></tt>, <tt class="docutils literal"><span class="pre">gt(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span>
+<span class="pre">&gt;</span> <span class="pre">b</span></tt> and <tt class="docutils literal"><span class="pre">ge(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">&gt;=</span> <span class="pre">b</span></tt>.  Note that
+unlike the built-in <tt class="docutils literal"><span class="pre">cmp()</span></tt>, these functions can return any
+value, which may or may not be interpretable as a Boolean value.
+See <em>Comparisons</em> for more information about rich comparisons.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>The logical operations are also generally applicable to all objects,
+and support truth tests, identity tests, and boolean operations:</p>
+<p>operator.not_(obj)
+operator.__not__(obj)</p>
+<blockquote>
+Return the outcome of <tt class="docutils literal"><span class="pre">not</span></tt> <em>obj</em>.  (Note that there is no
+<tt class="docutils literal"><span class="pre">__not__()</span></tt> method for object instances; only the interpreter
+core defines this operation.  The result is affected by the
+<tt class="docutils literal"><span class="pre">__nonzero__()</span></tt> and <tt class="docutils literal"><span class="pre">__len__()</span></tt> methods.)</blockquote>
+<p>operator.truth(obj)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>obj</em> is true, and <tt class="xref docutils literal"><span class="pre">False</span></tt> otherwise.  This is
+equivalent to using the <tt class="docutils literal"><span class="pre">bool</span></tt> constructor.</blockquote>
+<p>operator.is_(a, b)</p>
+<blockquote>
+<p>Return <tt class="docutils literal"><span class="pre">a</span> <span class="pre">is</span> <span class="pre">b</span></tt>.  Tests object identity.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>operator.is_not(a, b)</p>
+<blockquote>
+<p>Return <tt class="docutils literal"><span class="pre">a</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">b</span></tt>.  Tests object identity.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>The mathematical and bitwise operations are the most numerous:</p>
+<p>operator.abs(obj)
+operator.__abs__(obj)</p>
+<blockquote>
+Return the absolute value of <em>obj</em>.</blockquote>
+<p>operator.add(a, b)
+operator.__add__(a, b)</p>
+<blockquote>
+Return <tt class="docutils literal"><span class="pre">a</span> <span class="pre">+</span> <span class="pre">b</span></tt>, for <em>a</em> and <em>b</em> numbers.</blockquote>
+<p>operator.and_(a, b)
+operator.__and__(a, b)</p>
+<blockquote>
+Return the bitwise and of <em>a</em> and <em>b</em>.</blockquote>
+<p>operator.div(a, b)
+operator.__div__(a, b)</p>
+<blockquote>
+Return <tt class="docutils literal"><span class="pre">a</span> <span class="pre">/</span> <span class="pre">b</span></tt> when <tt class="docutils literal"><span class="pre">__future__.division</span></tt> is not in effect.
+This is also known as &#8220;classic&#8221; division.</blockquote>
+<p>operator.floordiv(a, b)
+operator.__floordiv__(a, b)</p>
+<blockquote>
+<p>Return <tt class="docutils literal"><span class="pre">a</span> <span class="pre">//</span> <span class="pre">b</span></tt>.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>operator.inv(obj)
+operator.invert(obj)
+operator.__inv__(obj)
+operator.__invert__(obj)</p>
+<blockquote>
+<p>Return the bitwise inverse of the number <em>obj</em>.  This is equivalent
+to <tt class="docutils literal"><span class="pre">~obj</span></tt>.</p>
+<p>New in version 2.0: The names <tt class="docutils literal"><span class="pre">invert()</span></tt> and <tt class="docutils literal"><span class="pre">__invert__()</span></tt>.</p>
+</blockquote>
+<p>operator.lshift(a, b)
+operator.__lshift__(a, b)</p>
+<blockquote>
+Return <em>a</em> shifted left by <em>b</em>.</blockquote>
+<p>operator.mod(a, b)
+operator.__mod__(a, b)</p>
+<blockquote>
+Return <tt class="docutils literal"><span class="pre">a</span> <span class="pre">%</span> <span class="pre">b</span></tt>.</blockquote>
+<p>operator.mul(a, b)
+operator.__mul__(a, b)</p>
+<blockquote>
+Return <tt class="docutils literal"><span class="pre">a</span> <span class="pre">*</span> <span class="pre">b</span></tt>, for <em>a</em> and <em>b</em> numbers.</blockquote>
+<p>operator.neg(obj)
+operator.__neg__(obj)</p>
+<blockquote>
+Return <em>obj</em> negated.</blockquote>
+<p>operator.or_(a, b)
+operator.__or__(a, b)</p>
+<blockquote>
+Return the bitwise or of <em>a</em> and <em>b</em>.</blockquote>
+<p>operator.pos(obj)
+operator.__pos__(obj)</p>
+<blockquote>
+Return <em>obj</em> positive.</blockquote>
+<p>operator.pow(a, b)
+operator.__pow__(a, b)</p>
+<blockquote>
+<p>Return <tt class="docutils literal"><span class="pre">a</span> <span class="pre">**</span> <span class="pre">b</span></tt>, for <em>a</em> and <em>b</em> numbers.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>operator.rshift(a, b)
+operator.__rshift__(a, b)</p>
+<blockquote>
+Return <em>a</em> shifted right by <em>b</em>.</blockquote>
+<p>operator.sub(a, b)
+operator.__sub__(a, b)</p>
+<blockquote>
+Return <tt class="docutils literal"><span class="pre">a</span> <span class="pre">-</span> <span class="pre">b</span></tt>.</blockquote>
+<p>operator.truediv(a, b)
+operator.__truediv__(a, b)</p>
+<blockquote>
+<p>Return <tt class="docutils literal"><span class="pre">a</span> <span class="pre">/</span> <span class="pre">b</span></tt> when <tt class="docutils literal"><span class="pre">__future__.division</span></tt> is in effect.  This
+is also known as &#8220;true&#8221; division.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>operator.xor(a, b)
+operator.__xor__(a, b)</p>
+<blockquote>
+Return the bitwise exclusive or of <em>a</em> and <em>b</em>.</blockquote>
+<p>operator.index(a)
+operator.__index__(a)</p>
+<blockquote>
+<p>Return <em>a</em> converted to an integer.  Equivalent to
+<tt class="docutils literal"><span class="pre">a.__index__()</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>Operations which work with sequences include:</p>
+<p>operator.concat(a, b)
+operator.__concat__(a, b)</p>
+<blockquote>
+Return <tt class="docutils literal"><span class="pre">a</span> <span class="pre">+</span> <span class="pre">b</span></tt> for <em>a</em> and <em>b</em> sequences.</blockquote>
+<p>operator.contains(a, b)
+operator.__contains__(a, b)</p>
+<blockquote>
+<p>Return the outcome of the test <tt class="docutils literal"><span class="pre">b</span> <span class="pre">in</span> <span class="pre">a</span></tt>. Note the reversed
+operands.</p>
+<p>New in version 2.0: The name <tt class="docutils literal"><span class="pre">__contains__()</span></tt>.</p>
+</blockquote>
+<p>operator.countOf(a, b)</p>
+<blockquote>
+Return the number of occurrences of <em>b</em> in <em>a</em>.</blockquote>
+<p>operator.delitem(a, b)
+operator.__delitem__(a, b)</p>
+<blockquote>
+Remove the value of <em>a</em> at index <em>b</em>.</blockquote>
+<p>operator.delslice(a, b, c)
+operator.__delslice__(a, b, c)</p>
+<blockquote>
+<p>Delete the slice of <em>a</em> from index <em>b</em> to index <em>c-1</em>.</p>
+<p>Deprecated since version 2.6: This function is removed in Python
+3.0.  Use <tt class="docutils literal"><span class="pre">delitem()</span></tt> with a slice index.</p>
+</blockquote>
+<p>operator.getitem(a, b)
+operator.__getitem__(a, b)</p>
+<blockquote>
+Return the value of <em>a</em> at index <em>b</em>.</blockquote>
+<p>operator.getslice(a, b, c)
+operator.__getslice__(a, b, c)</p>
+<blockquote>
+<p>Return the slice of <em>a</em> from index <em>b</em> to index <em>c-1</em>.</p>
+<p>Deprecated since version 2.6: This function is removed in Python
+3.0.  Use <tt class="docutils literal"><span class="pre">getitem()</span></tt> with a slice index.</p>
+</blockquote>
+<p>operator.indexOf(a, b)</p>
+<blockquote>
+Return the index of the first of occurrence of <em>b</em> in <em>a</em>.</blockquote>
+<p>operator.repeat(a, b)
+operator.__repeat__(a, b)</p>
+<blockquote>
+<p>Deprecated since version 2.6: This function is removed in Python
+3.0.  Use <tt class="docutils literal"><span class="pre">__mul__()</span></tt> instead.</p>
+<p>Return <tt class="docutils literal"><span class="pre">a</span> <span class="pre">*</span> <span class="pre">b</span></tt> where <em>a</em> is a sequence and <em>b</em> is an integer.</p>
+</blockquote>
+<p>operator.sequenceIncludes(...)</p>
+<blockquote>
+<p>Deprecated since version 2.0: Use <tt class="docutils literal"><span class="pre">contains()</span></tt> instead.</p>
+<p>Alias for <tt class="docutils literal"><span class="pre">contains()</span></tt>.</p>
+</blockquote>
+<p>operator.setitem(a, b, c)
+operator.__setitem__(a, b, c)</p>
+<blockquote>
+Set the value of <em>a</em> at index <em>b</em> to <em>c</em>.</blockquote>
+<p>operator.setslice(a, b, c, v)
+operator.__setslice__(a, b, c, v)</p>
+<blockquote>
+<p>Set the slice of <em>a</em> from index <em>b</em> to index <em>c-1</em> to the sequence
+<em>v</em>.</p>
+<p>Deprecated since version 2.6: This function is removed in Python
+3.0.  Use <tt class="docutils literal"><span class="pre">setitem()</span></tt> with a slice index.</p>
+</blockquote>
+<p>Example use of operator functions:</p>
+<blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Elementwise multiplication</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">])</span>
+<span class="go">[0, 20, 60, 120]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Dot product</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">]))</span>
+<span class="go">200</span>
+</pre></div>
+</div>
+</blockquote>
+<p>Many operations have an &#8220;in-place&#8221; version.  The following functions
+provide a more primitive access to in-place operators than the usual
+syntax does; for example, the <em>statement</em> <tt class="docutils literal"><span class="pre">x</span> <span class="pre">+=</span> <span class="pre">y</span></tt> is equivalent to
+<tt class="docutils literal"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">operator.iadd(x,</span> <span class="pre">y)</span></tt>.  Another way to put it is to say that <tt class="docutils literal"><span class="pre">z</span>
+<span class="pre">=</span> <span class="pre">operator.iadd(x,</span> <span class="pre">y)</span></tt> is equivalent to the compound statement <tt class="docutils literal"><span class="pre">z</span> <span class="pre">=</span>
+<span class="pre">x;</span> <span class="pre">z</span> <span class="pre">+=</span> <span class="pre">y</span></tt>.</p>
+<p>operator.iadd(a, b)
+operator.__iadd__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">iadd(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">+=</span> <span class="pre">b</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.iand(a, b)
+operator.__iand__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">iand(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">&amp;=</span> <span class="pre">b</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.iconcat(a, b)
+operator.__iconcat__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">iconcat(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">+=</span> <span class="pre">b</span></tt> for <em>a</em> and <em>b</em>
+sequences.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.idiv(a, b)
+operator.__idiv__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">idiv(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">/=</span> <span class="pre">b</span></tt> when
+<tt class="docutils literal"><span class="pre">__future__.division</span></tt> is not in effect.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.ifloordiv(a, b)
+operator.__ifloordiv__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">ifloordiv(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">//=</span> <span class="pre">b</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.ilshift(a, b)
+operator.__ilshift__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">ilshift(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">&lt;````&lt;=</span> <span class="pre">b</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.imod(a, b)
+operator.__imod__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">imod(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">%=</span> <span class="pre">b</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.imul(a, b)
+operator.__imul__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">imul(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">*=</span> <span class="pre">b</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.ior(a, b)
+operator.__ior__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">ior(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">|=</span> <span class="pre">b</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.ipow(a, b)
+operator.__ipow__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">ipow(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">**=</span> <span class="pre">b</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.irepeat(a, b)
+operator.__irepeat__(a, b)</p>
+<blockquote>
+<p>Deprecated since version 2.6: This function is removed in Python
+3.0.  Use <tt class="docutils literal"><span class="pre">__imul__()</span></tt> instead.</p>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">irepeat(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">*=</span> <span class="pre">b</span></tt> where <em>a</em> is a
+sequence and <em>b</em> is an integer.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.irshift(a, b)
+operator.__irshift__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">irshift(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">&gt;&gt;=</span> <span class="pre">b</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.isub(a, b)
+operator.__isub__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">isub(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">-=</span> <span class="pre">b</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.itruediv(a, b)
+operator.__itruediv__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">itruediv(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">/=</span> <span class="pre">b</span></tt> when
+<tt class="docutils literal"><span class="pre">__future__.division</span></tt> is in effect.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>operator.ixor(a, b)
+operator.__ixor__(a, b)</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">ixor(a,</span> <span class="pre">b)</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">a</span> <span class="pre">^=</span> <span class="pre">b</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">operator</span></tt> module also defines a few predicates to test the type
+of objects; however, these are not all reliable.  It is preferable to
+test abstract base classes instead (see <tt class="docutils literal"><span class="pre">collections</span></tt> and
+<tt class="docutils literal"><span class="pre">numbers</span></tt> for details).</p>
+<p>operator.isCallable(obj)</p>
+<blockquote>
+<p>Deprecated since version 2.0: Use <tt class="docutils literal"><span class="pre">isinstance(x,</span>
+<span class="pre">collections.Callable)</span></tt> instead.</p>
+<p>Returns true if the object <em>obj</em> can be called like a function,
+otherwise it returns false.  True is returned for functions, bound
+and unbound methods, class objects, and instance objects which
+support the <tt class="docutils literal"><span class="pre">__call__()</span></tt> method.</p>
+</blockquote>
+<p>operator.isMappingType(obj)</p>
+<blockquote>
+<p>Deprecated since version 2.6: This function is removed in Python
+3.0.  Use <tt class="docutils literal"><span class="pre">isinstance(x,</span> <span class="pre">collections.Mapping)</span></tt> instead.</p>
+<p>Returns true if the object <em>obj</em> supports the mapping interface.
+This is true for dictionaries and all instance objects defining
+<tt class="docutils literal"><span class="pre">__getitem__()</span></tt>.</p>
+</blockquote>
+<p>operator.isNumberType(obj)</p>
+<blockquote>
+<p>Deprecated since version 2.6: This function is removed in Python
+3.0.  Use <tt class="docutils literal"><span class="pre">isinstance(x,</span> <span class="pre">numbers.Number)</span></tt> instead.</p>
+<p>Returns true if the object <em>obj</em> represents a number.  This is true
+for all numeric types implemented in C.</p>
+</blockquote>
+<p>operator.isSequenceType(obj)</p>
+<blockquote>
+<p>Deprecated since version 2.6: This function is removed in Python
+3.0.  Use <tt class="docutils literal"><span class="pre">isinstance(x,</span> <span class="pre">collections.Sequence)</span></tt> instead.</p>
+<p>Returns true if the object <em>obj</em> supports the sequence protocol.
+This returns true for all objects which define sequence methods in
+C, and for all instance objects defining <tt class="docutils literal"><span class="pre">__getitem__()</span></tt>.</p>
+</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">operator</span></tt> module also defines tools for generalized attribute
+and item lookups.  These are useful for making fast field extractors
+as arguments for <tt class="docutils literal"><span class="pre">map()</span></tt>, <tt class="docutils literal"><span class="pre">sorted()</span></tt>, <tt class="docutils literal"><span class="pre">itertools.groupby()</span></tt>, or
+other functions that expect a function argument.</p>
+<p>operator.attrgetter(attr[, args...])</p>
+<blockquote>
+<p>Return a callable object that fetches <em>attr</em> from its operand. If
+more than one attribute is requested, returns a tuple of
+attributes. After, <tt class="docutils literal"><span class="pre">f</span> <span class="pre">=</span> <span class="pre">attrgetter('name')</span></tt>, the call <tt class="docutils literal"><span class="pre">f(b)</span></tt>
+returns <tt class="docutils literal"><span class="pre">b.name</span></tt>.  After, <tt class="docutils literal"><span class="pre">f</span> <span class="pre">=</span> <span class="pre">attrgetter('name',</span> <span class="pre">'date')</span></tt>, the
+call <tt class="docutils literal"><span class="pre">f(b)</span></tt> returns <tt class="docutils literal"><span class="pre">(b.name,</span> <span class="pre">b.date)</span></tt>.</p>
+<p>The attribute names can also contain dots; after <tt class="docutils literal"><span class="pre">f</span> <span class="pre">=</span>
+<span class="pre">attrgetter('date.month')</span></tt>, the call <tt class="docutils literal"><span class="pre">f(b)</span></tt> returns
+<tt class="docutils literal"><span class="pre">b.date.month</span></tt>.</p>
+<p>New in version 2.4.</p>
+<p>Changed in version 2.5: Added support for multiple attributes.</p>
+<p>Changed in version 2.6: Added support for dotted attributes.</p>
+</blockquote>
+<p>operator.itemgetter(item[, args...])</p>
+<blockquote>
+<p>Return a callable object that fetches <em>item</em> from its operand using
+the operand&#8217;s <tt class="docutils literal"><span class="pre">__getitem__()</span></tt> method.  If multiple items are
+specified, returns a tuple of lookup values.  Equivalent to:</p>
+<blockquote>
+<dl class="docutils">
+<dt>def itemgetter(<a href="#id1"><span class="problematic" id="id2">*</span></a>items):</dt>
+<dd><dl class="first docutils">
+<dt>if len(items) == 1:</dt>
+<dd><p class="first">item = items[0]
+def g(obj):</p>
+<blockquote class="last">
+return obj[item]</blockquote>
+</dd>
+<dt>else:</dt>
+<dd><dl class="first last docutils">
+<dt>def g(obj):</dt>
+<dd>return tuple(obj[item] for item in items)</dd>
+</dl>
+</dd>
+</dl>
+<p class="last">return g</p>
+</dd>
+</dl>
+</blockquote>
+<p>The items can be any type accepted by the operand&#8217;s
+<tt class="docutils literal"><span class="pre">__getitem__()</span></tt> method.  Dictionaries accept any hashable value.
+Lists, tuples, and strings accept an index or a slice:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">)(</span><span class="s">&#39;ABCDEFG&#39;</span><span class="p">)</span>
+<span class="go">&#39;B&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)(</span><span class="s">&#39;ABCDEFG&#39;</span><span class="p">)</span>
+<span class="go">(&#39;B&#39;, &#39;D&#39;, &#39;F&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">itemgetter</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="bp">None</span><span class="p">))(</span><span class="s">&#39;ABCDEFG&#39;</span><span class="p">)</span>
+<span class="go">&#39;CDEFG&#39;</span>
+</pre></div>
+</div>
+<p>New in version 2.4.</p>
+<p>Changed in version 2.5: Added support for multiple item extraction.</p>
+<p>Example of using <tt class="docutils literal"><span class="pre">itemgetter()</span></tt> to retrieve specific fields from
+a tuple record:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">inventory</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;apple&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;banana&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;pear&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;orange&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getcount</span> <span class="o">=</span> <span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span><span class="p">(</span><span class="n">getcount</span><span class="p">,</span> <span class="n">inventory</span><span class="p">)</span>
+<span class="go">[3, 2, 5, 1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">inventory</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">getcount</span><span class="p">)</span>
+<span class="go">[(&#39;orange&#39;, 1), (&#39;banana&#39;, 2), (&#39;apple&#39;, 3), (&#39;pear&#39;, 5)]</span>
+</pre></div>
+</div>
+</blockquote>
+<p>operator.methodcaller(name[, args...])</p>
+<blockquote>
+<p>Return a callable object that calls the method <em>name</em> on its
+operand.  If additional arguments and/or keyword arguments are
+given, they will be given to the method as well.  After <tt class="docutils literal"><span class="pre">f</span> <span class="pre">=</span>
+<span class="pre">methodcaller('name')</span></tt>, the call <tt class="docutils literal"><span class="pre">f(b)</span></tt> returns <tt class="docutils literal"><span class="pre">b.name()</span></tt>.
+After <tt class="docutils literal"><span class="pre">f</span> <span class="pre">=</span> <span class="pre">methodcaller('name',</span> <span class="pre">'foo',</span> <span class="pre">bar=1)</span></tt>, the call <tt class="docutils literal"><span class="pre">f(b)</span></tt>
+returns <tt class="docutils literal"><span class="pre">b.name('foo',</span> <span class="pre">bar=1)</span></tt>.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<div class="section" id="mapping-operators-to-functions">
+<h2>9.7.1. Mapping Operators to Functions<a class="headerlink" href="#mapping-operators-to-functions" title="Permalink to this headline">¶</a></h2>
+<p>This table shows how abstract operations correspond to operator
+symbols in the Python syntax and the functions in the <tt class="docutils literal"><span class="pre">operator</span></tt>
+module.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="31%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Operation</th>
+<th class="head">Syntax</th>
+<th class="head">Function</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Addition</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">+</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">add(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Concatenation</td>
+<td><tt class="docutils literal"><span class="pre">seq1</span> <span class="pre">+</span> <span class="pre">seq2</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">concat(seq1,</span> <span class="pre">seq2)</span></tt></td>
+</tr>
+<tr><td>Containment Test</td>
+<td><tt class="docutils literal"><span class="pre">obj</span> <span class="pre">in</span> <span class="pre">seq</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">contains(seq,</span> <span class="pre">obj)</span></tt></td>
+</tr>
+<tr><td>Division</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">/</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">div(a,</span> <span class="pre">b)</span></tt> (without
+<tt class="docutils literal"><span class="pre">__future__.division</span></tt>)</td>
+</tr>
+<tr><td>Division</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">/</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">truediv(a,</span> <span class="pre">b)</span></tt> (with
+<tt class="docutils literal"><span class="pre">__future__.division</span></tt>)</td>
+</tr>
+<tr><td>Division</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">//</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">floordiv(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Bitwise And</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">&amp;</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">and_(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Bitwise Exclusive Or</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">^</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">xor(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Bitwise Inversion</td>
+<td><tt class="docutils literal"><span class="pre">~</span> <span class="pre">a</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">invert(a)</span></tt></td>
+</tr>
+<tr><td>Bitwise Or</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">|</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">or_(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Exponentiation</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">**</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">pow(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Identity</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">is</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">is_(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Identity</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">is_not(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Indexed Assignment</td>
+<td><tt class="docutils literal"><span class="pre">obj[k]</span> <span class="pre">=</span> <span class="pre">v</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">setitem(obj,</span> <span class="pre">k,</span> <span class="pre">v)</span></tt></td>
+</tr>
+<tr><td>Indexed Deletion</td>
+<td><tt class="docutils literal"><span class="pre">del</span> <span class="pre">obj[k]</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">delitem(obj,</span> <span class="pre">k)</span></tt></td>
+</tr>
+<tr><td>Indexing</td>
+<td><tt class="docutils literal"><span class="pre">obj[k]</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">getitem(obj,</span> <span class="pre">k)</span></tt></td>
+</tr>
+<tr><td>Left Shift</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">&lt;&lt;</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">lshift(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Modulo</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">%</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">mod(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Multiplication</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">*</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">mul(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Negation (Arithmetic)</td>
+<td><tt class="docutils literal"><span class="pre">-</span> <span class="pre">a</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">neg(a)</span></tt></td>
+</tr>
+<tr><td>Negation (Logical)</td>
+<td><tt class="docutils literal"><span class="pre">not</span> <span class="pre">a</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">not_(a)</span></tt></td>
+</tr>
+<tr><td>Right Shift</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">&gt;&gt;</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">rshift(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Sequence Repetition</td>
+<td><tt class="docutils literal"><span class="pre">seq</span> <span class="pre">*</span> <span class="pre">i</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">repeat(seq,</span> <span class="pre">i)</span></tt></td>
+</tr>
+<tr><td>Slice Assignment</td>
+<td><tt class="docutils literal"><span class="pre">seq[i:j]</span> <span class="pre">=</span> <span class="pre">values</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">setslice(seq,</span> <span class="pre">i,</span> <span class="pre">j,</span> <span class="pre">values)</span></tt></td>
+</tr>
+<tr><td>Slice Deletion</td>
+<td><tt class="docutils literal"><span class="pre">del</span> <span class="pre">seq[i:j]</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">delslice(seq,</span> <span class="pre">i,</span> <span class="pre">j)</span></tt></td>
+</tr>
+<tr><td>Slicing</td>
+<td><tt class="docutils literal"><span class="pre">seq[i:j]</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">getslice(seq,</span> <span class="pre">i,</span> <span class="pre">j)</span></tt></td>
+</tr>
+<tr><td>String Formatting</td>
+<td><tt class="docutils literal"><span class="pre">s</span> <span class="pre">%</span> <span class="pre">obj</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">mod(s,</span> <span class="pre">obj)</span></tt></td>
+</tr>
+<tr><td>Subtraction</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">-</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">sub(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Truth Test</td>
+<td><tt class="docutils literal"><span class="pre">obj</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">truth(obj)</span></tt></td>
+</tr>
+<tr><td>Ordering</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">&lt;</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">lt(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Ordering</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">&lt;=</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">le(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Equality</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">==</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">eq(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Difference</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">!=</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">ne(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Ordering</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">&gt;=</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">ge(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+<tr><td>Ordering</td>
+<td><tt class="docutils literal"><span class="pre">a</span> <span class="pre">&gt;</span> <span class="pre">b</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">gt(a,</span> <span class="pre">b)</span></tt></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="filesys.html" title="10. File and Directory Access"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="functools.html" title="9.6. functools — Higher order functions and operations on callable objects"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="numeric.html" >9. Numeric and Mathematical Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

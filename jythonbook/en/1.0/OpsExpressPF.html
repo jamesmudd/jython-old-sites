@@ -1,0 +1,1302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Chapter 3: Operators, Expressions, and Program Flow &mdash; Jython Book v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '1.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Book v1.0 documentation" href="index.html" />
+    <link rel="next" title="Chapter 4: Defining Functions and Using Built-ins" href="DefiningFunctionsandUsingBuilt-Ins.html" />
+    <link rel="prev" title="Chapter 2: Data Types and Referencing" href="DataTypes.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="DefiningFunctionsandUsingBuilt-Ins.html" title="Chapter 4: Defining Functions and Using Built-ins"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="DataTypes.html" title="Chapter 2: Data Types and Referencing"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="chapter-3-operators-expressions-and-program-flow">
+<h1>Chapter 3:  Operators, Expressions, and Program Flow<a class="headerlink" href="#chapter-3-operators-expressions-and-program-flow" title="Permalink to this headline">¶</a></h1>
+<p>The focus of this chapter is an in-depth look at each of the ways that we can
+evaluate code, and write meaningful blocks of conditional logic. We’ll cover
+the details of many operators that can be used in Python expressions. This
+chapter will also cover some topics that have already been discussed in more
+meaningful detail such as the looping constructs, and some basic program flow.</p>
+<p>We’ll begin by discussing details of expressions. If you’ll remember from
+Chapter 1, an expression is a piece of code that evaluates to produce a value.
+We have already seen some expressions in use while reading through the previous
+chapters. In this chapter, we’ll focus more on the internals of operators used
+to create expressions, and also different types of expressions that we can use.
+This chapter will go into further detail on how we can define blocks of code
+for looping and conditionals.</p>
+<p>This chapter will also go into detail on how you write and evaluate
+mathematical expressions, and Boolean expressions. And last but not least,
+we&#8217;ll discuss how you can use augmented assignment operations to combine two or
+more operations into one.</p>
+<div class="section" id="types-of-expressions">
+<h2>Types of Expressions<a class="headerlink" href="#types-of-expressions" title="Permalink to this headline">¶</a></h2>
+<p>An expression in Python is a piece of code that produces a result or value.
+Most often, we think of expressions that are used to perform mathematical
+operations within our code. However, there are a multitude of expressions used
+for other purposes as well. In Chapter 2, we covered the details of String
+manipulation, sequence and dictionary operations, and touched upon working with
+sets. All of the operations performed on these objects are forms of expressions
+in Python. Other examples of expressions could be pieces of code that call
+methods or functions, and also working with lists using slicing and indexing.</p>
+</div>
+<div class="section" id="mathematical-operations">
+<h2>Mathematical Operations<a class="headerlink" href="#mathematical-operations" title="Permalink to this headline">¶</a></h2>
+<p>The Python contains all of your basic mathematical operations. This section
+will briefly touch upon each operator and how it functions. You will also learn
+about a few built-in functions which can be used to assist in your mathematical
+expressions.</p>
+<p>Assuming that this is not the first programming language you are learning,
+there is no doubt that you are at least somewhat familiar with performing
+mathematical operations within your programs. Python is no different than the
+rest when it comes to mathematics, as with most programming languages,
+performing mathematical computations and working with numeric expressions is
+straightforward. Table 3-1 lists the numeric operators.</p>
+<p><em>Table 3-1. Numeric Operators</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Operator</td>
+<td>Description</td>
+</tr>
+<tr><td>+</td>
+<td>Addition</td>
+</tr>
+<tr><td>-</td>
+<td>Subtraction</td>
+</tr>
+<tr><td>*</td>
+<td>Multiplication</td>
+</tr>
+<tr><td>/</td>
+<td>Division</td>
+</tr>
+<tr><td>//</td>
+<td>Truncating Division</td>
+</tr>
+<tr><td>%</td>
+<td>Modulo (Remainder of Division)</td>
+</tr>
+<tr><td><a href="#id1"><span class="problematic" id="id2">**</span></a></td>
+<td>Power Operator</td>
+</tr>
+<tr><td>+var</td>
+<td>Unary Plus</td>
+</tr>
+<tr><td>-var</td>
+<td>Unary Minus</td>
+</tr>
+</tbody>
+</table>
+<p>Most of the operators in Table 3-1 work exactly as you would expect, so for
+example:</p>
+<p><em>Listing 3-1. Mathematical Operator</em></p>
+<div class="highlight-python"><pre># Performing basic mathematical computations
+&gt;&gt;&gt; 10 - 6
+4
+&gt;&gt;&gt; 9 * 7
+63</pre>
+</div>
+<p>However, division, truncating division, modulo, power, and the unary operators
+could use some explanation. Truncating division will automatically truncate a
+division result into an integer by rounding down, and modulo will return the
+remainder of a truncated division operation. The power operator does just what
+you’d expect as it returns the result of the number to the left of the operator
+multiplied by itself n times, where n represents the number to the right of the
+operator.</p>
+<p><em>Listing 3-2. Truncating Division and Powers</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="mf">36</span> <span class="o">//</span> <span class="mf">5</span>
+<span class="go">7</span>
+<span class="go"># Modulo returns the remainder</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">36</span> <span class="o">%</span> <span class="mf">5</span>
+<span class="go">1</span>
+<span class="go"># Using powers, in this case 5 to the power of 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">5</span><span class="o">**</span><span class="mf">2</span>
+<span class="go">25</span>
+<span class="go"># 100 to the power of 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">100</span><span class="o">**</span><span class="mf">2</span>
+<span class="go">10000</span>
+</pre></div>
+</div>
+<p>Division itself is an interesting subject as its current implementation is
+somewhat controversial in some situations. The problem 10/5 = 2 definitely
+holds true. However, in its current implementation, division rounds numbers in
+such a way that sometimes yields unexpected results. There is a new means of
+division available in Jython 2.5 by importing from __future__. In a standard
+division for 2.5 and previous releases, the quotient returned is the floor
+(nearest integer after rounding down) of the quotient when arguments are ints
+or longs. However, a reasonable approximation of the division is returned if
+the arguments are floats or complex. Often times this solution is not what was
+expected as the quotient should be the reasonable approximation or “true
+division” in any case. When we import division from the __future__ module then
+we alter the return value of division by causing true division when using the /
+operator, and floor division only when using the , // operator. In an effort to
+not break backward compatibility, the developers have placed the repaired
+division implementation in a module known as __future__. The &nbsp;__future__ module
+actually contains code that is meant to be included as a part of the standard
+language in some future revision. In order to use the new repaired version of
+division, it is important that you always import from __future__ prior to
+working with division. Take a look at the following piece of code.</p>
+<p><em>Listing 3-3. Division Rounding Issues</em></p>
+<div class="highlight-python"><pre># Works as expected
+&gt;&gt;&gt; 14/2
+7
+&gt;&gt;&gt; 10/5
+2
+&gt;&gt;&gt; 27/3
+9
+# Now divide some numbers that should result in decimals
+# Here we would expect 1.5
+&gt;&gt;&gt; 3/2
+1
+# The following should give us 1.4
+&gt;&gt;&gt; 7/5
+1
+# In the following case, we'd expect 2.3333
+&gt;&gt;&gt; 14/6
+2</pre>
+</div>
+<p>As you can see, when we’d expect to see a decimal value we are actually
+receiving an integer value. The developers of this original division
+implementation have acknowledged this issue and repaired it using the new
+__future__ implementation.</p>
+<p><em>Listing 3-4. Working With __future__ Division</em></p>
+<div class="highlight-python"><pre># We first import division from __future__
+from __future__ import division
+# We then work with division as usual and see the expected results
+&gt;&gt;&gt; 14/2
+7.0
+&gt;&gt;&gt; 10/5
+2.0
+&gt;&gt;&gt; 27/3
+9.0
+&gt;&gt;&gt; 3/2
+1.5
+&gt;&gt;&gt; 7/5
+1.4
+&gt;&gt;&gt; 14/6
+2.3333333333333335</pre>
+</div>
+<p>It is important to note that the Jython implementation differs somewhat from
+CPython in that Java provides extra rounding in some cases. The differences are
+in display of the rounding only as both Jython and CPython use the same IEEE
+float for storage. Let’s take a look at one such case.</p>
+<p><em>Listing 3-5. Subtle Differences Between Jython and CPython Division</em></p>
+<div class="highlight-python"><pre># CPython 2.5 Rounding
+&gt;&gt;&gt; 5.1/1
+5.0999999999999996
+# Jython 2.5
+&gt;&gt;&gt; 5.1/1
+5.1</pre>
+</div>
+<p>Unary operators can be used to evaluate positive or negative numbers. The unary
+plus operator multiplies a number by positive 1 (which generally doesn’t change
+it at all), and a unary minus operator multiplies a number by negative 1.</p>
+<p><em>Listing 3-6. Unary Operators</em></p>
+<div class="highlight-python"><pre># Unary minus
+&gt;&gt;&gt; -10 + 5
+-5
+&gt;&gt;&gt; +5 - 5
+0
+&gt;&gt;&gt; -(1 + 2)
+-3</pre>
+</div>
+<p>As stated at the beginning of the section, there are a number of built-in
+mathematical functions that are at your disposal. Table 3-2 lists the built-in
+mathematical functions.</p>
+<p><em>Table 3-2. Mathematical Built-in Functions</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Function</td>
+<td>Description</td>
+</tr>
+<tr><td>abs(var)</td>
+<td>Absolute value</td>
+</tr>
+<tr><td>pow(x, y)</td>
+<td>Can be used in place of ** operator</td>
+</tr>
+<tr><td>pow(x,y,modulo)</td>
+<td>Ternary power-modulo (x <a href="#id3"><span class="problematic" id="id4">**</span></a>y) % modulo</td>
+</tr>
+<tr><td>round(var[, n])</td>
+<td>Returns a value rounded to the nearest 10-n or (10**-n),
+where n defaults to 0)</td>
+</tr>
+<tr><td>divmod(x, y)</td>
+<td>Returns a tuple of the quotient and the remainder of division</td>
+</tr>
+</tbody>
+</table>
+<p><em>Listing 3-7. Mathematical Built-ins</em></p>
+<div class="highlight-python"><pre>#  The following code provides some examples for using mathematical built-ins
+# Absolute value of 9
+&gt;&gt;&gt; abs(9)
+9
+# Absolute value of -9
+&gt;&gt;&gt; abs(-9)
+9
+# Divide 8 by 4 and return quotient, remainder tuple
+&gt;&gt;&gt; divmod(8,4)
+(2, 0)
+# Do the same, but this time returning a remainder (modulo)
+&gt;&gt;&gt; divmod(8,3)
+(2, 2)
+# Obtain 8 to the power of 2
+&gt;&gt;&gt; pow(8,2)
+64
+# Obtain 8 to the power of 2 modulo 3  ((8 **2) % 3)
+&gt;&gt;&gt; pow(8,2,3)
+1
+# Perform rounding
+&gt;&gt;&gt; round(5.67,1)
+5.7
+&gt;&gt;&gt; round(5.67)
+6.00</pre>
+</div>
+</div>
+<div class="section" id="comparison-operators">
+<h2>Comparison Operators<a class="headerlink" href="#comparison-operators" title="Permalink to this headline">¶</a></h2>
+<p>Comparison operators can be used for comparison of two or more expressions or
+variables. As with the mathematical operators described above, these operators
+have no significant difference to that of Java. See Table 3-3.</p>
+<p><em>Table 3-3. Comparison Operators</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="72%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Operator</td>
+<td>Description</td>
+</tr>
+<tr><td>&gt;</td>
+<td>Greater than</td>
+</tr>
+<tr><td>&lt;</td>
+<td>Less than</td>
+</tr>
+<tr><td>&gt;=</td>
+<td>Greater than or equal</td>
+</tr>
+<tr><td>&lt;=</td>
+<td>Less than or equal</td>
+</tr>
+<tr><td>!=</td>
+<td>Not equal</td>
+</tr>
+<tr><td>==</td>
+<td>Equal</td>
+</tr>
+</tbody>
+</table>
+<p><em>Listing 3-8. Examples of Comparison Operators</em></p>
+<div class="highlight-python"><pre># Simple comparisons
+&gt;&gt;&gt; 8 &gt; 10
+False
+&gt;&gt;&gt; 256 &lt; 725
+True
+&gt;&gt;&gt; 10 == 10
+True
+# Use comparisons in an expression
+&gt;&gt;&gt; x = 2*8
+&gt;&gt;&gt; y = 2
+&gt;&gt;&gt; while x != y:
+...     print 'Doing some work...'
+...     y = y + 2
+...
+Doing some work...
+Doing some work...
+Doing some work...
+Doing some work...
+Doing some work...
+Doing some work...
+Doing some work...
+# Combining comparisons
+&gt;&gt;&gt; 3&lt;2&lt;3
+False
+&gt;&gt;&gt; 3&lt;4&lt;8
+True</pre>
+</div>
+</div>
+<div class="section" id="bitwise-operators">
+<h2>Bitwise Operators<a class="headerlink" href="#bitwise-operators" title="Permalink to this headline">¶</a></h2>
+<p>Bitwise operators in Python are a set of operators that are used to work on
+numbers in a two’s complement binary fashion. That is, when working with
+bitwise operators numbers are treated as a string of bits consisting of 0s and
+1s. If you are unfamiliar with the concept of two&#8217;s complement, a good place to
+start would be at the Wikipedia page discussing the topic:
+(<a class="reference external" href="http://en.wikipedia.org/wiki/Two's_complement">http://en.wikipedia.org/wiki/Two&#8217;s_complement</a>). It is important to know that
+bitwise operators can only be applied to integers and long integers. Let’s take
+a look at the different bitwise operators that are available to us (Table 3-4),
+and then we’ll go through a few examples.</p>
+<p><em>Table 3-4. Bitwise Operators</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Operator</td>
+<td>Description</td>
+</tr>
+<tr><td>&amp;</td>
+<td>Bitwise and operator copies a bit to the result if a bit appears in
+both operands</td>
+</tr>
+<tr><td>||</td>
+<td>Bitwise or operator copies a bit to the result if it exists in
+either of the operands</td>
+</tr>
+<tr><td>^</td>
+<td>Bitwise xor operator copies a bit to the result if it exists in only
+one operand</td>
+</tr>
+<tr><td>~</td>
+<td>Bitwise negation operator flips the bits, and returns the exact
+opposite of each bit</td>
+</tr>
+</tbody>
+</table>
+<p>Suppose we have a couple of numbers in binary format and we would like to work
+with them using the bitwise operators. Let’s work with the numbers 14 and 27.
+The binary (two&#8217;s complement) representation of the number 14 is 00001110, and
+for 27 it is 00011011. The bitwise operators look at each 1 and 0 in the binary
+format of the number and perform their respective operations, and then return a
+result. Python does not return the bits, but rather the integer value of the
+resulting bits. In the following examples, we take the numbers 14 and 27 and
+work with them using the bitwise operators.</p>
+<p><em>Listing 3-9. Bitwise Operator Examples</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="mf">14</span> <span class="o">&amp;</span> <span class="mf">27</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">14</span> <span class="o">|</span> <span class="mf">27</span>
+<span class="go">31</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">14</span> <span class="o">^</span> <span class="mf">27</span>
+<span class="go">21</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">~</span><span class="mf">14</span>
+<span class="go">-15</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">~</span><span class="mf">27</span>
+<span class="go">-28</span>
+</pre></div>
+</div>
+<p>To summarize the examples above, let’s work through the operations using the
+binary representations for each of the numbers.</p>
+<div class="highlight-python"><pre>14 &amp; 27 = 00001110 and 00011011 = 00001010 (The integer 10)
+14 | 27 = 00001110 or 000110011 = 00011111 (The integer 31)
+14 ^ 27 = 00001110 xor 000110011 = 00010101 (The integer 21)
+~14 = 00001110 = 11110001 (The integer -15)</pre>
+</div>
+<p>The shift operators (see Table 3-5) are similar in that they work with the
+binary bit representation of a number. The left shift operator moves the left
+operand’s value to the left by the number of bits specified by the right
+operand. The right shift operator does the exact opposite as it shifts the left
+operand&#8217;s value to the right by the number of bits specified by the right
+operand. Essentially this translates to the left shift operator multiplying the
+operand on the left by the number two as many times as specified by the right
+operand. The opposite holds true for the right shift operator that divides the
+operand on the left by the number two as many times as specified by the right
+operand.</p>
+<p><em>Table 3-5. Shift Operators</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="95%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>x&lt;&lt;n</td>
+<td>Shift left (The equivalent of multiplying the number x by 2, n times)</td>
+</tr>
+<tr><td>x&gt;&gt;n</td>
+<td>Shift right (The equivalent of dividing the number x by 2, n times)</td>
+</tr>
+</tbody>
+</table>
+<p>More specifically, the left shift operator (&lt;&lt;) will multiply a number by two n
+times, n being the number that is to the right of the shift operator. The right
+shift operator will divide a number by two n times, n being the number to the
+right of the shift operator. The __future__division import does not make a
+difference in the outcome of such operations.</p>
+<p><em>Listing 3-10. Shift Operator Examples</em></p>
+<div class="highlight-python"><pre># Shift left, in this case  3*2
+&gt;&gt;&gt; 3&lt;&lt;1
+6
+# Equivalent of 3*2*2
+&gt;&gt;&gt; 3&lt;&lt;2
+12
+# Equivalent of 3*2*2*2*2*2
+&gt;&gt;&gt; 3&lt;&lt;5
+96
+# Shift right
+# Equivalent of 3/2
+&gt;&gt;&gt; 3&gt;&gt;1
+1
+# Equivalent of 9/2
+&gt;&gt;&gt; 9&gt;&gt;1
+4
+# Equivalent of 10/2
+&gt;&gt;&gt; 10&gt;&gt;1
+5
+# Equivalent of 10/2/2
+&gt;&gt;&gt; 10&gt;&gt;2
+2</pre>
+</div>
+<p>While bitwise operators are not the most commonly used operators, they are good
+to have on hand. They are especially important if you are working in
+mathematical situations.</p>
+</div>
+<div class="section" id="augmented-assignment">
+<h2>Augmented Assignment<a class="headerlink" href="#augmented-assignment" title="Permalink to this headline">¶</a></h2>
+<p>Augmented assignment operators (see Table 3-6) combine an operation with an
+assignment. They can be used to do things like assign a variable to the value
+it previously held, modified in some way. While augmented assignment can assist
+in coding concisely, some say that too many such operators can make code more
+difficult to read.</p>
+<p><em>Listing 3-11. Augmented Assignment Code Examples</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="mf">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">5</span>
+<span class="go"># Add one to the value of x and then assign that value to x</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">+=</span><span class="mf">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">6</span>
+<span class="go"># Multiply the value of x by 5 and then assign that value to x</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">*=</span><span class="mf">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">30</span>
+</pre></div>
+</div>
+<p><em>Table 3-6. Augmented Assignment Operators</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="44%" />
+<col width="56%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Operator</td>
+<td>Equivalent</td>
+</tr>
+<tr><td>a += b</td>
+<td>a = a + b</td>
+</tr>
+<tr><td>a -= b</td>
+<td>a = a – b</td>
+</tr>
+<tr><td>a <a href="#id5"><span class="problematic" id="id6">*</span></a>= b</td>
+<td>a = a * b</td>
+</tr>
+<tr><td>a /= b</td>
+<td>a = a / b</td>
+</tr>
+<tr><td>a %= b</td>
+<td>a = a % b</td>
+</tr>
+<tr><td>a //= b</td>
+<td>a = a // b</td>
+</tr>
+<tr><td>a <a href="#id7"><span class="problematic" id="id8">**</span></a>= &nbsp;b</td>
+<td>a = a** b</td>
+</tr>
+<tr><td>a &amp;= b</td>
+<td>a = a &amp; b</td>
+</tr>
+<tr><td>a <a href="#id9"><span class="problematic" id="id10">|</span></a>= b</td>
+<td>a = a | b</td>
+</tr>
+<tr><td>a ^= b</td>
+<td>a = a ^ b</td>
+</tr>
+<tr><td>a &gt;&gt;= b</td>
+<td>a = a &gt;&gt; b</td>
+</tr>
+<tr><td>a &lt;&lt;= b</td>
+<td>a = a &lt;&lt; b</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="boolean-expressions">
+<h2>Boolean Expressions<a class="headerlink" href="#boolean-expressions" title="Permalink to this headline">¶</a></h2>
+<p>Evaluating two or more values or expressions also uses a similar syntax to that
+of other languages, and the logic is quite the same. Note that in Python, True
+and False are very similar to constants in the Java language. True actually
+represents the number 1, and False represents the number 0. One could just as
+easily code using 0 and 1 to represent the Boolean values, but for readability
+and maintenance the True and False “constants” are preferred. Java developers,
+make sure that you capitalize the first letter of these two words as you will
+receive an ugly NameError if you do not.</p>
+<p>Boolean properties are not limited to working with int and bool values, but
+they also work with other values and objects. For instance, simply passing any
+non-empty object into a Boolean expression will evaluate to True in a Boolean
+context. This is a good way to determine whether a string contains anything.
+See Table 3-7.</p>
+<p><em>Listing 3-12. Testing a String</em></p>
+<div class="highlight-python"><pre>&gt;&gt;&gt; mystr = ''
+&gt;&gt;&gt; if mystr:
+...     'Now I contain the following: %s' % (mystr)
+... else:
+...     'I do not contain anything'
+...
+'I do not contain anything'
+&gt;&gt;&gt; mystr = 'Now I have a value'
+&gt;&gt;&gt; if mystr:
+...     'Now I contain the following: %s' % (mystr)
+... else:
+...     'I do not contain anything'
+...
+'Now I contain the following: Now I have a value'</pre>
+</div>
+<p><em>Table 3-7. Boolean Conditionals</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Conditional</td>
+<td>Logic</td>
+</tr>
+<tr><td>and</td>
+<td>In an x and y evaluation, if x evaluates to false then its value
+is returned, otherwise y is evaluated and the resulting value is
+returned</td>
+</tr>
+<tr><td>or</td>
+<td>In an x or y evaluation, if x evaluates to true then its value is
+returned, otherwise y is evaluated and the resulting value is
+returned</td>
+</tr>
+<tr><td>not</td>
+<td>In a not x evaluation, if not x, we mean the opposite of x</td>
+</tr>
+</tbody>
+</table>
+<p>As with all programming languages, there is an order of operations for deciding
+what operators are evaluated first. For instance, if we have an expression a +
+b <em>c, then which operation would take place first? The order of operations for
+Python is shown in Table 3-8 with those operators that receive the highest
+precedence shown first, and those with the lowest shown last. Repeats of the
+same operator are grouped from left to the right with the exception of the
+power (*</em>) operator.</p>
+<p><em>Table 3-8. Python Order of Operations</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="47%" />
+<col width="53%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Operator Precedence from Highest to
+Lowest</td>
+<td>Name</td>
+</tr>
+<tr><td>+var, -var, ~var</td>
+<td>Unary Operations</td>
+</tr>
+<tr><td><a href="#id11"><span class="problematic" id="id12">**</span></a></td>
+<td>Power Operations</td>
+</tr>
+<tr><td><a href="#id13"><span class="problematic" id="id14">*</span></a>, /, //, %</td>
+<td>Multiplication, Division, Floor
+Division, Modulo</td>
+</tr>
+<tr><td>+, -</td>
+<td>Addition, Subtraction</td>
+</tr>
+<tr><td>&lt;&lt;, &gt;&gt;</td>
+<td>Left and Right Shift</td>
+</tr>
+<tr><td>&amp;</td>
+<td>Bitwise And</td>
+</tr>
+<tr><td>^</td>
+<td>Bitwise Exclusive Or</td>
+</tr>
+<tr><td>||</td>
+<td>Bitwise Or</td>
+</tr>
+<tr><td>&lt;, &gt;, &lt;=. &gt;= , &lt;&gt;</td>
+<td>Comparison Operators</td>
+</tr>
+<tr><td>==, != , is, is not, in, not in</td>
+<td>Equality and Membership</td>
+</tr>
+<tr><td>and, or, not</td>
+<td>Boolean Conditionals</td>
+</tr>
+</tbody>
+</table>
+<p>An important note is that when working with Boolean conditionals, &#8216;and&#8217; and
+&#8216;or&#8217; group from the left to the right. Let’s take a look at a few examples.</p>
+<p><em>Listing 3-13. Order of Operations Examples</em></p>
+<div class="highlight-python"><pre># Define a few variables
+&gt;&gt;&gt; x = 10
+&gt;&gt;&gt; y = 12
+&gt;&gt;&gt; z = 14
+# (y*z) is evaluated first, then x is added
+&gt;&gt;&gt; x + y * z
+178
+# (x * y) is evaluated first, then z is subtracted from the result
+&gt;&gt;&gt; x * y - z
+106
+# When chaining comparisons, a logical 'and' is implied.  In this
+# case, x &lt; y and y &lt;= z and z &gt; x
+&gt;&gt;&gt; x &lt; y &lt;= z &gt; x
+True
+#  (2 * 0) is evaluated first and since it is False or zero, it is returned
+&gt;&gt;&gt; 2 * 0 and 5 + 1
+0
+# (2 * 1) is evaluated first, and since it is True or not zero, the (5 + 1) is evaluated and
+# returned
+&gt;&gt;&gt; 2 * 1 and 5 + 1
+6
+# x is returned if it is True, otherwise y is returned if it is False.  If neither
+# of those two conditions occur, then z is returned.
+&gt;&gt;&gt; x or (y and z)
+10
+# In this example, the (7 – 2) is evaluated and returned because of the 'and' 'or'
+# logic
+&gt;&gt;&gt; 2 * 0 or ((6 + 8) and (7 - 2))
+5
+# In this case, the power operation is evaluated first, and then the addition
+&gt;&gt;&gt; 2 ** 2 + 8
+12</pre>
+</div>
+</div>
+<div class="section" id="conversions">
+<h2>Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h2>
+<p>There are a number of conversion functions built into the language in order to
+help conversion of one data type to another (see Table 3-9). While every data
+type in Jython is actually a class object, these conversion functions will
+really convert one class type into another. For the most part, the built-in
+conversion functions are easy to remember because they are primarily named
+after the type to which you are trying to convert.</p>
+<p><em>Table 3-9. Conversion Functions</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="0%" />
+<col width="81%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Function</td>
+<td colspan="2">Description</td>
+</tr>
+<tr><td>chr(value)</td>
+<td colspan="2">Converts integer to a character</td>
+</tr>
+<tr><td>complex(real
+[,imag])</td>
+<td colspan="2">Produces a complex number</td>
+</tr>
+<tr><td>dict(sequence)</td>
+<td colspan="2">Produces a dictionary from a given sequence of (key, value)
+tuples</td>
+</tr>
+<tr><td>eval(string)</td>
+<td colspan="2">Evaluates a string to return an object…useful for mathematical
+computations. Note: This function should be used with extreme
+caution as it can pose a security hazard if not used properly.</td>
+</tr>
+<tr><td>float(value)</td>
+<td colspan="2">Converts number to float</td>
+</tr>
+<tr><td colspan="3">frozenset(set) <a href="#id15"><span class="problematic" id="id16">|</span></a>Converts a set into a frozen set</td>
+</tr>
+<tr><td colspan="2">hex(value)</td>
+<td>Converts an integer into a string representing that number
+in hex</td>
+</tr>
+<tr><td colspan="2">int(value [,
+base])</td>
+<td>Converts to an integer using a base if a string is given</td>
+</tr>
+<tr><td colspan="2">list(sequence)</td>
+<td>Converts a given sequence into a list</td>
+</tr>
+<tr><td colspan="2">long(value [,
+base])</td>
+<td>Converts to a long using a base if a string is given</td>
+</tr>
+<tr><td colspan="2">oct(value)</td>
+<td>Converts &nbsp;an integer to a string representing that number as
+an octal</td>
+</tr>
+<tr><td colspan="2">ord(value)</td>
+<td>Converts a character into its integer value</td>
+</tr>
+<tr><td colspan="2">repr(value)</td>
+<td>Converts object into an expression string. Same as enclosing
+expression in reverse quotes ( <cite>x + y</cite>). &nbsp;Returns a string
+containing a printable and evaluable representation of the
+object</td>
+</tr>
+<tr><td colspan="2">set(sequence)</td>
+<td>Converts a sequence into a set</td>
+</tr>
+<tr><td colspan="2">str(value)</td>
+<td>Converts an object into a string &nbsp;Returns a string
+containing a printable representation of the value, but not
+an evaluable string</td>
+</tr>
+<tr><td colspan="2">tuple(sequence)</td>
+<td>Converts a given sequence to a tuple</td>
+</tr>
+<tr><td colspan="2">unichr(value)</td>
+<td>Converts integer to a Unicode character</td>
+</tr>
+</tbody>
+</table>
+<p><em>Listing 3-14. Conversion Function Examples</em></p>
+<div class="highlight-python"><pre># Return the character representation of the integers
+&gt;&gt;&gt; chr(4)
+'\x04'
+&gt;&gt;&gt; chr(10)
+'\n'
+# Convert intger to float
+&gt;&gt;&gt; float(8)
+8.0
+# Convert character to its integer value
+&gt;&gt;&gt; ord('A')
+65
+&gt;&gt;&gt; ord('C')
+67
+&gt;&gt;&gt; ord('z')
+122
+# Use repr() with any object
+&gt;&gt;&gt; repr(3.14)
+'3.14'
+&gt;&gt;&gt; x = 40 * 5
+&gt;&gt;&gt; y = 2**8
+&gt;&gt;&gt; repr((x, y, ('one','two','three')))
+"(200, 256, ('one', 'two', 'three'))"</pre>
+</div>
+<p>The following is an example of using the eval() functionality as it is perhaps
+the one conversion function for which an example helps to understand. Again,
+please note that using the eval() function can be dangerous and impose a
+security threat if used incorrectly. If using the eval() function to accept
+text from a user, standard security precautions should be set into place to
+ensure that the string being evaluated is not going to compromise security.</p>
+<p><em>Listing 3-15. Example of eval()</em></p>
+<div class="highlight-python"><pre># Suppose keyboard input contains an expression in string format (x * y)
+&gt;&gt;&gt; x = 5
+&gt;&gt;&gt; y = 12
+&gt;&gt;&gt; keyboardInput = 'x * y'
+# We should provide some security checks on the keyboard input here to
+# ensure that the string is safe for evaluation. Such a task is out of scope
+# for this chapter, but it is good to note that comparisons on the keyboard
+# input to check for possibly dangerous code should be performed prior to
+# evaluation.
+&gt;&gt;&gt; eval(keyboardInput)
+60</pre>
+</div>
+</div>
+<div class="section" id="using-expressions-to-control-program-flow">
+<h2>Using Expressions to Control Program Flow<a class="headerlink" href="#using-expressions-to-control-program-flow" title="Permalink to this headline">¶</a></h2>
+<p>As you’ve learned in previous references in this book, the statements that make
+up programs in Python are structured with attention to spacing, order, and
+technique. Each section of code must be consistently spaced as to set each
+control structure apart from others. One of the great advantages to Python’s
+syntax is that the consistent spacing allows for delimiters such as the curly
+braces {} to go away. For instance, in Java one must use curly braces around a
+for loop to signify a start and an end point. Simply spacing a for loop in
+Python correctly takes place of the braces. Convention and good practice adhere
+to using four spaces of indentation per statement throughout the entire
+program. For more information on convention, please see PEP 8, Style Guide for
+Python Code (www.python.org/dev/peps/pep-0008/). Follow this convention along
+with some control flow and you’re sure to develop some easily maintainable
+software.</p>
+<div class="section" id="if-elif-else-statement">
+<h3>if-elif-else Statement<a class="headerlink" href="#if-elif-else-statement" title="Permalink to this headline">¶</a></h3>
+<p>The standard Python if-elif-else conditional statement is used in order to
+evaluate expressions and branch program logic based upon the outcome. An
+if-elif-else statement can consist of any expressions we’ve discussed
+previously. The objective is to write and compare expressions in order to
+evaluate to a True or False outcome. As shown in Chapter 1, the logic for an
+if-elif-else statement follows one path if an expression evaluates to True, or
+a different path if it evaluates to False.</p>
+<p>You can chain as many if-else expressions together as needed. The combining
+if-else keyword is elif, which is used for every expression in between the
+first and the last expressions within a conditional statement.</p>
+<p>The elif portion of the statement helps to ensure better readability of program
+logic. Too many if statements nested within each other can lead to programs
+that are difficult to maintain. The initial if expression is evaluated, and if
+it evaluates to False, the next elif expression is evaluated, and if it
+evaluates to False then the process continues. If any of the if or elif
+expressions evaluate to True then the statements within that portion of the if
+statement are processed. Eventually if all of the expressions evaluate to False
+then the final else expression is evaluated.</p>
+<p>These next examples show a few ways for making use of a standard if-elif­-else
+statement. Note that any expression can be evaluated in an if-elif-else
+construct. These are only some simplistic examples, but the logic inside the
+expressions could become as complex as needed.</p>
+<p><em>Listing 3-16. Standard if-elif-else</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># terminal symbols are left out of this example so that you can see the precise indentation</span>
+<span class="n">pi</span> <span class="o">=</span><span class="mf">3.14</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mf">2.7</span> <span class="o">*</span> <span class="mf">1.45</span>
+<span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">pi</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">&#39;The number is pi&#39;</span>
+<span class="k">elif</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">pi</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">&#39;The number is greater than pi&#39;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">&#39;The number is less than pi&#39;</span>
+</pre></div>
+</div>
+<p>Empty lists or strings will evaluate to False as well, making it easy to use
+them for comparison purposes in an if-elif-else statement.</p>
+<p><em>Listing 3-17. Evaluate Empty List</em></p>
+<div class="highlight-python"><pre># Use an if-statement to determine whether a list is empty
+# Suppose mylist is going to be a list of names
+&gt;&gt;&gt; mylist = []
+&gt;&gt;&gt; if mylist:
+...     for person in mylist:
+...         print person
+... else:
+...     print 'The list is empty'
+...
+The list is empty</pre>
+</div>
+</div>
+<div class="section" id="while-loop">
+<h3>while Loop<a class="headerlink" href="#while-loop" title="Permalink to this headline">¶</a></h3>
+<p>Another construct that we touched upon in Chapter 1 was the loop. Every
+programming language provides looping implementations, and Python is no
+different. To recap, the Python language provides two main types of loops known
+as the while and the for loop.</p>
+<p>The while loop logic follows the same semantics as the while loop in Java. The
+while loop evaluates a given expression and continues to loop through its
+statements until the results of the expression no longer hold true and evaluate
+to False. Most while loops contain a comparison expression such as x &lt;= y or
+the like, in this case the expression would evaluate to False when x becomes
+greater than y. The loop will continue processing until the expression
+evaluates to False. At this time the looping ends and that would be it for the
+Java implementation. Python on the other hand allows an else clause which is
+executed when the loop is completed.</p>
+<p><em>Listing 3-18. Python while Statement</em></p>
+<div class="highlight-python"><pre>&gt;&gt;&gt; x = 0
+&gt;&gt;&gt; y = 10
+&gt;&gt;&gt; while x &lt;= y:
+...     print 'The current value of x is: %d' % (x)
+...     x += 1
+... else:
+...     print 'Processing Complete...'
+...
+The current value of x is: 0
+The current value of x is: 1
+The current value of x is: 2
+The current value of x is: 3
+The current value of x is: 4
+The current value of x is: 5
+The current value of x is: 6
+The current value of x is: 7
+The current value of x is: 8
+The current value of x is: 9
+The current value of x is: 10
+Processing Complete...</pre>
+</div>
+<p>This else clause can come in handy while performing intensive processing so
+that we can inform the user of the completion of such tasks. It can also be
+handy when debugging code, or when some sort of cleanup is required after the
+loop completes</p>
+<p><em>Listing 3-19. Resetting Counter Using with-else</em></p>
+<div class="highlight-python"><pre>&gt;&gt;&gt; total = 0
+&gt;&gt;&gt; x = 0
+&gt;&gt;&gt; y = 20
+&gt;&gt;&gt; while x &lt;= y:
+...     total += x
+...     x += 1
+... else:
+...     print total
+...     total = 0
+...
+210</pre>
+</div>
+</div>
+<div class="section" id="continue-statement">
+<h3>continue Statement<a class="headerlink" href="#continue-statement" title="Permalink to this headline">¶</a></h3>
+<p>The continue statement is to be used when you are within a looping construct,
+and you have the requirement to tell Python to continue processing past the
+rest of the statements in the current loop. Once the Python interpreter sees a
+continue statement, it ends the current iteration of the loop and goes on to
+continue processing the next iteration. The continue statement can be used with
+any for or while loop.</p>
+<p><em>Listing 3-20. Continue Statement</em></p>
+<div class="highlight-python"><pre># Iterate over range and print out only the positive numbers
+&gt;&gt;&gt; x = 0
+&gt;&gt;&gt; while x &lt; 10:
+...     x += 1
+...     if x % 2 != 0:
+...         continue
+...     print x
+...
+2
+4
+6
+8
+10</pre>
+</div>
+<p>In this example, whenever x is odd, the &#8216;continue&#8217; causes execution to move on
+to the next iteration of the loop. When x is even, it is printed out.</p>
+</div>
+<div class="section" id="break-statement">
+<h3>break Statement<a class="headerlink" href="#break-statement" title="Permalink to this headline">¶</a></h3>
+<p>Much like the continue statement, the break statement can be used inside of a
+loop. We use the break statement in order to stop the loop completely so that a
+program can move on to its next task. This differs from continue because the
+continue statement only stops the current iteration of the loop and moves onto
+the next iteration. Let’s check it out:</p>
+<p><em>Listing 3-21. Break Statement</em></p>
+<div class="highlight-python"><pre>&gt;&gt;&gt; x = 10
+&gt;&gt;&gt; while True:
+...     if x == 0:
+...         print 'x is now equal to zero!'
+...         break
+...     if x % 2 == 0:
+...         print x
+...     x -= 1
+...
+10
+8
+6
+4
+2
+x is now equal to zero!</pre>
+</div>
+<p>In the previous example, the loop termination condition is always True, so
+execution only leaves the loop when a break is encountered. If we are working
+with a break statement that resides within a loop that is contained in another
+loop (nested loop construct), then only the inner loop will be terminated.</p>
+</div>
+<div class="section" id="for-loop">
+<h3>for Loop<a class="headerlink" href="#for-loop" title="Permalink to this headline">¶</a></h3>
+<p>The for loop can be used on any iterable object. It will simply iterate through
+the object and perform some processing during each pass. Both the break and
+continue statements can also be used within the for loop. The for statement in
+Python also differs from the same statement in Java because in Python we also
+have the else clause with this construct. Once again, the else clause is
+executed when the for loop processes to completion without any break
+intervention or raised exceptions. Also, if you are familiar with pre-Java 5
+for loops then you will love the Python syntax. In Java 5, the syntax of the
+for statement was adjusted a bit to make it more in line with syntactically
+easy languages such as Python.</p>
+<p><em>Listing 3-22. Comparing Java and Python for-loop</em></p>
+<p><em>Example of Java for-loop (pre Java 5)</em></p>
+<div class="highlight-python"><pre>for(x = 0; x &lt;= myList.size(); x++){
+// processing statements iterating through myList
+System.out.println("The current index is: " + x);
+}</pre>
+</div>
+<p><em>Listing 3-23. Example of Python for-loop</em></p>
+<div class="highlight-python"><pre>my_list = [1,2,3,4,5]
+&gt;&gt;&gt; for value in my_list:
+# processing statements using value as the current item in my_list
+...     print 'The current value is %s' % (value)
+...
+The current value is 1
+The current value is 2
+The current value is 3
+The current value is 4
+The current value is 5</pre>
+</div>
+<p>As you can see, the Python syntax is a little easier to understand, but it
+doesn’t really save too many keystrokes at this point. We still have to manage
+the index (x in this case) by ourselves by incrementing it with each iteration
+of the loop. However, Python does provide a built-in function that can save us
+some keystrokes and provides a similar functionality to that of Java with the
+automatically incrementing index on the for loop. The enumerate(sequence)
+function does just that. It will provide an index for our use and automatically
+manage it for us.</p>
+<p><em>Listing 3-24. Enumerate() Functionality</em></p>
+<div class="highlight-python"><pre>&gt;&gt;&gt; myList = ['jython','java','python','jruby','groovy']
+&gt;&gt;&gt; for index, value in enumerate(myList):
+...     print index, value
+...
+0 jython
+1 java
+2 python
+3 jruby
+4 groovy</pre>
+</div>
+<p>If we do not require the use of an index, it can be removed and the syntax can
+be cleaned up a bit.</p>
+<div class="highlight-python"><pre>&gt;&gt;&gt; myList = ['jython', 'java', 'python', 'jruby', 'groovy']
+&gt;&gt;&gt; for item in myList:
+...     print item
+...
+jython
+java
+python
+jruby
+groovy</pre>
+</div>
+<p>Now we have covered the program flow for conditionals and looping constructs in
+the Python language. However, good programming practice will tell you to keep
+it as simple as possible or the logic will become too hard to follow. In
+practicing proper coding techniques, it is also good to know that lists,
+dictionaries, and other containers can be iterated over just like other
+objects. Iteration over containers using the for loop is a very useful
+strategy. Here is an example of iterating over a dictionary object.</p>
+<p><em>Listing 3-25. Iteration Over Containers</em></p>
+<div class="highlight-python"><pre># Define a dictionary and then iterate over it to print each value
+&gt;&gt;&gt; my_dict = {'Jython':'Java', 'CPython':'C', 'IronPython':'.NET','PyPy':'Python'}
+&gt;&gt;&gt; for key in my_dict:
+...     print key
+...
+Jython
+IronPython
+CPython
+PyPy</pre>
+</div>
+<p>It is useful to know that we can also obtain the values of a dictionary object
+via each iteration by calling my_dict.values().</p>
+</div>
+</div>
+<div class="section" id="example-code">
+<h2>Example Code<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>
+<p>Let’s take a look at an example program that uses some of the program flow
+which was discussed in this chapter. The example program simply makes use of an
+external text file to manage a list of players on a sports team. You will see
+how to follow proper program structure and use spacing effectively in this
+example. You will also see file utilization in action, along with utilization
+of the raw_input() function.</p>
+<p><em>Listing 3-26. # import os module</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c"># Create empty dictionary</span>
+<span class="n">player_dict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="c"># Create an empty string</span>
+<span class="n">enter_player</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+<span class="c"># Enter a loop to enter inforation from keyboard</span>
+<span class="k">while</span> <span class="n">enter_player</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&#39;X&#39;</span><span class="p">:</span>
+
+    <span class="k">print</span> <span class="s">&#39;Sports Team Administration App&#39;</span>
+
+    <span class="c"># If the file exists, then allow us to manage it, otherwise force creation.</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s">&#39;players.txt&#39;</span><span class="p">):</span>
+        <span class="n">enter_player</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">&quot;Would you like to create a team or manage an existing team?</span><span class="se">\n</span><span class="s"> (Enter &#39;C&#39; for create, &#39;M&#39; for manage, &#39;X&#39; to exit) &quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># Force creation of file if it does not yet exist.</span>
+        <span class="n">enter_player</span> <span class="o">=</span> <span class="s">&#39;C&#39;</span>
+
+    <span class="c"># Check to determine which action to take.  C = create, M = manage, X = Exit and Save</span>
+    <span class="k">if</span> <span class="n">enter_player</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;C&#39;</span><span class="p">:</span>
+
+    <span class="c"># Enter a player for the team</span>
+        <span class="k">print</span> <span class="s">&#39;Enter a list of players on our team along with their position&#39;</span>
+        <span class="n">enter_cont</span> <span class="o">=</span> <span class="s">&#39;Y&#39;</span>
+
+        <span class="c">#  While continuing to enter new player&#39;s, perform the following</span>
+        <span class="k">while</span> <span class="n">enter_cont</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;Y&#39;</span><span class="p">:</span>
+            <span class="c"># Capture keyboard entry into name variable</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">&#39;Enter players first name: &#39;</span><span class="p">)</span>
+            <span class="c"># Capture keyboard entry into position variable</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">&#39;Enter players position: &#39;</span><span class="p">)</span>
+            <span class="c"># Assign position to a dictionary key of the player name</span>
+            <span class="n">player_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">position</span>
+            <span class="n">enter_cont</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">&quot;Enter another player? (Press &#39;N&#39; to exit or &#39;Y&#39; to continue)&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">enter_player</span> <span class="o">=</span> <span class="s">&#39;X&#39;</span>
+
+    <span class="c"># Manage player.txt entries</span>
+    <span class="k">elif</span> <span class="n">enter_player</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;M&#39;</span><span class="p">:</span>
+
+        <span class="c"># Read values from the external file into a dictionary object</span>
+        <span class="k">print</span>
+        <span class="k">print</span> <span class="s">&#39;Manage the Team&#39;</span>
+        <span class="c"># Open file and assign to playerfile</span>
+        <span class="n">playerfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;players.txt&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="c"># Use the for-loop to iterate over the entries in the file</span>
+        <span class="k">for</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">playerfile</span><span class="p">:</span>
+            <span class="c"># Split entries into key/value pairs and add to list</span>
+            <span class="n">playerList</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
+            <span class="c"># Build dictionary using list values from file</span>
+            <span class="n">player_dict</span><span class="p">[</span><span class="n">playerList</span><span class="p">[</span><span class="mf">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">playerList</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span>
+        <span class="c"># Close the file</span>
+        <span class="n">playerfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">print</span> <span class="s">&#39;Team Listing&#39;</span>
+        <span class="k">print</span> <span class="s">&#39;++++++++++++&#39;</span>
+
+        <span class="c"># Iterate over dictionary values and print key/value pairs</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">player</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">player_dict</span><span class="p">):</span>
+            <span class="k">print</span> <span class="s">&#39;Player </span><span class="si">%s</span><span class="s"> Name: </span><span class="si">%s</span><span class="s"> -- Position: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">player_dict</span><span class="p">[</span><span class="n">player</span><span class="p">])</span>
+
+<span class="k">else</span><span class="p">:</span>
+    <span class="c"># Save the external file and close resources</span>
+    <span class="k">if</span> <span class="n">player_dict</span><span class="p">:</span>
+
+        <span class="k">print</span> <span class="s">&#39;Saving Team Data...&#39;</span>
+        <span class="c"># Open the file</span>
+        <span class="n">playerfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;players.txt&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="c"># Write each dictionary element to the file</span>
+        <span class="k">for</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">player_dict</span><span class="p">:</span>
+            <span class="n">playerfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span><span class="n">player_dict</span><span class="p">[</span><span class="n">player</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+        <span class="c"># Close file</span>
+        <span class="n">playerfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This example is packed full of concepts that have been discussed throughout the
+first three chapters of the book. As stated previously, the concept is to
+create and manage a list of sport players and their relative positions. The
+example starts by entering a while() loop that runs the program until the user
+enters the exit command. Next, the program checks to see if the &#8216;players.txt&#8217;
+file exists. If it does, then the program prompts the user to enter a code to
+determine the next action to be taken. However, if the file does not exist then
+the user is forced to create at least one player/position pair in the file.</p>
+<p>Continuing on, the program allows the user to enter as many player/position
+pairs as needed, or exit the program at any time. If the user chooses to manage
+the player/position list, the program simply opens the &#8216;players.txt&#8217; file, uses
+a for() loop to iterate over each entry within the file. A dictionary is
+populated with the current player in each iteration of the loop. Once the loop
+has completed, the file is closed and the dictionary is iterated and printed.
+Exiting the program forces the else() clause to be invoked, which iterates over
+each player in the dictionary and writes them to the file.</p>
+<p>Unfortunately, this program is quite simplistic and some features could not be
+implemented without knowledge of functions (Chapter 4) or classes (Chapter 6).
+A good practice would be to revisit this program once those topics have been
+covered and simplify as well as add additional functionality.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>All programs are constructed out of statements and expressions. In this chapter
+we covered details of creating expressions and using them. Expressions can be
+composed of any number of mathematical operators and comparisons. In this
+chapter we discussed the basics of using mathematical operators in our
+programs. The __future__ division topic introduced us to using features from
+the __future__. We then delved into comparisons and comparison operators.</p>
+<p>We ended this short chapter by discussing proper program flow and properly
+learned about the if statement as well as how to construct different types of
+loops in Python. In the next chapter you will learn how to write functions, and
+the use of many built-in functions will be discussed.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Chapter 3:  Operators, Expressions, and Program Flow</a><ul>
+<li><a class="reference external" href="#types-of-expressions">Types of Expressions</a></li>
+<li><a class="reference external" href="#mathematical-operations">Mathematical Operations</a></li>
+<li><a class="reference external" href="#comparison-operators">Comparison Operators</a></li>
+<li><a class="reference external" href="#bitwise-operators">Bitwise Operators</a></li>
+<li><a class="reference external" href="#augmented-assignment">Augmented Assignment</a></li>
+<li><a class="reference external" href="#boolean-expressions">Boolean Expressions</a></li>
+<li><a class="reference external" href="#conversions">Conversions</a></li>
+<li><a class="reference external" href="#using-expressions-to-control-program-flow">Using Expressions to Control Program Flow</a><ul>
+<li><a class="reference external" href="#if-elif-else-statement">if-elif-else Statement</a></li>
+<li><a class="reference external" href="#while-loop">while Loop</a></li>
+<li><a class="reference external" href="#continue-statement">continue Statement</a></li>
+<li><a class="reference external" href="#break-statement">break Statement</a></li>
+<li><a class="reference external" href="#for-loop">for Loop</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#example-code">Example Code</a></li>
+<li><a class="reference external" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="DataTypes.html"
+                                  title="previous chapter">Chapter 2:  Data Types and Referencing</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="DefiningFunctionsandUsingBuilt-Ins.html"
+                                  title="next chapter">Chapter 4:  Defining Functions and Using Built-ins</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/OpsExpressPF.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="DefiningFunctionsandUsingBuilt-Ins.html" title="Chapter 4: Defining Functions and Using Built-ins"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="DataTypes.html" title="Chapter 2: Data Types and Referencing"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+    <div class="footer">
+      &copy; Copyright 2009,2010, Josh Juneau, Frank Wierzbicki, Jim Baker, Leo Soto, Victor Ng.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-13131153-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  </body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>18.7. MimeWriter — Generic MIME file writer &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="18. Internet Data Handling" href="netdata.html" />
+    <link rel="next" title="18.8. mimify — MIME processing of mail messages" href="mimify.html" />
+    <link rel="prev" title="18.6. mimetypes — Map filenames to MIME types" href="mimetypes.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="mimify.html" title="18.8. mimify — MIME processing of mail messages"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mimetypes.html" title="18.6. mimetypes — Map filenames to MIME types"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" accesskey="U">18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">18.7. <tt class="docutils literal"><span class="pre">MimeWriter</span></tt> &#8212; Generic MIME file writer</a><ul>
+<li><a class="reference external" href="#mimewriter-objects">18.7.1. MimeWriter Objects</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="mimetypes.html"
+                                  title="previous chapter">18.6. <tt class="docutils literal docutils literal docutils literal"><span class="pre">mimetypes</span></tt> &#8212; Map filenames to MIME types</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="mimify.html"
+                                  title="next chapter">18.8. <tt class="docutils literal"><span class="pre">mimify</span></tt> &#8212; MIME processing of mail messages</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/mimewriter.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="mimewriter-generic-mime-file-writer">
+<h1>18.7. <tt class="docutils literal"><span class="pre">MimeWriter</span></tt> &#8212; Generic MIME file writer<a class="headerlink" href="#mimewriter-generic-mime-file-writer" title="Permalink to this headline">¶</a></h1>
+<p>Deprecated since version 2.3: The <tt class="docutils literal"><span class="pre">email</span></tt> package should be used in
+preference to the <tt class="docutils literal"><span class="pre">MimeWriter</span></tt> module.  This module is present only
+to maintain backward compatibility.</p>
+<p>This module defines the class <tt class="docutils literal"><span class="pre">MimeWriter</span></tt>.  The <tt class="docutils literal"><span class="pre">MimeWriter</span></tt>
+class implements a basic formatter for creating MIME multi-part files.
+It doesn&#8217;t seek around the output file nor does it use large amounts
+of buffer space. You must write the parts out in the order that they
+should occur in the final file. <tt class="docutils literal"><span class="pre">MimeWriter</span></tt> does buffer the headers
+you add, allowing you to rearrange their order.</p>
+<p>class class MimeWriter.MimeWriter(fp)</p>
+<blockquote>
+Return a new instance of the <tt class="docutils literal"><span class="pre">MimeWriter</span></tt> class.  The only
+argument passed, <em>fp</em>, is a file object to be used for writing.
+Note that a <tt class="docutils literal"><span class="pre">StringIO</span></tt> object could also be used.</blockquote>
+<div class="section" id="mimewriter-objects">
+<h2>18.7.1. MimeWriter Objects<a class="headerlink" href="#mimewriter-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">MimeWriter</span></tt> instances have the following methods:</p>
+<p>MimeWriter.addheader(key, value[, prefix])</p>
+<blockquote>
+Add a header line to the MIME message. The <em>key</em> is the name of the
+header, where the <em>value</em> obviously provides the value of the
+header. The optional argument <em>prefix</em> determines where the header
+is inserted; <tt class="docutils literal"><span class="pre">0</span></tt> means append at the end, <tt class="docutils literal"><span class="pre">1</span></tt> is insert at the
+start. The default is to append.</blockquote>
+<p>MimeWriter.flushheaders()</p>
+<blockquote>
+Causes all headers accumulated so far to be written out (and
+forgotten). This is useful if you don&#8217;t need a body part at all,
+e.g. for a subpart of type <em>message/rfc822</em> that&#8217;s (mis)used to
+store some header-like information.</blockquote>
+<p>MimeWriter.startbody(ctype[, plist[, prefix]])</p>
+<blockquote>
+Returns a file-like object which can be used to write to the body
+of the message.  The content-type is set to the provided <em>ctype</em>,
+and the optional parameter <em>plist</em> provides additional parameters
+for the content-type declaration. <em>prefix</em> functions as in
+<tt class="docutils literal"><span class="pre">addheader()</span></tt> except that the default is to insert at the start.</blockquote>
+<p>MimeWriter.startmultipartbody(subtype[, boundary[, plist[, prefix]]])</p>
+<blockquote>
+Returns a file-like object which can be used to write to the body
+of the message.  Additionally, this method initializes the multi-
+part code, where <em>subtype</em> provides the multipart subtype,
+<em>boundary</em> may provide a user-defined boundary specification, and
+<em>plist</em> provides optional parameters for the subtype. <em>prefix</em>
+functions as in <tt class="docutils literal"><span class="pre">startbody()</span></tt>.  Subparts should be created using
+<tt class="docutils literal"><span class="pre">nextpart()</span></tt>.</blockquote>
+<p>MimeWriter.nextpart()</p>
+<blockquote>
+Returns a new instance of <tt class="docutils literal"><span class="pre">MimeWriter</span></tt> which represents an
+individual part in a multipart message.  This may be used to write
+the  part as well as used for creating recursively complex
+multipart messages. The message must first be initialized with
+<tt class="docutils literal"><span class="pre">startmultipartbody()</span></tt> before using <tt class="docutils literal"><span class="pre">nextpart()</span></tt>.</blockquote>
+<p>MimeWriter.lastpart()</p>
+<blockquote>
+This is used to designate the last part of a multipart message, and
+should <em>always</em> be used when writing multipart messages.</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mimify.html" title="18.8. mimify — MIME processing of mail messages"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mimetypes.html" title="18.6. mimetypes — Map filenames to MIME types"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" >18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

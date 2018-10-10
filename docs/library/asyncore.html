@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>17.6. asyncore — Asynchronous socket handler &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="17. Interprocess Communication and Networking" href="ipc.html" />
+    <link rel="next" title="17.7. asynchat — Asynchronous socket command/response handler" href="asynchat.html" />
+    <link rel="prev" title="17.5. popen2 — Subprocesses with accessible I/O streams" href="popen2.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="asynchat.html" title="17.7. asynchat — Asynchronous socket command/response handler"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="popen2.html" title="17.5. popen2 — Subprocesses with accessible I/O streams"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="ipc.html" accesskey="U">17. Interprocess Communication and Networking</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">17.6. <tt class="docutils literal"><span class="pre">asyncore</span></tt> &#8212; Asynchronous socket handler</a><ul>
+<li><a class="reference external" href="#asyncore-example-basic-http-client">17.6.1. asyncore Example basic HTTP client</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="popen2.html"
+                                  title="previous chapter">17.5. <tt class="docutils literal"><span class="pre">popen2</span></tt> &#8212; Subprocesses with accessible I/O streams</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="asynchat.html"
+                                  title="next chapter">17.7. <tt class="docutils literal docutils literal"><span class="pre">asynchat</span></tt> &#8212; Asynchronous socket command/response handler</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/asyncore.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="asyncore-asynchronous-socket-handler">
+<h1>17.6. <tt class="docutils literal"><span class="pre">asyncore</span></tt> &#8212; Asynchronous socket handler<a class="headerlink" href="#asyncore-asynchronous-socket-handler" title="Permalink to this headline">¶</a></h1>
+<p>This module provides the basic infrastructure for writing asynchronous
+socket service clients and servers.</p>
+<p>There are only two ways to have a program on a single processor do
+&#8220;more than one thing at a time.&#8221; Multi-threaded programming is the
+simplest and most popular way to do it, but there is another very
+different technique, that lets you have nearly all the advantages of
+multi-threading, without actually using multiple threads.  It&#8217;s really
+only practical if your program is largely I/O bound.  If your program
+is processor bound, then pre-emptive scheduled threads are probably
+what you really need.  Network servers are rarely processor bound,
+however.</p>
+<p>If your operating system supports the <tt class="docutils literal"><span class="pre">select()</span></tt> system call in its
+I/O library (and nearly all do), then you can use it to juggle
+multiple communication channels at once; doing other work while your
+I/O is taking place in the &#8220;background.&#8221;  Although this strategy can
+seem strange and complex, especially at first, it is in many ways
+easier to understand and control than multi-threaded programming.  The
+<tt class="docutils literal"><span class="pre">asyncore</span></tt> module solves many of the difficult problems for you,
+making the task of building sophisticated high-performance network
+servers and clients a snap.  For &#8220;conversational&#8221; applications and
+protocols the companion <tt class="docutils literal"><span class="pre">asynchat</span></tt> module is invaluable.</p>
+<p>The basic idea behind both modules is to create one or more network
+<em>channels</em>, instances of class <tt class="docutils literal"><span class="pre">asyncore.dispatcher</span></tt> and
+<tt class="docutils literal"><span class="pre">asynchat.async_chat</span></tt>.  Creating the channels adds them to a global
+map, used by the <tt class="docutils literal"><span class="pre">loop()</span></tt> function if you do not provide it with
+your own <em>map</em>.</p>
+<p>Once the initial channel(s) is(are) created, calling the <tt class="docutils literal"><span class="pre">loop()</span></tt>
+function activates channel service, which continues until the last
+channel (including any that have been added to the map during
+asynchronous service) is closed.</p>
+<p>asyncore.loop([timeout[, use_poll[, map[, count]]]])</p>
+<blockquote>
+<p>Enter a polling loop that terminates after count passes or all open
+channels have been closed.  All arguments are optional.  The
+<em>count</em> parameter defaults to None, resulting in the loop
+terminating only when all channels have been closed.  The <em>timeout</em>
+argument sets the timeout parameter for the appropriate
+<tt class="docutils literal"><span class="pre">select()</span></tt> or <tt class="docutils literal"><span class="pre">poll()</span></tt> call, measured in seconds; the default
+is 30 seconds.  The <em>use_poll</em> parameter, if true, indicates that
+<tt class="docutils literal"><span class="pre">poll()</span></tt> should be used in preference to <tt class="docutils literal"><span class="pre">select()</span></tt> (the
+default is <tt class="xref docutils literal"><span class="pre">False</span></tt>).</p>
+<p>The <em>map</em> parameter is a dictionary whose items are the channels to
+watch. As channels are closed they are deleted from their map.  If
+<em>map</em> is omitted, a global map is used. Channels (instances of
+<tt class="docutils literal"><span class="pre">asyncore.dispatcher</span></tt>, <tt class="docutils literal"><span class="pre">asynchat.async_chat</span></tt> and subclasses
+thereof) can freely be mixed in the map.</p>
+</blockquote>
+<p>class class asyncore.dispatcher</p>
+<blockquote>
+<p>The <tt class="docutils literal"><span class="pre">dispatcher</span></tt> class is a thin wrapper around a low-level
+socket object. To make it more useful, it has a few methods for
+event-handling which are called from the asynchronous loop.
+Otherwise, it can be treated as a normal non-blocking socket
+object.</p>
+<p>The firing of low-level events at certain times or in certain
+connection states tells the asynchronous loop that certain higher-
+level events have taken place.  For example, if we have asked for a
+socket to connect to another host, we know that the connection has
+been made when the socket becomes writable for the first time (at
+this point you know that you may write to it with the expectation
+of success).  The implied higher-level events are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Event</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">handle_connect()</span></tt></td>
+<td>Implied by the first read or write event</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">handle_close()</span></tt></td>
+<td>Implied by a read event with no data
+available</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">handle_accept()</span></tt></td>
+<td>Implied by a read event on a listening
+socket</td>
+</tr>
+</tbody>
+</table>
+<p>During asynchronous processing, each mapped channel&#8217;s
+<tt class="docutils literal"><span class="pre">readable()</span></tt> and <tt class="docutils literal"><span class="pre">writable()</span></tt> methods are used to determine
+whether the channel&#8217;s socket should be added to the list of
+channels <a href="#id1"><span class="problematic" id="id2">``</span></a>select()``ed or <a href="#id3"><span class="problematic" id="id4">``</span></a>poll()``ed for read and write events.</p>
+<p>Thus, the set of channel events is larger than the basic socket
+events.  The full set of methods that can be overridden in your
+subclass follows:</p>
+<p>handle_read()</p>
+<blockquote>
+Called when the asynchronous loop detects that a <tt class="docutils literal"><span class="pre">read()</span></tt> call
+on the channel&#8217;s socket will succeed.</blockquote>
+<p>handle_write()</p>
+<blockquote>
+<p>Called when the asynchronous loop detects that a writable socket
+can be written.  Often this method will implement the necessary
+buffering for performance.  For example:</p>
+<blockquote>
+<dl class="docutils">
+<dt>def handle_write(self):</dt>
+<dd>sent = self.send(self.buffer)
+self.buffer = self.buffer[sent:]</dd>
+</dl>
+</blockquote>
+</blockquote>
+<p>handle_expt()</p>
+<blockquote>
+Called when there is out of band (OOB) data for a socket
+connection.  This will almost never happen, as OOB is tenuously
+supported and rarely used.</blockquote>
+<p>handle_connect()</p>
+<blockquote>
+Called when the active opener&#8217;s socket actually makes a
+connection.  Might send a &#8220;welcome&#8221; banner, or initiate a
+protocol negotiation with the remote endpoint, for example.</blockquote>
+<p>handle_close()</p>
+<blockquote>
+Called when the socket is closed.</blockquote>
+<p>handle_error()</p>
+<blockquote>
+Called when an exception is raised and not otherwise handled.
+The default version prints a condensed traceback.</blockquote>
+<p>handle_accept()</p>
+<blockquote>
+Called on listening channels (passive openers) when a connection
+can be established with a new remote endpoint that has issued a
+<tt class="docutils literal"><span class="pre">connect()</span></tt> call for the local endpoint.</blockquote>
+<p>readable()</p>
+<blockquote>
+Called each time around the asynchronous loop to determine
+whether a channel&#8217;s socket should be added to the list on which
+read events can occur.  The default method simply returns
+<tt class="xref docutils literal"><span class="pre">True</span></tt>, indicating that by default, all channels will be
+interested in read events.</blockquote>
+<p>writable()</p>
+<blockquote>
+Called each time around the asynchronous loop to determine
+whether a channel&#8217;s socket should be added to the list on which
+write events can occur.  The default method simply returns
+<tt class="xref docutils literal"><span class="pre">True</span></tt>, indicating that by default, all channels will be
+interested in write events.</blockquote>
+<p>In addition, each channel delegates or extends many of the socket
+methods. Most of these are nearly identical to their socket
+partners.</p>
+<p>create_socket(family, type)</p>
+<blockquote>
+This is identical to the creation of a normal socket, and will
+use the same options for creation.  Refer to the <tt class="docutils literal"><span class="pre">socket</span></tt>
+documentation for information on creating sockets.</blockquote>
+<p>connect(address)</p>
+<blockquote>
+As with the normal socket object, <em>address</em> is a tuple with the
+first element the host to connect to, and the second the port
+number.</blockquote>
+<p>send(data)</p>
+<blockquote>
+Send <em>data</em> to the remote end-point of the socket.</blockquote>
+<p>recv(buffer_size)</p>
+<blockquote>
+Read at most <em>buffer_size</em> bytes from the socket&#8217;s remote end-
+point.  An empty string implies that the channel has been closed
+from the other end.</blockquote>
+<p>listen(backlog)</p>
+<blockquote>
+Listen for connections made to the socket.  The <em>backlog</em>
+argument specifies the maximum number of queued connections and
+should be at least 1; the maximum value is system-dependent
+(usually 5).</blockquote>
+<p>bind(address)</p>
+<blockquote>
+Bind the socket to <em>address</em>.  The socket must not already be
+bound.  (The format of <em>address</em> depends on the address family
+&#8212; see above.)  To mark the socket as re-usable (setting the
+<tt class="docutils literal"><span class="pre">SO_REUSEADDR</span></tt> option), call the <tt class="docutils literal"><span class="pre">dispatcher</span></tt> object&#8217;s
+<tt class="docutils literal"><span class="pre">set_reuse_addr()</span></tt> method.</blockquote>
+<p>accept()</p>
+<blockquote>
+Accept a connection.  The socket must be bound to an address and
+listening for connections.  The return value is a pair <tt class="docutils literal"><span class="pre">(conn,</span>
+<span class="pre">address)</span></tt> where <em>conn</em> is a <em>new</em> socket object usable to send
+and receive data on the connection, and <em>address</em> is the address
+bound to the socket on the other end of the connection.</blockquote>
+<p>close()</p>
+<blockquote>
+Close the socket.  All future operations on the socket object
+will fail. The remote end-point will receive no more data (after
+queued data is flushed).  Sockets are automatically closed when
+they are garbage-collected.</blockquote>
+</blockquote>
+<p>class class asyncore.file_dispatcher</p>
+<blockquote>
+A file_dispatcher takes a file descriptor or file object along with
+an optional map argument and wraps it for use with the <tt class="docutils literal"><span class="pre">poll()</span></tt>
+or <tt class="docutils literal"><span class="pre">loop()</span></tt> functions.  If provided a file object or anything
+with a <tt class="docutils literal"><span class="pre">fileno()</span></tt> method, that method will be called and passed
+to the <tt class="docutils literal"><span class="pre">file_wrapper</span></tt> constructor.  Availability: UNIX.</blockquote>
+<p>class class asyncore.file_wrapper</p>
+<blockquote>
+A file_wrapper takes an integer file descriptor and calls
+<tt class="docutils literal"><span class="pre">os.dup()</span></tt> to duplicate the handle so that the original handle
+may be closed independently of the file_wrapper.  This class
+implements sufficient methods to emulate a socket for use by the
+<tt class="docutils literal"><span class="pre">file_dispatcher</span></tt> class.  Availability: UNIX.</blockquote>
+<div class="section" id="asyncore-example-basic-http-client">
+<h2>17.6.1. asyncore Example basic HTTP client<a class="headerlink" href="#asyncore-example-basic-http-client" title="Permalink to this headline">¶</a></h2>
+<p>Here is a very basic HTTP client that uses the <tt class="docutils literal"><span class="pre">dispatcher</span></tt> class to
+implement its socket handling:</p>
+<blockquote>
+<p>import asyncore, socket</p>
+<p>class http_client(asyncore.dispatcher):</p>
+<blockquote>
+<dl class="docutils">
+<dt>def __init__(self, host, path):</dt>
+<dd>asyncore.dispatcher.__init__(self)
+self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+self.connect( (host, 80) )
+self.buffer = &#8216;GET %s HTTP/1.0rnrn&#8217; % path</dd>
+<dt>def handle_connect(self):</dt>
+<dd>pass</dd>
+<dt>def handle_close(self):</dt>
+<dd>self.close()</dd>
+<dt>def handle_read(self):</dt>
+<dd>print self.recv(8192)</dd>
+<dt>def writable(self):</dt>
+<dd>return (len(self.buffer) &gt; 0)</dd>
+<dt>def handle_write(self):</dt>
+<dd>sent = self.send(self.buffer)
+self.buffer = self.buffer[sent:]</dd>
+</dl>
+</blockquote>
+<p>c = http_client(&#8216;www.python.org&#8217;, &#8216;/&#8217;)</p>
+<p>asyncore.loop()</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="asynchat.html" title="17.7. asynchat — Asynchronous socket command/response handler"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="popen2.html" title="17.5. popen2 — Subprocesses with accessible I/O streams"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="ipc.html" >17. Interprocess Communication and Networking</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

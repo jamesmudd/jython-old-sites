@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.19. repr — Alternate repr() implementation &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="8. Data Types" href="datatypes.html" />
+    <link rel="next" title="9. Numeric and Mathematical Modules" href="numeric.html" />
+    <link rel="prev" title="8.18. pprint — Data pretty printer" href="pprint.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="numeric.html" title="9. Numeric and Mathematical Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pprint.html" title="8.18. pprint — Data pretty printer"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" accesskey="U">8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">8.19. <tt class="docutils literal"><span class="pre">repr</span></tt> &#8212; Alternate <tt class="docutils literal"><span class="pre">repr()</span></tt> implementation</a><ul>
+<li><a class="reference external" href="#repr-objects">8.19.1. Repr Objects</a></li>
+<li><a class="reference external" href="#subclassing-repr-objects">8.19.2. Subclassing Repr Objects</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="pprint.html"
+                                  title="previous chapter">8.18. <tt class="docutils literal docutils literal docutils literal"><span class="pre">pprint</span></tt> &#8212; Data pretty printer</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="numeric.html"
+                                  title="next chapter">9. Numeric and Mathematical Modules</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/repr.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="repr-alternate-repr-implementation">
+<h1>8.19. <tt class="docutils literal"><span class="pre">repr</span></tt> &#8212; Alternate <tt class="docutils literal"><span class="pre">repr()</span></tt> implementation<a class="headerlink" href="#repr-alternate-repr-implementation" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">repr</span></tt> module has been renamed to <tt class="docutils literal"><span class="pre">reprlib</span></tt> in Python 3.0.</dt>
+<dd>The <em>2to3</em> tool will automatically adapt imports when converting
+your sources to 3.0.</dd>
+</dl>
+<p>The <tt class="docutils literal"><span class="pre">repr</span></tt> module provides a means for producing object
+representations with limits on the size of the resulting strings. This
+is used in the Python debugger and may be useful in other contexts as
+well.</p>
+<p>This module provides a class, an instance, and a function:</p>
+<p>class class repr.Repr</p>
+<blockquote>
+Class which provides formatting services useful in implementing
+functions similar to the built-in <tt class="docutils literal"><span class="pre">repr()</span></tt>; size limits for
+different object types are added to avoid the generation of
+representations which are excessively long.</blockquote>
+<p>repr.aRepr</p>
+<blockquote>
+This is an instance of <tt class="docutils literal"><span class="pre">Repr</span></tt> which is used to provide the
+<tt class="docutils literal"><span class="pre">repr()</span></tt> function described below.  Changing the attributes of
+this object will affect the size limits used by <tt class="docutils literal"><span class="pre">repr()</span></tt> and the
+Python debugger.</blockquote>
+<p>repr.repr(obj)</p>
+<blockquote>
+This is the <tt class="docutils literal"><span class="pre">repr()</span></tt> method of <tt class="docutils literal"><span class="pre">aRepr</span></tt>.  It returns a string
+similar to that returned by the built-in function of the same
+name, but with limits on most sizes.</blockquote>
+<div class="section" id="repr-objects">
+<h2>8.19.1. Repr Objects<a class="headerlink" href="#repr-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">Repr</span></tt> instances provide several members which can be used to
+provide size limits for the representations of different object types,
+and methods which format specific object types.</p>
+<p>Repr.maxlevel</p>
+<blockquote>
+Depth limit on the creation of recursive representations.  The
+default is <tt class="docutils literal"><span class="pre">6</span></tt>.</blockquote>
+<p>Repr.maxdict
+Repr.maxlist
+Repr.maxtuple
+Repr.maxset
+Repr.maxfrozenset
+Repr.maxdeque
+Repr.maxarray</p>
+<blockquote>
+<p>Limits on the number of entries represented for the named object
+type.  The default is <tt class="docutils literal"><span class="pre">4</span></tt> for <tt class="docutils literal"><span class="pre">maxdict</span></tt>, <tt class="docutils literal"><span class="pre">5</span></tt> for
+<tt class="docutils literal"><span class="pre">maxarray</span></tt>, and  <tt class="docutils literal"><span class="pre">6</span></tt> for the others.</p>
+<p>New in version 2.4: <tt class="docutils literal"><span class="pre">maxset</span></tt>, <tt class="docutils literal"><span class="pre">maxfrozenset</span></tt>, and <tt class="docutils literal"><span class="pre">set</span></tt>.</p>
+</blockquote>
+<p>Repr.maxlong</p>
+<blockquote>
+Maximum number of characters in the representation for a long
+integer.  Digits are dropped from the middle.  The default is
+<tt class="docutils literal"><span class="pre">40</span></tt>.</blockquote>
+<p>Repr.maxstring</p>
+<blockquote>
+Limit on the number of characters in the representation of the
+string.  Note that the &#8220;normal&#8221; representation of the string is
+used as the character source: if escape sequences are needed in the
+representation, these may be mangled when the representation is
+shortened.  The default is <tt class="docutils literal"><span class="pre">30</span></tt>.</blockquote>
+<p>Repr.maxother</p>
+<blockquote>
+This limit is used to control the size of object types for which no
+specific formatting method is available on the <tt class="docutils literal"><span class="pre">Repr</span></tt> object. It
+is applied in a similar manner as <tt class="docutils literal"><span class="pre">maxstring</span></tt>.  The default is
+<tt class="docutils literal"><span class="pre">20</span></tt>.</blockquote>
+<p>Repr.repr(obj)</p>
+<blockquote>
+The equivalent to the built-in <tt class="docutils literal"><span class="pre">repr()</span></tt> that uses the formatting
+imposed by the instance.</blockquote>
+<p>Repr.repr1(obj, level)</p>
+<blockquote>
+Recursive implementation used by <tt class="docutils literal"><span class="pre">repr()</span></tt>.  This uses the type of
+<em>obj</em> to determine which formatting method to call, passing it
+<em>obj</em> and <em>level</em>.  The type-specific methods should call
+<tt class="docutils literal"><span class="pre">repr1()</span></tt> to perform recursive formatting, with <tt class="docutils literal"><span class="pre">level</span> <span class="pre">-</span> <span class="pre">1</span></tt> for
+the value of <em>level</em> in the recursive  call.</blockquote>
+<p>Repr.repr_TYPE(obj, level)</p>
+<blockquote>
+Formatting methods for specific types are implemented as methods
+with a name based on the type name.  In the method name, <strong>TYPE</strong>
+is replaced by <tt class="docutils literal"><span class="pre">string.join(string.split(type(obj).__name__,</span>
+<span class="pre">'_'))</span></tt>. Dispatch to these methods is handled by <tt class="docutils literal"><span class="pre">repr1()</span></tt>. Type-
+specific methods which need to recursively format a value should
+call <tt class="docutils literal"><span class="pre">self.repr1(subobj,</span> <span class="pre">level</span> <span class="pre">-</span> <span class="pre">1)</span></tt>.</blockquote>
+</div>
+<div class="section" id="subclassing-repr-objects">
+<h2>8.19.2. Subclassing Repr Objects<a class="headerlink" href="#subclassing-repr-objects" title="Permalink to this headline">¶</a></h2>
+<p>The use of dynamic dispatching by <tt class="docutils literal"><span class="pre">Repr.repr1()</span></tt> allows subclasses
+of <tt class="docutils literal"><span class="pre">Repr</span></tt> to add support for additional built-in object types or to
+modify the handling of types already supported. This example shows how
+special support for file objects could be added:</p>
+<blockquote>
+<p>import repr as reprlib
+import sys</p>
+<dl class="docutils">
+<dt>class MyRepr(reprlib.Repr):</dt>
+<dd><dl class="first last docutils">
+<dt>def repr_file(self, obj, level):</dt>
+<dd><dl class="first last docutils">
+<dt>if obj.name in [&#8216;&lt;stdin&gt;&#8217;, &#8216;&lt;stdout&gt;&#8217;, &#8216;&lt;stderr&gt;&#8217;]:</dt>
+<dd>return obj.name</dd>
+<dt>else:</dt>
+<dd>return repr(obj)</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>aRepr = MyRepr()
+print aRepr.repr(sys.stdin)          # prints &#8216;&lt;stdin&gt;&#8217;</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="numeric.html" title="9. Numeric and Mathematical Modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pprint.html" title="8.18. pprint — Data pretty printer"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" >8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

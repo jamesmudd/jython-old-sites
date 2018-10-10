@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>26.12. user — User-specific configuration hook &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="26. Python Runtime Services" href="python.html" />
+    <link rel="next" title="27. Custom Python Interpreters" href="custominterp.html" />
+    <link rel="prev" title="26.11. site — Site-specific configuration hook" href="site.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="custominterp.html" title="27. Custom Python Interpreters"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="site.html" title="26.11. site — Site-specific configuration hook"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="python.html" accesskey="U">26. Python Runtime Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="site.html"
+                                  title="previous chapter">26.11. <tt class="docutils literal docutils literal docutils literal"><span class="pre">site</span></tt> &#8212; Site-specific configuration hook</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="custominterp.html"
+                                  title="next chapter">27. Custom Python Interpreters</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/user.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="user-user-specific-configuration-hook">
+<h1>26.12. <tt class="docutils literal"><span class="pre">user</span></tt> &#8212; User-specific configuration hook<a class="headerlink" href="#user-user-specific-configuration-hook" title="Permalink to this headline">¶</a></h1>
+<p>Deprecated since version 2.6: The <tt class="docutils literal"><span class="pre">user</span></tt> module has been removed in
+Python 3.0.</p>
+<p>As a policy, Python doesn&#8217;t run user-specified code on startup of
+Python programs.  (Only interactive sessions execute the script
+specified in the <strong>PYTHONSTARTUP</strong> environment variable if it exists).</p>
+<p>However, some programs or sites may find it convenient to allow users
+to have a standard customization file, which gets run when a program
+requests it.  This module implements such a mechanism.  A program that
+wishes to use the mechanism must execute the statement</p>
+<blockquote>
+import user</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">user</span></tt> module looks for a file <tt class="docutils literal"><span class="pre">.pythonrc.py</span></tt> in the user&#8217;s
+home directory and if it can be opened, executes it (using
+<tt class="docutils literal"><span class="pre">execfile()</span></tt>) in its own (the module <tt class="docutils literal"><span class="pre">user</span></tt>&#8216;s) global namespace.
+Errors during this phase are not caught; that&#8217;s up to the program that
+imports the <tt class="docutils literal"><span class="pre">user</span></tt> module, if it wishes.  The home directory is
+assumed to be named by the <strong>HOME</strong> environment variable; if this is
+not set, the current directory is used.</p>
+<p>The user&#8217;s <tt class="docutils literal"><span class="pre">.pythonrc.py</span></tt> could conceivably test for <tt class="docutils literal"><span class="pre">sys.version</span></tt>
+if it wishes to do different things depending on the Python version.</p>
+<p>A warning to users: be very conservative in what you place in your
+<tt class="docutils literal"><span class="pre">.pythonrc.py</span></tt> file.  Since you don&#8217;t know which programs will use
+it, changing the behavior of standard modules or functions is
+generally not a good idea.</p>
+<p>A suggestion for programmers who wish to use this mechanism: a simple
+way to let users specify options for your package is to have them
+define variables in their <tt class="docutils literal"><span class="pre">.pythonrc.py</span></tt> file that you test in your
+module.  For example, a module <tt class="docutils literal"><span class="pre">spam</span></tt> that has a verbosity level can
+look for a variable <tt class="docutils literal"><span class="pre">user.spam_verbose</span></tt>, as follows:</p>
+<blockquote>
+<p>import user</p>
+<p>verbose = bool(getattr(user, &#8220;spam_verbose&#8221;, 0))</p>
+</blockquote>
+<p>(The three-argument form of <tt class="docutils literal"><span class="pre">getattr()</span></tt> is used in case the user has
+not defined <tt class="docutils literal"><span class="pre">spam_verbose</span></tt> in their <tt class="docutils literal"><span class="pre">.pythonrc.py</span></tt> file.)</p>
+<p>Programs with extensive customization needs are better off reading a
+program-specific customization file.</p>
+<p>Programs with security or privacy concerns should <em>not</em> import this
+module; a user can easily break into a program by placing arbitrary
+code in the <tt class="docutils literal"><span class="pre">.pythonrc.py</span></tt> file.</p>
+<p>Modules for general use should <em>not</em> import this module; it may
+interfere with the operation of the importing program.</p>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">site</span></tt></dt>
+<dd>Site-wide customization mechanism.</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="custominterp.html" title="27. Custom Python Interpreters"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="site.html" title="26.11. site — Site-specific configuration hook"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="python.html" >26. Python Runtime Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

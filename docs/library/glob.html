@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>10.6. glob — Unix style pathname pattern expansion &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="10. File and Directory Access" href="filesys.html" />
+    <link rel="next" title="10.7. fnmatch — Unix filename pattern matching" href="fnmatch.html" />
+    <link rel="prev" title="10.5. tempfile — Generate temporary files and directories" href="tempfile.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="fnmatch.html" title="10.7. fnmatch — Unix filename pattern matching"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tempfile.html" title="10.5. tempfile — Generate temporary files and directories"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="filesys.html" accesskey="U">10. File and Directory Access</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="tempfile.html"
+                                  title="previous chapter">10.5. <tt class="docutils literal docutils literal"><span class="pre">tempfile</span></tt> &#8212; Generate temporary files and directories</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="fnmatch.html"
+                                  title="next chapter">10.7. <tt class="docutils literal docutils literal"><span class="pre">fnmatch</span></tt> &#8212; Unix filename pattern matching</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/glob.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="glob-unix-style-pathname-pattern-expansion">
+<h1>10.6. <tt class="docutils literal"><span class="pre">glob</span></tt> &#8212; Unix style pathname pattern expansion<a class="headerlink" href="#glob-unix-style-pathname-pattern-expansion" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">glob</span></tt> module finds all the pathnames matching a specified
+pattern according to the rules used by the Unix shell.  No tilde
+expansion is done, but <tt class="docutils literal"><span class="pre">*</span></tt>, <tt class="docutils literal"><span class="pre">?</span></tt>, and character ranges expressed
+with <tt class="docutils literal"><span class="pre">[]</span></tt> will be correctly matched.  This is done by using the
+<tt class="docutils literal"><span class="pre">os.listdir()</span></tt> and <tt class="docutils literal"><span class="pre">fnmatch.fnmatch()</span></tt> functions in concert, and
+not by actually invoking a subshell.  (For tilde and shell variable
+expansion, use <tt class="docutils literal"><span class="pre">os.path.expanduser()</span></tt> and <tt class="docutils literal"><span class="pre">os.path.expandvars()</span></tt>.)</p>
+<p>glob.glob(pathname)</p>
+<blockquote>
+Return a possibly-empty list of path names that match <em>pathname</em>,
+which must be a string containing a path specification. <em>pathname</em>
+can be either absolute (like <tt class="docutils literal"><span class="pre">/usr/src/Python-1.5/Makefile</span></tt>) or
+relative (like <tt class="docutils literal"><span class="pre">../../Tools/*/*.gif</span></tt>), and can contain shell-
+style wildcards. Broken symlinks are included in the results (as in
+the shell).</blockquote>
+<p>glob.iglob(pathname)</p>
+<blockquote>
+<p>Return an <em>iterator</em> which yields the same values as <tt class="docutils literal"><span class="pre">glob()</span></tt>
+without actually storing them all simultaneously.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>For example, consider a directory containing only the following files:
+<tt class="docutils literal"><span class="pre">1.gif</span></tt>, <tt class="docutils literal"><span class="pre">2.txt</span></tt>, and <tt class="docutils literal"><span class="pre">card.gif</span></tt>.  <tt class="docutils literal"><span class="pre">glob()</span></tt> will produce the
+following results.  Notice how any leading components of the path are
+preserved.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">glob</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;./[0-9].*&#39;</span><span class="p">)</span>
+<span class="go">[&#39;./1.gif&#39;, &#39;./2.txt&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;*.gif&#39;</span><span class="p">)</span>
+<span class="go">[&#39;1.gif&#39;, &#39;card.gif&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;?.gif&#39;</span><span class="p">)</span>
+<span class="go">[&#39;1.gif&#39;]</span>
+</pre></div>
+</div>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">fnmatch</span></tt></dt>
+<dd>Shell-style filename (not path) expansion</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fnmatch.html" title="10.7. fnmatch — Unix filename pattern matching"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tempfile.html" title="10.5. tempfile — Generate temporary files and directories"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="filesys.html" >10. File and Directory Access</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

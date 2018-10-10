@@ -1,0 +1,497 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>26.4. warnings — Warning control &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="26. Python Runtime Services" href="python.html" />
+    <link rel="next" title="26.5. contextlib — Utilities for with-statement contexts." href="contextlib.html" />
+    <link rel="prev" title="26.3. __main__ — Top-level script environment" href="__main__.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="contextlib.html" title="26.5. contextlib — Utilities for with-statement contexts."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="__main__.html" title="26.3. __main__ — Top-level script environment"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="python.html" accesskey="U">26. Python Runtime Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">26.4. <tt class="docutils literal"><span class="pre">warnings</span></tt> &#8212; Warning control</a><ul>
+<li><a class="reference external" href="#warning-categories">26.4.1. Warning Categories</a></li>
+<li><a class="reference external" href="#the-warnings-filter">26.4.2. The Warnings Filter</a></li>
+<li><a class="reference external" href="#temporarily-suppressing-warnings">26.4.3. Temporarily Suppressing Warnings</a></li>
+<li><a class="reference external" href="#testing-warnings">26.4.4. Testing Warnings</a></li>
+<li><a class="reference external" href="#available-functions">26.4.5. Available Functions</a></li>
+<li><a class="reference external" href="#available-context-managers">26.4.6. Available Context Managers</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="__main__.html"
+                                  title="previous chapter">26.3. <tt class="docutils literal docutils literal docutils literal"><span class="pre">__main__</span></tt> &#8212; Top-level script environment</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="contextlib.html"
+                                  title="next chapter">26.5. <tt class="docutils literal docutils literal docutils literal"><span class="pre">contextlib</span></tt> &#8212; Utilities for <tt class="docutils literal docutils literal docutils literal"><span class="pre">with</span></tt>-statement contexts.</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/warnings.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="warnings-warning-control">
+<h1>26.4. <tt class="docutils literal"><span class="pre">warnings</span></tt> &#8212; Warning control<a class="headerlink" href="#warnings-warning-control" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.1.</p>
+<p>Warning messages are typically issued in situations where it is useful
+to alert the user of some condition in a program, where that condition
+(normally) doesn&#8217;t warrant raising an exception and terminating the
+program.  For example, one might want to issue a warning when a
+program uses an obsolete module.</p>
+<p>Python programmers issue warnings by calling the <tt class="docutils literal"><span class="pre">warn()</span></tt> function
+defined in this module.  (C programmers use <tt class="docutils literal"><span class="pre">PyErr_WarnEx()</span></tt>; see
+<em>Exception Handling</em> for details).</p>
+<p>Warning messages are normally written to <tt class="docutils literal"><span class="pre">sys.stderr</span></tt>, but their
+disposition can be changed flexibly, from ignoring all warnings to
+turning them into exceptions.  The disposition of warnings can vary
+based on the warning category (see below), the text of the warning
+message, and the source location where it is issued.  Repetitions of a
+particular warning for the same source location are typically
+suppressed.</p>
+<p>There are two stages in warning control: first, each time a warning is
+issued, a determination is made whether a message should be issued or
+not; next, if a message is to be issued, it is formatted and printed
+using a user-settable hook.</p>
+<p>The determination whether to issue a warning message is controlled by
+the warning filter, which is a sequence of matching rules and actions.
+Rules can be added to the filter by calling <tt class="docutils literal"><span class="pre">filterwarnings()</span></tt> and
+reset to its default state by calling <tt class="docutils literal"><span class="pre">resetwarnings()</span></tt>.</p>
+<p>The printing of warning messages is done by calling <tt class="docutils literal"><span class="pre">showwarning()</span></tt>,
+which may be overridden; the default implementation of this function
+formats the message by calling <tt class="docutils literal"><span class="pre">formatwarning()</span></tt>, which is also
+available for use by custom implementations.</p>
+<div class="section" id="warning-categories">
+<h2>26.4.1. Warning Categories<a class="headerlink" href="#warning-categories" title="Permalink to this headline">¶</a></h2>
+<p>There are a number of built-in exceptions that represent warning
+categories. This categorization is useful to be able to filter out
+groups of warnings.  The following warnings category classes are
+currently defined:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Class</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">Warning</span></tt></td>
+<td>This is the base class of all warning category
+classes.  It is a subclass of <tt class="docutils literal"><span class="pre">Exception</span></tt>.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">UserWarning</span></tt></td>
+<td>The default category for <tt class="docutils literal"><span class="pre">warn()</span></tt>.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">DeprecationWarning</span></tt></td>
+<td>Base category for warnings about deprecated
+features.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">SyntaxWarning</span></tt></td>
+<td>Base category for warnings about dubious
+syntactic features.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">RuntimeWarning</span></tt></td>
+<td>Base category for warnings about dubious
+runtime features.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">FutureWarning</span></tt></td>
+<td>Base category for warnings about constructs
+that will change semantically in the future.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">PendingDeprecationWarning</span></tt></td>
+<td>Base category for warnings about features that
+will be deprecated in the future (ignored by
+default).</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">ImportWarning</span></tt></td>
+<td>Base category for warnings triggered during the
+process of importing a module (ignored by
+default).</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">UnicodeWarning</span></tt></td>
+<td>Base category for warnings related to Unicode.</td>
+</tr>
+</tbody>
+</table>
+<p>While these are technically built-in exceptions, they are documented
+here, because conceptually they belong to the warnings mechanism.</p>
+<p>User code can define additional warning categories by subclassing one
+of the standard warning categories.  A warning category must always be
+a subclass of the <tt class="docutils literal"><span class="pre">Warning</span></tt> class.</p>
+</div>
+<div class="section" id="the-warnings-filter">
+<h2>26.4.2. The Warnings Filter<a class="headerlink" href="#the-warnings-filter" title="Permalink to this headline">¶</a></h2>
+<p>The warnings filter controls whether warnings are ignored, displayed,
+or turned into errors (raising an exception).</p>
+<p>Conceptually, the warnings filter maintains an ordered list of filter
+specifications; any specific warning is matched against each filter
+specification in the list in turn until a match is found; the match
+determines the disposition of the match.  Each entry is a tuple of the
+form (<em>action</em>, <em>message</em>, <em>category</em>, <em>module</em>, <em>lineno</em>), where:</p>
+<ul>
+<li><p class="first"><em>action</em> is one of the following strings:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="74%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head"><p class="first last">Value</p>
+</th>
+<th class="head"><p class="first last">Disposition</p>
+</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><p class="first last"><tt class="docutils literal"><span class="pre">&quot;error&quot;</span></tt></p>
+</td>
+<td><p class="first last">turn matching warnings into exceptions</p>
+</td>
+</tr>
+<tr><td><p class="first last"><tt class="docutils literal"><span class="pre">&quot;ignore&quot;</span></tt></p>
+</td>
+<td><p class="first last">never print matching warnings</p>
+</td>
+</tr>
+<tr><td><p class="first last"><tt class="docutils literal"><span class="pre">&quot;always&quot;</span></tt></p>
+</td>
+<td><p class="first last">always print matching warnings</p>
+</td>
+</tr>
+<tr><td><p class="first last"><tt class="docutils literal"><span class="pre">&quot;default&quot;</span></tt></p>
+</td>
+<td><p class="first last">print the first occurrence of matching
+warnings for each location where the warning
+is issued</p>
+</td>
+</tr>
+<tr><td><p class="first last"><tt class="docutils literal"><span class="pre">&quot;module&quot;</span></tt></p>
+</td>
+<td><p class="first last">print the first occurrence of matching
+warnings for each module where the warning is
+issued</p>
+</td>
+</tr>
+<tr><td><p class="first last"><tt class="docutils literal"><span class="pre">&quot;once&quot;</span></tt></p>
+</td>
+<td><p class="first last">print only the first occurrence of matching
+warnings, regardless of location</p>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p class="first"><em>message</em> is a string containing a regular expression that the
+warning message must match (the match is compiled to always be
+case-insensitive)</p>
+</li>
+<li><p class="first"><em>category</em> is a class (a subclass of <tt class="docutils literal"><span class="pre">Warning</span></tt>) of which the
+warning category must be a subclass in order to match</p>
+</li>
+<li><p class="first"><em>module</em> is a string containing a regular expression that the module
+name must match (the match is compiled to be case-sensitive)</p>
+</li>
+<li><p class="first"><em>lineno</em> is an integer that the line number where the warning
+occurred must match, or <tt class="docutils literal"><span class="pre">0</span></tt> to match all line numbers</p>
+</li>
+</ul>
+<p>Since the <tt class="docutils literal"><span class="pre">Warning</span></tt> class is derived from the built-in <tt class="docutils literal"><span class="pre">Exception</span></tt>
+class, to turn a warning into an error we simply raise
+<tt class="docutils literal"><span class="pre">category(message)</span></tt>.</p>
+<p>The warnings filter is initialized by <em>-W</em> options passed to the
+Python interpreter command line.  The interpreter saves the arguments
+for all <em>-W</em> options without interpretation in <tt class="docutils literal"><span class="pre">sys.warnoptions</span></tt>;
+the <tt class="docutils literal"><span class="pre">warnings</span></tt> module parses these when it is first imported
+(invalid options are ignored, after printing a message to
+<tt class="docutils literal"><span class="pre">sys.stderr</span></tt>).</p>
+<p>The warnings that are ignored by default may be enabled by passing
+<em>-Wd</em> to the interpreter. This enables default handling for all
+warnings, including those that are normally ignored by default. This
+is particular useful for enabling ImportWarning when debugging
+problems importing a developed package. ImportWarning can also be
+enabled explicitly in Python code using:</p>
+<blockquote>
+warnings.simplefilter(&#8216;default&#8217;, ImportWarning)</blockquote>
+</div>
+<div class="section" id="temporarily-suppressing-warnings">
+<h2>26.4.3. Temporarily Suppressing Warnings<a class="headerlink" href="#temporarily-suppressing-warnings" title="Permalink to this headline">¶</a></h2>
+<p>If you are using code that you know will raise a warning, such as a
+deprecated function, but do not want to see the warning, then it is
+possible to suppress the warning using the <tt class="docutils literal"><span class="pre">catch_warnings</span></tt> context
+manager:</p>
+<blockquote>
+<p>import warnings</p>
+<dl class="docutils">
+<dt>def fxn():</dt>
+<dd>warnings.warn(&#8220;deprecated&#8221;, DeprecationWarning)</dd>
+<dt>with warnings.catch_warnings():</dt>
+<dd>warnings.simplefilter(&#8220;ignore&#8221;)
+fxn()</dd>
+</dl>
+</blockquote>
+<p>While within the context manager all warnings will simply be ignored.
+This allows you to use known-deprecated code without having to see the
+warning while not suppressing the warning for other code that might
+not be aware of its use of deprecated code.</p>
+</div>
+<div class="section" id="testing-warnings">
+<h2>26.4.4. Testing Warnings<a class="headerlink" href="#testing-warnings" title="Permalink to this headline">¶</a></h2>
+<p>To test warnings raised by code, use the <tt class="docutils literal"><span class="pre">catch_warnings</span></tt> context
+manager. With it you can temporarily mutate the warnings filter to
+facilitate your testing. For instance, do the following to capture all
+raised warnings to check:</p>
+<blockquote>
+<p>import warnings</p>
+<dl class="docutils">
+<dt>def fxn():</dt>
+<dd>warnings.warn(&#8220;deprecated&#8221;, DeprecationWarning)</dd>
+<dt>with warnings.catch_warnings(record=True) as w:</dt>
+<dd># Cause all warnings to always be triggered.
+warnings.simplefilter(&#8220;always&#8221;)
+# Trigger a warning.
+fxn()
+# Verify some things
+assert len(w) == 1
+assert isinstance(w[-1].category, DeprecationWarning)
+assert &#8220;deprecated&#8221; in str(w[-1].message)</dd>
+</dl>
+</blockquote>
+<p>One can also cause all warnings to be exceptions by using <tt class="docutils literal"><span class="pre">error</span></tt>
+instead of <tt class="docutils literal"><span class="pre">always</span></tt>. One thing to be aware of is that if a warning
+has already been raised because of a <tt class="docutils literal"><span class="pre">once</span></tt>/<tt class="docutils literal"><span class="pre">default</span></tt> rule, then
+no matter what filters are set the warning will not be seen again
+unless the warnings registry related to the warning has been cleared.</p>
+<p>Once the context manager exits, the warnings filter is restored to its
+state when the context was entered. This prevents tests from changing
+the warnings filter in unexpected ways between tests and leading to
+indeterminate test results. The <tt class="docutils literal"><span class="pre">showwarning()</span></tt> function in the
+module is also restored to its original value.</p>
+<p>When testing multiple operations that raise the same kind of warning,
+it is important to test them in a manner that confirms each operation
+is raising a new warning (e.g. set warnings to be raised as exceptions
+and check the operations raise exceptions, check that the length of
+the warning list continues to increase after each operation, or else
+delete the previous entries from the warnings list before each new
+operation).</p>
+</div>
+<div class="section" id="available-functions">
+<h2>26.4.5. Available Functions<a class="headerlink" href="#available-functions" title="Permalink to this headline">¶</a></h2>
+<p>warnings.warn(message[, category[, stacklevel]])</p>
+<blockquote>
+<p>Issue a warning, or maybe ignore it or raise an exception.  The
+<em>category</em> argument, if given, must be a warning category class
+(see above); it defaults to <tt class="docutils literal"><span class="pre">UserWarning</span></tt>.  Alternatively
+<em>message</em> can be a <tt class="docutils literal"><span class="pre">Warning</span></tt> instance, in which case <em>category</em>
+will be ignored and <tt class="docutils literal"><span class="pre">message.__class__</span></tt> will be used. In this
+case the message text will be <tt class="docutils literal"><span class="pre">str(message)</span></tt>. This function
+raises an exception if the particular warning issued is changed
+into an error by the warnings filter see above.  The <em>stacklevel</em>
+argument can be used by wrapper functions written in Python, like
+this:</p>
+<blockquote>
+<dl class="docutils">
+<dt>def deprecation(message):</dt>
+<dd>warnings.warn(message, DeprecationWarning, stacklevel=2)</dd>
+</dl>
+</blockquote>
+<p>This makes the warning refer to <tt class="docutils literal"><span class="pre">deprecation()</span></tt>&#8216;s caller, rather
+than to the source of <tt class="docutils literal"><span class="pre">deprecation()</span></tt> itself (since the latter
+would defeat the purpose of the warning message).</p>
+</blockquote>
+<p>warnings.warn_explicit(message, category, filename, lineno[, module[, registry[, module_globals]]])</p>
+<blockquote>
+<p>This is a low-level interface to the functionality of <tt class="docutils literal"><span class="pre">warn()</span></tt>,
+passing in explicitly the message, category, filename and line
+number, and optionally the module name and the registry (which
+should be the <tt class="docutils literal"><span class="pre">__warningregistry__</span></tt> dictionary of the module).
+The module name defaults to the filename with <tt class="docutils literal"><span class="pre">.py</span></tt> stripped; if
+no registry is passed, the warning is never suppressed. <em>message</em>
+must be a string and <em>category</em> a subclass of <tt class="docutils literal"><span class="pre">Warning</span></tt> or
+<em>message</em> may be a <tt class="docutils literal"><span class="pre">Warning</span></tt> instance, in which case <em>category</em>
+will be ignored.</p>
+<p><em>module_globals</em>, if supplied, should be the global namespace in
+use by the code for which the warning is issued.  (This argument is
+used to support displaying source for modules found in zipfiles or
+other non-filesystem import sources).</p>
+<p>Changed in version 2.5: Added the <em>module_globals</em> parameter.</p>
+</blockquote>
+<p>warnings.warnpy3k(message[, category[, stacklevel]])</p>
+<blockquote>
+Issue a warning related to Python 3.x deprecation. Warnings are
+only shown when Python is started with the -3 option. Like
+<tt class="docutils literal"><span class="pre">warn()</span></tt> <em>message</em> must be a string and <em>category</em> a subclass of
+<tt class="docutils literal"><span class="pre">Warning</span></tt>. <tt class="docutils literal"><span class="pre">warnpy3k()</span></tt> is using <tt class="docutils literal"><span class="pre">DeprecationWarning</span></tt> as
+default warning class.</blockquote>
+<p>warnings.showwarning(message, category, filename, lineno[, file[, line]])</p>
+<blockquote>
+<p>Write a warning to a file.  The default implementation calls
+<tt class="docutils literal"><span class="pre">formatwarning(message,</span> <span class="pre">category,</span> <span class="pre">filename,</span> <span class="pre">lineno,</span> <span class="pre">line)</span></tt> and
+writes the resulting string to <em>file</em>, which defaults to
+<tt class="docutils literal"><span class="pre">sys.stderr</span></tt>.  You may replace this function with an alternative
+implementation by assigning to <tt class="docutils literal"><span class="pre">warnings.showwarning</span></tt>. <em>line</em> is
+a line of source code to be included in the warning message; if
+<em>line</em> is not supplied, <tt class="docutils literal"><span class="pre">showwarning()</span></tt> will try to read the line
+specified by <em>filename</em> and <em>lineno</em>.</p>
+<p>Changed in version 2.6: Added the <em>line</em> argument. Implementations
+that lack the new argument will trigger a <tt class="docutils literal"><span class="pre">DeprecationWarning</span></tt>.</p>
+</blockquote>
+<p>warnings.formatwarning(message, category, filename, lineno[, line])</p>
+<blockquote>
+<p>Format a warning the standard way.  This returns a string  which
+may contain embedded newlines and ends in a newline.  <em>line</em> is a
+line of source code to be included in the warning message; if
+<em>line</em> is not supplied, <tt class="docutils literal"><span class="pre">formatwarning()</span></tt> will try to read the
+line specified by <em>filename</em> and <em>lineno</em>.</p>
+<p>Changed in version 2.6: Added the <em>line</em> argument.</p>
+</blockquote>
+<p>warnings.filterwarnings(action[, message[, category[, module[, lineno[, append]]]]])</p>
+<blockquote>
+Insert an entry into the list of warnings filters.  The entry is
+inserted at the front by default; if <em>append</em> is true, it is
+inserted at the end. This checks the types of the arguments,
+compiles the message and module regular expressions, and inserts
+them as a tuple in the  list of warnings filters.  Entries closer
+to the front of the list override entries later in the list, if
+both match a particular warning.  Omitted arguments default to a
+value that matches everything.</blockquote>
+<p>warnings.simplefilter(action[, category[, lineno[, append]]])</p>
+<blockquote>
+Insert a simple entry into the list of warnings filters. The
+meaning of the function parameters is as for <tt class="docutils literal"><span class="pre">filterwarnings()</span></tt>,
+but regular expressions are not needed as the filter inserted
+always matches any message in any module as long as the category
+and line number match.</blockquote>
+<p>warnings.resetwarnings()</p>
+<blockquote>
+Reset the warnings filter.  This discards the effect of all
+previous calls to <tt class="docutils literal"><span class="pre">filterwarnings()</span></tt>, including that of the <em>-W</em>
+command line options and calls to <tt class="docutils literal"><span class="pre">simplefilter()</span></tt>.</blockquote>
+</div>
+<div class="section" id="available-context-managers">
+<h2>26.4.6. Available Context Managers<a class="headerlink" href="#available-context-managers" title="Permalink to this headline">¶</a></h2>
+<p>class class warnings.catch_warnings([<a href="#id1"><span class="problematic" id="id2">*</span></a>, record=False, module=None])</p>
+<blockquote>
+<p>A context manager that copies and, upon exit, restores the warnings
+filter and the <tt class="docutils literal"><span class="pre">showwarning()</span></tt> function. If the <em>record</em> argument
+is <tt class="xref docutils literal"><span class="pre">False</span></tt> (the default) the context manager returns <tt class="xref docutils literal"><span class="pre">None</span></tt> on
+entry. If <em>record</em> is <tt class="xref docutils literal"><span class="pre">True</span></tt>, a list is returned that is
+progressively populated with objects as seen by a custom
+<tt class="docutils literal"><span class="pre">showwarning()</span></tt> function (which also suppresses output to
+<tt class="docutils literal"><span class="pre">sys.stdout</span></tt>). Each object in the list has attributes with the
+same names as the arguments to <tt class="docutils literal"><span class="pre">showwarning()</span></tt>.</p>
+<p>The <em>module</em> argument takes a module that will be used instead of
+the module returned when you import <tt class="docutils literal"><span class="pre">warnings</span></tt> whose filter will
+be protected. This argument exists primarily for testing the
+<tt class="docutils literal"><span class="pre">warnings</span></tt> module itself.</p>
+<dl class="docutils">
+<dt>Note: In Python 3.0, the arguments to the constructor for</dt>
+<dd><tt class="docutils literal"><span class="pre">catch_warnings</span></tt> are keyword-only arguments.</dd>
+</dl>
+<p>New in version 2.6.</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="contextlib.html" title="26.5. contextlib — Utilities for with-statement contexts."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="__main__.html" title="26.3. __main__ — Top-level script environment"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="python.html" >26. Python Runtime Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

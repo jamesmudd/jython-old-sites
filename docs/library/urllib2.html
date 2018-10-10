@@ -1,0 +1,885 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>20.6. urllib2 — extensible library for opening URLs &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="20. Internet Protocols and Support" href="internet.html" />
+    <link rel="next" title="20.7. httplib — HTTP protocol client" href="httplib.html" />
+    <link rel="prev" title="20.5. urllib — Open arbitrary resources by URL" href="urllib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="httplib.html" title="20.7. httplib — HTTP protocol client"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="urllib.html" title="20.5. urllib — Open arbitrary resources by URL"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" accesskey="U">20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">20.6. <tt class="docutils literal"><span class="pre">urllib2</span></tt> &#8212; extensible library for opening URLs</a><ul>
+<li><a class="reference external" href="#request-objects">20.6.1. Request Objects</a></li>
+<li><a class="reference external" href="#openerdirector-objects">20.6.2. OpenerDirector Objects</a></li>
+<li><a class="reference external" href="#basehandler-objects">20.6.3. BaseHandler Objects</a></li>
+<li><a class="reference external" href="#httpredirecthandler-objects">20.6.4. HTTPRedirectHandler Objects</a></li>
+<li><a class="reference external" href="#httpcookieprocessor-objects">20.6.5. HTTPCookieProcessor Objects</a></li>
+<li><a class="reference external" href="#proxyhandler-objects">20.6.6. ProxyHandler Objects</a></li>
+<li><a class="reference external" href="#httppasswordmgr-objects">20.6.7. HTTPPasswordMgr Objects</a></li>
+<li><a class="reference external" href="#abstractbasicauthhandler-objects">20.6.8. AbstractBasicAuthHandler Objects</a></li>
+<li><a class="reference external" href="#httpbasicauthhandler-objects">20.6.9. HTTPBasicAuthHandler Objects</a></li>
+<li><a class="reference external" href="#proxybasicauthhandler-objects">20.6.10. ProxyBasicAuthHandler Objects</a></li>
+<li><a class="reference external" href="#abstractdigestauthhandler-objects">20.6.11. AbstractDigestAuthHandler Objects</a></li>
+<li><a class="reference external" href="#httpdigestauthhandler-objects">20.6.12. HTTPDigestAuthHandler Objects</a></li>
+<li><a class="reference external" href="#proxydigestauthhandler-objects">20.6.13. ProxyDigestAuthHandler Objects</a></li>
+<li><a class="reference external" href="#httphandler-objects">20.6.14. HTTPHandler Objects</a></li>
+<li><a class="reference external" href="#httpshandler-objects">20.6.15. HTTPSHandler Objects</a></li>
+<li><a class="reference external" href="#filehandler-objects">20.6.16. FileHandler Objects</a></li>
+<li><a class="reference external" href="#ftphandler-objects">20.6.17. FTPHandler Objects</a></li>
+<li><a class="reference external" href="#cacheftphandler-objects">20.6.18. CacheFTPHandler Objects</a></li>
+<li><a class="reference external" href="#unknownhandler-objects">20.6.19. UnknownHandler Objects</a></li>
+<li><a class="reference external" href="#httperrorprocessor-objects">20.6.20. HTTPErrorProcessor Objects</a></li>
+<li><a class="reference external" href="#examples">20.6.21. Examples</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="urllib.html"
+                                  title="previous chapter">20.5. <tt class="docutils literal docutils literal"><span class="pre">urllib</span></tt> &#8212; Open arbitrary resources by URL</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="httplib.html"
+                                  title="next chapter">20.7. <tt class="docutils literal docutils literal docutils literal"><span class="pre">httplib</span></tt> &#8212; HTTP protocol client</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/urllib2.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="urllib2-extensible-library-for-opening-urls">
+<h1>20.6. <tt class="docutils literal"><span class="pre">urllib2</span></tt> &#8212; extensible library for opening URLs<a class="headerlink" href="#urllib2-extensible-library-for-opening-urls" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">urllib2</span></tt> module has been split across several modules in</dt>
+<dd>Python 3.0 named <tt class="docutils literal"><span class="pre">urllib.request</span></tt> and <tt class="docutils literal"><span class="pre">urllib.error</span></tt>. The <em>2to3</em>
+tool will automatically adapt imports when converting your sources
+to 3.0.</dd>
+</dl>
+<p>The <tt class="docutils literal"><span class="pre">urllib2</span></tt> module defines functions and classes which help in
+opening URLs (mostly HTTP) in a complex world &#8212; basic and digest
+authentication, redirections, cookies and more.</p>
+<p>The <tt class="docutils literal"><span class="pre">urllib2</span></tt> module defines the following functions:</p>
+<p>urllib2.urlopen(url[, data][, timeout])</p>
+<blockquote>
+<p>Open the URL <em>url</em>, which can be either a string or a <tt class="docutils literal"><span class="pre">Request</span></tt>
+object.</p>
+<p><em>data</em> may be a string specifying additional data to send to the
+server, or <tt class="xref docutils literal"><span class="pre">None</span></tt> if no such data is needed.  Currently HTTP
+requests are the only ones that use <em>data</em>; the HTTP request will
+be a POST instead of a GET when the <em>data</em> parameter is provided.
+<em>data</em> should be a buffer in the standard <em>application/x-www-form-
+urlencoded</em> format.  The <tt class="docutils literal"><span class="pre">urllib.urlencode()</span></tt> function takes a
+mapping or sequence of 2-tuples and returns a string in this
+format.</p>
+<p>The optional <em>timeout</em> parameter specifies a timeout in seconds for
+blocking operations like the connection attempt (if not specified,
+the global default timeout setting will be used).  This actually
+only works for HTTP, HTTPS, FTP and FTPS connections.</p>
+<p>This function returns a file-like object with two additional
+methods:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">geturl()</span></tt> &#8212; return the URL of the resource retrieved,
+commonly used to determine if a redirect was followed</li>
+<li><tt class="docutils literal"><span class="pre">info()</span></tt> &#8212; return the meta-information of the page, such as
+headers, in the form of an <tt class="docutils literal"><span class="pre">httplib.HTTPMessage</span></tt> instance (see
+Quick Reference to HTTP Headers)</li>
+</ul>
+<p>Raises <tt class="docutils literal"><span class="pre">URLError</span></tt> on errors.</p>
+<p>Note that <tt class="xref docutils literal"><span class="pre">None</span></tt> may be returned if no handler handles the
+request (though the default installed global <tt class="docutils literal"><span class="pre">OpenerDirector</span></tt>
+uses <tt class="docutils literal"><span class="pre">UnknownHandler</span></tt> to ensure this never happens).</p>
+<p>Changed in version 2.6: <em>timeout</em> was added.</p>
+</blockquote>
+<p>urllib2.install_opener(opener)</p>
+<blockquote>
+Install an <tt class="docutils literal"><span class="pre">OpenerDirector</span></tt> instance as the default global
+opener. Installing an opener is only necessary if you want urlopen
+to use that opener; otherwise, simply call
+<tt class="docutils literal"><span class="pre">OpenerDirector.open()</span></tt> instead of <tt class="docutils literal"><span class="pre">urlopen()</span></tt>. The code does
+not check for a real <tt class="docutils literal"><span class="pre">OpenerDirector</span></tt>, and any class with the
+appropriate interface will work.</blockquote>
+<p>urllib2.build_opener([handler, ...])</p>
+<blockquote>
+<p>Return an <tt class="docutils literal"><span class="pre">OpenerDirector</span></tt> instance, which chains the handlers in
+the order given. <a href="#id1"><span class="problematic" id="id2">*</span></a>handler*s can be either instances of
+<tt class="docutils literal"><span class="pre">BaseHandler</span></tt>, or subclasses of <tt class="docutils literal"><span class="pre">BaseHandler</span></tt> (in which case it
+must be possible to call the constructor without any parameters).
+Instances of the following classes will be in front of the
+<a href="#id3"><span class="problematic" id="id4">*</span></a>handler*s, unless the <a href="#id5"><span class="problematic" id="id6">*</span></a>handler*s contain them, instances of them
+or subclasses of them: <tt class="docutils literal"><span class="pre">ProxyHandler</span></tt>, <tt class="docutils literal"><span class="pre">UnknownHandler</span></tt>,
+<tt class="docutils literal"><span class="pre">HTTPHandler</span></tt>, <tt class="docutils literal"><span class="pre">HTTPDefaultErrorHandler</span></tt>,
+<tt class="docutils literal"><span class="pre">HTTPRedirectHandler</span></tt>, <tt class="docutils literal"><span class="pre">FTPHandler</span></tt>, <tt class="docutils literal"><span class="pre">FileHandler</span></tt>,
+<tt class="docutils literal"><span class="pre">HTTPErrorProcessor</span></tt>.</p>
+<p>If the Python installation has SSL support (i.e., if the <tt class="docutils literal"><span class="pre">ssl</span></tt>
+module can be imported), <tt class="docutils literal"><span class="pre">HTTPSHandler</span></tt> will also be added.</p>
+<p>Beginning in Python 2.3, a <tt class="docutils literal"><span class="pre">BaseHandler</span></tt> subclass may also change
+its <tt class="docutils literal"><span class="pre">handler_order</span></tt> member variable to modify its position in the
+handlers list.</p>
+</blockquote>
+<p>The following exceptions are raised as appropriate:</p>
+<p>exception exception urllib2.URLError</p>
+<blockquote>
+<p>The handlers raise this exception (or derived exceptions) when they
+run into a problem.  It is a subclass of <tt class="docutils literal"><span class="pre">IOError</span></tt>.</p>
+<p>reason</p>
+<blockquote>
+The reason for this error.  It can be a message string or
+another exception instance (<tt class="docutils literal"><span class="pre">socket.error</span></tt> for remote URLs,
+<tt class="docutils literal"><span class="pre">OSError</span></tt> for local URLs).</blockquote>
+</blockquote>
+<p>exception exception urllib2.HTTPError</p>
+<blockquote>
+<p>Though being an exception (a subclass of <tt class="docutils literal"><span class="pre">URLError</span></tt>), an
+<tt class="docutils literal"><span class="pre">HTTPError</span></tt> can also function as a non-exceptional file-like
+return value (the same thing that <tt class="docutils literal"><span class="pre">urlopen()</span></tt> returns).  This is
+useful when handling exotic HTTP errors, such as requests for
+authentication.</p>
+<p>code</p>
+<blockquote>
+An HTTP status code as defined in RFC 2616. This numeric value
+corresponds to a value found in the dictionary of codes as found
+in <tt class="docutils literal"><span class="pre">BaseHTTPServer.BaseHTTPRequestHandler.responses</span></tt>.</blockquote>
+</blockquote>
+<p>The following classes are provided:</p>
+<p>class class urllib2.Request(url[, data][, headers][, origin_req_host][, unverifiable])</p>
+<blockquote>
+<p>This class is an abstraction of a URL request.</p>
+<p><em>url</em> should be a string containing a valid URL.</p>
+<p><em>data</em> may be a string specifying additional data to send to the
+server, or <tt class="xref docutils literal"><span class="pre">None</span></tt> if no such data is needed.  Currently HTTP
+requests are the only ones that use <em>data</em>; the HTTP request will
+be a POST instead of a GET when the <em>data</em> parameter is provided.
+<em>data</em> should be a buffer in the standard <em>application/x-www-form-
+urlencoded</em> format.  The <tt class="docutils literal"><span class="pre">urllib.urlencode()</span></tt> function takes a
+mapping or sequence of 2-tuples and returns a string in this
+format.</p>
+<p><em>headers</em> should be a dictionary, and will be treated as if
+<tt class="docutils literal"><span class="pre">add_header()</span></tt> was called with each key and value as arguments.
+This is often used to &#8220;spoof&#8221; the <tt class="docutils literal"><span class="pre">User-Agent</span></tt> header, which is
+used by a browser to identify itself &#8211; some HTTP servers only
+allow requests coming from common browsers as opposed to scripts.
+For example, Mozilla Firefox may identify itself as <tt class="docutils literal"><span class="pre">&quot;Mozilla/5.0</span>
+<span class="pre">(X11;</span> <span class="pre">U;</span> <span class="pre">Linux</span> <span class="pre">i686)</span> <span class="pre">Gecko/20071127</span> <span class="pre">Firefox/2.0.0.11&quot;</span></tt>, while
+<tt class="docutils literal"><span class="pre">urllib2</span></tt>&#8216;s default user agent string is <tt class="docutils literal"><span class="pre">&quot;Python-urllib/2.6&quot;</span></tt>
+(on Python 2.6).</p>
+<p>The final two arguments are only of interest for correct handling
+of third-party HTTP cookies:</p>
+<p><em>origin_req_host</em> should be the request-host of the origin
+transaction, as defined by <strong>RFC 2965</strong>.  It defaults to
+<tt class="docutils literal"><span class="pre">cookielib.request_host(self)</span></tt>.  This is the host name or IP
+address of the original request that was initiated by the user.
+For example, if the request is for an image in an HTML document,
+this should be the request-host of the request for the page
+containing the image.</p>
+<p><em>unverifiable</em> should indicate whether the request is unverifiable,
+as defined by RFC 2965.  It defaults to False.  An unverifiable
+request is one whose URL the user did not have the option to
+approve.  For example, if the request is for an image in an HTML
+document, and the user had no option to approve the automatic
+fetching of the image, this should be true.</p>
+</blockquote>
+<p>class class urllib2.OpenerDirector</p>
+<blockquote>
+The <tt class="docutils literal"><span class="pre">OpenerDirector</span></tt> class opens URLs via <a href="#id7"><span class="problematic" id="id8">``</span></a>BaseHandler``s
+chained together. It manages the chaining of handlers, and recovery
+from errors.</blockquote>
+<p>class class urllib2.BaseHandler</p>
+<blockquote>
+This is the base class for all registered handlers &#8212; and handles
+only the simple mechanics of registration.</blockquote>
+<p>class class urllib2.HTTPDefaultErrorHandler</p>
+<blockquote>
+A class which defines a default handler for HTTP error responses;
+all responses are turned into <tt class="docutils literal"><span class="pre">HTTPError</span></tt> exceptions.</blockquote>
+<p>class class urllib2.HTTPRedirectHandler</p>
+<blockquote>
+A class to handle redirections.</blockquote>
+<p>class class urllib2.HTTPCookieProcessor([cookiejar])</p>
+<blockquote>
+A class to handle HTTP Cookies.</blockquote>
+<p>class class urllib2.ProxyHandler([proxies])</p>
+<blockquote>
+Cause requests to go through a proxy. If <em>proxies</em> is given, it
+must be a dictionary mapping protocol names to URLs of proxies. The
+default is to read the list of proxies from the environment
+variables <a href="#id9"><span class="problematic" id="id10">**</span></a><a href="#id11"><span class="problematic" id="id12">**</span></a>. To disable autodetected proxy pass an empty
+dictionary.</blockquote>
+<p>class class urllib2.HTTPPasswordMgr</p>
+<blockquote>
+Keep a database of  <tt class="docutils literal"><span class="pre">(realm,</span> <span class="pre">uri)</span> <span class="pre">-&gt;</span> <span class="pre">(user,</span> <span class="pre">password)</span></tt> mappings.</blockquote>
+<p>class class urllib2.HTTPPasswordMgrWithDefaultRealm</p>
+<blockquote>
+Keep a database of  <tt class="docutils literal"><span class="pre">(realm,</span> <span class="pre">uri)</span> <span class="pre">-&gt;</span> <span class="pre">(user,</span> <span class="pre">password)</span></tt> mappings.
+A realm of <tt class="xref docutils literal"><span class="pre">None</span></tt> is considered a catch-all realm, which is
+searched if no other realm fits.</blockquote>
+<p>class class urllib2.AbstractBasicAuthHandler([password_mgr])</p>
+<blockquote>
+This is a mixin class that helps with HTTP authentication, both to
+the remote host and to a proxy. <em>password_mgr</em>, if given, should be
+something that is compatible with <tt class="docutils literal"><span class="pre">HTTPPasswordMgr</span></tt>; refer to
+section <em>HTTPPasswordMgr Objects</em> for information on the interface
+that must be supported.</blockquote>
+<p>class class urllib2.HTTPBasicAuthHandler([password_mgr])</p>
+<blockquote>
+Handle authentication with the remote host. <em>password_mgr</em>, if
+given, should be something that is compatible with
+<tt class="docutils literal"><span class="pre">HTTPPasswordMgr</span></tt>; refer to section <em>HTTPPasswordMgr Objects</em> for
+information on the interface that must be supported.</blockquote>
+<p>class class urllib2.ProxyBasicAuthHandler([password_mgr])</p>
+<blockquote>
+Handle authentication with the proxy. <em>password_mgr</em>, if given,
+should be something that is compatible with <tt class="docutils literal"><span class="pre">HTTPPasswordMgr</span></tt>;
+refer to section <em>HTTPPasswordMgr Objects</em> for information on the
+interface that must be supported.</blockquote>
+<p>class class urllib2.AbstractDigestAuthHandler([password_mgr])</p>
+<blockquote>
+This is a mixin class that helps with HTTP authentication, both to
+the remote host and to a proxy. <em>password_mgr</em>, if given, should be
+something that is compatible with <tt class="docutils literal"><span class="pre">HTTPPasswordMgr</span></tt>; refer to
+section <em>HTTPPasswordMgr Objects</em> for information on the interface
+that must be supported.</blockquote>
+<p>class class urllib2.HTTPDigestAuthHandler([password_mgr])</p>
+<blockquote>
+Handle authentication with the remote host. <em>password_mgr</em>, if
+given, should be something that is compatible with
+<tt class="docutils literal"><span class="pre">HTTPPasswordMgr</span></tt>; refer to section <em>HTTPPasswordMgr Objects</em> for
+information on the interface that must be supported.</blockquote>
+<p>class class urllib2.ProxyDigestAuthHandler([password_mgr])</p>
+<blockquote>
+Handle authentication with the proxy. <em>password_mgr</em>, if given,
+should be something that is compatible with <tt class="docutils literal"><span class="pre">HTTPPasswordMgr</span></tt>;
+refer to section <em>HTTPPasswordMgr Objects</em> for information on the
+interface that must be supported.</blockquote>
+<p>class class urllib2.HTTPHandler</p>
+<blockquote>
+A class to handle opening of HTTP URLs.</blockquote>
+<p>class class urllib2.HTTPSHandler</p>
+<blockquote>
+A class to handle opening of HTTPS URLs.</blockquote>
+<p>class class urllib2.FileHandler</p>
+<blockquote>
+Open local files.</blockquote>
+<p>class class urllib2.FTPHandler</p>
+<blockquote>
+Open FTP URLs.</blockquote>
+<p>class class urllib2.CacheFTPHandler</p>
+<blockquote>
+Open FTP URLs, keeping a cache of open FTP connections to minimize
+delays.</blockquote>
+<p>class class urllib2.UnknownHandler</p>
+<blockquote>
+A catch-all class to handle unknown URLs.</blockquote>
+<div class="section" id="request-objects">
+<h2>20.6.1. Request Objects<a class="headerlink" href="#request-objects" title="Permalink to this headline">¶</a></h2>
+<p>The following methods describe all of <tt class="docutils literal"><span class="pre">Request</span></tt>&#8216;s public interface,
+and so all must be overridden in subclasses.</p>
+<p>Request.add_data(data)</p>
+<blockquote>
+Set the <tt class="docutils literal"><span class="pre">Request</span></tt> data to <em>data</em>.  This is ignored by all
+handlers except HTTP handlers &#8212; and there it should be a byte
+string, and will change the request to be <tt class="docutils literal"><span class="pre">POST</span></tt> rather than
+<tt class="docutils literal"><span class="pre">GET</span></tt>.</blockquote>
+<p>Request.get_method()</p>
+<blockquote>
+Return a string indicating the HTTP request method.  This is only
+meaningful for HTTP requests, and currently always returns
+<tt class="docutils literal"><span class="pre">'GET'</span></tt> or <tt class="docutils literal"><span class="pre">'POST'</span></tt>.</blockquote>
+<p>Request.has_data()</p>
+<blockquote>
+Return whether the instance has a non-<tt class="xref docutils literal"><span class="pre">None</span></tt> data.</blockquote>
+<p>Request.get_data()</p>
+<blockquote>
+Return the instance&#8217;s data.</blockquote>
+<p>Request.add_header(key, val)</p>
+<blockquote>
+Add another header to the request.  Headers are currently ignored
+by all handlers except HTTP handlers, where they are added to the
+list of headers sent to the server.  Note that there cannot be more
+than one header with the same name, and later calls will overwrite
+previous calls in case the <em>key</em> collides. Currently, this is no
+loss of HTTP functionality, since all headers which have meaning
+when used more than once have a (header-specific) way of gaining
+the same functionality using only one header.</blockquote>
+<p>Request.add_unredirected_header(key, header)</p>
+<blockquote>
+<p>Add a header that will not be added to a redirected request.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>Request.has_header(header)</p>
+<blockquote>
+<p>Return whether the instance has the named header (checks both
+regular and unredirected).</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>Request.get_full_url()</p>
+<blockquote>
+Return the URL given in the constructor.</blockquote>
+<p>Request.get_type()</p>
+<blockquote>
+Return the type of the URL &#8212; also known as the scheme.</blockquote>
+<p>Request.get_host()</p>
+<blockquote>
+Return the host to which a connection will be made.</blockquote>
+<p>Request.get_selector()</p>
+<blockquote>
+Return the selector &#8212; the part of the URL that is sent to the
+server.</blockquote>
+<p>Request.set_proxy(host, type)</p>
+<blockquote>
+Prepare the request by connecting to a proxy server. The <em>host</em> and
+<em>type</em> will replace those of the instance, and the instance&#8217;s
+selector will be the original URL given in the constructor.</blockquote>
+<p>Request.get_origin_req_host()</p>
+<blockquote>
+Return the request-host of the origin transaction, as defined by
+<strong>RFC 2965</strong>. See the documentation for the <tt class="docutils literal"><span class="pre">Request</span></tt>
+constructor.</blockquote>
+<p>Request.is_unverifiable()</p>
+<blockquote>
+Return whether the request is unverifiable, as defined by RFC 2965.
+See the documentation for the <tt class="docutils literal"><span class="pre">Request</span></tt> constructor.</blockquote>
+</div>
+<div class="section" id="openerdirector-objects">
+<h2>20.6.2. OpenerDirector Objects<a class="headerlink" href="#openerdirector-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">OpenerDirector</span></tt> instances have the following methods:</p>
+<p>OpenerDirector.add_handler(handler)</p>
+<blockquote>
+<p><em>handler</em> should be an instance of <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>.  The following
+methods are searched, and added to the possible chains (note that
+HTTP errors are a special case).</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">*protocol*_open</span></tt> &#8212; signal that the handler knows how to open
+<em>protocol</em> URLs.</li>
+<li><tt class="docutils literal"><span class="pre">http_error_*type*</span></tt> &#8212; signal that the handler knows how to
+handle HTTP errors with HTTP error code <em>type</em>.</li>
+<li><tt class="docutils literal"><span class="pre">*protocol*_error</span></tt> &#8212; signal that the handler knows how to
+handle errors from (non-<tt class="docutils literal"><span class="pre">http</span></tt>) <em>protocol</em>.</li>
+<li><tt class="docutils literal"><span class="pre">*protocol*_request</span></tt> &#8212; signal that the handler knows how to
+pre-process <em>protocol</em> requests.</li>
+<li><tt class="docutils literal"><span class="pre">*protocol*_response</span></tt> &#8212; signal that the handler knows how to
+post-process <em>protocol</em> responses.</li>
+</ul>
+</blockquote>
+<p>OpenerDirector.open(url[, data][, timeout])</p>
+<blockquote>
+<p>Open the given <em>url</em> (which can be a request object or a string),
+optionally passing the given <em>data</em>. Arguments, return values and
+exceptions raised are the same as those of <tt class="docutils literal"><span class="pre">urlopen()</span></tt> (which
+simply calls the <tt class="docutils literal"><span class="pre">open()</span></tt> method on the currently installed
+global <tt class="docutils literal"><span class="pre">OpenerDirector</span></tt>).  The optional <em>timeout</em> parameter
+specifies a timeout in seconds for blocking operations like the
+connection attempt (if not specified, the global default timeout
+setting will be usedi). The timeout feature actually works only for
+HTTP, HTTPS, FTP and FTPS connections).</p>
+<p>Changed in version 2.6: <em>timeout</em> was added.</p>
+</blockquote>
+<p>OpenerDirector.error(proto[, arg[, ...]])</p>
+<blockquote>
+<p>Handle an error of the given protocol.  This will call the
+registered error handlers for the given protocol with the given
+arguments (which are protocol specific).  The HTTP protocol is a
+special case which uses the HTTP response code to determine the
+specific error handler; refer to the <tt class="docutils literal"><span class="pre">http_error_*()</span></tt> methods of
+the handler classes.</p>
+<p>Return values and exceptions raised are the same as those of
+<tt class="docutils literal"><span class="pre">urlopen()</span></tt>.</p>
+</blockquote>
+<p>OpenerDirector objects open URLs in three stages:</p>
+<p>The order in which these methods are called within each stage is
+determined by sorting the handler instances.</p>
+<ol class="arabic">
+<li><p class="first">Every handler with a method named like <tt class="docutils literal"><span class="pre">*protocol*_request</span></tt> has
+that method called to pre-process the request.</p>
+</li>
+<li><p class="first">Handlers with a method named like <tt class="docutils literal"><span class="pre">*protocol*_open</span></tt> are called to
+handle the request. This stage ends when a handler either returns a
+non-<tt class="xref docutils literal"><span class="pre">None</span></tt> value (ie. a response), or raises an exception
+(usually <tt class="docutils literal"><span class="pre">URLError</span></tt>). Exceptions are allowed to propagate.</p>
+<p>In fact, the above algorithm is first tried for methods named
+<tt class="docutils literal"><span class="pre">default_open()</span></tt>.  If all such methods return <tt class="xref docutils literal"><span class="pre">None</span></tt>, the
+algorithm is repeated for methods named like <tt class="docutils literal"><span class="pre">*protocol*_open</span></tt>.
+If all such methods return <tt class="xref docutils literal"><span class="pre">None</span></tt>, the algorithm is repeated for
+methods named <tt class="docutils literal"><span class="pre">unknown_open()</span></tt>.</p>
+<p>Note that the implementation of these methods may involve calls of
+the parent <tt class="docutils literal"><span class="pre">OpenerDirector</span></tt> instance&#8217;s <tt class="docutils literal"><span class="pre">open()</span></tt> and <tt class="docutils literal"><span class="pre">error()</span></tt>
+methods.</p>
+</li>
+<li><p class="first">Every handler with a method named like <tt class="docutils literal"><span class="pre">*protocol*_response</span></tt> has
+that method called to post-process the response.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="basehandler-objects">
+<h2>20.6.3. BaseHandler Objects<a class="headerlink" href="#basehandler-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">BaseHandler</span></tt> objects provide a couple of methods that are directly
+useful, and others that are meant to be used by derived classes.
+These are intended for direct use:</p>
+<p>BaseHandler.add_parent(director)</p>
+<blockquote>
+Add a director as parent.</blockquote>
+<p>BaseHandler.close()</p>
+<blockquote>
+Remove any parents.</blockquote>
+<p>The following members and methods should only be used by classes
+derived from <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>.</p>
+<dl class="docutils">
+<dt>Note: The convention has been adopted that subclasses defining</dt>
+<dd><tt class="docutils literal"><span class="pre">protocol_request()</span></tt> or <tt class="docutils literal"><span class="pre">protocol_response()</span></tt> methods are named
+<tt class="docutils literal"><span class="pre">*Processor</span></tt>; all others are named <tt class="docutils literal"><span class="pre">*Handler</span></tt>.</dd>
+</dl>
+<p>BaseHandler.parent</p>
+<blockquote>
+A valid <tt class="docutils literal"><span class="pre">OpenerDirector</span></tt>, which can be used to open using a
+different protocol, or handle errors.</blockquote>
+<p>BaseHandler.default_open(req)</p>
+<blockquote>
+<p>This method is <em>not</em> defined in <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>, but subclasses
+should define it if they want to catch all URLs.</p>
+<p>This method, if implemented, will be called by the parent
+<tt class="docutils literal"><span class="pre">OpenerDirector</span></tt>.  It should return a file-like object as
+described in the return value of the <tt class="docutils literal"><span class="pre">open()</span></tt> of
+<tt class="docutils literal"><span class="pre">OpenerDirector</span></tt>, or <tt class="xref docutils literal"><span class="pre">None</span></tt>. It should raise <tt class="docutils literal"><span class="pre">URLError</span></tt>,
+unless a truly exceptional thing happens (for example,
+<tt class="docutils literal"><span class="pre">MemoryError</span></tt> should not be mapped to <tt class="docutils literal"><span class="pre">URLError</span></tt>).</p>
+<p>This method will be called before any protocol-specific open
+method.</p>
+</blockquote>
+<p>BaseHandler.protocol_open(req)</p>
+<blockquote>
+<p>(&#8220;protocol&#8221; is to be replaced by the protocol name.)</p>
+<p>This method is <em>not</em> defined in <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>, but subclasses
+should define it if they want to handle URLs with the given
+<em>protocol</em>.</p>
+<p>This method, if defined, will be called by the parent
+<tt class="docutils literal"><span class="pre">OpenerDirector</span></tt>. Return values should be the same as for
+<tt class="docutils literal"><span class="pre">default_open()</span></tt>.</p>
+</blockquote>
+<p>BaseHandler.unknown_open(req)</p>
+<blockquote>
+<p>This method is <em>not</em> defined in <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>, but subclasses
+should define it if they want to catch all URLs with no specific
+registered handler to open it.</p>
+<p>This method, if implemented, will be called by the <tt class="docutils literal"><span class="pre">parent</span></tt>
+<tt class="docutils literal"><span class="pre">OpenerDirector</span></tt>.  Return values should be the same as for
+<tt class="docutils literal"><span class="pre">default_open()</span></tt>.</p>
+</blockquote>
+<p>BaseHandler.http_error_default(req, fp, code, msg, hdrs)</p>
+<blockquote>
+<p>This method is <em>not</em> defined in <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>, but subclasses
+should override it if they intend to provide a catch-all for
+otherwise unhandled HTTP errors.  It will be called automatically
+by the  <tt class="docutils literal"><span class="pre">OpenerDirector</span></tt> getting the error, and should not
+normally be called in other circumstances.</p>
+<p><em>req</em> will be a <tt class="docutils literal"><span class="pre">Request</span></tt> object, <em>fp</em> will be a file-like object
+with the HTTP error body, <em>code</em> will be the three-digit code of
+the error, <em>msg</em> will be the user-visible explanation of the code
+and <em>hdrs</em> will be a mapping object with the headers of the error.</p>
+<p>Return values and exceptions raised should be the same as those of
+<tt class="docutils literal"><span class="pre">urlopen()</span></tt>.</p>
+</blockquote>
+<p>BaseHandler.http_error_nnn(req, fp, code, msg, hdrs)</p>
+<blockquote>
+<p><em>nnn</em> should be a three-digit HTTP error code.  This method is also
+not defined in <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>, but will be called, if it exists,
+on an instance of a subclass, when an HTTP error with code <em>nnn</em>
+occurs.</p>
+<p>Subclasses should override this method to handle specific HTTP
+errors.</p>
+<p>Arguments, return values and exceptions raised should be the same
+as for <tt class="docutils literal"><span class="pre">http_error_default()</span></tt>.</p>
+</blockquote>
+<p>BaseHandler.protocol_request(req)</p>
+<blockquote>
+<p>(&#8220;protocol&#8221; is to be replaced by the protocol name.)</p>
+<p>This method is <em>not</em> defined in <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>, but subclasses
+should define it if they want to pre-process requests of the given
+<em>protocol</em>.</p>
+<p>This method, if defined, will be called by the parent
+<tt class="docutils literal"><span class="pre">OpenerDirector</span></tt>. <em>req</em> will be a <tt class="docutils literal"><span class="pre">Request</span></tt> object. The return
+value should be a <tt class="docutils literal"><span class="pre">Request</span></tt> object.</p>
+</blockquote>
+<p>BaseHandler.protocol_response(req, response)</p>
+<blockquote>
+<p>(&#8220;protocol&#8221; is to be replaced by the protocol name.)</p>
+<p>This method is <em>not</em> defined in <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>, but subclasses
+should define it if they want to post-process responses of the
+given <em>protocol</em>.</p>
+<p>This method, if defined, will be called by the parent
+<tt class="docutils literal"><span class="pre">OpenerDirector</span></tt>. <em>req</em> will be a <tt class="docutils literal"><span class="pre">Request</span></tt> object. <em>response</em>
+will be an object implementing the same interface as the return
+value of <tt class="docutils literal"><span class="pre">urlopen()</span></tt>.  The return value should implement the same
+interface as the return value of <tt class="docutils literal"><span class="pre">urlopen()</span></tt>.</p>
+</blockquote>
+</div>
+<div class="section" id="httpredirecthandler-objects">
+<h2>20.6.4. HTTPRedirectHandler Objects<a class="headerlink" href="#httpredirecthandler-objects" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Note: Some HTTP redirections require action from this module&#8217;s client</dt>
+<dd>code.  If this is the case, <tt class="docutils literal"><span class="pre">HTTPError</span></tt> is raised.  See <strong>RFC
+2616</strong> for details of the precise meanings of the various
+redirection codes.</dd>
+</dl>
+<p>HTTPRedirectHandler.redirect_request(req, fp, code, msg, hdrs, newurl)</p>
+<blockquote>
+<p>Return a <tt class="docutils literal"><span class="pre">Request</span></tt> or <tt class="xref docutils literal"><span class="pre">None</span></tt> in response to a redirect. This is
+called by the default implementations of the <tt class="docutils literal"><span class="pre">http_error_30*()</span></tt>
+methods when a redirection is received from the server.  If a
+redirection should take place, return a new <tt class="docutils literal"><span class="pre">Request</span></tt> to allow
+<tt class="docutils literal"><span class="pre">http_error_30*()</span></tt> to perform the redirect to <em>newurl</em>.
+Otherwise, raise <tt class="docutils literal"><span class="pre">HTTPError</span></tt> if no other handler should try to
+handle this URL, or return <tt class="xref docutils literal"><span class="pre">None</span></tt> if you can&#8217;t but another
+handler might.</p>
+<dl class="docutils">
+<dt>Note: The default implementation of this method does not strictly</dt>
+<dd>follow <strong>RFC 2616</strong>, which says that 301 and 302 responses to
+<tt class="docutils literal"><span class="pre">POST</span></tt> requests must not be automatically redirected without
+confirmation by the user.  In reality, browsers do allow
+automatic redirection of these responses, changing the POST to a
+<tt class="docutils literal"><span class="pre">GET</span></tt>, and the default implementation reproduces this behavior.</dd>
+</dl>
+</blockquote>
+<p>HTTPRedirectHandler.http_error_301(req, fp, code, msg, hdrs)</p>
+<blockquote>
+Redirect to the <tt class="docutils literal"><span class="pre">Location:</span></tt> or <tt class="docutils literal"><span class="pre">URI:</span></tt> URL.  This method is
+called by the parent <tt class="docutils literal"><span class="pre">OpenerDirector</span></tt> when getting an HTTP &#8216;moved
+permanently&#8217; response.</blockquote>
+<p>HTTPRedirectHandler.http_error_302(req, fp, code, msg, hdrs)</p>
+<blockquote>
+The same as <tt class="docutils literal"><span class="pre">http_error_301()</span></tt>, but called for the &#8216;found&#8217;
+response.</blockquote>
+<p>HTTPRedirectHandler.http_error_303(req, fp, code, msg, hdrs)</p>
+<blockquote>
+The same as <tt class="docutils literal"><span class="pre">http_error_301()</span></tt>, but called for the &#8216;see other&#8217;
+response.</blockquote>
+<p>HTTPRedirectHandler.http_error_307(req, fp, code, msg, hdrs)</p>
+<blockquote>
+The same as <tt class="docutils literal"><span class="pre">http_error_301()</span></tt>, but called for the &#8216;temporary
+redirect&#8217; response.</blockquote>
+</div>
+<div class="section" id="httpcookieprocessor-objects">
+<h2>20.6.5. HTTPCookieProcessor Objects<a class="headerlink" href="#httpcookieprocessor-objects" title="Permalink to this headline">¶</a></h2>
+<p>New in version 2.4.</p>
+<p><tt class="docutils literal"><span class="pre">HTTPCookieProcessor</span></tt> instances have one attribute:</p>
+<p>HTTPCookieProcessor.cookiejar</p>
+<blockquote>
+The <tt class="docutils literal"><span class="pre">cookielib.CookieJar</span></tt> in which cookies are stored.</blockquote>
+</div>
+<div class="section" id="proxyhandler-objects">
+<h2>20.6.6. ProxyHandler Objects<a class="headerlink" href="#proxyhandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>ProxyHandler.protocol_open(request)</p>
+<blockquote>
+<p>(&#8220;protocol&#8221; is to be replaced by the protocol name.)</p>
+<p>The <tt class="docutils literal"><span class="pre">ProxyHandler</span></tt> will have a method <tt class="docutils literal"><span class="pre">*protocol*_open</span></tt> for
+every <em>protocol</em> which has a proxy in the <em>proxies</em> dictionary
+given in the constructor.  The method will modify requests to go
+through the proxy, by calling <tt class="docutils literal"><span class="pre">request.set_proxy()</span></tt>, and call the
+next handler in the chain to actually execute the protocol.</p>
+</blockquote>
+</div>
+<div class="section" id="httppasswordmgr-objects">
+<h2>20.6.7. HTTPPasswordMgr Objects<a class="headerlink" href="#httppasswordmgr-objects" title="Permalink to this headline">¶</a></h2>
+<p>These methods are available on <tt class="docutils literal"><span class="pre">HTTPPasswordMgr</span></tt> and
+<tt class="docutils literal"><span class="pre">HTTPPasswordMgrWithDefaultRealm</span></tt> objects.</p>
+<p>HTTPPasswordMgr.add_password(realm, uri, user, passwd)</p>
+<blockquote>
+<em>uri</em> can be either a single URI, or a sequence of URIs. <em>realm</em>,
+<em>user</em> and <em>passwd</em> must be strings. This causes <tt class="docutils literal"><span class="pre">(user,</span> <span class="pre">passwd)</span></tt>
+to be used as authentication tokens when authentication for <em>realm</em>
+and a super-URI of any of the given URIs is given.</blockquote>
+<p>HTTPPasswordMgr.find_user_password(realm, authuri)</p>
+<blockquote>
+<p>Get user/password for given realm and URI, if any.  This method
+will return <tt class="docutils literal"><span class="pre">(None,</span> <span class="pre">None)</span></tt> if there is no matching user/password.</p>
+<p>For <tt class="docutils literal"><span class="pre">HTTPPasswordMgrWithDefaultRealm</span></tt> objects, the realm <tt class="xref docutils literal"><span class="pre">None</span></tt>
+will be searched if the given <em>realm</em> has no matching
+user/password.</p>
+</blockquote>
+</div>
+<div class="section" id="abstractbasicauthhandler-objects">
+<h2>20.6.8. AbstractBasicAuthHandler Objects<a class="headerlink" href="#abstractbasicauthhandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>AbstractBasicAuthHandler.http_error_auth_reqed(authreq, host, req, headers)</p>
+<blockquote>
+<p>Handle an authentication request by getting a user/password pair,
+and re-trying the request.  <em>authreq</em> should be the name of the
+header where the information about the realm is included in the
+request, <em>host</em> specifies the URL and path to authenticate for,
+<em>req</em> should be the (failed) <tt class="docutils literal"><span class="pre">Request</span></tt> object, and <em>headers</em>
+should be the error headers.</p>
+<p><em>host</em> is either an authority (e.g. <tt class="docutils literal"><span class="pre">&quot;python.org&quot;</span></tt>) or a URL
+containing an authority component (e.g. <tt class="docutils literal"><span class="pre">&quot;http://python.org/&quot;</span></tt>).
+In either case, the authority must not contain a userinfo component
+(so, <tt class="docutils literal"><span class="pre">&quot;python.org&quot;</span></tt> and <tt class="docutils literal"><span class="pre">&quot;python.org:80&quot;</span></tt> are fine,
+<tt class="docutils literal"><span class="pre">&quot;joe:password&#64;python.org&quot;</span></tt> is not).</p>
+</blockquote>
+</div>
+<div class="section" id="httpbasicauthhandler-objects">
+<h2>20.6.9. HTTPBasicAuthHandler Objects<a class="headerlink" href="#httpbasicauthhandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>HTTPBasicAuthHandler.http_error_401(req, fp, code, msg, hdrs)</p>
+<blockquote>
+Retry the request with authentication information, if available.</blockquote>
+</div>
+<div class="section" id="proxybasicauthhandler-objects">
+<h2>20.6.10. ProxyBasicAuthHandler Objects<a class="headerlink" href="#proxybasicauthhandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>ProxyBasicAuthHandler.http_error_407(req, fp, code, msg, hdrs)</p>
+<blockquote>
+Retry the request with authentication information, if available.</blockquote>
+</div>
+<div class="section" id="abstractdigestauthhandler-objects">
+<h2>20.6.11. AbstractDigestAuthHandler Objects<a class="headerlink" href="#abstractdigestauthhandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>AbstractDigestAuthHandler.http_error_auth_reqed(authreq, host, req, headers)</p>
+<blockquote>
+<em>authreq</em> should be the name of the header where the information
+about the realm is included in the request, <em>host</em> should be the
+host to authenticate to, <em>req</em> should be the (failed) <tt class="docutils literal"><span class="pre">Request</span></tt>
+object, and <em>headers</em> should be the error headers.</blockquote>
+</div>
+<div class="section" id="httpdigestauthhandler-objects">
+<h2>20.6.12. HTTPDigestAuthHandler Objects<a class="headerlink" href="#httpdigestauthhandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>HTTPDigestAuthHandler.http_error_401(req, fp, code, msg, hdrs)</p>
+<blockquote>
+Retry the request with authentication information, if available.</blockquote>
+</div>
+<div class="section" id="proxydigestauthhandler-objects">
+<h2>20.6.13. ProxyDigestAuthHandler Objects<a class="headerlink" href="#proxydigestauthhandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>ProxyDigestAuthHandler.http_error_407(req, fp, code, msg, hdrs)</p>
+<blockquote>
+Retry the request with authentication information, if available.</blockquote>
+</div>
+<div class="section" id="httphandler-objects">
+<h2>20.6.14. HTTPHandler Objects<a class="headerlink" href="#httphandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>HTTPHandler.http_open(req)</p>
+<blockquote>
+Send an HTTP request, which can be either GET or POST, depending on
+<tt class="docutils literal"><span class="pre">req.has_data()</span></tt>.</blockquote>
+</div>
+<div class="section" id="httpshandler-objects">
+<h2>20.6.15. HTTPSHandler Objects<a class="headerlink" href="#httpshandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>HTTPSHandler.https_open(req)</p>
+<blockquote>
+Send an HTTPS request, which can be either GET or POST, depending
+on <tt class="docutils literal"><span class="pre">req.has_data()</span></tt>.</blockquote>
+</div>
+<div class="section" id="filehandler-objects">
+<h2>20.6.16. FileHandler Objects<a class="headerlink" href="#filehandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>FileHandler.file_open(req)</p>
+<blockquote>
+Open the file locally, if there is no host name, or the host name
+is <tt class="docutils literal"><span class="pre">'localhost'</span></tt>. Change the protocol to <tt class="docutils literal"><span class="pre">ftp</span></tt> otherwise, and
+retry opening it using <tt class="docutils literal"><span class="pre">parent</span></tt>.</blockquote>
+</div>
+<div class="section" id="ftphandler-objects">
+<h2>20.6.17. FTPHandler Objects<a class="headerlink" href="#ftphandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>FTPHandler.ftp_open(req)</p>
+<blockquote>
+Open the FTP file indicated by <em>req</em>. The login is always done with
+empty username and password.</blockquote>
+</div>
+<div class="section" id="cacheftphandler-objects">
+<h2>20.6.18. CacheFTPHandler Objects<a class="headerlink" href="#cacheftphandler-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">CacheFTPHandler</span></tt> objects are <tt class="docutils literal"><span class="pre">FTPHandler</span></tt> objects with the
+following additional methods:</p>
+<p>CacheFTPHandler.setTimeout(t)</p>
+<blockquote>
+Set timeout of connections to <em>t</em> seconds.</blockquote>
+<p>CacheFTPHandler.setMaxConns(m)</p>
+<blockquote>
+Set maximum number of cached connections to <em>m</em>.</blockquote>
+</div>
+<div class="section" id="unknownhandler-objects">
+<h2>20.6.19. UnknownHandler Objects<a class="headerlink" href="#unknownhandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>UnknownHandler.unknown_open()</p>
+<blockquote>
+Raise a <tt class="docutils literal"><span class="pre">URLError</span></tt> exception.</blockquote>
+</div>
+<div class="section" id="httperrorprocessor-objects">
+<h2>20.6.20. HTTPErrorProcessor Objects<a class="headerlink" href="#httperrorprocessor-objects" title="Permalink to this headline">¶</a></h2>
+<p>New in version 2.4.</p>
+<p>HTTPErrorProcessor.unknown_open()</p>
+<blockquote>
+<p>Process HTTP error responses.</p>
+<p>For 200 error codes, the response object is returned immediately.</p>
+<p>For non-200 error codes, this simply passes the job on to the
+<tt class="docutils literal"><span class="pre">*protocol*_error_code</span></tt> handler methods, via
+<tt class="docutils literal"><span class="pre">OpenerDirector.error()</span></tt>.  Eventually,
+<tt class="docutils literal"><span class="pre">urllib2.HTTPDefaultErrorHandler</span></tt> will raise an <tt class="docutils literal"><span class="pre">HTTPError</span></tt> if
+no other handler handles the error.</p>
+</blockquote>
+</div>
+<div class="section" id="examples">
+<h2>20.6.21. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>This example gets the python.org main page and displays the first 100
+bytes of it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&#39;http://www.python.org/&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="go">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;</span>
+<span class="go">&lt;?xml-stylesheet href=&quot;./css/ht2html</span>
+</pre></div>
+</div>
+<p>Here we are sending a data-stream to the stdin of a CGI and reading
+the data it returns to us. Note that this example will only work when
+the Python installation supports SSL.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&#39;https://localhost/cgi-bin/test.cgi&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">data</span><span class="o">=</span><span class="s">&#39;This data is passed to stdin of the CGI&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="go">Got Data: &quot;This data is passed to stdin of the CGI&quot;</span>
+</pre></div>
+</div>
+<p>The code for the sample CGI used in the above example is:</p>
+<blockquote>
+#!/usr/bin/env python
+import sys
+data = sys.stdin.read()
+print &#8216;Content-type: text-plainnnGot Data: &#8220;%s&#8221;&#8217; % data</blockquote>
+<p>Use of Basic HTTP Authentication:</p>
+<blockquote>
+<p>import urllib2
+# Create an OpenerDirector with support for Basic HTTP Authentication...
+auth_handler = urllib2.HTTPBasicAuthHandler()
+auth_handler.add_password(realm=&#8217;PDQ Application&#8217;,</p>
+<blockquote>
+uri=&#8217;<a class="reference external" href="https://mahler:8092/site-updates.py">https://mahler:8092/site-updates.py</a>&#8216;,
+user=&#8217;klem&#8217;,
+passwd=&#8217;kadidd!ehopper&#8217;)</blockquote>
+<p>opener = urllib2.build_opener(auth_handler)
+# ...and install it globally so it can be used with urlopen.
+urllib2.install_opener(opener)
+urllib2.urlopen(&#8216;<a class="reference external" href="http://www.example.com/login.html">http://www.example.com/login.html</a>&#8216;)</p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">build_opener()</span></tt> provides many handlers by default, including a
+<tt class="docutils literal"><span class="pre">ProxyHandler</span></tt>.  By default, <tt class="docutils literal"><span class="pre">ProxyHandler</span></tt> uses the environment
+variables named <tt class="docutils literal"><span class="pre">&lt;scheme&gt;_proxy</span></tt>, where <tt class="docutils literal"><span class="pre">&lt;scheme&gt;</span></tt> is the URL
+scheme involved.  For example, the <strong>http_proxy</strong> environment variable
+is read to obtain the HTTP proxy&#8217;s URL.</p>
+<p>This example replaces the default <tt class="docutils literal"><span class="pre">ProxyHandler</span></tt> with one that uses
+programmatically-supplied proxy URLs, and adds proxy authorization
+support with <tt class="docutils literal"><span class="pre">ProxyBasicAuthHandler</span></tt>.</p>
+<blockquote>
+<p>proxy_handler = urllib2.ProxyHandler({&#8216;http&#8217;: &#8216;<a class="reference external" href="http://www.example.com:3128/">http://www.example.com:3128/</a>&#8216;})
+proxy_auth_handler = urllib2.HTTPBasicAuthHandler()
+proxy_auth_handler.add_password(&#8216;realm&#8217;, &#8216;host&#8217;, &#8216;username&#8217;, &#8216;password&#8217;)</p>
+<p>opener = build_opener(proxy_handler, proxy_auth_handler)
+# This time, rather than install the OpenerDirector, we use it directly:
+opener.open(&#8216;<a class="reference external" href="http://www.example.com/login.html">http://www.example.com/login.html</a>&#8216;)</p>
+</blockquote>
+<p>Adding HTTP headers:</p>
+<p>Use the <em>headers</em> argument to the <tt class="docutils literal"><span class="pre">Request</span></tt> constructor, or:</p>
+<blockquote>
+import urllib2
+req = urllib2.Request(&#8216;<a class="reference external" href="http://www.example.com/">http://www.example.com/</a>&#8216;)
+req.add_header(&#8216;Referer&#8217;, &#8216;<a class="reference external" href="http://www.python.org/">http://www.python.org/</a>&#8216;)
+r = urllib2.urlopen(req)</blockquote>
+<p><tt class="docutils literal"><span class="pre">OpenerDirector</span></tt> automatically adds a <em>User-Agent</em> header to every
+<tt class="docutils literal"><span class="pre">Request</span></tt>.  To change this:</p>
+<blockquote>
+import urllib2
+opener = urllib2.build_opener()
+opener.addheaders = [(&#8216;User-agent&#8217;, &#8216;Mozilla/5.0&#8217;)]
+opener.open(&#8216;<a class="reference external" href="http://www.example.com/">http://www.example.com/</a>&#8216;)</blockquote>
+<p>Also, remember that a few standard headers (<em>Content-Length</em>,
+<em>Content-Type</em> and <em>Host</em>) are added when the <tt class="docutils literal"><span class="pre">Request</span></tt> is passed to
+<tt class="docutils literal"><span class="pre">urlopen()</span></tt> (or <tt class="docutils literal"><span class="pre">OpenerDirector.open()</span></tt>).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="httplib.html" title="20.7. httplib — HTTP protocol client"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="urllib.html" title="20.5. urllib — Open arbitrary resources by URL"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" >20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

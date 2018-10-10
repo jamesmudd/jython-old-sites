@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>35. Undocumented Modules &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="The Python Standard Library and What Comes with Jython" href="indexprogress.html" />
+    <link rel="next" title="The Python Language Reference" href="../reference/indexprogress.html" />
+    <link rel="prev" title="32.6. commands — Utilities for running commands" href="commands.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="../reference/indexprogress.html" title="The Python Language Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="commands.html" title="32.6. commands — Utilities for running commands"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" accesskey="U">The Python Standard Library and What Comes with Jython</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">35. Undocumented Modules</a><ul>
+<li><a class="reference external" href="#miscellaneous-useful-utilities">35.1. Miscellaneous useful utilities</a></li>
+<li><a class="reference external" href="#platform-specific-modules">35.2. Platform specific modules</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="commands.html"
+                                  title="previous chapter">32.6. <tt class="docutils literal docutils literal docutils literal"><span class="pre">commands</span></tt> &#8212; Utilities for running commands</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="../reference/indexprogress.html"
+                                  title="next chapter">The Python Language Reference</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/undoc.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="undocumented-modules">
+<h1>35. Undocumented Modules<a class="headerlink" href="#undocumented-modules" title="Permalink to this headline">¶</a></h1>
+<p>Here&#8217;s a quick listing of modules that are currently undocumented, but
+that should be documented.  Feel free to contribute documentation for
+them!  (Send via email to <a class="reference external" href="mailto:docs&#37;&#52;&#48;python&#46;org">docs<span>&#64;</span>python<span>&#46;</span>org</a>.)</p>
+<p>The idea and original contents for this chapter were taken from a
+posting by Fredrik Lundh; the specific contents of this chapter have
+been substantially revised.</p>
+<div class="section" id="miscellaneous-useful-utilities">
+<h2>35.1. Miscellaneous useful utilities<a class="headerlink" href="#miscellaneous-useful-utilities" title="Permalink to this headline">¶</a></h2>
+<p>Some of these are very old and/or not very robust; marked with &#8220;hmm.&#8221;</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">ihooks</span></tt></dt>
+<dd>&#8212; Import hook support (for <tt class="docutils literal"><span class="pre">rexec</span></tt>; may become obsolete).
+Removed in Python 3.x.</dd>
+</dl>
+</div>
+<div class="section" id="platform-specific-modules">
+<h2>35.2. Platform specific modules<a class="headerlink" href="#platform-specific-modules" title="Permalink to this headline">¶</a></h2>
+<p>These modules are used to implement the <tt class="docutils literal"><span class="pre">os.path</span></tt> module, and are
+not documented beyond this mention.  There&#8217;s little need to document
+these.</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">ntpath</span></tt></dt>
+<dd>&#8212; Implementation of <tt class="docutils literal"><span class="pre">os.path</span></tt> on Win32, Win64, WinCE, and OS/2
+platforms.</dd>
+<dt><tt class="docutils literal"><span class="pre">posixpath</span></tt></dt>
+<dd>&#8212; Implementation of <tt class="docutils literal"><span class="pre">os.path</span></tt> on POSIX.</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../reference/indexprogress.html" title="The Python Language Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="commands.html" title="32.6. commands — Utilities for running commands"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

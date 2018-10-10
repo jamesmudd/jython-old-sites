@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>21.3. colorsys — Conversions between color systems &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="21. Multimedia Services" href="mm.html" />
+    <link rel="next" title="21.4. imghdr — Determine the type of an image" href="imghdr.html" />
+    <link rel="prev" title="21.2. chunk — Read IFF chunked data" href="chunk.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="imghdr.html" title="21.4. imghdr — Determine the type of an image"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="chunk.html" title="21.2. chunk — Read IFF chunked data"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="mm.html" accesskey="U">21. Multimedia Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="chunk.html"
+                                  title="previous chapter">21.2. <tt class="docutils literal docutils literal docutils literal"><span class="pre">chunk</span></tt> &#8212; Read IFF chunked data</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="imghdr.html"
+                                  title="next chapter">21.4. <tt class="docutils literal"><span class="pre">imghdr</span></tt> &#8212; Determine the type of an image</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/colorsys.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="colorsys-conversions-between-color-systems">
+<h1>21.3. <tt class="docutils literal"><span class="pre">colorsys</span></tt> &#8212; Conversions between color systems<a class="headerlink" href="#colorsys-conversions-between-color-systems" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">colorsys</span></tt> module defines bidirectional conversions of color
+values between colors expressed in the RGB (Red Green Blue) color
+space used in computer monitors and three other coordinate systems:
+YIQ, HLS (Hue Lightness Saturation) and HSV (Hue Saturation Value).
+Coordinates in all of these color spaces are floating point values.
+In the YIQ space, the Y coordinate is between 0 and 1, but the I and Q
+coordinates can be positive or negative.  In all other spaces, the
+coordinates are all between 0 and 1.</p>
+<p>See also:</p>
+<blockquote>
+More information about color spaces can be found at
+<a class="reference external" href="http://www.poynton.com/ColorFAQ.html">http://www.poynton.com/ColorFAQ.html</a> and
+<a class="reference external" href="http://www.cambridgeincolour.com/tutorials/color-spaces.htm">http://www.cambridgeincolour.com/tutorials/color-spaces.htm</a>.</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">colorsys</span></tt> module defines the following functions:</p>
+<p>colorsys.rgb_to_yiq(r, g, b)</p>
+<blockquote>
+Convert the color from RGB coordinates to YIQ coordinates.</blockquote>
+<p>colorsys.yiq_to_rgb(y, i, q)</p>
+<blockquote>
+Convert the color from YIQ coordinates to RGB coordinates.</blockquote>
+<p>colorsys.rgb_to_hls(r, g, b)</p>
+<blockquote>
+Convert the color from RGB coordinates to HLS coordinates.</blockquote>
+<p>colorsys.hls_to_rgb(h, l, s)</p>
+<blockquote>
+Convert the color from HLS coordinates to RGB coordinates.</blockquote>
+<p>colorsys.rgb_to_hsv(r, g, b)</p>
+<blockquote>
+Convert the color from RGB coordinates to HSV coordinates.</blockquote>
+<p>colorsys.hsv_to_rgb(h, s, v)</p>
+<blockquote>
+Convert the color from HSV coordinates to RGB coordinates.</blockquote>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">colorsys</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">colorsys</span><span class="o">.</span><span class="n">rgb_to_hsv</span><span class="p">(</span><span class="o">.</span><span class="mi">3</span><span class="p">,</span> <span class="o">.</span><span class="mi">4</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">(0.25, 0.5, 0.4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">colorsys</span><span class="o">.</span><span class="n">hsv_to_rgb</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+<span class="go">(0.3, 0.4, 0.2)</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="imghdr.html" title="21.4. imghdr — Determine the type of an image"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="chunk.html" title="21.2. chunk — Read IFF chunked data"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="mm.html" >21. Multimedia Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

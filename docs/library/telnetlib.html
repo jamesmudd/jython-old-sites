@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>20.14. telnetlib — Telnet client &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="20. Internet Protocols and Support" href="internet.html" />
+    <link rel="next" title="20.15. uuid — UUID objects according to RFC 4122" href="uuid.html" />
+    <link rel="prev" title="20.13. smtpd — SMTP Server" href="smtpd.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="uuid.html" title="20.15. uuid — UUID objects according to RFC 4122"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="smtpd.html" title="20.13. smtpd — SMTP Server"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" accesskey="U">20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">20.14. <tt class="docutils literal"><span class="pre">telnetlib</span></tt> &#8212; Telnet client</a><ul>
+<li><a class="reference external" href="#telnet-objects">20.14.1. Telnet Objects</a></li>
+<li><a class="reference external" href="#telnet-example">20.14.2. Telnet Example</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="smtpd.html"
+                                  title="previous chapter">20.13. <tt class="docutils literal docutils literal docutils literal"><span class="pre">smtpd</span></tt> &#8212; SMTP Server</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="uuid.html"
+                                  title="next chapter">20.15. <tt class="docutils literal"><span class="pre">uuid</span></tt> &#8212; UUID objects according to RFC 4122</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/telnetlib.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="telnetlib-telnet-client">
+<h1>20.14. <tt class="docutils literal"><span class="pre">telnetlib</span></tt> &#8212; Telnet client<a class="headerlink" href="#telnetlib-telnet-client" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">telnetlib</span></tt> module provides a <tt class="docutils literal"><span class="pre">Telnet</span></tt> class that implements
+the Telnet protocol.  See <strong>RFC 854</strong> for details about the protocol.
+In addition, it provides symbolic constants for the protocol
+characters (see below), and for the telnet options. The symbolic names
+of the telnet options follow the definitions in <tt class="docutils literal"><span class="pre">arpa/telnet.h</span></tt>,
+with the leading <tt class="docutils literal"><span class="pre">TELOPT_</span></tt> removed. For symbolic names of options
+which are traditionally not included in <tt class="docutils literal"><span class="pre">arpa/telnet.h</span></tt>, see the
+module source itself.</p>
+<p>The symbolic constants for the telnet commands are: IAC, DONT, DO,
+WONT, WILL, SE (Subnegotiation End), NOP (No Operation), DM (Data
+Mark), BRK (Break), IP (Interrupt process), AO (Abort output), AYT
+(Are You There), EC (Erase Character), EL (Erase Line), GA (Go Ahead),
+SB (Subnegotiation Begin).</p>
+<p>class class telnetlib.Telnet([host[, port[, timeout]]])</p>
+<blockquote>
+<p><tt class="docutils literal"><span class="pre">Telnet</span></tt> represents a connection to a Telnet server. The instance
+is initially not connected by default; the <tt class="docutils literal"><span class="pre">open()</span></tt> method must
+be used to establish a connection.  Alternatively, the host name
+and optional port and timeout can be passed to the constructor, in
+which case the connection to the server will be established before
+the constructor returns.  The optional <em>timeout</em> parameter
+specifies a timeout in seconds for the connection attempt (if not
+specified, the global default timeout setting will be used).</p>
+<p>number can be passed to the constructor, to, in which case the
+connection to the server will be established before the constructor
+returns. The optional <em>timeout</em> parameter specifies a timeout in
+seconds for blocking operations like the connection attempt (if not
+specified, or passed as None, the global default timeout setting
+will be used).</p>
+<p>Do not reopen an already connected instance.</p>
+<p>This class has many <tt class="docutils literal"><span class="pre">read_*()</span></tt> methods.  Note that some of them
+raise <tt class="docutils literal"><span class="pre">EOFError</span></tt> when the end of the connection is read, because
+they can return an empty string for other reasons.  See the
+individual descriptions below.</p>
+<p>Changed in version 2.6: <em>timeout</em> was added.</p>
+</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt><strong>RFC 854</strong> - Telnet Protocol Specification</dt>
+<dd>Definition of the Telnet protocol.</dd>
+</dl>
+</blockquote>
+<div class="section" id="telnet-objects">
+<h2>20.14.1. Telnet Objects<a class="headerlink" href="#telnet-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">Telnet</span></tt> instances have the following methods:</p>
+<p>Telnet.read_until(expected[, timeout])</p>
+<blockquote>
+<p>Read until a given string, <em>expected</em>, is encountered or until
+<em>timeout</em> seconds have passed.</p>
+<p>When no match is found, return whatever is available instead,
+possibly the empty string.  Raise <tt class="docutils literal"><span class="pre">EOFError</span></tt> if the connection is
+closed and no cooked data is available.</p>
+</blockquote>
+<p>Telnet.read_all()</p>
+<blockquote>
+Read all data until EOF; block until connection closed.</blockquote>
+<p>Telnet.read_some()</p>
+<blockquote>
+Read at least one byte of cooked data unless EOF is hit. Return
+<tt class="docutils literal"><span class="pre">''</span></tt> if EOF is hit.  Block if no data is immediately available.</blockquote>
+<p>Telnet.read_very_eager()</p>
+<blockquote>
+<p>Read everything that can be without blocking in I/O (eager).</p>
+<p>Raise <tt class="docutils literal"><span class="pre">EOFError</span></tt> if connection closed and no cooked data
+available.  Return <tt class="docutils literal"><span class="pre">''</span></tt> if no cooked data available otherwise. Do
+not block unless in the midst of an IAC sequence.</p>
+</blockquote>
+<p>Telnet.read_eager()</p>
+<blockquote>
+<p>Read readily available data.</p>
+<p>Raise <tt class="docutils literal"><span class="pre">EOFError</span></tt> if connection closed and no cooked data
+available.  Return <tt class="docutils literal"><span class="pre">''</span></tt> if no cooked data available otherwise. Do
+not block unless in the midst of an IAC sequence.</p>
+</blockquote>
+<p>Telnet.read_lazy()</p>
+<blockquote>
+<p>Process and return data already in the queues (lazy).</p>
+<p>Raise <tt class="docutils literal"><span class="pre">EOFError</span></tt> if connection closed and no data available.
+Return <tt class="docutils literal"><span class="pre">''</span></tt> if no cooked data available otherwise.  Do not block
+unless in the midst of an IAC sequence.</p>
+</blockquote>
+<p>Telnet.read_very_lazy()</p>
+<blockquote>
+<p>Return any data available in the cooked queue (very lazy).</p>
+<p>Raise <tt class="docutils literal"><span class="pre">EOFError</span></tt> if connection closed and no data available.
+Return <tt class="docutils literal"><span class="pre">''</span></tt> if no cooked data available otherwise.  This method
+never blocks.</p>
+</blockquote>
+<p>Telnet.read_sb_data()</p>
+<blockquote>
+<p>Return the data collected between a SB/SE pair (suboption
+begin/end). The callback should access these data when it was
+invoked with a <tt class="docutils literal"><span class="pre">SE</span></tt> command. This method never blocks.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>Telnet.open(host[, port[, timeout]])</p>
+<blockquote>
+<p>Connect to a host. The optional second argument is the port number,
+which defaults to the standard Telnet port (23). The optional
+<em>timeout</em> parameter specifies a timeout in seconds for blocking
+operations like the connection attempt (if not specified, the
+global default timeout setting will be used).</p>
+<p>Do not try to reopen an already connected instance.</p>
+<p>Changed in version 2.6: <em>timeout</em> was added.</p>
+</blockquote>
+<p>Telnet.msg(msg[, <a href="#id1"><span class="problematic" id="id2">*</span></a>args])</p>
+<blockquote>
+Print a debug message when the debug level is <tt class="docutils literal"><span class="pre">&gt;</span></tt> 0. If extra
+arguments are present, they are substituted in the message using
+the standard string formatting operator.</blockquote>
+<p>Telnet.set_debuglevel(debuglevel)</p>
+<blockquote>
+Set the debug level.  The higher the value of <em>debuglevel</em>, the
+more debug output you get (on <tt class="docutils literal"><span class="pre">sys.stdout</span></tt>).</blockquote>
+<p>Telnet.close()</p>
+<blockquote>
+Close the connection.</blockquote>
+<p>Telnet.get_socket()</p>
+<blockquote>
+Return the socket object used internally.</blockquote>
+<p>Telnet.fileno()</p>
+<blockquote>
+Return the file descriptor of the socket object used internally.</blockquote>
+<p>Telnet.write(buffer)</p>
+<blockquote>
+Write a string to the socket, doubling any IAC characters. This can
+block if the connection is blocked.  May raise <tt class="docutils literal"><span class="pre">socket.error</span></tt> if
+the connection is closed.</blockquote>
+<p>Telnet.interact()</p>
+<blockquote>
+Interaction function, emulates a very dumb Telnet client.</blockquote>
+<p>Telnet.mt_interact()</p>
+<blockquote>
+Multithreaded version of <tt class="docutils literal"><span class="pre">interact()</span></tt>.</blockquote>
+<p>Telnet.expect(list[, timeout])</p>
+<blockquote>
+<p>Read until one from a list of a regular expressions matches.</p>
+<p>The first argument is a list of regular expressions, either
+compiled (<tt class="docutils literal"><span class="pre">re.RegexObject</span></tt> instances) or uncompiled (strings).
+The optional second argument is a timeout, in seconds; the default
+is to block indefinitely.</p>
+<p>Return a tuple of three items: the index in the list of the first
+regular expression that matches; the match object returned; and the
+text read up till and including the match.</p>
+<p>If end of file is found and no text was read, raise <tt class="docutils literal"><span class="pre">EOFError</span></tt>.
+Otherwise, when nothing matches, return <tt class="docutils literal"><span class="pre">(-1,</span> <span class="pre">None,</span> <span class="pre">text)</span></tt> where
+<em>text</em> is the text received so far (may be the empty string if a
+timeout happened).</p>
+<p>If a regular expression ends with a greedy match (such as <tt class="docutils literal"><span class="pre">.*</span></tt>)
+or if more than one expression can match the same input, the
+results are indeterministic, and may depend on the I/O timing.</p>
+</blockquote>
+<p>Telnet.set_option_negotiation_callback(callback)</p>
+<blockquote>
+Each time a telnet option is read on the input flow, this
+<em>callback</em> (if set) is called with the following parameters :
+callback(telnet socket, command (DO/DONT/WILL/WONT), option).  No
+other action is done afterwards by telnetlib.</blockquote>
+</div>
+<div class="section" id="telnet-example">
+<h2>20.14.2. Telnet Example<a class="headerlink" href="#telnet-example" title="Permalink to this headline">¶</a></h2>
+<p>A simple example illustrating typical use:</p>
+<blockquote>
+<p>import getpass
+import sys
+import telnetlib</p>
+<p>HOST = &#8220;localhost&#8221;
+user = raw_input(&#8220;Enter your remote account: &#8220;)
+password = getpass.getpass()</p>
+<p>tn = telnetlib.Telnet(HOST)</p>
+<p>tn.read_until(&#8220;login: &#8220;)
+tn.write(user + &#8220;n&#8221;)
+if password:</p>
+<blockquote>
+tn.read_until(&#8220;Password: &#8220;)
+tn.write(password + &#8220;n&#8221;)</blockquote>
+<p>tn.write(&#8220;lsn&#8221;)
+tn.write(&#8220;exitn&#8221;)</p>
+<p>print tn.read_all()</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="uuid.html" title="20.15. uuid — UUID objects according to RFC 4122"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="smtpd.html" title="20.13. smtpd — SMTP Server"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" >20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

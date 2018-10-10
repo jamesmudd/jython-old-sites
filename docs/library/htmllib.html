@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>19.3. htmllib — A parser for HTML documents &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="19. Structured Markup Processing Tools" href="markup.html" />
+    <link rel="next" title="19.5. xml.parsers.expat — Fast XML parsing using Expat" href="pyexpat.html" />
+    <link rel="prev" title="19.2. sgmllib — Simple SGML parser" href="sgmllib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="pyexpat.html" title="19.5. xml.parsers.expat — Fast XML parsing using Expat"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="sgmllib.html" title="19.2. sgmllib — Simple SGML parser"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="markup.html" accesskey="U">19. Structured Markup Processing Tools</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">19.3. <tt class="docutils literal"><span class="pre">htmllib</span></tt> &#8212; A parser for HTML documents</a><ul>
+<li><a class="reference external" href="#htmlparser-objects">19.3.1. HTMLParser Objects</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#htmlentitydefs-definitions-of-html-general-entities">19.4. <tt class="docutils literal"><span class="pre">htmlentitydefs</span></tt> &#8212; Definitions of HTML general entities</a></li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="sgmllib.html"
+                                  title="previous chapter">19.2. <tt class="docutils literal"><span class="pre">sgmllib</span></tt> &#8212; Simple SGML parser</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="pyexpat.html"
+                                  title="next chapter">19.5. <tt class="docutils literal"><span class="pre">xml.parsers.expat</span></tt> &#8212; Fast XML parsing using Expat</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/htmllib.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="htmllib-a-parser-for-html-documents">
+<h1>19.3. <tt class="docutils literal"><span class="pre">htmllib</span></tt> &#8212; A parser for HTML documents<a class="headerlink" href="#htmllib-a-parser-for-html-documents" title="Permalink to this headline">¶</a></h1>
+<p>Deprecated since version 2.6: The <tt class="docutils literal"><span class="pre">htmllib</span></tt> module has been removed
+in Python 3.0.</p>
+<p>This module defines a class which can serve as a base for parsing text
+files formatted in the HyperText Mark-up Language (HTML).  The class
+is not directly concerned with I/O &#8212; it must be provided with input
+in string form via a method, and makes calls to methods of a
+&#8220;formatter&#8221; object in order to produce output.  The <tt class="docutils literal"><span class="pre">HTMLParser</span></tt>
+class is designed to be used as a base class for other classes in
+order to add functionality, and allows most of its methods to be
+extended or overridden.  In turn, this class is derived from and
+extends the <tt class="docutils literal"><span class="pre">SGMLParser</span></tt> class defined in module <tt class="docutils literal"><span class="pre">sgmllib</span></tt>.  The
+<tt class="docutils literal"><span class="pre">HTMLParser</span></tt> implementation supports the HTML 2.0 language as
+described in <strong>RFC 1866</strong>.  Two implementations of formatter objects
+are provided in the <tt class="docutils literal"><span class="pre">formatter</span></tt> module; refer to the documentation
+for that module for information on the formatter interface.</p>
+<p>The following is a summary of the interface defined by
+<tt class="docutils literal"><span class="pre">sgmllib.SGMLParser</span></tt>:</p>
+<ul>
+<li><p class="first">The interface to feed data to an instance is through the <tt class="docutils literal"><span class="pre">feed()</span></tt>
+method, which takes a string argument.  This can be called with as
+little or as much text at a time as desired; <tt class="docutils literal"><span class="pre">p.feed(a);</span>
+<span class="pre">p.feed(b)</span></tt> has the same effect as <tt class="docutils literal"><span class="pre">p.feed(a+b)</span></tt>.  When the data
+contains complete HTML markup constructs, these are processed
+immediately; incomplete constructs are saved in a buffer.  To force
+processing of all unprocessed data, call the <tt class="docutils literal"><span class="pre">close()</span></tt> method.</p>
+<p>For example, to parse the entire contents of a file, use:</p>
+<blockquote>
+<p>parser.feed(open(&#8216;myfile.html&#8217;).read())
+parser.close()</p>
+</blockquote>
+</li>
+<li><p class="first">The interface to define semantics for HTML tags is very simple:
+derive a class and define methods called <tt class="docutils literal"><span class="pre">start_tag()</span></tt>,
+<tt class="docutils literal"><span class="pre">end_tag()</span></tt>, or <tt class="docutils literal"><span class="pre">do_tag()</span></tt>. The parser will call these at
+appropriate moments: <tt class="docutils literal"><span class="pre">start_tag()</span></tt> or <tt class="docutils literal"><span class="pre">do_tag()</span></tt> is called when
+an opening tag of the form <tt class="docutils literal"><span class="pre">&lt;tag</span> <span class="pre">...&gt;</span></tt> is encountered;
+<tt class="docutils literal"><span class="pre">end_tag()</span></tt> is called when a closing tag of the form <tt class="docutils literal"><span class="pre">&lt;tag&gt;</span></tt> is
+encountered.  If an opening tag requires a corresponding closing
+tag, like <tt class="docutils literal"><span class="pre">&lt;H1&gt;</span></tt> ... <tt class="docutils literal"><span class="pre">&lt;/H1&gt;</span></tt>, the class should define the
+<tt class="docutils literal"><span class="pre">start_tag()</span></tt> method; if a tag requires no closing tag, like
+<tt class="docutils literal"><span class="pre">&lt;P&gt;</span></tt>, the class should define the <tt class="docutils literal"><span class="pre">do_tag()</span></tt> method.</p>
+</li>
+</ul>
+<p>The module defines a parser class and an exception:</p>
+<p>class class htmllib.HTMLParser(formatter)</p>
+<blockquote>
+This is the basic HTML parser class.  It supports all entity names
+required by the XHTML 1.0 Recommendation
+(<a class="reference external" href="http://www.w3.org/TR/xhtml1">http://www.w3.org/TR/xhtml1</a>).   It also defines handlers for all
+HTML 2.0 and many HTML 3.0 and 3.2 elements.</blockquote>
+<p>exception exception htmllib.HTMLParseError</p>
+<blockquote>
+<p>Exception raised by the <tt class="docutils literal"><span class="pre">HTMLParser</span></tt> class when it encounters an
+error while parsing.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">formatter</span></tt></dt>
+<dd>Interface definition for transforming an abstract flow of
+formatting events into specific output events on writer objects.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">HTMLParser</span></tt></dt>
+<dd>Alternate HTML parser that offers a slightly lower-level view of
+the input, but is designed to work with XHTML, and does not
+implement some of the SGML syntax not used in &#8220;HTML as deployed&#8221;
+and which isn&#8217;t legal for XHTML.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">htmlentitydefs</span></tt></dt>
+<dd>Definition of replacement text for XHTML 1.0  entities.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">sgmllib</span></tt></dt>
+<dd>Base class for <tt class="docutils literal"><span class="pre">HTMLParser</span></tt>.</dd>
+</dl>
+</blockquote>
+<div class="section" id="htmlparser-objects">
+<h2>19.3.1. HTMLParser Objects<a class="headerlink" href="#htmlparser-objects" title="Permalink to this headline">¶</a></h2>
+<p>In addition to tag methods, the <tt class="docutils literal"><span class="pre">HTMLParser</span></tt> class provides some
+additional methods and instance variables for use within tag methods.</p>
+<p>HTMLParser.formatter</p>
+<blockquote>
+This is the formatter instance associated with the parser.</blockquote>
+<p>HTMLParser.nofill</p>
+<blockquote>
+Boolean flag which should be true when whitespace should not be
+collapsed, or false when it should be.  In general, this should
+only be true when character data is to be treated as &#8220;preformatted&#8221;
+text, as within a <tt class="docutils literal"><span class="pre">&lt;PRE&gt;</span></tt> element. The default value is false.
+This affects the operation of <tt class="docutils literal"><span class="pre">handle_data()</span></tt> and <tt class="docutils literal"><span class="pre">save_end()</span></tt>.</blockquote>
+<p>HTMLParser.anchor_bgn(href, name, type)</p>
+<blockquote>
+This method is called at the start of an anchor region.  The
+arguments correspond to the attributes of the <tt class="docutils literal"><span class="pre">&lt;A&gt;</span></tt> tag with the
+same names.  The default implementation maintains a list of
+hyperlinks (defined by the <tt class="docutils literal"><span class="pre">HREF</span></tt> attribute for <tt class="docutils literal"><span class="pre">&lt;A&gt;</span></tt> tags)
+within the document.  The list of hyperlinks is available as the
+data attribute <tt class="docutils literal"><span class="pre">anchorlist</span></tt>.</blockquote>
+<p>HTMLParser.anchor_end()</p>
+<blockquote>
+This method is called at the end of an anchor region.  The default
+implementation adds a textual footnote marker using an index into
+the list of hyperlinks created by <tt class="docutils literal"><span class="pre">anchor_bgn()</span></tt>.</blockquote>
+<p>HTMLParser.handle_image(source, alt[, ismap[, align[, width[, height]]]])</p>
+<blockquote>
+This method is called to handle images.  The default implementation
+simply passes the <em>alt</em> value to the <tt class="docutils literal"><span class="pre">handle_data()</span></tt> method.</blockquote>
+<p>HTMLParser.save_bgn()</p>
+<blockquote>
+Begins saving character data in a buffer instead of sending it to
+the formatter object.  Retrieve the stored data via <tt class="docutils literal"><span class="pre">save_end()</span></tt>.
+Use of the <tt class="docutils literal"><span class="pre">save_bgn()</span></tt> / <tt class="docutils literal"><span class="pre">save_end()</span></tt> pair may not be nested.</blockquote>
+<p>HTMLParser.save_end()</p>
+<blockquote>
+Ends buffering character data and returns all data saved since the
+preceding call to <tt class="docutils literal"><span class="pre">save_bgn()</span></tt>.  If the <tt class="docutils literal"><span class="pre">nofill</span></tt> flag is false,
+whitespace is collapsed to single spaces.  A call to this method
+without a preceding call to <tt class="docutils literal"><span class="pre">save_bgn()</span></tt> will raise a
+<tt class="docutils literal"><span class="pre">TypeError</span></tt> exception.</blockquote>
+</div>
+</div>
+<div class="section" id="htmlentitydefs-definitions-of-html-general-entities">
+<h1>19.4. <tt class="docutils literal"><span class="pre">htmlentitydefs</span></tt> &#8212; Definitions of HTML general entities<a class="headerlink" href="#htmlentitydefs-definitions-of-html-general-entities" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">htmlentitydefs</span></tt> module has been renamed to <tt class="docutils literal"><span class="pre">html.entities</span></tt></dt>
+<dd>in Python 3.0.  The <em>2to3</em> tool will automatically adapt imports
+when converting your sources to 3.0.</dd>
+</dl>
+<p>This module defines three dictionaries, <tt class="docutils literal"><span class="pre">name2codepoint</span></tt>,
+<tt class="docutils literal"><span class="pre">codepoint2name</span></tt>, and <tt class="docutils literal"><span class="pre">entitydefs</span></tt>. <tt class="docutils literal"><span class="pre">entitydefs</span></tt> is used by the
+<tt class="docutils literal"><span class="pre">htmllib</span></tt> module to provide the <tt class="docutils literal"><span class="pre">entitydefs</span></tt> member of the
+<tt class="docutils literal"><span class="pre">HTMLParser</span></tt> class.  The definition provided here contains all the
+entities defined by XHTML 1.0  that can be handled using simple
+textual substitution in the Latin-1 character set (ISO-8859-1).</p>
+<p>htmlentitydefs.entitydefs</p>
+<blockquote>
+A dictionary mapping XHTML 1.0 entity definitions to their
+replacement text in ISO Latin-1.</blockquote>
+<p>htmlentitydefs.name2codepoint</p>
+<blockquote>
+<p>A dictionary that maps HTML entity names to the Unicode codepoints.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>htmlentitydefs.codepoint2name</p>
+<blockquote>
+<p>A dictionary that maps Unicode codepoints to HTML entity names.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyexpat.html" title="19.5. xml.parsers.expat — Fast XML parsing using Expat"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="sgmllib.html" title="19.2. sgmllib — Simple SGML parser"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="markup.html" >19. Structured Markup Processing Tools</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

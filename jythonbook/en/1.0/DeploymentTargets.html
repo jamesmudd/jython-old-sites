@@ -1,0 +1,880 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Chapter 17: Deployment Targets &mdash; Jython Book v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '1.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Book v1.0 documentation" href="index.html" />
+    <link rel="next" title="Chapter 18: Testing and Continuous Integration" href="TestingIntegration.html" />
+    <link rel="prev" title="Chapter 16: GUI Applications" href="GUIApplications.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="TestingIntegration.html" title="Chapter 18: Testing and Continuous Integration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="GUIApplications.html" title="Chapter 16: GUI Applications"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="chapter-17-deployment-targets">
+<h1>Chapter 17: Deployment Targets<a class="headerlink" href="#chapter-17-deployment-targets" title="Permalink to this headline">¶</a></h1>
+<p>Deployment of Jython applications varies from container to container.
+However, they are all very similar and usually allow deployment of WAR file or exploded directory web applications.
+Deploying to “the cloud” is a different scenario all together.
+Some cloud environments have typical Java application servers available for hosting, while others such as the Google App Engine run a bit differently.
+In this chapter, we’ll discuss how to deploy web-based Jython applications to a few of the more widely used Java application servers.
+We will also cover deployment of Jython web applications to the Google App Engine and mobile devices.
+Although many of the deployment scenarios are quite similar, this chapter will walk through some of the differences from container to container.</p>
+<p>In the end, one of the most important things to remember is that we need to make Jython available to our application.
+There are different ways to do this: either by ensuring that the <em>jython.jar</em> file is included with the application server, or by packaging the JAR directly into each web application.
+This chapter assumes that you are using the latter technique.
+Placing the <em>jython.jar</em> directly into each web application is a good idea because it allows the web application to follow the Java paradigm of “deploy anywhere.” You do not need to worry whether you are deploying to Tomcat or Glassfish because the Jython runtime is embedded in your application.</p>
+<p>Lastly, this section will briefly cover some of the reasons why mobile deployment is not yet a viable option for Jython.
+While a couple of targets exist in the mobile world, namely Android and JavaFX, both environments are still very new and Jython has not yet been optimized to run on either.</p>
+<div class="section" id="application-servers">
+<h2>Application Servers<a class="headerlink" href="#application-servers" title="Permalink to this headline">¶</a></h2>
+<p>As with any Java web application, the standard web archive (WAR) files are universal throughout the Java application servers available today.
+This is good because it makes things a bit easier when it comes to the “write once run everywhere” philosophy that has been brought forth with the Java name.
+The great part of using Jython for deployment to application servers is just that, we can harness the technologies of the JVM to make our lives easier and deploy a Jython web application to any application server in the WAR format with very little tweaking.</p>
+<p>If you have not yet used Django or Pylons on Jython, then you may not be aware that the resulting application to be deployed is in the WAR format.
+This is great because it leaves no assumption as to how the application should be deployed.
+All WAR files are deployed in the same manner according to each application server.
+This section will discuss how to deploy a WAR file on each of the three most widely used Java application servers.
+Now, all application servers are not covered in this section mainly due to the number of servers available today.
+Such a document would take more than one section of a book, no doubt.
+However, you should be able to follow similar deployment instructions as those discussed here for any of the application servers available today for deploying Jython web applications in the WAR file format.</p>
+<div class="section" id="tomcat">
+<h3>Tomcat<a class="headerlink" href="#tomcat" title="Permalink to this headline">¶</a></h3>
+<p>Arguably the most widely used of all Java application servers, Tomcat offers easy management and a small footprint compared to some of the other options available.
+Tomcat will plug into most IDEs that are in use today, so you can manage the web container from within your development environment.
+This makes it handy to deploy and undeploy applications on-the-fly.
+For the purposes of this section, we’ve used Netbeans 6.7, so there may be some references to it.</p>
+<p>To get started, download the Apache Tomcat server from the site at <a class="reference external" href="http://tomcat.apache.org/">http://tomcat.apache.org/</a>. Tomcat is constantly evolving, so we’ll note that when writing this book the deployment procedures were targeted for the 6.0.20 release.
+Once you have downloaded the server and placed it into a location on your hard drive, you may have to change permissions.
+We had to use the <em>chmod +x</em> command on the entire apache-tomcat-6.0.20 directory before we were able to run the server.
+You will also need to configure an administrative account by going into the <em>/conf/tomcat-users.xml</em> file and adding one.
+Be sure to grant the administrative account the “manager” role.
+This should look something like the following once completed.</p>
+<p>Listing 17-1. tomcat-users.xml</p>
+<div class="highlight-python"><pre>&lt;tomcat-users&gt;
+   &lt;user username="admin" password="myadminpassword" roles="manager"/&gt;
+&lt;/tomcat-users&gt;</pre>
+</div>
+<p>After this has been done, you can add the installation to an IDE environment of your choice if you’d like.
+For instance, if you wish to add to Netbeans 6.7 you will need to go to the “Services” tab in the navigator, right-click on servers, choose “Tomcat 6.x” option, and then fill in the appropriate information pertaining to your environment.
+Once complete, you will be able to start, stop, and manage the Tomcat installation from the IDE.</p>
+<div class="section" id="deploying-web-start">
+<h4>Deploying Web Start<a class="headerlink" href="#deploying-web-start" title="Permalink to this headline">¶</a></h4>
+<p>Deploying a web start application is as easy as copying the necessary files to a location on the web server that is accessible via the web.
+In the case of Tomcat, you will need to copy the contents of your web start application to a single directory contained within the “&lt;tomcat-root&gt;/webapps/ROOT” directory.
+For instance, if you have a web-start application entitled , then you would package the JAR file along with the JNLP and HTML file for the application into a directory entitled  and then place that directory into the “&lt;tomcat-root&gt;/webapps/ROOT” directory.</p>
+<p>Once the application has been copied to the appropriate locations, you should be able to access it via the web if Tomcat is started.
+The URL should look something like the following: <em>http://your-server:8080/JythonWebStart/launch.jnlp</em>.
+Of course, you will need to use the server name and the port that you are using along with the appropriate JNLP name for your application.</p>
+</div>
+<div class="section" id="deploying-a-war-or-exploded-directory-application">
+<h4>Deploying a WAR or Exploded Directory Application<a class="headerlink" href="#deploying-a-war-or-exploded-directory-application" title="Permalink to this headline">¶</a></h4>
+<p>To deploy a web application to Tomcat, you have two options.
+You can either use a WAR file including all content for your entire web application, or you can deploy an exploded directory application which is basically copy-and-paste for your entire web application directory structure into the “&lt;tomcat-root&gt;/webapps/ROOT” directory.
+Either way will work the same, and we will discuss each technique in this section.</p>
+<p>For manual deployment of a web application, you can copy either your exploded directory web application or your WAR file into the “&lt;tomcat-root&gt;/webapps” directory.
+By default, Tomcat is setup to “autodeploy” applications.
+This means that you can have Tomcat started when you copy your WAR or exploded directory into the “webapps” location.
+Once you’ve done this, you should see some feedback from the Tomcat server if you have a terminal open (or from within the IDE).
+After a few seconds the application should be deployed successfully and available via the URL.
+The bonus to deploying exploded directory applications is that you can take any file within the application and change it at will.
+Once you are done with the changes, that file will be redeployed when you save it.
+. .this really saves on development time!</p>
+<p>If you do not wish to have autodeploy enabled (perhaps in a production environment), then you can deploy applications on startup of the server.
+This process is basically the same as “autodeploy,” except any new applications that are copied into the “webapps” directory are not deployed until the server is restarted.
+Lastly, you can always make use of the Tomcat manager to deploy web applications as well.
+To do this, open your web browser to the index of Tomcat, usually <a class="reference external" href="http://localhost:8080/index.html">http://localhost:8080/index.html</a>, and then click on the “Manager” link in the left-hand menu.
+You will need to authenticate at that point using your administrator password, but once you are in the console deployment is quite easy.
+In an effort to avoid redundancy, we will once again redirect you to the Tomcat documentation for more information on deploying a web application via the Tomcat manager console.</p>
+</div>
+</div>
+<div class="section" id="glassfish">
+<h3>Glassfish<a class="headerlink" href="#glassfish" title="Permalink to this headline">¶</a></h3>
+<p>At the time of writing, the Glassfish V2 application server was mainstream and widely used.
+The Glassfish V3 server was still in preview mode, but showed a lot of potential for Jython application deployment.
+In this section, we will cover WAR and web start deployment to Glassfish V2, because it is the most widely used version.
+We will also discuss deployment for Django on Glassfish V3, because this version has added support for Django (and more Python web frameworks soon).
+Glassfish is very similar to Tomcat in terms of deployment, but there are a couple of minor differences which will be covered in this section.</p>
+<p>To start out, you will need to download a glassfish distribution from the site at <a class="reference external" href="https://glassfish.dev.java.net/">https://glassfish.dev.java.net/</a>. Again, we recommend downloading V2, because it is the most widely used at the time of this writing.
+Installation is quite easy, but a little more involved than that of Tomcat.
+The installation of Glassfish will not be covered in this text, because it varies depending upon which version you are using.
+There are detailed instructions for each version located on the Glassfish website, so we will redirect you there for more information.</p>
+<p>Once you have Glassfish installed, you can utilize the server via the command-line or terminal, or you can use an IDE just like Tomcat.
+To register a Glassfish V2 or V3 installation with Netbeans 6.7, just go to the “Services” tab in the Netbeans navigator and right-click on “Servers” and then add the version you are planning to register.
+Once the “Add Server Instance” window appears, simply fill in the information depending upon your environment.</p>
+<p>There is an administrative user named “admin” that is set up by default with a Glassfish installation.
+In order to change the default password, it is best to startup Glassfish and log into the administrative console.
+The default administrative console port is 4848.</p>
+<div class="section" id="id1">
+<h4>Deploying Web Start<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>Deploying a web start application is basically the same as any other web server, you simply make the web start JAR, JNLP, and HTML file accessible via the web.
+On Glassfish, you need to traverse into your “domain” directory and you will find a “docroot” inside.
+The path should be similar to “&lt;glassfish-install-loc&gt;/domains/domain1/docroot”. Anything placed within the docroot area is visible to the web, so of course this is where you will place any web-start application directories.
+Again, a typical web start application will consist of your application JAR file, a JNLP file, and an HTML page used to open the JNLP.
+All of these files should typically be placed inside a directory appropriately named per your application, and then you can copy this directory into docroot.</p>
+</div>
+<div class="section" id="war-file-and-exploded-directory-deployment">
+<h4>WAR File and Exploded Directory Deployment<a class="headerlink" href="#war-file-and-exploded-directory-deployment" title="Permalink to this headline">¶</a></h4>
+<p>Again, there are a variety of ways to deploy an application using Glassfish.
+Let’s assume that you are using V2, you have the option to “hot deploy” or use the Glassfish Admin Console to deploy your application.
+Glassfish will work with either an exploded directory or WAR file deployment scenario.
+By default, the Glassfish “autodeploy” option is turned on, so it is quite easy to either copy your WAR or exploded directory application into the autodeploy location to deploy.
+If the application server is started, it will automatically start your application (if it runs without issues).
+The autodeploy directory for Glassfish V2 resides in the location “&lt;glassfish-install-loc&gt;/domains/domain1/autodeploy.”</p>
+</div>
+<div class="section" id="glassfish-v3-django-deployment">
+<h4>Glassfish v3 Django Deployment<a class="headerlink" href="#glassfish-v3-django-deployment" title="Permalink to this headline">¶</a></h4>
+<p>The Glassfish V3 server has some capabilities built into it to help facilitate the process of deploying a Django application.
+In the future, there will also be support for other Jython web frameworks such as Pylons.</p>
+</div>
+</div>
+<div class="section" id="other-java-application-servers">
+<h3>Other Java Application Servers<a class="headerlink" href="#other-java-application-servers" title="Permalink to this headline">¶</a></h3>
+<p>If you have read through the information contained in the previous sections, then you have a fairly good idea of what it is like to deploy a Jython web application to a Java application server.
+There is no difference between deploying Jython web applications and Java web applications for the most part.
+You must be sure that you include  as mentioned in the introduction, but for the most part deployment is the same.
+However, we have run into cases with some application servers such as JBoss where it wasn’t so cut-and-dry to run a Jython application.
+For instance, we have tried to deploy a Jython servlet application on JBoss application server 5.1.0 GA and had lots of issues.
+For one, we had to manually add  to the application because we were unable to compile the application in Netbeans without doing so...this was not the case with Tomcat or Glassfish.
+Similarly, we had issues trying to deploy a Jython web application to JBoss as there were several errors that had incurred when the container was scanning  for some reason.</p>
+<p>All in all, with a bit of tweaking and perhaps an additional XML configuration file in the application, Jython web applications will deploy to <em>most</em> Java application servers.
+The bonus to deploying your application on a Java application server is that you are in complete control of the environment.
+For instance, you could embed the <em>jython.jar</em> file into the application server lib directory so that it was loaded at startup and available for all applications running in the environment.
+Likewise, you are in control of other necessary components such as database connection pools and so forth.
+If you deploy to another service that lives in “the cloud,” you have very little control over the environment.
+In the next section, we’ll study one such environment by Google which is known as the Google App Engine.
+While this “cloud” service is an entirely different environment than your basic Java web application server, it contains some nice features that allow one to test applications prior to deployment in the cloud.</p>
+</div>
+</div>
+<div class="section" id="google-app-engine">
+<h2>Google App Engine<a class="headerlink" href="#google-app-engine" title="Permalink to this headline">¶</a></h2>
+<p>The new kid on the block, at least for the time of this writing, is the Google App Engine.
+Fresh to the likes of the Java platform, the Google App Engine can be used for deploying applications written in just about any language that runs on the JVM, Jython included.
+The App Engine went live in April of 2008, allowing Python developers to begin using its services to host Python applications and libraries.
+In the spring of 2009, the App Engine added support for the Java platform.
+Along with support of the Java language, most other languages that run on the JVM will also deploy and run on the Google App Engine, including Jython.
+It has been mentioned that more programming languages will be supported at some point in the future, but at the time of this writing Python and Java were the only supported languages.</p>
+<p>The App Engine actually runs a slightly slimmed-down version of the standard Java library.
+You must download and develop using the Google App Engine SDK for Java in order to ensure that your application will run in the environment.
+You can download the SDK by visiting this link: <a class="reference external" href="http://code.google.com/appengine/downloads.html">http://code.google.com/appengine/downloads.html</a> along with viewing the extensive documentation available on the Google App Engine site.
+The SDK comes complete with a development web server that can be used for testing your code before deploying, and several demo applications ranging from easy JSP programs to sophisticated demos that use Google authentication.
+No doubt about it, Google has done a good job at creating an easy learning environment for the App Engine so that developers can get up and running quickly.</p>
+<p>In this section you will learn how to get started using the Google App Engine SDK, and how to deploy some Jython web applications.
+You will learn how to deploy a Jython servlet application as well as a WSGI application utilizing modjy.
+Once you’ve learned how to develop and use a Jython Google App Engine program using the development environment, you will learn a few specifics about deploying to the cloud.
+If you have not done so already, be sure to visit the link mentioned in the previous paragraph and download the SDK so that you can follow along in the sections to come.</p>
+<p>n <strong>Note</strong> The Google App Engine is a very large topic.
+Entire books could be written on the subject of developing Jython applications to run on the App Engine.
+With that said, we will cover the basics to get you up and running with developing Jython applications for the App Engine.
+Once you’ve read through this section, we suggest going to the Google App Engine documentation for further details.</p>
+<div class="section" id="starting-with-an-sdk-demo">
+<h3>Starting With an SDK Demo<a class="headerlink" href="#starting-with-an-sdk-demo" title="Permalink to this headline">¶</a></h3>
+<p>We will start by running the demo application known as “guestbook” that comes with the Google App Engine SDK.
+This is a very simple Java application that allows one to sign in using an email address and post messages to the screen.
+In order to start the SDK web server and run the “guestbook” application, open up a terminal and traverse into the directory where you expanded the Google App Engine .zip file and run the following command:</p>
+<div class="highlight-python"><pre>&lt;app-engine-base-directory&gt;/bin/dev_appserver.sh demos/guestbook/war</pre>
+</div>
+<p>Of course, if you are running on windows there is a corresponding .bat script for you to run that will start the web server.
+Once you’ve issued the preceding command it will only take a second or two before the web server starts.
+You can then open a browser and traverse to <em>http://localhost:8080</em> to invoke the “guestbook” application.
+This is a basic JSP-based Java web application, but we can deploy a Jython application and use it in the same manner as we will see in a few moments.
+You can stop the web server by pressing “CTRL+C”.</p>
+</div>
+<div class="section" id="deploying-to-the-cloud">
+<h3>Deploying to the Cloud<a class="headerlink" href="#deploying-to-the-cloud" title="Permalink to this headline">¶</a></h3>
+<p>Prior to deploying your application to the cloud, you must of course set up an account with the Google App Engine.
+If you have another account with Google such as GMail, then you can easily activate your App Engine account using that same username.
+To do so, go to the Google App Engine link: <a class="reference external" href="http://code.google.com/appengine/">http://code.google.com/appengine/</a> and click “Sign Up.” Enter your existing account information or create a new account to get started.</p>
+<p>After your account has been activated you will need to create an application by clicking on the “Create Application” button.
+You have a total of 10 available application slots to use if you are making use of the free App Engine account.
+Once you’ve created an application then you are ready to begin deploying to the cloud.
+In this section of the book, we create an application known as <em>jythongae</em>.
+This is the name of the application that you must create on the App Engine.
+You must also ensure that this name is supplied within the <em>appengine-web.xml</em> file.</p>
+</div>
+<div class="section" id="working-with-a-project">
+<h3>Working With a Project<a class="headerlink" href="#working-with-a-project" title="Permalink to this headline">¶</a></h3>
+<p>The Google App Engine provides project templates to get you started developing using the correct directory structure.
+Eclipse has a plug-in that makes it easy to generate Google App Engine projects and deploy them to the App Engine.
+If interested in making use of the plug-in, please visit <a class="reference external" href="http://code.google.com/appengine/docs/java/tools/eclipse.html">http://code.google.com/appengine/docs/java/tools/eclipse.html</a> to read more information and download the plug-in.
+Similarly, Netbeans has an App Engine plug-in that is available on the Kenai site appropriately named  (<a class="reference external" href="http://kenai.com/projects/nbappengine">http://kenai.com/projects/nbappengine</a>).
+In this text we will cover the use of Netbeans 6.7 to develop a simple Jython servlet application to deploy on the App Engine.
+You can either download and use the template available with one of these IDE plug-ins, or simply create a new Netbeans project and make use of the template provided with the App Engine SDK (&lt;app-engine-base-directory/demos/new_project_template&gt;) to create your project directory structure.</p>
+<p>For the purposes of this tutorial, we will make use of the <em>nbappengine</em> plug-in.
+If you are using Eclipse you will find a section following this tutorial that provides some Eclipse plug-in specifics.</p>
+<p>In order to install the nbappengine plug-in, you add the ‘App Engine’ update center to the Netbeans plug-in center by choosing the Settings tab and adding the update center using <a class="reference external" href="http://deadlock.netbeans.org/hudson/job/nbappengine/lastSuccessfulBuild/artifact/build/updates/updates.xml.gz">http://deadlock.netbeans.org/hudson/job/nbappengine/lastSuccessfulBuild/artifact/build/updates/updates.xml.gz</a> as the URL.
+Once you’ve added the new update center you can select the Available Plugins tab and add all of the plug-ins in the “Google App Engine” category, then choose Install.
+After doing so, you can add the “App Engine” as a server in your Netbeans environment using the “Services” tab.
+To add the server, point to the base directory of your Google App Engine SDK.
+Once you have added the App Engine server to Netbeans, it will become an available deployment option for your web applications.</p>
+<p>Create a new Java web project and name it JythonGAE.
+For the deployment server, choose “Google App Engine,” and you will notice that when your web application is created an additional file will be created within the WEB-INF directory named appengine-web.xml.
+This is the Google App Engine configuration file for the JythonGAE application.
+Any of the .py files that we wish to use in our application must be mapped in this file so that they will not be treated as static files by the Google App Engine.
+By default, Google App Engine treats all files outside of the WEB-INF directory as static unless they are JSP files.
+Our application is going to make use of three Jython servlets, namely NewJythonServlet.py, AddNumbers.py and AddToPage.py.
+In our appengine-web.xml file we can exclude all .py files from being treated as static by adding the suffix to the exclusion list as follows.</p>
+<p>Listing 17-2. appengine-web.xml</p>
+<div class="highlight-python"><pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;appengine-web-app xmlns="http://appengine.google.com/ns/1.0"&gt;
+    &lt;application&gt;jythongae&lt;/application&gt;
+    &lt;version&gt;1&lt;/version&gt;
+    &lt;static-files&gt;
+        &lt;exclude path="/**.py"/&gt;
+    &lt;/static-files&gt;
+    &lt;resource-files/&gt;
+    &lt;ssl-enabled&gt;false&lt;/ssl-enabled&gt;
+    &lt;sessions-enabled&gt;true&lt;/sessions-enabled&gt;
+&lt;/appengine-web-app&gt;</pre>
+</div>
+<p>At this point we will need to create a couple of additional directories within our WEB-INF project directory.
+We should create a <em>lib</em> directory and place <em>jython.jar</em> and <em>appengine-api-1.0-sdk-1.2.2.jar</em> into the directory.
+Note that the App Engine JAR may be named differently according to the version that you are using.
+We should now have a directory structure that resembles the following:</p>
+<p>Listing 17-3.</p>
+<div class="highlight-python"><pre>JythonGAE
+    WEB-INF
+        lib
+            jython.jar
+            appengine-api-1.0-sdk-1.2.2.jar
+        appengine-web.xml
+        web.xml
+    src
+    web</pre>
+</div>
+<p>Now that we have the application structure set up, it is time to begin building the actual logic.
+In a traditional Jython servlet application we need to ensure that the <em>PyServlet</em> class is initialized at startup and that all files ending in <em>.py</em> are passed to it.
+As we’ve seen in Chapter 13, this is done in the <em>web.xml</em> deployment descriptor.
+However, we have found that this alone does not work when deploying to the cloud.
+We found some inconsistencies while deploying against the Google App Engine development server and deploying to the cloud.
+For this reason, we will show you the way that we were able to get the application to function as expected in both the production and development Google App Engine environments.
+In Chapter 12, the object factory pattern for coercing Jython classes into Java was discussed.
+If this same pattern is applied to Jython servlet applications, then we can use the factories to coerce our Jython servlet into Java byte code at runtime.
+We then map the resulting coerced class to a servlet mapping in the application’s web.xml deployment descriptor.
+We can also deploy our Jython applets and make use of <em>PyServlet</em> mapping to the <em>.py</em> extension in the <em>web.xml</em>.
+We will comment in the source where the code for the two implementations differs.</p>
+</div>
+<div class="section" id="object-factories-with-app-engine">
+<h3>Object Factories with App Engine<a class="headerlink" href="#object-factories-with-app-engine" title="Permalink to this headline">¶</a></h3>
+<p>In order to use object factories to coerce our code, we must use an object factory along with a Java interface, and once again we will use the PlyJy project to make this happen.
+Please note that if you choose to not use the object factory pattern and instead use PyServlet you can safely skip forward to the next subsection.
+The first step is to add  to the  directory that we created previously to ensure it is bundled with our application.
+There is a Java servlet contained within the PlyJy project named , and what this Java servlet does is essentially use the  class to coerce a named Jython servlet and then invoke its resulting  and  methods.
+There is also a simple Java interface named  in the project, and it must be implemented by our Jython servlet in order for the coercion to work as expected.</p>
+</div>
+<div class="section" id="using-pyservlet-mapping">
+<h3>Using PyServlet Mapping<a class="headerlink" href="#using-pyservlet-mapping" title="Permalink to this headline">¶</a></h3>
+<p>When we use the PyServlet mapping implementation, there is no need to coerce objects using factories.
+You simply set up a servlet mapping within  and use your Jython servlets directly with the .py extension in the URL.
+However, we’ve seen issues while using PyServlet on the App Engine in that this implementation will deploy to the development App Engine server environment, but when deployed to the cloud you will receive an error when trying to invoke the servlet.
+It is because of these inconsistencies that we chose to implement the object factory solution for Jython servlet to App Engine deployment.</p>
+</div>
+<div class="section" id="example-jython-servlet-application-for-app-engine">
+<h3>Example Jython Servlet Application for App Engine<a class="headerlink" href="#example-jython-servlet-application-for-app-engine" title="Permalink to this headline">¶</a></h3>
+<p>The next piece of the puzzle is the code for our application.
+In this example, we’ll make use of a simple servlet that displays some text as well as the same example that was used in Chapter 13 with JSP and Jython.
+The following code sets up three Jython servlets.
+The first servlet simply displays some output, the next two perform some mathematical logic, and then there is a JSP to display the results for the mathematical servlets.</p>
+<p>Listing 17-4. NewJythonServlet.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">javax.servlet.http</span> <span class="kn">import</span> <span class="n">HttpServlet</span>
+<span class="kn">from</span> <span class="nn">org.plyjy.interfaces</span> <span class="kn">import</span> <span class="n">JythonServletInterface</span>
+
+<span class="k">class</span> <span class="nc">NewJythonServlet</span> <span class="p">(</span><span class="n">JythonServletInterface</span><span class="p">,</span> <span class="n">HttpServlet</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">doGet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="n">response</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">doPost</span> <span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">doPost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="n">response</span><span class="p">):</span>
+                <span class="n">toClient</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">getWriter</span><span class="p">()</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">setContentType</span> <span class="p">(</span><span class="s">&quot;text/html&quot;</span><span class="p">)</span>
+                <span class="n">toClient</span><span class="o">.</span><span class="n">println</span> <span class="p">(</span><span class="s">&quot;&lt;html&gt;&lt;head&gt;&lt;title&gt;Jython Servlet Test Using Object Factory&lt;/title&gt;&quot;</span> <span class="o">+</span>
+                                                  <span class="s">&quot;&lt;body&gt;&lt;h1&gt;Jython Servlet Test for GAE&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">getServletInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s">&quot;Short Description&quot;</span>
+</pre></div>
+</div>
+<p>Listing 17-5. AddNumbers.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">javax</span>
+<span class="k">class</span> <span class="nc">add_numbers</span><span class="p">(</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">HttpServlet</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">doGet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doPost</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">doPost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">y</span><span class="p">:</span>
+            <span class="nb">sum</span> <span class="o">=</span> <span class="s">&quot;&lt;font color=&#39;red&#39;&gt;You must place numbers in each value box&lt;/font&gt;&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">sum</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">sum</span> <span class="o">=</span> <span class="s">&quot;&lt;font color=&#39;red&#39;&gt;You must place numbers only in each value box&lt;/font&gt;&quot;</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="s">&quot;sum&quot;</span><span class="p">,</span> <span class="nb">sum</span><span class="p">)</span>
+        <span class="n">dispatcher</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getRequestDispatcher</span><span class="p">(</span><span class="s">&quot;testJython.jsp&quot;</span><span class="p">)</span>
+        <span class="n">dispatcher</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Listing 17-6. AddToPage.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">java</span><span class="o">,</span> <span class="nn">javax</span><span class="o">,</span> <span class="nn">sys</span>
+
+<span class="k">class</span> <span class="nc">add_to_page</span><span class="p">(</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">HttpServlet</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">doGet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doPost</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">doPost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="n">addtext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;p&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">addtext</span><span class="p">:</span>
+            <span class="n">addtext</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+
+        <span class="n">request</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="s">&quot;page_text&quot;</span><span class="p">,</span> <span class="n">addtext</span><span class="p">)</span>
+        <span class="n">dispatcher</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getRequestDispatcher</span><span class="p">(</span><span class="s">&quot;testJython.jsp&quot;</span><span class="p">)</span>
+        <span class="n">dispatcher</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Listing 17-7. testjython.jsp</p>
+<p>Note that this implementation differs if you plan to make use of the object factory technique.
+Instead of using  and  as your actions, you would utilize the servlet instead, namely  and</p>
+<div class="highlight-python"><pre>&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+        &lt;title&gt;Jython JSP Test&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;form method="GET" action="add_to_page.py"&gt;
+            &lt;input type="text" name="p"&gt;
+            &lt;input type="submit"&gt;
+        &lt;/form&gt;
+        &lt;% Object page_text = request.getAttribute("page_text");
+           Object sum = request.getAttribute("sum");
+           if(page_text == null){
+               page_text = "";
+           }
+           if(sum == null){
+               sum = "";
+           }
+        %&gt;
+        &lt;br/&gt;
+            &lt;p&gt;&lt;%= page_text %&gt;&lt;/p&gt;
+        &lt;br/&gt;
+        &lt;form method="GET" action="add_numbers.py"&gt;
+            &lt;input type="text" name="x"&gt;
+            +
+            &lt;input type="text" name="y"&gt;
+            =
+            &lt;%= sum %&gt;
+            &lt;br/&gt;
+            &lt;input type="submit" title="Add Numbers"&gt;
+        &lt;/form&gt;
+
+    &lt;/body&gt;
+&lt;/html&gt;</pre>
+</div>
+<p>As mentioned previously, it is important that all of the Jython servlets reside within your classpath somewhere.
+If using Netbeans, you can either place the servlets into the source root of your project (not inside a package), or you can place them in the web folder that contains your JSP files.
+If doing the latter, we have found that you may have to tweak your CLASSPATH a bit by adding the web folder to your list of libraries from within the project properties.
+Next, we need to ensure that the deployment descriptor includes the necessary servlet definitions and mappings for the application.
+Now, if you are using the object factory implementation and the <em>JythonServletFacade</em> servlet, you would have noticed that there is a variable named <em>PyServletName</em> which the JythonObjectFactory is using as the name of our Jython servlet.
+Well, within the <em>web.xml</em> we must pass an <em>&lt;init-param&gt;</em> using <em>PyServletName</em> as the <em>&lt;param-name&gt;</em> and the name of our Jython servlet as the <em>&lt;param-value&gt;</em>.
+This will basically pass the name of the Jython servlet to the <em>JythonServletFacade</em> servlet so that it can be used by the object factory.</p>
+<p>Listing 17-8. web.xml</p>
+<div class="highlight-python"><pre>&lt;web-app&gt;
+    &lt;display-name&gt;Jython Google App Engine&lt;/display-name&gt;
+
+    &lt;!-- Used for the PyServlet Implementation --&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;PyServlet&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;org.python.util.PyServlet&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+
+    &lt;!-- The next three servlets are used for the object factory implementation only.
+        They can be excluded in the PyServlet implementation --&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;NewJythonServlet&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;org.plyjy.servlets.JythonServletFacade&lt;/servlet-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;PyServletName&lt;/param-name&gt;
+            &lt;param-value&gt;NewJythonServlet&lt;/param-value&gt;
+        &lt;/init-param&gt;
+    &lt;/servlet&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;AddNumbers&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;org.plyjy.servlets.JythonServletFacade&lt;/servlet-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;PyServletName&lt;/param-name&gt;
+            &lt;param-value&gt;AddNumbers&lt;/param-value&gt;
+        &lt;/init-param&gt;
+    &lt;/servlet&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;AddToPage&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;org.plyjy.servlets.JythonServletFacade&lt;/servlet-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;PyServletName&lt;/param-name&gt;
+            &lt;param-value&gt;AddToPage&lt;/param-value&gt;
+        &lt;/init-param&gt;
+    &lt;/servlet&gt;
+
+    &lt;!-- The following mapping should be used for the PyServlet implementation --&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;PyServlet&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;*.py&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+
+    &lt;!-- The following three mappings are used in the object factory implementation --&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;NewJythonServlet&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/NewJythonServlet&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;AddNumbers&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/AddNumbers&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;AddToPage&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/AddToPage&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;</pre>
+</div>
+<p>Note that when using the PyServlet implementation you should exclude those portions in the <em>web.xml</em> above that are used for the object factory implementation.
+The PyServlet mapping can be contained within the <em>web.xml</em> in both implementations without issue.
+That’s it, now you can deploy the application to your Google App Engine development environment, and it should run without any issues.
+You can also choose to deploy to another web server to test for compatibility if you wish.
+You can deploy directly to the cloud by right-clicking the application and choosing the “Deploy to App Engine” option.</p>
+</div>
+<div class="section" id="using-eclipse">
+<h3>Using Eclipse<a class="headerlink" href="#using-eclipse" title="Permalink to this headline">¶</a></h3>
+<p>If you wish to use the Eclipse IDE for development, you should definitely download the Google App Engine plug-in using the link provided earlier in the chapter.
+You should also use the PyDev plug-in which is available at <a class="reference external" href="http://pydev.sourceforge.net/">http://pydev.sourceforge.net/</a>. For the purposes of this section, we used Eclipse Galileo and started a new project named “JythonGAE” as a Google Web Application.
+When creating the project, make sure you check the box for using Google App Engine and uncheck the Google Web Toolkit option.
+You will find that Eclipse creates a directory structure for your application that is much the same as the project template that is included with the Google App Engine SDK.</p>
+<p>If you follow through the code example from the previous section, you can create the same code and set up the <em>web.xml</em> and <em>appengine-web.xml</em> the same way.
+The key is to ensure that you create a <em>lib</em> directory within the <em>WEB-INF</em> and you place the files in the appropriate location.
+You will need to ensure that your Jython servlets are contained in your CLASSPATH by either adding them to the source root for your project, or by going into the project properties and adding the <em>war</em> directory to your <em>Java Build Path</em>.
+When doing so, make sure you do <em>not</em> include the <em>WEB-INF</em> directory or you will receive errors.</p>
+<p>When you are ready to deploy the application, you can choose to use the Google App Engine development environment or deploy to the cloud.
+You can run the application by right-clicking on the project and choosing <em>Run As</em> option and then choose the Google Web Application option.
+The first time you run the application you may need to set up the runtime.
+If you are ready to deploy to the cloud, you can right-click on the project and choose the <em>Google</em> -&gt; <em>Deploy to App Engine</em> option.
+After entering your Google username and password then your application will be deployed.</p>
+</div>
+<div class="section" id="deploy-modjy-to-gae">
+<h3>Deploy Modjy to GAE<a class="headerlink" href="#deploy-modjy-to-gae" title="Permalink to this headline">¶</a></h3>
+<p>We can easily deploy WSGI applications using Jython’s modjy API as well.
+To do so, you need to add an archive of the Jython  directory to your WEB-INF project directory.
+According to the modjy web site, you need to obtain the source for Jython, then zip the  directory and place it into another directory along with a file that will act as a pointer to the zip archive.
+The modjy site names the directory  and names the pointer file . This pointer file can be named anything as long as the suffix is . Inside the pointer file you need to explicitly name the zip archive that you had created for the  directory contents.
+Let’s assume you named it lib.zip, in this case we will put the text “lib.zip” without the quotes into the  file.
+Now if we add the modjy  demonstration application to the project then our directory structure should look as follows:</p>
+<p>Listing 17-9.</p>
+<div class="highlight-python"><pre>modjy_app
+    demo_app.py
+    WEB-INF
+        lib
+            jython.jar
+            appengine-api-1.0-sdk-1.2.2.jar
+        python-lib
+            lib.zip
+            all.pth</pre>
+</div>
+<p>Now if we run the application using Tomcat it should run as expected.
+Likewise, we can run it using the Google App Engine SDK web server and it should provide the expected results.</p>
+<p>The Google App Engine is certainly an important deployment target for Jython.
+Google offers free hosting for smaller applications, and they also base account pricing on bandwidth.
+No doubt that it is a good way to put up a small site, and possibly build on it later.
+Most importantly, you can deploy Django, Pylons, and other applications via Jython to the App Engine by setting up your App Engine applications like the examples we had shown in this chapter.</p>
+</div>
+</div>
+<div class="section" id="java-store">
+<h2>Java Store<a class="headerlink" href="#java-store" title="Permalink to this headline">¶</a></h2>
+<p>Another deployment target that is hot off the presses at the time of this book is the Java Store or Java Warehouse.
+This is a new concept brought to market by Sun Microsystems in order to help Java software developers market their applications via a single shop that is available online via a web start application.
+Similar to other application venues, The Java Store is a storefront application where people can go to search for applications that have been submitted by developers.
+The Java Warehouse is the repository of applications that are contained within the Java Store.
+This looks to be a very promising target for Java and Jython developers alike.
+It  be as easy as generating a JAR file that contains a Jython application and deploying it to the Java Store.
+Unfortunately, because the program is still in alpha mode at this time, we are unable to provide any specific details on distributing Jython applications via the Java Store.
+However, there are future plans to make alternative VM language applications easily deployable to the Java Warehouse.
+At this time, it is certainly possible to deploy a Jython application to the warehouse, but it can only deploy as a Java application.
+As of the time of this writing, only Java and JavaFX applications are directly deployable to the Java Warehouse.
+Please note that because this product is still in alpha mode, this book will not discuss such aspects of the program as memberships or fees that may be incurred for hosing your applications on the Java Store.</p>
+<p>The requirements for publishing an application to the warehouse are as follows:</p>
+<ul class="simple">
+<li>Your application packed in a single jar file</li>
+<li>Descriptive text to document your application</li>
+<li>Graphic image files used for icons and to give the consumer an idea of your application’s look.</li>
+</ul>
+<p>In Chapter 13, we took a look at packaging and distributing Jython GUI applications in a JAR file.
+When a Jython application is packaged in a JAR file then it is certainly possible to use Java Web Start to host the application via the web.
+On the other hand, if one wishes to make a Jython GUI application available for purchase or for free, the Java Store would be another way of doing so.
+One likely way to deploy applications in a single JAR is to use the method discussed in Chapter 13, but there are other solutions as well.
+For instance, one could use the <em>One-Jar</em> product to create a single JAR file containing all of the necessary Jython code as well as other JAR files essential to the application.
+In the following section, we will discuss deployment of a Jython application using One-JAR so that you can see some similarities and differences to using the Jython standalone JAR technique.</p>
+<div class="section" id="deploying-a-single-jar">
+<h3>Deploying a Single JAR<a class="headerlink" href="#deploying-a-single-jar" title="Permalink to this headline">¶</a></h3>
+<p>In order to deploy an application to the Java Warehouse, it must be packaged as a single JAR file.
+We’ve already discussed packaging Jython applications into a JAR file using the Jython standalone method in Chapter 13. In this section, you will learn how to make use of the One-JAR (<a class="reference external" href="http://one-jar.sourceforge.net/">http://one-jar.sourceforge.net/</a>) product to distribute client-based Jython applications.
+In order to get started, you will need to grab a copy of One-JAR.
+There are a few options available on the download site, but for our purposes we will package an application using the source files for One-JAR.
+Once downloaded, the source for the project should look as follows.</p>
+<p>Listing 17-10.</p>
+<div class="highlight-python"><pre>src
+    com
+        simontuffs
+            onejar
+                Boot.java
+                Handler.java
+                IProperties.java
+                JarClassLoader.java</pre>
+</div>
+<p>This source code for the One-Jar project must reside within the JAR file that we will build.
+Next, we need to create separate source directories for both our Jython source and our Java source.
+Likewise, we will create a separate source directory for the One-Jar source.
+Lastly, we’ll create a <em>lib</em> directory into which we will place all of the required JAR files for the application.
+In order to run a Jython application, we’ll need to package the Jython project source into a JAR file for our application.
+We will not need to use the entire <em>jython.jar</em>, but rather only a standalone version of it.
+The easiest way to obtain a standalone Jython JAR is to run the installer and choose the standalone option.
+After this is done, simply add the resulting jython.jar to the lib directory of application.
+In the end, the directory structure should resemble the following.</p>
+<p>Listing 17-11.</p>
+<div class="highlight-python"><pre>one-jar-jython-example
+    java
+    lib
+        jython.jar
+    LICENSE.txt
+    onejar
+        src
+            com
+
+                simontuffs
+                    onejar
+                        Boot.java
+                        Handler.java
+                        IProperties.java
+                        JarClassLoader.java
+            one-jar-license.txt
+    src</pre>
+</div>
+<p>As you can see from the depiction of the file structure in this example, the <em>src</em> directory will contain our Jython source files.
+The LICENSE.txt included in this example was written by Ryan McGuire (<a class="reference external" href="http://www.enigmacurry.com">http://www.enigmacurry.com</a>).
+He has a detailed explanation of using One-Jar on his blog, and we’ve replicated some of his work in this example.
+. .including a version of the build.xml that we will put together in order to build the application.
+Let’s take a look at the build file that we will use to build the application JAR.
+In this example we are using Apache Ant for the build system, but you could choose something different if you’d like.</p>
+<p>Listing 17-12. build.xml</p>
+<div class="highlight-python"><pre>&lt;project name="JythonSwingApp" default="dist" basedir="."&gt;
+
+  &lt;!-- #################################################
+       These two properties are the only ones you are
+       likely to want to change for your own projects:     --&gt;
+  &lt;property name="jar.name" value="JythonSwingApp.jar" /&gt;
+  &lt;property name="java-main-class" value="Main" /&gt;
+  &lt;!-- ##################################################  --&gt;
+
+  &lt;!-- Below here you don't need to change for simple projects --&gt;
+  &lt;property name="src.dir" location="src"/&gt;
+  &lt;property name="java.dir" location="java"/&gt;
+  &lt;property name="onejar.dir" location="onejar"/&gt;
+  &lt;property name="java-build.dir" location="java-build"/&gt;
+  &lt;property name="build.dir" location="build"/&gt;
+  &lt;property name="lib.dir" location="lib"/&gt;
+
+  &lt;path id="classpath"&gt;
+    &lt;fileset dir="${lib.dir}" includes="**/*.jar"/&gt;
+  &lt;/path&gt;
+
+  &lt;target name="clean"&gt;
+    &lt;delete dir="${java-build.dir}"/&gt;
+    &lt;delete dir="${build.dir}"/&gt;
+    &lt;delete file="${jar.name}"/&gt;
+  &lt;/target&gt;
+
+  &lt;target name="dist" depends="clean"&gt;
+    &lt;!-- prepare the build directory --&gt;
+    &lt;mkdir dir="${build.dir}/lib"/&gt;
+    &lt;mkdir dir="${build.dir}/main"/&gt;
+    &lt;!-- Build java code --&gt;
+    &lt;mkdir dir="${java-build.dir}"/&gt;
+    &lt;javac srcdir="${java.dir}" destdir="${java-build.dir}" classpathref="classpath"/&gt;
+    &lt;!-- Build main.jar --&gt;
+    &lt;jar destfile="${build.dir}/main/main.jar" basedir="${java-build.dir}"&gt;
+      &lt;manifest&gt;
+            &lt;attribute name="Main-Class" value="Main" /&gt;
+      &lt;/manifest&gt;
+    &lt;/jar&gt;
+    &lt;delete file="${java-build.dir}"/&gt;
+    &lt;!-- Add the python source --&gt;
+    &lt;copy todir="${build.dir}"&gt;
+      &lt;fileset dir="${src.dir}"/&gt;
+    &lt;/copy&gt;
+    &lt;!-- Add the libs --&gt;
+    &lt;copy todir="${build.dir}/lib"&gt;
+      &lt;fileset dir="${lib.dir}"/&gt;
+    &lt;/copy&gt;
+    &lt;!-- Compile OneJar --&gt;
+    &lt;javac srcdir="${onejar.dir}" destdir="${build.dir}" classpathref="classpath"/&gt;
+    &lt;!-- Copy the OneJar license file --&gt;
+    &lt;copy file="${onejar.dir}/one-jar-license.txt" tofile="${build.dir}/one-jar-license.txt" /&gt;
+    &lt;!-- Build the jar --&gt;
+    &lt;jar destfile="${jar.name}" basedir="${build.dir}"&gt;
+      &lt;manifest&gt;
+            &lt;attribute name="Main-Class" value="com.simontuffs.onejar.Boot" /&gt;
+            &lt;attribute name="Class-Path" value="lib/jython-full.jar" /&gt;
+      &lt;/manifest&gt;
+    &lt;/jar&gt;
+    &lt;!-- clean up --&gt;
+    &lt;delete dir="${java-build.dir}" /&gt;
+    &lt;delete dir="${build.dir}" /&gt;
+  &lt;/target&gt;
+
+&lt;/project&gt;</pre>
+</div>
+<p>Because this is a Jython application, we can use as much Java source as we’d like.
+In this example, we will only use one Java source file <em>Main.java</em> to “drive” our application.
+In this case, we’ll use the <em>PythonInterpreter</em> inside of our <em>Main.java</em> to invoke our simple Jython Swing application.
+Now let’s take a look at the <em>Main.java</em> source.</p>
+<p>Listing 17-13. Main.java</p>
+<div class="highlight-python"><pre>import org.python.core.PyException;
+import org.python.util.PythonInterpreter;
+
+public class Main {
+    public static void main(String[] args) throws PyException{
+        PythonInterpreter intrp = new PythonInterpreter();
+        intrp.exec("import JythonSimpleSwing as jy");
+        intrp.exec("jy.JythonSimpleSwing().start()");
+    }
+}</pre>
+</div>
+<p>Now that we’ve written the driver class, we’ll place it into our <em>java</em> source directory.
+As stated previously, we’ll place our Jython code into the <em>src</em> directory.
+In this example we are using the same simple Jython Swing application that we wrote for Chapter 13.</p>
+<p>Listing 17-14. JythonSimpleSwing.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">javax.swing</span> <span class="kn">as</span> <span class="nn">swing</span>
+<span class="kn">import</span> <span class="nn">java.awt</span> <span class="kn">as</span> <span class="nn">awt</span>
+
+<span class="k">class</span> <span class="nc">JythonSimpleSwing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">=</span><span class="n">swing</span><span class="o">.</span><span class="n">JFrame</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;My Frame&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mf">300</span><span class="p">,</span><span class="mf">300</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">defaultCloseOperation</span><span class="o">=</span><span class="n">swing</span><span class="o">.</span><span class="n">JFrame</span><span class="o">.</span><span class="n">EXIT_ON_CLOSE</span><span class="p">;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">layout</span><span class="o">=</span><span class="n">awt</span><span class="o">.</span><span class="n">BorderLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel1</span><span class="o">=</span><span class="n">swing</span><span class="o">.</span><span class="n">JPanel</span><span class="p">(</span><span class="n">awt</span><span class="o">.</span><span class="n">BorderLayout</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel2</span><span class="o">=</span><span class="n">swing</span><span class="o">.</span><span class="n">JPanel</span><span class="p">(</span><span class="n">awt</span><span class="o">.</span><span class="n">GridLayout</span><span class="p">(</span><span class="mf">4</span><span class="p">,</span><span class="mf">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel2</span><span class="o">.</span><span class="n">preferredSize</span> <span class="o">=</span> <span class="n">awt</span><span class="o">.</span><span class="n">Dimension</span><span class="p">(</span><span class="mf">10</span><span class="p">,</span><span class="mf">100</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel3</span><span class="o">=</span><span class="n">swing</span><span class="o">.</span><span class="n">JPanel</span><span class="p">(</span><span class="n">awt</span><span class="o">.</span><span class="n">BorderLayout</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="o">=</span><span class="n">swing</span><span class="o">.</span><span class="n">JLabel</span><span class="p">(</span><span class="s">&quot;Text Rendering&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button1</span><span class="o">=</span><span class="n">swing</span><span class="o">.</span><span class="n">JButton</span><span class="p">(</span><span class="s">&quot;Print Text&quot;</span><span class="p">,</span> <span class="n">actionPerformed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">printMessage</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button2</span><span class="o">=</span><span class="n">swing</span><span class="o">.</span><span class="n">JButton</span><span class="p">(</span><span class="s">&quot;Clear Text&quot;</span><span class="p">,</span> <span class="n">actionPerformed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">clearMessage</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textField</span><span class="o">=</span><span class="n">swing</span><span class="o">.</span><span class="n">JTextField</span><span class="p">(</span><span class="mf">30</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputText</span><span class="o">=</span><span class="n">swing</span><span class="o">.</span><span class="n">JTextArea</span><span class="p">(</span><span class="mf">4</span><span class="p">,</span><span class="mf">15</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textField</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">button1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">button2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel3</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputText</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">contentPane</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">panel1</span><span class="p">,</span> <span class="n">awt</span><span class="o">.</span><span class="n">BorderLayout</span><span class="o">.</span><span class="n">PAGE_START</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">contentPane</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">panel2</span><span class="p">,</span> <span class="n">awt</span><span class="o">.</span><span class="n">BorderLayout</span><span class="o">.</span><span class="n">CENTER</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">contentPane</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">panel3</span><span class="p">,</span> <span class="n">awt</span><span class="o">.</span><span class="n">BorderLayout</span><span class="o">.</span><span class="n">PAGE_END</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">visible</span><span class="o">=</span><span class="mf">1</span>
+
+    <span class="k">def</span> <span class="nf">printMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;Print Text!&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">textField</span><span class="o">.</span><span class="n">getText</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputText</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">clearMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputText</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</pre></div>
+</div>
+<p>At this time, the application is ready to build using Ant.
+In order to run the build, simply traverse into the directory that contains <em>build.xml</em> and initiate the <em>ant</em> command.
+The resulting JAR can be run using the following syntax:</p>
+<p>java -jar JythonSwingApp.jar</p>
+<p>In some situations, such as deploying via web start, this JAR file will also need to be signed.
+There are many resources online that explain the signing of JAR files that topic will not be covered in this text.
+The JAR is now ready to be deployed and used on other machines.
+This method will be a good way to package an application for distribution via the Java Store.</p>
+</div>
+</div>
+<div class="section" id="mobile">
+<h2>Mobile<a class="headerlink" href="#mobile" title="Permalink to this headline">¶</a></h2>
+<p>Mobile applications are the way of the future.
+At this time, there are a couple of different options for developing mobile applications using Jython.
+One way to develop mobile applications using Jython is to make use of the JavaFX API from Jython.
+Since JavaFX is all Java behind the scenes, it would be fairly simple to make use of the JavaFX API using Jython code.
+However, this technique is not really a production-quality result in my opinion for a couple of reasons.
+First, the JavaFX scripting language makes GUI development quite easy.
+While it is possible (see <a class="reference external" href="http://wiki.python.org/jython/JythonMonthly/Articles/December2007/2">http://wiki.python.org/jython/JythonMonthly/Articles/December2007/2</a> for more details), the translation of JavaFX API using Jython would not be as easy as making use of the JavaFX script language.
+The second reason this is not feasible at the time of this writing is that JavaFX is simply not available on all mobile devices at this time.
+It is really just becoming available to the mobile world at this time and will take some time to become acclimated.</p>
+<p>Another way to develop mobile applications using Jython is to make use of the Android operating system which is available via Google.
+Android is actively being used on mobile devices today, and its use is continuing to grow.
+Although in early stages, there is a project known as <em>Jythonroid</em> that is an implementation of Jython for the Android Dalvik Virtual Machine.
+Unfortunately, it was not under active development at the time of this writing, although some potential does exist for getting the project on track.</p>
+<p>If you are interested in mobile development using Jython, please pay close attention to the two technologies discussed in this section.
+They are the primary deployment targets for Jython in the mobile world.
+As for the <em>Jythonroid</em> project, it is open source and available to developers.
+Interested parties may begin working on it again to make it functional and bring it up to date with the latest Android SDK.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Deploying Jython applications is very much like Java application deployment.
+For those of you who are familiar with Java application servers, deploying a Jython application should be a piece of cake.
+On the contrary, for those of you who are not familiar with Java application deployment this topic may take a bit of getting used to.
+In the end, it is easy to deploy a Jython web or client application using just about any of the available Java application servers that are available today.</p>
+<p>Deploying Jython web applications is universally easy to do using the WAR file format.
+As long as <em>jython.jar</em> is either in the application server classpath or packaged along with the web application, Jython servlets should function without issue.
+We also learned that it is possible to deploy a JAR file containing a Jython GUI application via Java web start technology.
+Using a JNLP deployment file is quite easy to do; the trick to deploying Jython via a JAR file is to set the file up correctly.
+Once completed, an HTML page can be used to reference the JNLP and initiate the download of the JAR to the client machine.</p>
+<p>Lastly, this section discussed use of the Google App Engine for deploying Jython servlet applications.
+While the Google App Engine environment is still relatively new at the time of this writing, it is an exceptional deployment target for any Python or Java application developer.
+Using a few tricks with the object factory technique, it is possible to deploy Jython servlets and use them directly or via a JSP file on the App Engine.
+Stay tuned for more deployment targets to become available for Jython in the coming months and years.
+As cloud computing and mobile devices are becoming more popular, the number of deployment targets will continue to grow and Jython will be more useful with each one.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Chapter 17: Deployment Targets</a><ul>
+<li><a class="reference external" href="#application-servers">Application Servers</a><ul>
+<li><a class="reference external" href="#tomcat">Tomcat</a><ul>
+<li><a class="reference external" href="#deploying-web-start">Deploying Web Start</a></li>
+<li><a class="reference external" href="#deploying-a-war-or-exploded-directory-application">Deploying a WAR or Exploded Directory Application</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#glassfish">Glassfish</a><ul>
+<li><a class="reference external" href="#id1">Deploying Web Start</a></li>
+<li><a class="reference external" href="#war-file-and-exploded-directory-deployment">WAR File and Exploded Directory Deployment</a></li>
+<li><a class="reference external" href="#glassfish-v3-django-deployment">Glassfish v3 Django Deployment</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#other-java-application-servers">Other Java Application Servers</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#google-app-engine">Google App Engine</a><ul>
+<li><a class="reference external" href="#starting-with-an-sdk-demo">Starting With an SDK Demo</a></li>
+<li><a class="reference external" href="#deploying-to-the-cloud">Deploying to the Cloud</a></li>
+<li><a class="reference external" href="#working-with-a-project">Working With a Project</a></li>
+<li><a class="reference external" href="#object-factories-with-app-engine">Object Factories with App Engine</a></li>
+<li><a class="reference external" href="#using-pyservlet-mapping">Using PyServlet Mapping</a></li>
+<li><a class="reference external" href="#example-jython-servlet-application-for-app-engine">Example Jython Servlet Application for App Engine</a></li>
+<li><a class="reference external" href="#using-eclipse">Using Eclipse</a></li>
+<li><a class="reference external" href="#deploy-modjy-to-gae">Deploy Modjy to GAE</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#java-store">Java Store</a><ul>
+<li><a class="reference external" href="#deploying-a-single-jar">Deploying a Single JAR</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#mobile">Mobile</a></li>
+<li><a class="reference external" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="GUIApplications.html"
+                                  title="previous chapter">Chapter 16: GUI Applications</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="TestingIntegration.html"
+                                  title="next chapter">Chapter 18: Testing and Continuous Integration</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/DeploymentTargets.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="TestingIntegration.html" title="Chapter 18: Testing and Continuous Integration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="GUIApplications.html" title="Chapter 16: GUI Applications"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+    <div class="footer">
+      &copy; Copyright 2009,2010, Josh Juneau, Frank Wierzbicki, Jim Baker, Leo Soto, Victor Ng.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-13131153-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  </body>
+</html>

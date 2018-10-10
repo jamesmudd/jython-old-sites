@@ -1,0 +1,998 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>19.6. xml.dom — The Document Object Model API &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="19. Structured Markup Processing Tools" href="markup.html" />
+    <link rel="next" title="19.7. xml.dom.minidom — Lightweight DOM implementation" href="xml.dom.minidom.html" />
+    <link rel="prev" title="19.5. xml.parsers.expat — Fast XML parsing using Expat" href="pyexpat.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="xml.dom.minidom.html" title="19.7. xml.dom.minidom — Lightweight DOM implementation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyexpat.html" title="19.5. xml.parsers.expat — Fast XML parsing using Expat"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="markup.html" accesskey="U">19. Structured Markup Processing Tools</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">19.6. <tt class="docutils literal"><span class="pre">xml.dom</span></tt> &#8212; The Document Object Model API</a><ul>
+<li><a class="reference external" href="#module-contents">19.6.1. Module Contents</a></li>
+<li><a class="reference external" href="#objects-in-the-dom">19.6.2. Objects in the DOM</a><ul>
+<li><a class="reference external" href="#domimplementation-objects">19.6.2.1. DOMImplementation Objects</a></li>
+<li><a class="reference external" href="#node-objects">19.6.2.2. Node Objects</a></li>
+<li><a class="reference external" href="#nodelist-objects">19.6.2.3. NodeList Objects</a></li>
+<li><a class="reference external" href="#documenttype-objects">19.6.2.4. DocumentType Objects</a></li>
+<li><a class="reference external" href="#document-objects">19.6.2.5. Document Objects</a></li>
+<li><a class="reference external" href="#element-objects">19.6.2.6. Element Objects</a></li>
+<li><a class="reference external" href="#attr-objects">19.6.2.7. Attr Objects</a></li>
+<li><a class="reference external" href="#namednodemap-objects">19.6.2.8. NamedNodeMap Objects</a></li>
+<li><a class="reference external" href="#comment-objects">19.6.2.9. Comment Objects</a></li>
+<li><a class="reference external" href="#text-and-cdatasection-objects">19.6.2.10. Text and CDATASection Objects</a></li>
+<li><a class="reference external" href="#processinginstruction-objects">19.6.2.11. ProcessingInstruction Objects</a></li>
+<li><a class="reference external" href="#exceptions">19.6.2.12. Exceptions</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#conformance">19.6.3. Conformance</a><ul>
+<li><a class="reference external" href="#type-mapping">19.6.3.1. Type Mapping</a></li>
+<li><a class="reference external" href="#accessor-methods">19.6.3.2. Accessor Methods</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="pyexpat.html"
+                                  title="previous chapter">19.5. <tt class="docutils literal docutils literal docutils literal"><span class="pre">xml.parsers.expat</span></tt> &#8212; Fast XML parsing using Expat</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="xml.dom.minidom.html"
+                                  title="next chapter">19.7. <tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt> &#8212; Lightweight DOM implementation</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/xml.dom.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="xml-dom-the-document-object-model-api">
+<h1>19.6. <tt class="docutils literal"><span class="pre">xml.dom</span></tt> &#8212; The Document Object Model API<a class="headerlink" href="#xml-dom-the-document-object-model-api" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.0.</p>
+<p>The Document Object Model, or &#8220;DOM,&#8221; is a cross-language API from the
+World Wide Web Consortium (W3C) for accessing and modifying XML
+documents.  A DOM implementation presents an XML document as a tree
+structure, or allows client code to build such a structure from
+scratch.  It then gives access to the structure through a set of
+objects which provided well-known interfaces.</p>
+<p>The DOM is extremely useful for random-access applications.  SAX only
+allows you a view of one bit of the document at a time.  If you are
+looking at one SAX element, you have no access to another.  If you are
+looking at a text node, you have no access to a containing element.
+When you write a SAX application, you need to keep track of your
+program&#8217;s position in the document somewhere in your own code.  SAX
+does not do it for you.  Also, if you need to look ahead in the XML
+document, you are just out of luck.</p>
+<p>Some applications are simply impossible in an event driven model with
+no access to a tree.  Of course you could build some sort of tree
+yourself in SAX events, but the DOM allows you to avoid writing that
+code.  The DOM is a standard tree representation for XML data.</p>
+<p>The Document Object Model is being defined by the W3C in stages, or
+&#8220;levels&#8221; in their terminology.  The Python mapping of the API is
+substantially based on the DOM Level 2 recommendation.</p>
+<p>DOM applications typically start by parsing some XML into a DOM.  How
+this is accomplished is not covered at all by DOM Level 1, and Level 2
+provides only limited improvements: There is a <tt class="docutils literal"><span class="pre">DOMImplementation</span></tt>
+object class which provides access to <tt class="docutils literal"><span class="pre">Document</span></tt> creation methods,
+but no way to access an XML reader/parser/Document builder in an
+implementation-independent way. There is also no well-defined way to
+access these methods without an existing <tt class="docutils literal"><span class="pre">Document</span></tt> object.  In
+Python, each DOM implementation will provide a function
+<tt class="docutils literal"><span class="pre">getDOMImplementation()</span></tt>. DOM Level 3 adds a Load/Store
+specification, which defines an interface to the reader, but this is
+not yet available in the Python standard library.</p>
+<p>Once you have a DOM document object, you can access the parts of your
+XML document through its properties and methods.  These properties are
+defined in the DOM specification; this portion of the reference manual
+describes the interpretation of the specification in Python.</p>
+<p>The specification provided by the W3C defines the DOM API for Java,
+ECMAScript, and OMG IDL.  The Python mapping defined here is based in
+large part on the IDL version of the specification, but strict
+compliance is not required (though implementations are free to support
+the strict mapping from IDL).  See section <em>Conformance</em> for a
+detailed discussion of mapping requirements.</p>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Document Object Model (DOM) Level 2 Specification</dt>
+<dd>The W3C recommendation upon which the Python DOM API is based.</dd>
+<dt>Document Object Model (DOM) Level 1 Specification</dt>
+<dd>The W3C recommendation for the DOM supported by
+<tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt>.</dd>
+<dt>Python Language Mapping Specification</dt>
+<dd>This specifies the mapping from OMG IDL to Python.</dd>
+</dl>
+</blockquote>
+<div class="section" id="module-contents">
+<h2>19.6.1. Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">xml.dom</span></tt> contains the following functions:</p>
+<p>xml.dom.registerDOMImplementation(name, factory)</p>
+<blockquote>
+Register the <em>factory</em> function with the name <em>name</em>.  The factory
+function should return an object which implements the
+<tt class="docutils literal"><span class="pre">DOMImplementation</span></tt> interface.  The factory function can return
+the same object every time, or a new one for each call, as
+appropriate for the specific implementation (e.g. if that
+implementation supports some customization).</blockquote>
+<p>xml.dom.getDOMImplementation([name[, features]])</p>
+<blockquote>
+<p>Return a suitable DOM implementation. The <em>name</em> is either well-
+known, the module name of a DOM implementation, or <tt class="xref docutils literal"><span class="pre">None</span></tt>. If it
+is not <tt class="xref docutils literal"><span class="pre">None</span></tt>, imports the corresponding module and returns a
+<tt class="docutils literal"><span class="pre">DOMImplementation</span></tt> object if the import succeeds.  If no name is
+given, and if the environment variable <strong>PYTHON_DOM</strong> is set, this
+variable is used to find the implementation.</p>
+<p>If name is not given, this examines the available implementations
+to find one with the required feature set.  If no implementation
+can be found, raise an <tt class="docutils literal"><span class="pre">ImportError</span></tt>.  The features list must be
+a sequence of <tt class="docutils literal"><span class="pre">(feature,</span> <span class="pre">version)</span></tt> pairs which are passed to the
+<tt class="docutils literal"><span class="pre">hasFeature()</span></tt> method on available <tt class="docutils literal"><span class="pre">DOMImplementation</span></tt> objects.</p>
+</blockquote>
+<p>Some convenience constants are also provided:</p>
+<p>xml.dom.EMPTY_NAMESPACE</p>
+<blockquote>
+<p>The value used to indicate that no namespace is associated with a
+node in the DOM.  This is typically found as the <tt class="docutils literal"><span class="pre">namespaceURI</span></tt>
+of a node, or used as the <em>namespaceURI</em> parameter to a namespaces-
+specific method.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>xml.dom.XML_NAMESPACE</p>
+<blockquote>
+<p>The namespace URI associated with the reserved prefix <tt class="docutils literal"><span class="pre">xml</span></tt>, as
+defined by Namespaces in XML (section 4).</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>xml.dom.XMLNS_NAMESPACE</p>
+<blockquote>
+<p>The namespace URI for namespace declarations, as defined by
+Document Object Model (DOM) Level 2 Core Specification (section
+1.1.8).</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>xml.dom.XHTML_NAMESPACE</p>
+<blockquote>
+<p>The URI of the XHTML namespace as defined by XHTML 1.0: The
+Extensible HyperText Markup Language (section 3.1.1).</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>In addition, <tt class="docutils literal"><span class="pre">xml.dom</span></tt> contains a base <tt class="docutils literal"><span class="pre">Node</span></tt> class and the DOM
+exception classes.  The <tt class="docutils literal"><span class="pre">Node</span></tt> class provided by this module does
+not implement any of the methods or attributes defined by the DOM
+specification; concrete DOM implementations must provide those.  The
+<tt class="docutils literal"><span class="pre">Node</span></tt> class provided as part of this module does provide the
+constants used for the <tt class="docutils literal"><span class="pre">nodeType</span></tt> attribute on concrete <tt class="docutils literal"><span class="pre">Node</span></tt>
+objects; they are located within the class rather than at the module
+level to conform with the DOM specifications.</p>
+</div>
+<div class="section" id="objects-in-the-dom">
+<h2>19.6.2. Objects in the DOM<a class="headerlink" href="#objects-in-the-dom" title="Permalink to this headline">¶</a></h2>
+<p>The definitive documentation for the DOM is the DOM specification from
+the W3C.</p>
+<p>Note that DOM attributes may also be manipulated as nodes instead of
+as simple strings.  It is fairly rare that you must do this, however,
+so this usage is not yet documented.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="35%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Interface</th>
+<th class="head">Section</th>
+<th class="head">Purpose</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">DOMImplementation</span></tt></td>
+<td><em>DOMImplementation Objects</em></td>
+<td>Interface to the underlying
+implementation.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">Node</span></tt></td>
+<td><em>Node Objects</em></td>
+<td>Base interface for most objects
+in a document.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">NodeList</span></tt></td>
+<td><em>NodeList Objects</em></td>
+<td>Interface for a sequence of
+nodes.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">DocumentType</span></tt></td>
+<td><em>DocumentType Objects</em></td>
+<td>Information about the
+declarations needed to process a
+document.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">Document</span></tt></td>
+<td><em>Document Objects</em></td>
+<td>Object which represents an entire
+document.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">Element</span></tt></td>
+<td><em>Element Objects</em></td>
+<td>Element nodes in the document
+hierarchy.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">Attr</span></tt></td>
+<td><em>Attr Objects</em></td>
+<td>Attribute value nodes on element
+nodes.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">Comment</span></tt></td>
+<td><em>Comment Objects</em></td>
+<td>Representation of comments in the
+source document.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">Text</span></tt></td>
+<td><em>Text and CDATASection Objects</em></td>
+<td>Nodes containing textual content
+from the document.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">ProcessingInstruction</span></tt></td>
+<td><em>ProcessingInstruction Objects</em></td>
+<td>Processing instruction
+representation.</td>
+</tr>
+</tbody>
+</table>
+<p>An additional section describes the exceptions defined for working
+with the DOM in Python.</p>
+<div class="section" id="domimplementation-objects">
+<h3>19.6.2.1. DOMImplementation Objects<a class="headerlink" href="#domimplementation-objects" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">DOMImplementation</span></tt> interface provides a way for applications to
+determine the availability of particular features in the DOM they are
+using. DOM Level 2 added the ability to create new <tt class="docutils literal"><span class="pre">Document</span></tt> and
+<tt class="docutils literal"><span class="pre">DocumentType</span></tt> objects using the <tt class="docutils literal"><span class="pre">DOMImplementation</span></tt> as well.</p>
+<p>DOMImplementation.hasFeature(feature, version)</p>
+<blockquote>
+Return true if the feature identified by the pair of strings
+<em>feature</em> and <em>version</em> is implemented.</blockquote>
+<p>DOMImplementation.createDocument(namespaceUri, qualifiedName, doctype)</p>
+<blockquote>
+Return a new <tt class="docutils literal"><span class="pre">Document</span></tt> object (the root of the DOM), with a
+child <tt class="docutils literal"><span class="pre">Element</span></tt> object having the given <em>namespaceUri</em> and
+<em>qualifiedName</em>. The <em>doctype</em> must be a <tt class="docutils literal"><span class="pre">DocumentType</span></tt> object
+created by <tt class="docutils literal"><span class="pre">createDocumentType()</span></tt>, or <tt class="xref docutils literal"><span class="pre">None</span></tt>. In the Python DOM
+API, the first two arguments can also be <tt class="xref docutils literal"><span class="pre">None</span></tt> in order to
+indicate that no <tt class="docutils literal"><span class="pre">Element</span></tt> child is to be created.</blockquote>
+<p>DOMImplementation.createDocumentType(qualifiedName, publicId, systemId)</p>
+<blockquote>
+Return a new <tt class="docutils literal"><span class="pre">DocumentType</span></tt> object that encapsulates the given
+<em>qualifiedName</em>, <em>publicId</em>, and <em>systemId</em> strings, representing
+the information contained in an XML document type declaration.</blockquote>
+</div>
+<div class="section" id="node-objects">
+<h3>19.6.2.2. Node Objects<a class="headerlink" href="#node-objects" title="Permalink to this headline">¶</a></h3>
+<p>All of the components of an XML document are subclasses of <tt class="docutils literal"><span class="pre">Node</span></tt>.</p>
+<p>Node.nodeType</p>
+<blockquote>
+An integer representing the node type.  Symbolic constants for the
+types are on the <tt class="docutils literal"><span class="pre">Node</span></tt> object: <tt class="docutils literal"><span class="pre">ELEMENT_NODE</span></tt>,
+<tt class="docutils literal"><span class="pre">ATTRIBUTE_NODE</span></tt>, <tt class="docutils literal"><span class="pre">TEXT_NODE</span></tt>, <tt class="docutils literal"><span class="pre">CDATA_SECTION_NODE</span></tt>,
+<tt class="docutils literal"><span class="pre">ENTITY_NODE</span></tt>, <tt class="docutils literal"><span class="pre">PROCESSING_INSTRUCTION_NODE</span></tt>, <tt class="docutils literal"><span class="pre">COMMENT_NODE</span></tt>,
+<tt class="docutils literal"><span class="pre">DOCUMENT_NODE</span></tt>, <tt class="docutils literal"><span class="pre">DOCUMENT_TYPE_NODE</span></tt>, <tt class="docutils literal"><span class="pre">NOTATION_NODE</span></tt>. This
+is a read-only attribute.</blockquote>
+<p>Node.parentNode</p>
+<blockquote>
+The parent of the current node, or <tt class="xref docutils literal"><span class="pre">None</span></tt> for the document node.
+The value is always a <tt class="docutils literal"><span class="pre">Node</span></tt> object or <tt class="xref docutils literal"><span class="pre">None</span></tt>.  For <tt class="docutils literal"><span class="pre">Element</span></tt>
+nodes, this will be the parent element, except for the root
+element, in which case it will be the <tt class="docutils literal"><span class="pre">Document</span></tt> object. For
+<tt class="docutils literal"><span class="pre">Attr</span></tt> nodes, this is always <tt class="xref docutils literal"><span class="pre">None</span></tt>. This is a read-only
+attribute.</blockquote>
+<p>Node.attributes</p>
+<blockquote>
+A <tt class="docutils literal"><span class="pre">NamedNodeMap</span></tt> of attribute objects.  Only elements have actual
+values for this; others provide <tt class="xref docutils literal"><span class="pre">None</span></tt> for this attribute. This
+is a read-only attribute.</blockquote>
+<p>Node.previousSibling</p>
+<blockquote>
+The node that immediately precedes this one with the same parent.
+For instance the element with an end-tag that comes just before the
+<em>self</em> element&#8217;s start-tag.  Of course, XML documents are made up
+of more than just elements so the previous sibling could be text, a
+comment, or something else. If this node is the first child of the
+parent, this attribute will be <tt class="xref docutils literal"><span class="pre">None</span></tt>. This is a read-only
+attribute.</blockquote>
+<p>Node.nextSibling</p>
+<blockquote>
+The node that immediately follows this one with the same parent.
+See also <tt class="docutils literal"><span class="pre">previousSibling</span></tt>.  If this is the last child of the
+parent, this attribute will be <tt class="xref docutils literal"><span class="pre">None</span></tt>. This is a read-only
+attribute.</blockquote>
+<p>Node.childNodes</p>
+<blockquote>
+A list of nodes contained within this node. This is a read-only
+attribute.</blockquote>
+<p>Node.firstChild</p>
+<blockquote>
+The first child of the node, if there are any, or <tt class="xref docutils literal"><span class="pre">None</span></tt>. This is
+a read-only attribute.</blockquote>
+<p>Node.lastChild</p>
+<blockquote>
+The last child of the node, if there are any, or <tt class="xref docutils literal"><span class="pre">None</span></tt>. This is
+a read-only attribute.</blockquote>
+<p>Node.localName</p>
+<blockquote>
+The part of the <tt class="docutils literal"><span class="pre">tagName</span></tt> following the colon if there is one,
+else the entire <tt class="docutils literal"><span class="pre">tagName</span></tt>.  The value is a string.</blockquote>
+<p>Node.prefix</p>
+<blockquote>
+The part of the <tt class="docutils literal"><span class="pre">tagName</span></tt> preceding the colon if there is one,
+else the empty string.  The value is a string, or <tt class="xref docutils literal"><span class="pre">None</span></tt></blockquote>
+<p>Node.namespaceURI</p>
+<blockquote>
+The namespace associated with the element name.  This will be a
+string or <tt class="xref docutils literal"><span class="pre">None</span></tt>.  This is a read-only attribute.</blockquote>
+<p>Node.nodeName</p>
+<blockquote>
+This has a different meaning for each node type; see the DOM
+specification for details.  You can always get the information you
+would get here from another property such as the <tt class="docutils literal"><span class="pre">tagName</span></tt>
+property for elements or the <tt class="docutils literal"><span class="pre">name</span></tt> property for attributes. For
+all node types, the value of this attribute will be either a string
+or <tt class="xref docutils literal"><span class="pre">None</span></tt>.  This is a read-only attribute.</blockquote>
+<p>Node.nodeValue</p>
+<blockquote>
+This has a different meaning for each node type; see the DOM
+specification for details.  The situation is similar to that with
+<tt class="docutils literal"><span class="pre">nodeName</span></tt>.  The value is a string or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>Node.hasAttributes()</p>
+<blockquote>
+Returns true if the node has any attributes.</blockquote>
+<p>Node.hasChildNodes()</p>
+<blockquote>
+Returns true if the node has any child nodes.</blockquote>
+<p>Node.isSameNode(other)</p>
+<blockquote>
+<p>Returns true if <em>other</em> refers to the same node as this node. This
+is especially useful for DOM implementations which use any sort of
+proxy architecture (because more than one object can refer to the
+same node).</p>
+<dl class="docutils">
+<dt>Note: This is based on a proposed DOM Level 3 API which is still in the</dt>
+<dd>&#8220;working draft&#8221; stage, but this particular interface appears
+uncontroversial.  Changes from the W3C will not necessarily
+affect this method in the Python DOM interface (though any new
+W3C API for this would also be supported).</dd>
+</dl>
+</blockquote>
+<p>Node.appendChild(newChild)</p>
+<blockquote>
+Add a new child node to this node at the end of the list of
+children, returning <em>newChild</em>. If the node was already in in the
+tree, it is removed first.</blockquote>
+<p>Node.insertBefore(newChild, refChild)</p>
+<blockquote>
+Insert a new child node before an existing child.  It must be the
+case that <em>refChild</em> is a child of this node; if not,
+<tt class="docutils literal"><span class="pre">ValueError</span></tt> is raised. <em>newChild</em> is returned. If <em>refChild</em> is
+<tt class="xref docutils literal"><span class="pre">None</span></tt>, it inserts <em>newChild</em> at the end of the children&#8217;s list.</blockquote>
+<p>Node.removeChild(oldChild)</p>
+<blockquote>
+Remove a child node.  <em>oldChild</em> must be a child of this node; if
+not, <tt class="docutils literal"><span class="pre">ValueError</span></tt> is raised.  <em>oldChild</em> is returned on success.
+If <em>oldChild</em> will not be used further, its <tt class="docutils literal"><span class="pre">unlink()</span></tt> method
+should be called.</blockquote>
+<p>Node.replaceChild(newChild, oldChild)</p>
+<blockquote>
+Replace an existing node with a new node. It must be the case that
+<em>oldChild</em> is a child of this node; if not, <tt class="docutils literal"><span class="pre">ValueError</span></tt> is
+raised.</blockquote>
+<p>Node.normalize()</p>
+<blockquote>
+<p>Join adjacent text nodes so that all stretches of text are stored
+as single <tt class="docutils literal"><span class="pre">Text</span></tt> instances.  This simplifies processing text from
+a DOM tree for many applications.</p>
+<p>New in version 2.1.</p>
+</blockquote>
+<p>Node.cloneNode(deep)</p>
+<blockquote>
+Clone this node.  Setting <em>deep</em> means to clone all child nodes as
+well.  This returns the clone.</blockquote>
+</div>
+<div class="section" id="nodelist-objects">
+<h3>19.6.2.3. NodeList Objects<a class="headerlink" href="#nodelist-objects" title="Permalink to this headline">¶</a></h3>
+<p>A <tt class="docutils literal"><span class="pre">NodeList</span></tt> represents a sequence of nodes.  These objects are used
+in two ways in the DOM Core recommendation:  the <tt class="docutils literal"><span class="pre">Element</span></tt> objects
+provides one as its list of child nodes, and the
+<tt class="docutils literal"><span class="pre">getElementsByTagName()</span></tt> and <tt class="docutils literal"><span class="pre">getElementsByTagNameNS()</span></tt> methods of
+<tt class="docutils literal"><span class="pre">Node</span></tt> return objects with this interface to represent query
+results.</p>
+<p>The DOM Level 2 recommendation defines one method and one attribute
+for these objects:</p>
+<p>NodeList.item(i)</p>
+<blockquote>
+Return the <em>i</em>&#8216;th item from the sequence, if there is one, or
+<tt class="xref docutils literal"><span class="pre">None</span></tt>.  The index <em>i</em> is not allowed to be less then zero or
+greater than or equal to the length of the sequence.</blockquote>
+<p>NodeList.length</p>
+<blockquote>
+The number of nodes in the sequence.</blockquote>
+<p>In addition, the Python DOM interface requires that some additional
+support is provided to allow <tt class="docutils literal"><span class="pre">NodeList</span></tt> objects to be used as Python
+sequences.  All <tt class="docutils literal"><span class="pre">NodeList</span></tt> implementations must include support for
+<tt class="docutils literal"><span class="pre">__len__()</span></tt> and <tt class="docutils literal"><span class="pre">__getitem__()</span></tt>; this allows iteration over the
+<tt class="docutils literal"><span class="pre">NodeList</span></tt> in <tt class="docutils literal"><span class="pre">for</span></tt> statements and proper support for the
+<tt class="docutils literal"><span class="pre">len()</span></tt> built-in function.</p>
+<p>If a DOM implementation supports modification of the document, the
+<tt class="docutils literal"><span class="pre">NodeList</span></tt> implementation must also support the <tt class="docutils literal"><span class="pre">__setitem__()</span></tt>
+and <tt class="docutils literal"><span class="pre">__delitem__()</span></tt> methods.</p>
+</div>
+<div class="section" id="documenttype-objects">
+<h3>19.6.2.4. DocumentType Objects<a class="headerlink" href="#documenttype-objects" title="Permalink to this headline">¶</a></h3>
+<p>Information about the notations and entities declared by a document
+(including the external subset if the parser uses it and can provide
+the information) is available from a <tt class="docutils literal"><span class="pre">DocumentType</span></tt> object.  The
+<tt class="docutils literal"><span class="pre">DocumentType</span></tt> for a document is available from the <tt class="docutils literal"><span class="pre">Document</span></tt>
+object&#8217;s <tt class="docutils literal"><span class="pre">doctype</span></tt> attribute; if there is no <tt class="docutils literal"><span class="pre">DOCTYPE</span></tt> declaration
+for the document, the document&#8217;s <tt class="docutils literal"><span class="pre">doctype</span></tt> attribute will be set to
+<tt class="xref docutils literal"><span class="pre">None</span></tt> instead of an instance of this interface.</p>
+<p><tt class="docutils literal"><span class="pre">DocumentType</span></tt> is a specialization of <tt class="docutils literal"><span class="pre">Node</span></tt>, and adds the
+following attributes:</p>
+<p>DocumentType.publicId</p>
+<blockquote>
+The public identifier for the external subset of the document type
+definition. This will be a string or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>DocumentType.systemId</p>
+<blockquote>
+The system identifier for the external subset of the document type
+definition. This will be a URI as a string, or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>DocumentType.internalSubset</p>
+<blockquote>
+A string giving the complete internal subset from the document.
+This does not include the brackets which enclose the subset.  If
+the document has no internal subset, this should be <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>DocumentType.name</p>
+<blockquote>
+The name of the root element as given in the <tt class="docutils literal"><span class="pre">DOCTYPE</span></tt>
+declaration, if present.</blockquote>
+<p>DocumentType.entities</p>
+<blockquote>
+This is a <tt class="docutils literal"><span class="pre">NamedNodeMap</span></tt> giving the definitions of external
+entities. For entity names defined more than once, only the first
+definition is provided (others are ignored as required by the XML
+recommendation).  This may be <tt class="xref docutils literal"><span class="pre">None</span></tt> if the information is not
+provided by the parser, or if no entities are defined.</blockquote>
+<p>DocumentType.notations</p>
+<blockquote>
+This is a <tt class="docutils literal"><span class="pre">NamedNodeMap</span></tt> giving the definitions of notations. For
+notation names defined more than once, only the first definition is
+provided (others are ignored as required by the XML
+recommendation).  This may be <tt class="xref docutils literal"><span class="pre">None</span></tt> if the information is not
+provided by the parser, or if no notations are defined.</blockquote>
+</div>
+<div class="section" id="document-objects">
+<h3>19.6.2.5. Document Objects<a class="headerlink" href="#document-objects" title="Permalink to this headline">¶</a></h3>
+<p>A <tt class="docutils literal"><span class="pre">Document</span></tt> represents an entire XML document, including its
+constituent elements, attributes, processing instructions, comments
+etc.  Remember that it inherits properties from <tt class="docutils literal"><span class="pre">Node</span></tt>.</p>
+<p>Document.documentElement</p>
+<blockquote>
+The one and only root element of the document.</blockquote>
+<p>Document.createElement(tagName)</p>
+<blockquote>
+Create and return a new element node.  The element is not inserted
+into the document when it is created.  You need to explicitly
+insert it with one of the other methods such as <tt class="docutils literal"><span class="pre">insertBefore()</span></tt>
+or <tt class="docutils literal"><span class="pre">appendChild()</span></tt>.</blockquote>
+<p>Document.createElementNS(namespaceURI, tagName)</p>
+<blockquote>
+Create and return a new element with a namespace.  The <em>tagName</em>
+may have a prefix.  The element is not inserted into the document
+when it is created.  You need to explicitly insert it with one of
+the other methods such as <tt class="docutils literal"><span class="pre">insertBefore()</span></tt> or <tt class="docutils literal"><span class="pre">appendChild()</span></tt>.</blockquote>
+<p>Document.createTextNode(data)</p>
+<blockquote>
+Create and return a text node containing the data passed as a
+parameter.  As with the other creation methods, this one does not
+insert the node into the tree.</blockquote>
+<p>Document.createComment(data)</p>
+<blockquote>
+Create and return a comment node containing the data passed as a
+parameter.  As with the other creation methods, this one does not
+insert the node into the tree.</blockquote>
+<p>Document.createProcessingInstruction(target, data)</p>
+<blockquote>
+Create and return a processing instruction node containing the
+<em>target</em> and <em>data</em> passed as parameters.  As with the other
+creation methods, this one does not insert the node into the tree.</blockquote>
+<p>Document.createAttribute(name)</p>
+<blockquote>
+Create and return an attribute node.  This method does not
+associate the attribute node with any particular element.  You must
+use <tt class="docutils literal"><span class="pre">setAttributeNode()</span></tt> on the appropriate <tt class="docutils literal"><span class="pre">Element</span></tt> object to
+use the newly created attribute instance.</blockquote>
+<p>Document.createAttributeNS(namespaceURI, qualifiedName)</p>
+<blockquote>
+Create and return an attribute node with a namespace.  The
+<em>tagName</em> may have a prefix.  This method does not associate the
+attribute node with any particular element.  You must use
+<tt class="docutils literal"><span class="pre">setAttributeNode()</span></tt> on the appropriate <tt class="docutils literal"><span class="pre">Element</span></tt> object to use
+the newly created attribute instance.</blockquote>
+<p>Document.getElementsByTagName(tagName)</p>
+<blockquote>
+Search for all descendants (direct children, children&#8217;s children,
+etc.) with a particular element type name.</blockquote>
+<p>Document.getElementsByTagNameNS(namespaceURI, localName)</p>
+<blockquote>
+Search for all descendants (direct children, children&#8217;s children,
+etc.) with a particular namespace URI and localname.  The localname
+is the part of the namespace after the prefix.</blockquote>
+</div>
+<div class="section" id="element-objects">
+<h3>19.6.2.6. Element Objects<a class="headerlink" href="#element-objects" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">Element</span></tt> is a subclass of <tt class="docutils literal"><span class="pre">Node</span></tt>, so inherits all the attributes
+of that class.</p>
+<p>Element.tagName</p>
+<blockquote>
+The element type name.  In a namespace-using document it may have
+colons in it. The value is a string.</blockquote>
+<p>Element.getElementsByTagName(tagName)</p>
+<blockquote>
+Same as equivalent method in the <tt class="docutils literal"><span class="pre">Document</span></tt> class.</blockquote>
+<p>Element.getElementsByTagNameNS(namespaceURI, localName)</p>
+<blockquote>
+Same as equivalent method in the <tt class="docutils literal"><span class="pre">Document</span></tt> class.</blockquote>
+<p>Element.hasAttribute(name)</p>
+<blockquote>
+Returns true if the element has an attribute named by <em>name</em>.</blockquote>
+<p>Element.hasAttributeNS(namespaceURI, localName)</p>
+<blockquote>
+Returns true if the element has an attribute named by
+<em>namespaceURI</em> and <em>localName</em>.</blockquote>
+<p>Element.getAttribute(name)</p>
+<blockquote>
+Return the value of the attribute named by <em>name</em> as a string. If
+no such attribute exists, an empty string is returned, as if the
+attribute had no value.</blockquote>
+<p>Element.getAttributeNode(attrname)</p>
+<blockquote>
+Return the <tt class="docutils literal"><span class="pre">Attr</span></tt> node for the attribute named by <em>attrname</em>.</blockquote>
+<p>Element.getAttributeNS(namespaceURI, localName)</p>
+<blockquote>
+Return the value of the attribute named by <em>namespaceURI</em> and
+<em>localName</em> as a string. If no such attribute exists, an empty
+string is returned, as if the attribute had no value.</blockquote>
+<p>Element.getAttributeNodeNS(namespaceURI, localName)</p>
+<blockquote>
+Return an attribute value as a node, given a <em>namespaceURI</em> and
+<em>localName</em>.</blockquote>
+<p>Element.removeAttribute(name)</p>
+<blockquote>
+Remove an attribute by name.  If there is no matching attribute, a
+<tt class="docutils literal"><span class="pre">NotFoundErr</span></tt> is raised.</blockquote>
+<p>Element.removeAttributeNode(oldAttr)</p>
+<blockquote>
+Remove and return <em>oldAttr</em> from the attribute list, if present. If
+<em>oldAttr</em> is not present, <tt class="docutils literal"><span class="pre">NotFoundErr</span></tt> is raised.</blockquote>
+<p>Element.removeAttributeNS(namespaceURI, localName)</p>
+<blockquote>
+Remove an attribute by name.  Note that it uses a localName, not a
+qname.  No exception is raised if there is no matching attribute.</blockquote>
+<p>Element.setAttribute(name, value)</p>
+<blockquote>
+Set an attribute value from a string.</blockquote>
+<p>Element.setAttributeNode(newAttr)</p>
+<blockquote>
+Add a new attribute node to the element, replacing an existing
+attribute if necessary if the <tt class="docutils literal"><span class="pre">name</span></tt> attribute matches.  If a
+replacement occurs, the old attribute node will be returned.  If
+<em>newAttr</em> is already in use, <tt class="docutils literal"><span class="pre">InuseAttributeErr</span></tt> will be raised.</blockquote>
+<p>Element.setAttributeNodeNS(newAttr)</p>
+<blockquote>
+Add a new attribute node to the element, replacing an existing
+attribute if necessary if the <tt class="docutils literal"><span class="pre">namespaceURI</span></tt> and <tt class="docutils literal"><span class="pre">localName</span></tt>
+attributes match. If a replacement occurs, the old attribute node
+will be returned.  If <em>newAttr</em> is already in use,
+<tt class="docutils literal"><span class="pre">InuseAttributeErr</span></tt> will be raised.</blockquote>
+<p>Element.setAttributeNS(namespaceURI, qname, value)</p>
+<blockquote>
+Set an attribute value from a string, given a <em>namespaceURI</em> and a
+<em>qname</em>. Note that a qname is the whole attribute name.  This is
+different than above.</blockquote>
+</div>
+<div class="section" id="attr-objects">
+<h3>19.6.2.7. Attr Objects<a class="headerlink" href="#attr-objects" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">Attr</span></tt> inherits from <tt class="docutils literal"><span class="pre">Node</span></tt>, so inherits all its attributes.</p>
+<p>Attr.name</p>
+<blockquote>
+The attribute name.  In a namespace-using document it may have
+colons in it.</blockquote>
+<p>Attr.localName</p>
+<blockquote>
+The part of the name following the colon if there is one, else the
+entire name. This is a read-only attribute.</blockquote>
+<p>Attr.prefix</p>
+<blockquote>
+The part of the name preceding the colon if there is one, else the
+empty string.</blockquote>
+</div>
+<div class="section" id="namednodemap-objects">
+<h3>19.6.2.8. NamedNodeMap Objects<a class="headerlink" href="#namednodemap-objects" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">NamedNodeMap</span></tt> does <em>not</em> inherit from <tt class="docutils literal"><span class="pre">Node</span></tt>.</p>
+<p>NamedNodeMap.length</p>
+<blockquote>
+The length of the attribute list.</blockquote>
+<p>NamedNodeMap.item(index)</p>
+<blockquote>
+Return an attribute with a particular index.  The order you get the
+attributes in is arbitrary but will be consistent for the life of a
+DOM.  Each item is an attribute node.  Get its value with the
+<tt class="docutils literal"><span class="pre">value</span></tt> attribute.</blockquote>
+<p>There are also experimental methods that give this class more mapping
+behavior. You can use them or you can use the standardized
+<tt class="docutils literal"><span class="pre">getAttribute*()</span></tt> family of methods on the <tt class="docutils literal"><span class="pre">Element</span></tt> objects.</p>
+</div>
+<div class="section" id="comment-objects">
+<h3>19.6.2.9. Comment Objects<a class="headerlink" href="#comment-objects" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">Comment</span></tt> represents a comment in the XML document.  It is a
+subclass of <tt class="docutils literal"><span class="pre">Node</span></tt>, but cannot have child nodes.</p>
+<p>Comment.data</p>
+<blockquote>
+The content of the comment as a string.  The attribute contains all
+characters between the leading <tt class="docutils literal"><span class="pre">&lt;!-``</span></tt>-`` and trailing
+<tt class="docutils literal"><span class="pre">-``</span></tt>-&gt;``, but does not include them.</blockquote>
+</div>
+<div class="section" id="text-and-cdatasection-objects">
+<h3>19.6.2.10. Text and CDATASection Objects<a class="headerlink" href="#text-and-cdatasection-objects" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">Text</span></tt> interface represents text in the XML document.  If the
+parser and DOM implementation support the DOM&#8217;s XML extension,
+portions of the text enclosed in CDATA marked sections are stored in
+<tt class="docutils literal"><span class="pre">CDATASection</span></tt> objects. These two interfaces are identical, but
+provide different values for the <tt class="docutils literal"><span class="pre">nodeType</span></tt> attribute.</p>
+<p>These interfaces extend the <tt class="docutils literal"><span class="pre">Node</span></tt> interface.  They cannot have
+child nodes.</p>
+<p>Text.data</p>
+<blockquote>
+The content of the text node as a string.</blockquote>
+<dl class="docutils">
+<dt>Note: The use of a <tt class="docutils literal"><span class="pre">CDATASection</span></tt> node does not indicate that the node</dt>
+<dd>represents a complete CDATA marked section, only that the content of
+the node was part of a CDATA section.  A single CDATA section may be
+represented by more than one node in the document tree.  There is no
+way to determine whether two adjacent <tt class="docutils literal"><span class="pre">CDATASection</span></tt> nodes
+represent different CDATA marked sections.</dd>
+</dl>
+</div>
+<div class="section" id="processinginstruction-objects">
+<h3>19.6.2.11. ProcessingInstruction Objects<a class="headerlink" href="#processinginstruction-objects" title="Permalink to this headline">¶</a></h3>
+<p>Represents a processing instruction in the XML document; this inherits
+from the <tt class="docutils literal"><span class="pre">Node</span></tt> interface and cannot have child nodes.</p>
+<p>ProcessingInstruction.target</p>
+<blockquote>
+The content of the processing instruction up to the first
+whitespace character. This is a read-only attribute.</blockquote>
+<p>ProcessingInstruction.data</p>
+<blockquote>
+The content of the processing instruction following the first
+whitespace character.</blockquote>
+</div>
+<div class="section" id="exceptions">
+<h3>19.6.2.12. Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h3>
+<p>New in version 2.1.</p>
+<p>The DOM Level 2 recommendation defines a single exception,
+<tt class="docutils literal"><span class="pre">DOMException</span></tt>, and a number of constants that allow applications to
+determine what sort of error occurred. <tt class="docutils literal"><span class="pre">DOMException</span></tt> instances
+carry a <tt class="docutils literal"><span class="pre">code</span></tt> attribute that provides the appropriate value for the
+specific exception.</p>
+<p>The Python DOM interface provides the constants, but also expands the
+set of exceptions so that a specific exception exists for each of the
+exception codes defined by the DOM.  The implementations must raise
+the appropriate specific exception, each of which carries the
+appropriate value for the <tt class="docutils literal"><span class="pre">code</span></tt> attribute.</p>
+<p>exception exception xml.dom.DOMException</p>
+<blockquote>
+Base exception class used for all specific DOM exceptions.  This
+exception class cannot be directly instantiated.</blockquote>
+<p>exception exception xml.dom.DomstringSizeErr</p>
+<blockquote>
+Raised when a specified range of text does not fit into a string.
+This is not known to be used in the Python DOM implementations, but
+may be received from DOM implementations not written in Python.</blockquote>
+<p>exception exception xml.dom.HierarchyRequestErr</p>
+<blockquote>
+Raised when an attempt is made to insert a node where the node type
+is not allowed.</blockquote>
+<p>exception exception xml.dom.IndexSizeErr</p>
+<blockquote>
+Raised when an index or size parameter to a method is negative or
+exceeds the allowed values.</blockquote>
+<p>exception exception xml.dom.InuseAttributeErr</p>
+<blockquote>
+Raised when an attempt is made to insert an <tt class="docutils literal"><span class="pre">Attr</span></tt> node that is
+already present elsewhere in the document.</blockquote>
+<p>exception exception xml.dom.InvalidAccessErr</p>
+<blockquote>
+Raised if a parameter or an operation is not supported on the
+underlying object.</blockquote>
+<p>exception exception xml.dom.InvalidCharacterErr</p>
+<blockquote>
+This exception is raised when a string parameter contains a
+character that is not permitted in the context it&#8217;s being used in
+by the XML 1.0 recommendation. For example, attempting to create an
+<tt class="docutils literal"><span class="pre">Element</span></tt> node with a space in the element type name will cause
+this error to be raised.</blockquote>
+<p>exception exception xml.dom.InvalidModificationErr</p>
+<blockquote>
+Raised when an attempt is made to modify the type of a node.</blockquote>
+<p>exception exception xml.dom.InvalidStateErr</p>
+<blockquote>
+Raised when an attempt is made to use an object that is not defined
+or is no longer usable.</blockquote>
+<p>exception exception xml.dom.NamespaceErr</p>
+<blockquote>
+If an attempt is made to change any object in a way that is not
+permitted with regard to the Namespaces in XML recommendation, this
+exception is raised.</blockquote>
+<p>exception exception xml.dom.NotFoundErr</p>
+<blockquote>
+Exception when a node does not exist in the referenced context.
+For example, <tt class="docutils literal"><span class="pre">NamedNodeMap.removeNamedItem()</span></tt> will raise this if
+the node passed in does not exist in the map.</blockquote>
+<p>exception exception xml.dom.NotSupportedErr</p>
+<blockquote>
+Raised when the implementation does not support the requested type
+of object or operation.</blockquote>
+<p>exception exception xml.dom.NoDataAllowedErr</p>
+<blockquote>
+This is raised if data is specified for a node which does not
+support data.</blockquote>
+<p>exception exception xml.dom.NoModificationAllowedErr</p>
+<blockquote>
+Raised on attempts to modify an object where modifications are not
+allowed (such as for read-only nodes).</blockquote>
+<p>exception exception xml.dom.SyntaxErr</p>
+<blockquote>
+Raised when an invalid or illegal string is specified.</blockquote>
+<p>exception exception xml.dom.WrongDocumentErr</p>
+<blockquote>
+Raised when a node is inserted in a different document than it
+currently belongs to, and the implementation does not support
+migrating the node from one document to the other.</blockquote>
+<p>The exception codes defined in the DOM recommendation map to the
+exceptions described above according to this table:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="53%" />
+<col width="47%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Constant</th>
+<th class="head">Exception</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">DOMSTRING_SIZE_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">DomstringSizeErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">HIERARCHY_REQUEST_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">HierarchyRequestErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">INDEX_SIZE_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">IndexSizeErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">INUSE_ATTRIBUTE_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">InuseAttributeErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">INVALID_ACCESS_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">InvalidAccessErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">INVALID_CHARACTER_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">InvalidCharacterErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">INVALID_MODIFICATION_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">InvalidModificationErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">INVALID_STATE_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">InvalidStateErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">NAMESPACE_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">NamespaceErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">NOT_FOUND_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">NotFoundErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">NOT_SUPPORTED_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">NotSupportedErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">NO_DATA_ALLOWED_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">NoDataAllowedErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">NO_MODIFICATION_ALLOWED_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">SYNTAX_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">SyntaxErr</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">WRONG_DOCUMENT_ERR</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">WrongDocumentErr</span></tt></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="conformance">
+<h2>19.6.3. Conformance<a class="headerlink" href="#conformance" title="Permalink to this headline">¶</a></h2>
+<p>This section describes the conformance requirements and relationships
+between the Python DOM API, the W3C DOM recommendations, and the OMG
+IDL mapping for Python.</p>
+<div class="section" id="type-mapping">
+<h3>19.6.3.1. Type Mapping<a class="headerlink" href="#type-mapping" title="Permalink to this headline">¶</a></h3>
+<p>The primitive IDL types used in the DOM specification are mapped to
+Python types according to the following table.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">IDL Type</th>
+<th class="head">Python Type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">boolean</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">IntegerType</span></tt> (with a value of <tt class="docutils literal"><span class="pre">0</span></tt> or
+<tt class="docutils literal"><span class="pre">1</span></tt>)</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">int</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">IntegerType</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">long</span> <span class="pre">int</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">IntegerType</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">IntegerType</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>Additionally, the <tt class="docutils literal"><span class="pre">DOMString</span></tt> defined in the recommendation is
+mapped to a Python string or Unicode string.  Applications should be
+able to handle Unicode whenever a string is returned from the DOM.</p>
+<p>The IDL <tt class="docutils literal"><span class="pre">null</span></tt> value is mapped to <tt class="xref docutils literal"><span class="pre">None</span></tt>, which may be accepted or
+provided by the implementation whenever <tt class="docutils literal"><span class="pre">null</span></tt> is allowed by the
+API.</p>
+</div>
+<div class="section" id="accessor-methods">
+<h3>19.6.3.2. Accessor Methods<a class="headerlink" href="#accessor-methods" title="Permalink to this headline">¶</a></h3>
+<p>The mapping from OMG IDL to Python defines accessor functions for IDL
+<tt class="docutils literal"><span class="pre">attribute</span></tt> declarations in much the way the Java mapping does.
+Mapping the IDL declarations</p>
+<blockquote>
+<dl class="docutils">
+<dt>readonly attribute string someValue;</dt>
+<dd>attribute string anotherValue;</dd>
+</dl>
+</blockquote>
+<p>yields three accessor functions:  a &#8220;get&#8221; method for <tt class="docutils literal"><span class="pre">someValue</span></tt>
+(<tt class="docutils literal"><span class="pre">_get_someValue()</span></tt>), and &#8220;get&#8221; and &#8220;set&#8221; methods for
+<tt class="docutils literal"><span class="pre">anotherValue</span></tt> (<tt class="docutils literal"><span class="pre">_get_anotherValue()</span></tt> and
+<tt class="docutils literal"><span class="pre">_set_anotherValue()</span></tt>).  The mapping, in particular, does not
+require that the IDL attributes are accessible as normal Python
+attributes:  <tt class="docutils literal"><span class="pre">object.someValue</span></tt> is <em>not</em> required to work, and may
+raise an <tt class="docutils literal"><span class="pre">AttributeError</span></tt>.</p>
+<p>The Python DOM API, however, <em>does</em> require that normal attribute
+access work. This means that the typical surrogates generated by
+Python IDL compilers are not likely to work, and wrapper objects may
+be needed on the client if the DOM objects are accessed via CORBA.
+While this does require some additional consideration for CORBA DOM
+clients, the implementers with experience using DOM over CORBA from
+Python do not consider this a problem.  Attributes that are declared
+<tt class="docutils literal"><span class="pre">readonly</span></tt> may not restrict write access in all DOM implementations.</p>
+<p>In the Python DOM API, accessor functions are not required.  If
+provided, they should take the form defined by the Python IDL mapping,
+but these methods are considered unnecessary since the attributes are
+accessible directly from Python. &#8220;Set&#8221; accessors should never be
+provided for <tt class="docutils literal"><span class="pre">readonly</span></tt> attributes.</p>
+<p>The IDL definitions do not fully embody the requirements of the W3C
+DOM API, such as the notion of certain objects, such as the return
+value of <tt class="docutils literal"><span class="pre">getElementsByTagName()</span></tt>, being &#8220;live&#8221;.  The Python DOM API
+does not require implementations to enforce such requirements.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xml.dom.minidom.html" title="19.7. xml.dom.minidom — Lightweight DOM implementation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyexpat.html" title="19.5. xml.parsers.expat — Fast XML parsing using Expat"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="markup.html" >19. Structured Markup Processing Tools</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

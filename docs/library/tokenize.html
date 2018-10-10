@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>29.5. tokenize — Tokenizer for Python source &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="29. Python Language Services" href="language.html" />
+    <link rel="next" title="29.6. tabnanny — Detection of ambiguous indentation" href="tabnanny.html" />
+    <link rel="prev" title="29.4. keyword — Testing for Python keywords" href="keyword.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="tabnanny.html" title="29.6. tabnanny — Detection of ambiguous indentation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="keyword.html" title="29.4. keyword — Testing for Python keywords"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="language.html" accesskey="U">29. Python Language Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="keyword.html"
+                                  title="previous chapter">29.4. <tt class="docutils literal docutils literal docutils literal"><span class="pre">keyword</span></tt> &#8212; Testing for Python keywords</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="tabnanny.html"
+                                  title="next chapter">29.6. <tt class="docutils literal docutils literal docutils literal"><span class="pre">tabnanny</span></tt> &#8212; Detection of ambiguous indentation</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/tokenize.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tokenize-tokenizer-for-python-source">
+<h1>29.5. <tt class="docutils literal"><span class="pre">tokenize</span></tt> &#8212; Tokenizer for Python source<a class="headerlink" href="#tokenize-tokenizer-for-python-source" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">tokenize</span></tt> module provides a lexical scanner for Python source
+code, implemented in Python.  The scanner in this module returns
+comments as tokens as well, making it useful for implementing &#8220;pretty-
+printers,&#8221; including colorizers for on-screen displays.</p>
+<p>The primary entry point is a <em>generator</em>:</p>
+<p>tokenize.generate_tokens(readline)</p>
+<blockquote>
+<p>The <tt class="docutils literal"><span class="pre">generate_tokens()</span></tt> generator requires one argument,
+<em>readline</em>, which must be a callable object which provides the same
+interface as the <tt class="docutils literal"><span class="pre">readline()</span></tt> method of built-in file objects
+(see section <em>File Objects</em>).  Each call to the function should
+return one line of input as a string.</p>
+<p>The generator produces 5-tuples with these members: the token type;
+the token string; a 2-tuple <tt class="docutils literal"><span class="pre">(srow,</span> <span class="pre">scol)</span></tt> of ints specifying the
+row and column where the token begins in the source; a 2-tuple
+<tt class="docutils literal"><span class="pre">(erow,</span> <span class="pre">ecol)</span></tt> of ints specifying the row and column where the
+token ends in the source; and the line on which the token was
+found.  The line passed (the last tuple item) is the <em>logical</em>
+line; continuation lines are included.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>An older entry point is retained for backward compatibility:</p>
+<p>tokenize.tokenize(readline[, tokeneater])</p>
+<blockquote>
+<p>The <tt class="docutils literal"><span class="pre">tokenize()</span></tt> function accepts two parameters: one
+representing the input stream, and one providing an output
+mechanism for <tt class="docutils literal"><span class="pre">tokenize()</span></tt>.</p>
+<p>The first parameter, <em>readline</em>, must be a callable object which
+provides the same interface as the <tt class="docutils literal"><span class="pre">readline()</span></tt> method of built-
+in file objects (see section <em>File Objects</em>).  Each call to the
+function should return one line of input as a string. Alternately,
+<em>readline</em> may be a callable object that signals completion by
+raising <tt class="docutils literal"><span class="pre">StopIteration</span></tt>.</p>
+<p>Changed in version 2.5: Added <tt class="docutils literal"><span class="pre">StopIteration</span></tt> support.</p>
+<p>The second parameter, <em>tokeneater</em>, must also be a callable object.
+It is called once for each token, with five arguments,
+corresponding to the tuples generated by <tt class="docutils literal"><span class="pre">generate_tokens()</span></tt>.</p>
+</blockquote>
+<p>All constants from the <tt class="docutils literal"><span class="pre">token</span></tt> module are also exported from
+<tt class="docutils literal"><span class="pre">tokenize</span></tt>, as are two additional token type values that might be
+passed to the <em>tokeneater</em> function by <tt class="docutils literal"><span class="pre">tokenize()</span></tt>:</p>
+<p>tokenize.COMMENT</p>
+<blockquote>
+Token value used to indicate a comment.</blockquote>
+<p>tokenize.NL</p>
+<blockquote>
+Token value used to indicate a non-terminating newline.  The
+NEWLINE token indicates the end of a logical line of Python code;
+NL tokens are generated when a logical line of code is continued
+over multiple physical lines.</blockquote>
+<p>Another function is provided to reverse the tokenization process. This
+is useful for creating tools that tokenize a script, modify the token
+stream, and write back the modified script.</p>
+<p>tokenize.untokenize(iterable)</p>
+<blockquote>
+<p>Converts tokens back into Python source code.  The <em>iterable</em> must
+return sequences with at least two elements, the token type and the
+token string.  Any additional sequence elements are ignored.</p>
+<p>The reconstructed script is returned as a single string.  The
+result is guaranteed to tokenize back to match the input so that
+the conversion is lossless and round-trips are assured.  The
+guarantee applies only to the token type and token string as the
+spacing between tokens (column positions) may change.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>Example of a script re-writer that transforms float literals into
+Decimal objects:</p>
+<blockquote>
+<dl class="docutils">
+<dt>def decistmt(s):</dt>
+<dd><p class="first">&#8220;&#8221;&#8220;Substitute Decimals for floats in a string of statements.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">decimal</span> <span class="kn">import</span> <span class="n">Decimal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="s">&#39;print +21.3e-5*-.1234/81.7&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">decistmt</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">&quot;print +Decimal (&#39;21.3e-5&#39;)*-Decimal (&#39;.1234&#39;)/Decimal (&#39;81.7&#39;)&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">exec</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">-3.21716034272e-007</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">exec</span><span class="p">(</span><span class="n">decistmt</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+<span class="go">-3.217160342717258261933904529E-7</span>
+</pre></div>
+</div>
+<p>&#8220;&#8221;&#8221;
+result = []
+g = generate_tokens(StringIO(s).readline)   # tokenize the string
+for toknum, tokval, _, _, _  in g:</p>
+<blockquote>
+<dl class="docutils">
+<dt>if toknum == NUMBER and &#8216;.&#8217; in tokval:  # replace NUMBER tokens</dt>
+<dd><dl class="first docutils">
+<dt>result.extend([</dt>
+<dd>(NAME, &#8216;Decimal&#8217;),
+(OP, &#8216;(&#8216;),
+(STRING, repr(tokval)),
+(OP, &#8216;)&#8217;)</dd>
+</dl>
+<p class="last">])</p>
+</dd>
+<dt>else:</dt>
+<dd>result.append((toknum, tokval))</dd>
+</dl>
+</blockquote>
+<p class="last">return untokenize(result)</p>
+</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tabnanny.html" title="29.6. tabnanny — Detection of ambiguous indentation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="keyword.html" title="29.4. keyword — Testing for Python keywords"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="language.html" >29. Python Language Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

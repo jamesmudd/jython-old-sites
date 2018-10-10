@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>27.1. code — Interpreter base classes &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="27. Custom Python Interpreters" href="custominterp.html" />
+    <link rel="next" title="27.2. codeop — Compile Python code" href="codeop.html" />
+    <link rel="prev" title="27. Custom Python Interpreters" href="custominterp.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="codeop.html" title="27.2. codeop — Compile Python code"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="custominterp.html" title="27. Custom Python Interpreters"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="custominterp.html" accesskey="U">27. Custom Python Interpreters</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">27.1. <tt class="docutils literal"><span class="pre">code</span></tt> &#8212; Interpreter base classes</a><ul>
+<li><a class="reference external" href="#interactive-interpreter-objects">27.1.1. Interactive Interpreter Objects</a></li>
+<li><a class="reference external" href="#interactive-console-objects">27.1.2. Interactive Console Objects</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="custominterp.html"
+                                  title="previous chapter">27. Custom Python Interpreters</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="codeop.html"
+                                  title="next chapter">27.2. <tt class="docutils literal"><span class="pre">codeop</span></tt> &#8212; Compile Python code</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/code.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="code-interpreter-base-classes">
+<h1>27.1. <tt class="docutils literal"><span class="pre">code</span></tt> &#8212; Interpreter base classes<a class="headerlink" href="#code-interpreter-base-classes" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">code</span></tt> module provides facilities to implement read-eval-print
+loops in Python.  Two classes and convenience functions are included
+which can be used to build applications which provide an interactive
+interpreter prompt.</p>
+<p>class class code.InteractiveInterpreter([locals])</p>
+<blockquote>
+This class deals with parsing and interpreter state (the user&#8217;s
+namespace); it does not deal with input buffering or prompting or
+input file naming (the filename is always passed in explicitly).
+The optional <em>locals</em> argument specifies the dictionary in which
+code will be executed; it defaults to a newly created dictionary
+with key <tt class="docutils literal"><span class="pre">'__name__'</span></tt> set to <tt class="docutils literal"><span class="pre">'__console__'</span></tt> and key
+<tt class="docutils literal"><span class="pre">'__doc__'</span></tt> set to <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>class class code.InteractiveConsole([locals[, filename]])</p>
+<blockquote>
+Closely emulate the behavior of the interactive Python interpreter.
+This class builds on <tt class="docutils literal"><span class="pre">InteractiveInterpreter</span></tt> and adds prompting
+using the familiar <tt class="docutils literal"><span class="pre">sys.ps1</span></tt> and <tt class="docutils literal"><span class="pre">sys.ps2</span></tt>, and input
+buffering.</blockquote>
+<p>code.interact([banner[, readfunc[, local]]])</p>
+<blockquote>
+Convenience function to run a read-eval-print loop.  This creates a
+new instance of <tt class="docutils literal"><span class="pre">InteractiveConsole</span></tt> and sets <em>readfunc</em> to be
+used as the <tt class="docutils literal"><span class="pre">raw_input()</span></tt> method, if provided.  If <em>local</em> is
+provided, it is passed to the <tt class="docutils literal"><span class="pre">InteractiveConsole</span></tt> constructor
+for use as the default namespace for the interpreter loop.  The
+<tt class="docutils literal"><span class="pre">interact()</span></tt> method of the instance is then run with <em>banner</em>
+passed as the banner to use, if provided.  The console object is
+discarded after use.</blockquote>
+<p>code.compile_command(source[, filename[, symbol]])</p>
+<blockquote>
+<p>This function is useful for programs that want to emulate Python&#8217;s
+interpreter main loop (a.k.a. the read-eval-print loop).  The
+tricky part is to determine when the user has entered an incomplete
+command that can be completed by entering more text (as opposed to
+a complete command or a syntax error).  This function <em>almost</em>
+always makes the same decision as the real interpreter main loop.</p>
+<p><em>source</em> is the source string; <em>filename</em> is the optional filename
+from which source was read, defaulting to <tt class="docutils literal"><span class="pre">'&lt;input&gt;'</span></tt>; and
+<em>symbol</em> is the optional grammar start symbol, which should be
+either <tt class="docutils literal"><span class="pre">'single'</span></tt> (the default) or <tt class="docutils literal"><span class="pre">'eval'</span></tt>.</p>
+<p>Returns a code object (the same as <tt class="docutils literal"><span class="pre">compile(source,</span> <span class="pre">filename,</span>
+<span class="pre">symbol)</span></tt>) if the command is complete and valid; <tt class="xref docutils literal"><span class="pre">None</span></tt> if the
+command is incomplete; raises <tt class="docutils literal"><span class="pre">SyntaxError</span></tt> if the command is
+complete and contains a syntax error, or raises <tt class="docutils literal"><span class="pre">OverflowError</span></tt>
+or <tt class="docutils literal"><span class="pre">ValueError</span></tt> if the command contains an invalid literal.</p>
+</blockquote>
+<div class="section" id="interactive-interpreter-objects">
+<h2>27.1.1. Interactive Interpreter Objects<a class="headerlink" href="#interactive-interpreter-objects" title="Permalink to this headline">¶</a></h2>
+<p>InteractiveInterpreter.runsource(source[, filename[, symbol]])</p>
+<blockquote>
+<p>Compile and run some source in the interpreter. Arguments are the
+same as for <tt class="docutils literal"><span class="pre">compile_command()</span></tt>; the default for <em>filename</em> is
+<tt class="docutils literal"><span class="pre">'&lt;input&gt;'</span></tt>, and for <em>symbol</em> is <tt class="docutils literal"><span class="pre">'single'</span></tt>.  One several
+things can happen:</p>
+<ul class="simple">
+<li>The input is incorrect; <tt class="docutils literal"><span class="pre">compile_command()</span></tt> raised an exception
+(<tt class="docutils literal"><span class="pre">SyntaxError</span></tt> or <tt class="docutils literal"><span class="pre">OverflowError</span></tt>).  A syntax traceback will
+be printed by calling the <tt class="docutils literal"><span class="pre">showsyntaxerror()</span></tt> method.
+<tt class="docutils literal"><span class="pre">runsource()</span></tt> returns <tt class="xref docutils literal"><span class="pre">False</span></tt>.</li>
+<li>The input is incomplete, and more input is required;
+<tt class="docutils literal"><span class="pre">compile_command()</span></tt> returned <tt class="xref docutils literal"><span class="pre">None</span></tt>. <tt class="docutils literal"><span class="pre">runsource()</span></tt> returns
+<tt class="xref docutils literal"><span class="pre">True</span></tt>.</li>
+<li>The input is complete; <tt class="docutils literal"><span class="pre">compile_command()</span></tt> returned a code
+object.  The code is executed by calling the <tt class="docutils literal"><span class="pre">runcode()</span></tt> (which
+also handles run-time exceptions, except for <tt class="docutils literal"><span class="pre">SystemExit</span></tt>).
+<tt class="docutils literal"><span class="pre">runsource()</span></tt> returns <tt class="xref docutils literal"><span class="pre">False</span></tt>.</li>
+</ul>
+<p>The return value can be used to decide whether to use <tt class="docutils literal"><span class="pre">sys.ps1</span></tt>
+or <tt class="docutils literal"><span class="pre">sys.ps2</span></tt> to prompt the next line.</p>
+</blockquote>
+<p>InteractiveInterpreter.runcode(code)</p>
+<blockquote>
+<p>Execute a code object. When an exception occurs,
+<tt class="docutils literal"><span class="pre">showtraceback()</span></tt> is called to display a traceback.  All
+exceptions are caught except <tt class="docutils literal"><span class="pre">SystemExit</span></tt>, which is allowed to
+propagate.</p>
+<p>A note about <tt class="docutils literal"><span class="pre">KeyboardInterrupt</span></tt>: this exception may occur
+elsewhere in this code, and may not always be caught.  The caller
+should be prepared to deal with it.</p>
+</blockquote>
+<p>InteractiveInterpreter.showsyntaxerror([filename])</p>
+<blockquote>
+Display the syntax error that just occurred.  This does not display
+a stack trace because there isn&#8217;t one for syntax errors. If
+<em>filename</em> is given, it is stuffed into the exception instead of
+the default filename provided by Python&#8217;s parser, because it always
+uses <tt class="docutils literal"><span class="pre">'&lt;string&gt;'</span></tt> when reading from a string. The output is
+written by the <tt class="docutils literal"><span class="pre">write()</span></tt> method.</blockquote>
+<p>InteractiveInterpreter.showtraceback()</p>
+<blockquote>
+Display the exception that just occurred.  We remove the first
+stack item because it is within the interpreter object
+implementation. The output is written by the <tt class="docutils literal"><span class="pre">write()</span></tt> method.</blockquote>
+<p>InteractiveInterpreter.write(data)</p>
+<blockquote>
+Write a string to the standard error stream (<tt class="docutils literal"><span class="pre">sys.stderr</span></tt>).
+Derived classes should override this to provide the appropriate
+output handling as needed.</blockquote>
+</div>
+<div class="section" id="interactive-console-objects">
+<h2>27.1.2. Interactive Console Objects<a class="headerlink" href="#interactive-console-objects" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">InteractiveConsole</span></tt> class is a subclass of
+<tt class="docutils literal"><span class="pre">InteractiveInterpreter</span></tt>, and so offers all the methods of the
+interpreter objects as well as the following additions.</p>
+<p>InteractiveConsole.interact([banner])</p>
+<blockquote>
+Closely emulate the interactive Python console. The optional banner
+argument specify the banner to print before the first interaction;
+by default it prints a banner similar to the one printed by the
+standard Python interpreter, followed by the class name of the
+console object in parentheses (so as not to confuse this with the
+real interpreter &#8211; since it&#8217;s so close!).</blockquote>
+<p>InteractiveConsole.push(line)</p>
+<blockquote>
+Push a line of source text to the interpreter. The line should not
+have a trailing newline; it may have internal newlines.  The line
+is appended to a buffer and the interpreter&#8217;s <tt class="docutils literal"><span class="pre">runsource()</span></tt>
+method is called with the concatenated contents of the buffer as
+source.  If this indicates that the command was executed or
+invalid, the buffer is reset; otherwise, the command is incomplete,
+and the buffer is left as it was after the line was appended.  The
+return value is <tt class="xref docutils literal"><span class="pre">True</span></tt> if more input is required, <tt class="xref docutils literal"><span class="pre">False</span></tt> if
+the line was dealt with in some way (this is the same as
+<tt class="docutils literal"><span class="pre">runsource()</span></tt>).</blockquote>
+<p>InteractiveConsole.resetbuffer()</p>
+<blockquote>
+Remove any unhandled source text from the input buffer.</blockquote>
+<p>InteractiveConsole.raw_input([prompt])</p>
+<blockquote>
+Write a prompt and read a line.  The returned line does not include
+the trailing newline.  When the user enters the EOF key sequence,
+<tt class="docutils literal"><span class="pre">EOFError</span></tt> is raised. The base implementation uses the built-in
+function <tt class="docutils literal"><span class="pre">raw_input()</span></tt>; a subclass may replace this with a
+different implementation.</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="codeop.html" title="27.2. codeop — Compile Python code"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="custominterp.html" title="27. Custom Python Interpreters"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="custominterp.html" >27. Custom Python Interpreters</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

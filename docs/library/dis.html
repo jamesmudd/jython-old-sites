@@ -1,0 +1,693 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>29.10. dis — Disassembler for Python bytecode &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="29. Python Language Services" href="language.html" />
+    <link rel="next" title="29.11. pickletools — Tools for pickle developers." href="pickletools.html" />
+    <link rel="prev" title="29.9. compileall — Byte-compile Python libraries" href="compileall.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="pickletools.html" title="29.11. pickletools — Tools for pickle developers."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="compileall.html" title="29.9. compileall — Byte-compile Python libraries"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="language.html" accesskey="U">29. Python Language Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">29.10. <tt class="docutils literal"><span class="pre">dis</span></tt> &#8212; Disassembler for Python bytecode</a><ul>
+<li><a class="reference external" href="#python-bytecode-instructions">29.10.1. Python Bytecode Instructions</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="compileall.html"
+                                  title="previous chapter">29.9. <tt class="docutils literal docutils literal"><span class="pre">compileall</span></tt> &#8212; Byte-compile Python libraries</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="pickletools.html"
+                                  title="next chapter">29.11. <tt class="docutils literal"><span class="pre">pickletools</span></tt> &#8212; Tools for pickle developers.</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/dis.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="dis-disassembler-for-python-bytecode">
+<h1>29.10. <tt class="docutils literal"><span class="pre">dis</span></tt> &#8212; Disassembler for Python bytecode<a class="headerlink" href="#dis-disassembler-for-python-bytecode" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">dis</span></tt> module supports the analysis of Python <em>bytecode</em> by
+disassembling it.  Since there is no Python assembler, this module
+defines the Python assembly language.  The Python bytecode which this
+module takes as an input is defined in the file  <tt class="docutils literal"><span class="pre">Include/opcode.h</span></tt>
+and used by the compiler and the interpreter.</p>
+<p>Example: Given the function <tt class="docutils literal"><span class="pre">myfunc()</span></tt>:</p>
+<blockquote>
+<dl class="docutils">
+<dt>def myfunc(alist):</dt>
+<dd>return len(alist)</dd>
+</dl>
+</blockquote>
+<p>the following command can be used to get the disassembly of
+<tt class="docutils literal"><span class="pre">myfunc()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dis</span><span class="o">.</span><span class="n">dis</span><span class="p">(</span><span class="n">myfunc</span><span class="p">)</span>
+<span class="go">  2           0 LOAD_GLOBAL              0 (len)</span>
+<span class="go">              3 LOAD_FAST                0 (alist)</span>
+<span class="go">              6 CALL_FUNCTION            1</span>
+<span class="go">              9 RETURN_VALUE</span>
+</pre></div>
+</div>
+<p>(The &#8220;2&#8221; is a line number).</p>
+<p>The <tt class="docutils literal"><span class="pre">dis</span></tt> module defines the following functions and constants:</p>
+<p>dis.dis([bytesource])</p>
+<blockquote>
+Disassemble the <em>bytesource</em> object. <em>bytesource</em> can denote either
+a module, a class, a method, a function, or a code object.   For a
+module, it disassembles all functions.  For a class, it
+disassembles all methods.  For a single code sequence, it prints
+one line per bytecode instruction.  If no object is provided, it
+disassembles the last traceback.</blockquote>
+<p>dis.distb([tb])</p>
+<blockquote>
+Disassembles the top-of-stack function of a traceback, using the
+last traceback if none was passed.  The instruction causing the
+exception is indicated.</blockquote>
+<p>dis.disassemble(code[, lasti])</p>
+<blockquote>
+<p>Disassembles a code object, indicating the last instruction if
+<em>lasti</em> was provided.  The output is divided in the following
+columns:</p>
+<ol class="arabic simple">
+<li>the line number, for the first instruction of each line</li>
+<li>the current instruction, indicated as <tt class="docutils literal"><span class="pre">--&gt;</span></tt>,</li>
+<li>a labelled instruction, indicated with <tt class="docutils literal"><span class="pre">&gt;&gt;</span></tt>,</li>
+<li>the address of the instruction,</li>
+<li>the operation code name,</li>
+<li>operation parameters, and</li>
+<li>interpretation of the parameters in parentheses.</li>
+</ol>
+<p>The parameter interpretation recognizes local and global variable
+names, constant values, branch targets, and compare operators.</p>
+</blockquote>
+<p>dis.disco(code[, lasti])</p>
+<blockquote>
+A synonym for disassemble.  It is more convenient to type, and kept
+for compatibility with earlier Python releases.</blockquote>
+<p>dis.opname</p>
+<blockquote>
+Sequence of operation names, indexable using the bytecode.</blockquote>
+<p>dis.opmap</p>
+<blockquote>
+Dictionary mapping bytecodes to operation names.</blockquote>
+<p>dis.cmp_op</p>
+<blockquote>
+Sequence of all compare operation names.</blockquote>
+<p>dis.hasconst</p>
+<blockquote>
+Sequence of bytecodes that have a constant parameter.</blockquote>
+<p>dis.hasfree</p>
+<blockquote>
+Sequence of bytecodes that access a free variable.</blockquote>
+<p>dis.hasname</p>
+<blockquote>
+Sequence of bytecodes that access an attribute by name.</blockquote>
+<p>dis.hasjrel</p>
+<blockquote>
+Sequence of bytecodes that have a relative jump target.</blockquote>
+<p>dis.hasjabs</p>
+<blockquote>
+Sequence of bytecodes that have an absolute jump target.</blockquote>
+<p>dis.haslocal</p>
+<blockquote>
+Sequence of bytecodes that access a local variable.</blockquote>
+<p>dis.hascompare</p>
+<blockquote>
+Sequence of bytecodes of Boolean operations.</blockquote>
+<div class="section" id="python-bytecode-instructions">
+<h2>29.10.1. Python Bytecode Instructions<a class="headerlink" href="#python-bytecode-instructions" title="Permalink to this headline">¶</a></h2>
+<p>The Python compiler currently generates the following bytecode
+instructions.</p>
+<p>STOP_CODE()</p>
+<blockquote>
+Indicates end-of-code to the compiler, not used by the interpreter.</blockquote>
+<p>NOP()</p>
+<blockquote>
+Do nothing code.  Used as a placeholder by the bytecode optimizer.</blockquote>
+<p>POP_TOP()</p>
+<blockquote>
+Removes the top-of-stack (TOS) item.</blockquote>
+<p>ROT_TWO()</p>
+<blockquote>
+Swaps the two top-most stack items.</blockquote>
+<p>ROT_THREE()</p>
+<blockquote>
+Lifts second and third stack item one position up, moves top down
+to position three.</blockquote>
+<p>ROT_FOUR()</p>
+<blockquote>
+Lifts second, third and forth stack item one position up, moves top
+down to position four.</blockquote>
+<p>DUP_TOP()</p>
+<blockquote>
+Duplicates the reference on top of the stack.</blockquote>
+<p>Unary Operations take the top of the stack, apply the operation, and
+push the result back on the stack.</p>
+<p>UNARY_POSITIVE()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">+TOS</span></tt>.</blockquote>
+<p>UNARY_NEGATIVE()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">-TOS</span></tt>.</blockquote>
+<p>UNARY_NOT()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">not</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>UNARY_CONVERT()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">`TOS`</span></tt>.</blockquote>
+<p>UNARY_INVERT()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">~TOS</span></tt>.</blockquote>
+<p>GET_ITER()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">iter(TOS)</span></tt>.</blockquote>
+<p>Binary operations remove the top of the stack (TOS) and the second
+top-most stack item (TOS1) from the stack.  They perform the
+operation, and put the result back on the stack.</p>
+<p>BINARY_POWER()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">**</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>BINARY_MULTIPLY()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">*</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>BINARY_DIVIDE()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">/</span> <span class="pre">TOS</span></tt> when <tt class="docutils literal"><span class="pre">from</span> <span class="pre">__future__</span> <span class="pre">import</span>
+<span class="pre">division</span></tt> is not in effect.</blockquote>
+<p>BINARY_FLOOR_DIVIDE()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">//</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>BINARY_TRUE_DIVIDE()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">/</span> <span class="pre">TOS</span></tt> when <tt class="docutils literal"><span class="pre">from</span> <span class="pre">__future__</span> <span class="pre">import</span>
+<span class="pre">division</span></tt> is in effect.</blockquote>
+<p>BINARY_MODULO()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">%</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>BINARY_ADD()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">+</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>BINARY_SUBTRACT()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">-</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>BINARY_SUBSCR()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1[TOS]</span></tt>.</blockquote>
+<p>BINARY_LSHIFT()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">&lt;&lt;</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>BINARY_RSHIFT()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">&gt;&gt;</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>BINARY_AND()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">&amp;</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>BINARY_XOR()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">^</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>BINARY_OR()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">|</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>In-place operations are like binary operations, in that they remove
+TOS and TOS1, and push the result back on the stack, but the operation
+is done in-place when TOS1 supports it, and the resulting TOS may be
+(but does not have to be) the original TOS1.</p>
+<p>INPLACE_POWER()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">**</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>INPLACE_MULTIPLY()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">*</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>INPLACE_DIVIDE()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">/</span> <span class="pre">TOS</span></tt> when <tt class="docutils literal"><span class="pre">from</span> <span class="pre">__future__</span>
+<span class="pre">import</span> <span class="pre">division</span></tt> is not in effect.</blockquote>
+<p>INPLACE_FLOOR_DIVIDE()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">//</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>INPLACE_TRUE_DIVIDE()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">/</span> <span class="pre">TOS</span></tt> when <tt class="docutils literal"><span class="pre">from</span> <span class="pre">__future__</span>
+<span class="pre">import</span> <span class="pre">division</span></tt> is in effect.</blockquote>
+<p>INPLACE_MODULO()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">%</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>INPLACE_ADD()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">+</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>INPLACE_SUBTRACT()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">-</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>INPLACE_LSHIFT()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">&lt;&lt;</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>INPLACE_RSHIFT()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">&gt;&gt;</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>INPLACE_AND()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">&amp;</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>INPLACE_XOR()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">^</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>INPLACE_OR()</p>
+<blockquote>
+Implements in-place <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1</span> <span class="pre">|</span> <span class="pre">TOS</span></tt>.</blockquote>
+<p>The slice opcodes take up to three parameters.</p>
+<p>SLICE+0()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS[:]</span></tt>.</blockquote>
+<p>SLICE+1()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1[TOS:]</span></tt>.</blockquote>
+<p>SLICE+2()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS1[:TOS]</span></tt>.</blockquote>
+<p>SLICE+3()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS</span> <span class="pre">=</span> <span class="pre">TOS2[TOS1:TOS]</span></tt>.</blockquote>
+<p>Slice assignment needs even an additional parameter.  As any
+statement, they put nothing on the stack.</p>
+<p>STORE_SLICE+0()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS[:]</span> <span class="pre">=</span> <span class="pre">TOS1</span></tt>.</blockquote>
+<p>STORE_SLICE+1()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS1[TOS:]</span> <span class="pre">=</span> <span class="pre">TOS2</span></tt>.</blockquote>
+<p>STORE_SLICE+2()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS1[:TOS]</span> <span class="pre">=</span> <span class="pre">TOS2</span></tt>.</blockquote>
+<p>STORE_SLICE+3()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS2[TOS1:TOS]</span> <span class="pre">=</span> <span class="pre">TOS3</span></tt>.</blockquote>
+<p>DELETE_SLICE+0()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">del</span> <span class="pre">TOS[:]</span></tt>.</blockquote>
+<p>DELETE_SLICE+1()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">del</span> <span class="pre">TOS1[TOS:]</span></tt>.</blockquote>
+<p>DELETE_SLICE+2()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">del</span> <span class="pre">TOS1[:TOS]</span></tt>.</blockquote>
+<p>DELETE_SLICE+3()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">del</span> <span class="pre">TOS2[TOS1:TOS]</span></tt>.</blockquote>
+<p>STORE_SUBSCR()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS1[TOS]</span> <span class="pre">=</span> <span class="pre">TOS2</span></tt>.</blockquote>
+<p>DELETE_SUBSCR()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">del</span> <span class="pre">TOS1[TOS]</span></tt>.</blockquote>
+<p>Miscellaneous opcodes.</p>
+<p>PRINT_EXPR()</p>
+<blockquote>
+Implements the expression statement for the interactive mode.  TOS
+is removed from the stack and printed.  In non-interactive mode, an
+expression statement is terminated with <tt class="docutils literal"><span class="pre">POP_STACK</span></tt>.</blockquote>
+<p>PRINT_ITEM()</p>
+<blockquote>
+Prints TOS to the file-like object bound to <tt class="docutils literal"><span class="pre">sys.stdout</span></tt>.  There
+is one such instruction for each item in the <tt class="docutils literal"><span class="pre">print</span></tt> statement.</blockquote>
+<p>PRINT_ITEM_TO()</p>
+<blockquote>
+Like <tt class="docutils literal"><span class="pre">PRINT_ITEM</span></tt>, but prints the item second from TOS to the
+file-like object at TOS.  This is used by the extended print
+statement.</blockquote>
+<p>PRINT_NEWLINE()</p>
+<blockquote>
+Prints a new line on <tt class="docutils literal"><span class="pre">sys.stdout</span></tt>.  This is generated as the last
+operation of a <tt class="docutils literal"><span class="pre">print</span></tt> statement, unless the statement ends with
+a comma.</blockquote>
+<p>PRINT_NEWLINE_TO()</p>
+<blockquote>
+Like <tt class="docutils literal"><span class="pre">PRINT_NEWLINE</span></tt>, but prints the new line on the file-like
+object on the TOS.  This is used by the extended print statement.</blockquote>
+<p>BREAK_LOOP()</p>
+<blockquote>
+Terminates a loop due to a <tt class="docutils literal"><span class="pre">break</span></tt> statement.</blockquote>
+<p>CONTINUE_LOOP(target)</p>
+<blockquote>
+Continues a loop due to a <tt class="docutils literal"><span class="pre">continue</span></tt> statement.  <em>target</em> is the
+address to jump to (which should be a <tt class="docutils literal"><span class="pre">FOR_ITER</span></tt> instruction).</blockquote>
+<p>LIST_APPEND()</p>
+<blockquote>
+Calls <tt class="docutils literal"><span class="pre">list.append(TOS1,</span> <span class="pre">TOS)</span></tt>.  Used to implement list
+comprehensions.</blockquote>
+<p>LOAD_LOCALS()</p>
+<blockquote>
+Pushes a reference to the locals of the current scope on the stack.
+This is used in the code for a class definition: After the class
+body is evaluated, the locals are passed to the class definition.</blockquote>
+<p>RETURN_VALUE()</p>
+<blockquote>
+Returns with TOS to the caller of the function.</blockquote>
+<p>YIELD_VALUE()</p>
+<blockquote>
+Pops <tt class="docutils literal"><span class="pre">TOS</span></tt> and yields it from a <em>generator</em>.</blockquote>
+<p>IMPORT_STAR()</p>
+<blockquote>
+Loads all symbols not starting with <tt class="docutils literal"><span class="pre">'_'</span></tt> directly from the
+module TOS to the local namespace. The module is popped after
+loading all names. This opcode implements <tt class="docutils literal"><span class="pre">from</span> <span class="pre">module</span> <span class="pre">import</span> <span class="pre">*</span></tt>.</blockquote>
+<p>EXEC_STMT()</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">exec</span> <span class="pre">TOS2,TOS1,TOS</span></tt>.  The compiler fills missing
+optional parameters with <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>POP_BLOCK()</p>
+<blockquote>
+Removes one block from the block stack.  Per frame, there is a
+stack of blocks, denoting nested loops, try statements, and such.</blockquote>
+<p>END_FINALLY()</p>
+<blockquote>
+Terminates a <tt class="docutils literal"><span class="pre">finally</span></tt> clause.  The interpreter recalls whether
+the exception has to be re-raised, or whether the function returns,
+and continues with the outer-next block.</blockquote>
+<p>BUILD_CLASS()</p>
+<blockquote>
+Creates a new class object.  TOS is the methods dictionary, TOS1
+the tuple of the names of the base classes, and TOS2 the class
+name.</blockquote>
+<p>WITH_CLEANUP()</p>
+<blockquote>
+<p>Cleans up the stack when a <tt class="docutils literal"><span class="pre">with</span></tt> statement block exits.  On top
+of the stack are 1&#8211;3 values indicating how/why the finally clause
+was entered:</p>
+<ul class="simple">
+<li>TOP = <tt class="xref docutils literal"><span class="pre">None</span></tt></li>
+<li>(TOP, SECOND) = (<tt class="docutils literal"><span class="pre">WHY_{RETURN,CONTINUE}</span></tt>), retval</li>
+<li>TOP = <tt class="docutils literal"><span class="pre">WHY_*</span></tt>; no retval below it</li>
+<li>(TOP, SECOND, THIRD) = exc_info()</li>
+</ul>
+<p>Under them is EXIT, the context manager&#8217;s <tt class="docutils literal"><span class="pre">__exit__()</span></tt> bound
+method.</p>
+<p>In the last case, <tt class="docutils literal"><span class="pre">EXIT(TOP,</span> <span class="pre">SECOND,</span> <span class="pre">THIRD)</span></tt> is called, otherwise
+<tt class="docutils literal"><span class="pre">EXIT(None,</span> <span class="pre">None,</span> <span class="pre">None)</span></tt>.</p>
+<p>EXIT is removed from the stack, leaving the values above it in the
+same order. In addition, if the stack represents an exception,
+<em>and</em> the function call returns a &#8216;true&#8217; value, this information is
+&#8220;zapped&#8221;, to prevent <tt class="docutils literal"><span class="pre">END_FINALLY</span></tt> from re-raising the exception.
+(But non-local gotos should still be resumed.)</p>
+</blockquote>
+<p>All of the following opcodes expect arguments.  An argument is two
+bytes, with the more significant byte last.</p>
+<p>STORE_NAME(namei)</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">name</span> <span class="pre">=</span> <span class="pre">TOS</span></tt>. <em>namei</em> is the index of <em>name</em> in the
+attribute <tt class="docutils literal"><span class="pre">co_names</span></tt> of the code object. The compiler tries to
+use <tt class="docutils literal"><span class="pre">STORE_FAST</span></tt> or <tt class="docutils literal"><span class="pre">STORE_GLOBAL</span></tt> if possible.</blockquote>
+<p>DELETE_NAME(namei)</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">del</span> <span class="pre">name</span></tt>, where <em>namei</em> is the index into
+<tt class="docutils literal"><span class="pre">co_names</span></tt> attribute of the code object.</blockquote>
+<p>UNPACK_SEQUENCE(count)</p>
+<blockquote>
+Unpacks TOS into <em>count</em> individual values, which are put onto the
+stack right-to-left.</blockquote>
+<p>DUP_TOPX(count)</p>
+<blockquote>
+Duplicate <em>count</em> items, keeping them in the same order. Due to
+implementation limits, <em>count</em> should be between 1 and 5 inclusive.</blockquote>
+<p>STORE_ATTR(namei)</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">TOS.name</span> <span class="pre">=</span> <span class="pre">TOS1</span></tt>, where <em>namei</em> is the index of name
+in <tt class="docutils literal"><span class="pre">co_names</span></tt>.</blockquote>
+<p>DELETE_ATTR(namei)</p>
+<blockquote>
+Implements <tt class="docutils literal"><span class="pre">del</span> <span class="pre">TOS.name</span></tt>, using <em>namei</em> as index into
+<tt class="docutils literal"><span class="pre">co_names</span></tt>.</blockquote>
+<p>STORE_GLOBAL(namei)</p>
+<blockquote>
+Works as <tt class="docutils literal"><span class="pre">STORE_NAME</span></tt>, but stores the name as a global.</blockquote>
+<p>DELETE_GLOBAL(namei)</p>
+<blockquote>
+Works as <tt class="docutils literal"><span class="pre">DELETE_NAME</span></tt>, but deletes a global name.</blockquote>
+<p>LOAD_CONST(consti)</p>
+<blockquote>
+Pushes <tt class="docutils literal"><span class="pre">co_consts[consti]</span></tt> onto the stack.</blockquote>
+<p>LOAD_NAME(namei)</p>
+<blockquote>
+Pushes the value associated with <tt class="docutils literal"><span class="pre">co_names[namei]</span></tt> onto the
+stack.</blockquote>
+<p>BUILD_TUPLE(count)</p>
+<blockquote>
+Creates a tuple consuming <em>count</em> items from the stack, and pushes
+the resulting tuple onto the stack.</blockquote>
+<p>BUILD_LIST(count)</p>
+<blockquote>
+Works as <tt class="docutils literal"><span class="pre">BUILD_TUPLE</span></tt>, but creates a list.</blockquote>
+<p>BUILD_MAP(count)</p>
+<blockquote>
+Pushes a new dictionary object onto the stack.  The dictionary is
+pre-sized to hold <em>count</em> entries.</blockquote>
+<p>LOAD_ATTR(namei)</p>
+<blockquote>
+Replaces TOS with <tt class="docutils literal"><span class="pre">getattr(TOS,</span> <span class="pre">co_names[namei])</span></tt>.</blockquote>
+<p>COMPARE_OP(opname)</p>
+<blockquote>
+Performs a Boolean operation.  The operation name can be found in
+<tt class="docutils literal"><span class="pre">cmp_op[opname]</span></tt>.</blockquote>
+<p>IMPORT_NAME(namei)</p>
+<blockquote>
+Imports the module <tt class="docutils literal"><span class="pre">co_names[namei]</span></tt>.  TOS and TOS1 are popped
+and provide the <em>fromlist</em> and <em>level</em> arguments of
+<tt class="docutils literal"><span class="pre">__import__()</span></tt>.  The module object is pushed onto the stack.  The
+current namespace is not affected: for a proper import statement, a
+subsequent <tt class="docutils literal"><span class="pre">STORE_FAST</span></tt> instruction modifies the namespace.</blockquote>
+<p>IMPORT_FROM(namei)</p>
+<blockquote>
+Loads the attribute <tt class="docutils literal"><span class="pre">co_names[namei]</span></tt> from the module found in
+TOS. The resulting object is pushed onto the stack, to be
+subsequently stored by a <tt class="docutils literal"><span class="pre">STORE_FAST</span></tt> instruction.</blockquote>
+<p>JUMP_FORWARD(delta)</p>
+<blockquote>
+Increments bytecode counter by <em>delta</em>.</blockquote>
+<p>JUMP_IF_TRUE(delta)</p>
+<blockquote>
+If TOS is true, increment the bytecode counter by <em>delta</em>.  TOS is
+left on the stack.</blockquote>
+<p>JUMP_IF_FALSE(delta)</p>
+<blockquote>
+If TOS is false, increment the bytecode counter by <em>delta</em>.  TOS is
+not changed.</blockquote>
+<p>JUMP_ABSOLUTE(target)</p>
+<blockquote>
+Set bytecode counter to <em>target</em>.</blockquote>
+<p>FOR_ITER(delta)</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">TOS</span></tt> is an <em>iterator</em>.  Call its <tt class="docutils literal"><span class="pre">next()</span></tt> method.  If this
+yields a new value, push it on the stack (leaving the iterator
+below it).  If the iterator indicates it is exhausted <tt class="docutils literal"><span class="pre">TOS</span></tt> is
+popped, and the bytecode counter is incremented by <em>delta</em>.</blockquote>
+<p>LOAD_GLOBAL(namei)</p>
+<blockquote>
+Loads the global named <tt class="docutils literal"><span class="pre">co_names[namei]</span></tt> onto the stack.</blockquote>
+<p>SETUP_LOOP(delta)</p>
+<blockquote>
+Pushes a block for a loop onto the block stack.  The block spans
+from the current instruction with a size of <em>delta</em> bytes.</blockquote>
+<p>SETUP_EXCEPT(delta)</p>
+<blockquote>
+Pushes a try block from a try-except clause onto the block stack.
+<em>delta</em> points to the first except block.</blockquote>
+<p>SETUP_FINALLY(delta)</p>
+<blockquote>
+Pushes a try block from a try-except clause onto the block stack.
+<em>delta</em> points to the finally block.</blockquote>
+<p>STORE_MAP()</p>
+<blockquote>
+Store a key and value pair in a dictionary.  Pops the key and value
+while leaving the dictionary on the stack.</blockquote>
+<p>LOAD_FAST(var_num)</p>
+<blockquote>
+Pushes a reference to the local <tt class="docutils literal"><span class="pre">co_varnames[var_num]</span></tt> onto the
+stack.</blockquote>
+<p>STORE_FAST(var_num)</p>
+<blockquote>
+Stores TOS into the local <tt class="docutils literal"><span class="pre">co_varnames[var_num]</span></tt>.</blockquote>
+<p>DELETE_FAST(var_num)</p>
+<blockquote>
+Deletes local <tt class="docutils literal"><span class="pre">co_varnames[var_num]</span></tt>.</blockquote>
+<p>LOAD_CLOSURE(i)</p>
+<blockquote>
+Pushes a reference to the cell contained in slot <em>i</em> of the cell
+and free variable storage.  The name of the variable is
+<tt class="docutils literal"><span class="pre">co_cellvars[i]</span></tt> if <em>i</em> is less than the length of <em>co_cellvars</em>.
+Otherwise it is  <tt class="docutils literal"><span class="pre">co_freevars[i</span> <span class="pre">-</span> <span class="pre">len(co_cellvars)]</span></tt>.</blockquote>
+<p>LOAD_DEREF(i)</p>
+<blockquote>
+Loads the cell contained in slot <em>i</em> of the cell and free variable
+storage. Pushes a reference to the object the cell contains on the
+stack.</blockquote>
+<p>STORE_DEREF(i)</p>
+<blockquote>
+Stores TOS into the cell contained in slot <em>i</em> of the cell and free
+variable storage.</blockquote>
+<p>SET_LINENO(lineno)</p>
+<blockquote>
+This opcode is obsolete.</blockquote>
+<p>RAISE_VARARGS(argc)</p>
+<blockquote>
+Raises an exception. <em>argc</em> indicates the number of parameters to
+the raise statement, ranging from 0 to 3.  The handler will find
+the traceback as TOS2, the parameter as TOS1, and the exception as
+TOS.</blockquote>
+<p>CALL_FUNCTION(argc)</p>
+<blockquote>
+Calls a function.  The low byte of <em>argc</em> indicates the number of
+positional parameters, the high byte the number of keyword
+parameters. On the stack, the opcode finds the keyword parameters
+first.  For each keyword argument, the value is on top of the key.
+Below the keyword parameters, the positional parameters are on the
+stack, with the right-most parameter on top.  Below the parameters,
+the function object to call is on the stack.  Pops all function
+arguments, and the function itself off the stack, and pushes the
+return value.</blockquote>
+<p>MAKE_FUNCTION(argc)</p>
+<blockquote>
+Pushes a new function object on the stack.  TOS is the code
+associated with the function.  The function object is defined to
+have <em>argc</em> default parameters, which are found below TOS.</blockquote>
+<p>MAKE_CLOSURE(argc)</p>
+<blockquote>
+Creates a new function object, sets its <em>func_closure</em> slot, and
+pushes it on the stack.  TOS is the code associated with the
+function, TOS1 the tuple containing cells for the closure&#8217;s free
+variables.  The function also has <em>argc</em> default parameters, which
+are found below the cells.</blockquote>
+<p>BUILD_SLICE(argc)</p>
+<blockquote>
+Pushes a slice object on the stack.  <em>argc</em> must be 2 or 3.  If it
+is 2, <tt class="docutils literal"><span class="pre">slice(TOS1,</span> <span class="pre">TOS)</span></tt> is pushed; if it is 3, <tt class="docutils literal"><span class="pre">slice(TOS2,</span>
+<span class="pre">TOS1,</span> <span class="pre">TOS)</span></tt> is pushed. See the <tt class="docutils literal"><span class="pre">slice()</span></tt> built-in function for
+more information.</blockquote>
+<p>EXTENDED_ARG(ext)</p>
+<blockquote>
+Prefixes any opcode which has an argument too big to fit into the
+default two bytes.  <em>ext</em> holds two additional bytes which, taken
+together with the subsequent opcode&#8217;s argument, comprise a four-
+byte argument, <em>ext</em> being the two most-significant bytes.</blockquote>
+<p>CALL_FUNCTION_VAR(argc)</p>
+<blockquote>
+Calls a function. <em>argc</em> is interpreted as in <tt class="docutils literal"><span class="pre">CALL_FUNCTION</span></tt>.
+The top element on the stack contains the variable argument list,
+followed by keyword and positional arguments.</blockquote>
+<p>CALL_FUNCTION_KW(argc)</p>
+<blockquote>
+Calls a function. <em>argc</em> is interpreted as in <tt class="docutils literal"><span class="pre">CALL_FUNCTION</span></tt>.
+The top element on the stack contains the keyword arguments
+dictionary,  followed by explicit keyword and positional arguments.</blockquote>
+<p>CALL_FUNCTION_VAR_KW(argc)</p>
+<blockquote>
+Calls a function. <em>argc</em> is interpreted as in <tt class="docutils literal"><span class="pre">CALL_FUNCTION</span></tt>.
+The top element on the stack contains the keyword arguments
+dictionary, followed by the variable-arguments tuple, followed by
+explicit keyword and positional arguments.</blockquote>
+<p>HAVE_ARGUMENT()</p>
+<blockquote>
+This is not really an opcode.  It identifies the dividing line
+between opcodes which don&#8217;t take arguments <tt class="docutils literal"><span class="pre">&lt;</span> <span class="pre">HAVE_ARGUMENT</span></tt> and
+those which do <tt class="docutils literal"><span class="pre">&gt;=</span> <span class="pre">HAVE_ARGUMENT</span></tt>.</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pickletools.html" title="29.11. pickletools — Tools for pickle developers."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="compileall.html" title="29.9. compileall — Byte-compile Python libraries"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="language.html" >29. Python Language Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,761 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>12.4. tarfile — Read and write tar archive files &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="12. Data Compression and Archiving" href="archiving.html" />
+    <link rel="next" title="13. File Formats" href="fileformats.html" />
+    <link rel="prev" title="12.3. zipfile — Work with ZIP archives" href="zipfile.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="fileformats.html" title="13. File Formats"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="zipfile.html" title="12.3. zipfile — Work with ZIP archives"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="archiving.html" accesskey="U">12. Data Compression and Archiving</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">12.4. <tt class="docutils literal"><span class="pre">tarfile</span></tt> &#8212; Read and write tar archive files</a><ul>
+<li><a class="reference external" href="#tarfile-objects">12.4.1. TarFile Objects</a></li>
+<li><a class="reference external" href="#tarinfo-objects">12.4.2. TarInfo Objects</a></li>
+<li><a class="reference external" href="#examples">12.4.3. Examples</a></li>
+<li><a class="reference external" href="#supported-tar-formats">12.4.4. Supported tar formats</a></li>
+<li><a class="reference external" href="#unicode-issues">12.4.5. Unicode issues</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="zipfile.html"
+                                  title="previous chapter">12.3. <tt class="docutils literal docutils literal"><span class="pre">zipfile</span></tt> &#8212; Work with ZIP archives</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="fileformats.html"
+                                  title="next chapter">13. File Formats</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/tarfile.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tarfile-read-and-write-tar-archive-files">
+<h1>12.4. <tt class="docutils literal"><span class="pre">tarfile</span></tt> &#8212; Read and write tar archive files<a class="headerlink" href="#tarfile-read-and-write-tar-archive-files" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.3.</p>
+<p>The <tt class="docutils literal"><span class="pre">tarfile</span></tt> module makes it possible to read and write tar
+archives, including those using gzip or bz2 compression. (<tt class="docutils literal"><span class="pre">.zip</span></tt>
+files can be read and written using the <tt class="docutils literal"><span class="pre">zipfile</span></tt> module.)</p>
+<p>Some facts and figures:</p>
+<ul>
+<li><p class="first">reads and writes <tt class="docutils literal"><span class="pre">gzip</span></tt> and <tt class="docutils literal"><span class="pre">bz2</span></tt> compressed archives.</p>
+</li>
+<li><p class="first">read/write support for the POSIX.1-1988 (ustar) format.</p>
+</li>
+<li><p class="first">read/write support for the GNU tar format including <em>longname</em> and
+<em>longlink</em> extensions, read-only support for the <em>sparse</em> extension.</p>
+</li>
+<li><p class="first">read/write support for the POSIX.1-2001 (pax) format.</p>
+<p>New in version 2.6.</p>
+</li>
+<li><p class="first">handles directories, regular files, hardlinks, symbolic links,
+fifos, character devices and block devices and is able to acquire
+and restore file information like timestamp, access permissions and
+owner.</p>
+</li>
+</ul>
+<p>tarfile.open(name=None, mode=&#8217;r&#8217;, fileobj=None, bufsize=10240, <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs)</p>
+<blockquote>
+<p>Return a <tt class="docutils literal"><span class="pre">TarFile</span></tt> object for the pathname <em>name</em>. For detailed
+information on <tt class="docutils literal"><span class="pre">TarFile</span></tt> objects and the keyword arguments that
+are allowed, see <em>TarFile Objects</em>.</p>
+<p><em>mode</em> has to be a string of the form <tt class="docutils literal"><span class="pre">'filemode[:compression]'</span></tt>,
+it defaults to <tt class="docutils literal"><span class="pre">'r'</span></tt>. Here is a full list of mode combinations:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">mode</th>
+<th class="head">action</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">'r'</span> <span class="pre">or</span> <span class="pre">'r:*'</span></tt></td>
+<td>Open for reading with transparent compression
+(recommended).</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'r:'</span></tt></td>
+<td>Open for reading exclusively without
+compression.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'r:gz'</span></tt></td>
+<td>Open for reading with gzip compression.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'r:bz2'</span></tt></td>
+<td>Open for reading with bzip2 compression.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'a'</span> <span class="pre">or</span> <span class="pre">'a:'</span></tt></td>
+<td>Open for appending with no compression. The
+file is created if it does not exist.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'w'</span> <span class="pre">or</span> <span class="pre">'w:'</span></tt></td>
+<td>Open for uncompressed writing.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'w:gz'</span></tt></td>
+<td>Open for gzip compressed writing.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'w:bz2'</span></tt></td>
+<td>Open for bzip2 compressed writing.</td>
+</tr>
+</tbody>
+</table>
+<p>Note that <tt class="docutils literal"><span class="pre">'a:gz'</span></tt> or <tt class="docutils literal"><span class="pre">'a:bz2'</span></tt> is not possible. If <em>mode</em> is
+not suitable to open a certain (compressed) file for reading,
+<tt class="docutils literal"><span class="pre">ReadError</span></tt> is raised. Use <em>mode</em> <tt class="docutils literal"><span class="pre">'r'</span></tt> to avoid this.  If a
+compression method is not supported, <tt class="docutils literal"><span class="pre">CompressionError</span></tt> is
+raised.</p>
+<p>If <em>fileobj</em> is specified, it is used as an alternative to a file
+object opened for <em>name</em>. It is supposed to be at position 0.</p>
+<p>For special purposes, there is a second format for <em>mode</em>:
+<tt class="docutils literal"><span class="pre">'filemode|[compression]'</span></tt>.  <tt class="docutils literal"><span class="pre">tarfile.open()</span></tt> will return a
+<tt class="docutils literal"><span class="pre">TarFile</span></tt> object that processes its data as a stream of blocks.
+No random seeking will be done on the file. If given, <em>fileobj</em> may
+be any object that has a <tt class="docutils literal"><span class="pre">read()</span></tt> or <tt class="docutils literal"><span class="pre">write()</span></tt> method
+(depending on the <em>mode</em>). <em>bufsize</em> specifies the blocksize and
+defaults to <tt class="docutils literal"><span class="pre">20</span> <span class="pre">*</span> <span class="pre">512</span></tt> bytes. Use this variant in combination
+with e.g. <tt class="docutils literal"><span class="pre">sys.stdin</span></tt>, a socket file object or a tape device.
+However, such a <tt class="docutils literal"><span class="pre">TarFile</span></tt> object is limited in that it does not
+allow to be accessed randomly, see <em>Examples</em>.  The currently
+possible modes:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Mode</th>
+<th class="head">Action</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">'r|*'</span></tt></td>
+<td>Open a <em>stream</em> of tar blocks for reading
+with transparent compression.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'r|'</span></tt></td>
+<td>Open a <em>stream</em> of uncompressed tar blocks
+for reading.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'r|gz'</span></tt></td>
+<td>Open a gzip compressed <em>stream</em> for reading.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'r|bz2'</span></tt></td>
+<td>Open a bzip2 compressed <em>stream</em> for
+reading.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'w|'</span></tt></td>
+<td>Open an uncompressed <em>stream</em> for writing.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'w|gz'</span></tt></td>
+<td>Open an gzip compressed <em>stream</em> for
+writing.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'w|bz2'</span></tt></td>
+<td>Open an bzip2 compressed <em>stream</em> for
+writing.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>class class tarfile.TarFile</p>
+<blockquote>
+Class for reading and writing tar archives. Do not use this class
+directly, better use <tt class="docutils literal"><span class="pre">tarfile.open()</span></tt> instead. See <em>TarFile
+Objects</em>.</blockquote>
+<p>tarfile.is_tarfile(name)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>name</em> is a tar archive file, that the
+<tt class="docutils literal"><span class="pre">tarfile</span></tt> module can read.</blockquote>
+<p>class class tarfile.TarFileCompat(filename, mode=&#8217;r&#8217;, compression=TAR_PLAIN)</p>
+<blockquote>
+<p>Class for limited access to tar archives with a <tt class="docutils literal"><span class="pre">zipfile</span></tt>-like
+interface. Please consult the documentation of the <tt class="docutils literal"><span class="pre">zipfile</span></tt>
+module for more details. <em>compression</em> must be one of the following
+constants:</p>
+<p>TAR_PLAIN</p>
+<blockquote>
+Constant for an uncompressed tar archive.</blockquote>
+<p>TAR_GZIPPED</p>
+<blockquote>
+Constant for a <tt class="docutils literal"><span class="pre">gzip</span></tt> compressed tar archive.</blockquote>
+<p>Deprecated since version 2.6: The <tt class="docutils literal"><span class="pre">TarFileCompat</span></tt> class has been
+deprecated for removal in Python 3.0.</p>
+</blockquote>
+<p>exception exception tarfile.TarError</p>
+<blockquote>
+Base class for all <tt class="docutils literal"><span class="pre">tarfile</span></tt> exceptions.</blockquote>
+<p>exception exception tarfile.ReadError</p>
+<blockquote>
+Is raised when a tar archive is opened, that either cannot be
+handled by the <tt class="docutils literal"><span class="pre">tarfile</span></tt> module or is somehow invalid.</blockquote>
+<p>exception exception tarfile.CompressionError</p>
+<blockquote>
+Is raised when a compression method is not supported or when the
+data cannot be decoded properly.</blockquote>
+<p>exception exception tarfile.StreamError</p>
+<blockquote>
+Is raised for the limitations that are typical for stream-like
+<tt class="docutils literal"><span class="pre">TarFile</span></tt> objects.</blockquote>
+<p>exception exception tarfile.ExtractError</p>
+<blockquote>
+Is raised for <em>non-fatal</em> errors when using <tt class="docutils literal"><span class="pre">TarFile.extract()</span></tt>,
+but only if <tt class="docutils literal"><span class="pre">TarFile.errorlevel````==</span> <span class="pre">2</span></tt>.</blockquote>
+<p>exception exception tarfile.HeaderError</p>
+<blockquote>
+<p>Is raised by <tt class="docutils literal"><span class="pre">TarInfo.frombuf()</span></tt> if the buffer it gets is
+invalid.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>Each of the following constants defines a tar archive format that the
+<tt class="docutils literal"><span class="pre">tarfile</span></tt> module is able to create. See section <em>Supported tar
+formats</em> for details.</p>
+<p>tarfile.USTAR_FORMAT</p>
+<blockquote>
+POSIX.1-1988 (ustar) format.</blockquote>
+<p>tarfile.GNU_FORMAT</p>
+<blockquote>
+GNU tar format.</blockquote>
+<p>tarfile.PAX_FORMAT</p>
+<blockquote>
+POSIX.1-2001 (pax) format.</blockquote>
+<p>tarfile.DEFAULT_FORMAT</p>
+<blockquote>
+The default format for creating archives. This is currently
+<tt class="docutils literal"><span class="pre">GNU_FORMAT</span></tt>.</blockquote>
+<p>The following variables are available on module level:</p>
+<p>tarfile.ENCODING</p>
+<blockquote>
+The default character encoding i.e. the value from either
+<tt class="docutils literal"><span class="pre">sys.getfilesystemencoding()</span></tt> or <tt class="docutils literal"><span class="pre">sys.getdefaultencoding()</span></tt>.</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">zipfile</span></tt></dt>
+<dd>Documentation of the <tt class="docutils literal"><span class="pre">zipfile</span></tt> standard module.</dd>
+<dt>GNU tar manual, Basic Tar Format</dt>
+<dd>Documentation for tar archive files, including GNU tar
+extensions.</dd>
+</dl>
+</blockquote>
+<div class="section" id="tarfile-objects">
+<h2>12.4.1. TarFile Objects<a class="headerlink" href="#tarfile-objects" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">TarFile</span></tt> object provides an interface to a tar archive. A tar
+archive is a sequence of blocks. An archive member (a stored file) is
+made up of a header block followed by data blocks. It is possible to
+store a file in a tar archive several times. Each archive member is
+represented by a <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object, see <em>TarInfo Objects</em> for
+details.</p>
+<p>class class tarfile.TarFile(name=None, mode=&#8217;r&#8217;, fileobj=None, format=DEFAULT_FORMAT, tarinfo=TarInfo, dereference=False, ignore_zeros=False, encoding=ENCODING, errors=None, pax_headers=None, debug=0, errorlevel=0)</p>
+<blockquote>
+<p>All following arguments are optional and can be accessed as
+instance attributes as well.</p>
+<p><em>name</em> is the pathname of the archive. It can be omitted if
+<em>fileobj</em> is given. In this case, the file object&#8217;s <tt class="docutils literal"><span class="pre">name</span></tt>
+attribute is used if it exists.</p>
+<p><em>mode</em> is either <tt class="docutils literal"><span class="pre">'r'</span></tt> to read from an existing archive, <tt class="docutils literal"><span class="pre">'a'</span></tt>
+to append data to an existing file or <tt class="docutils literal"><span class="pre">'w'</span></tt> to create a new file
+overwriting an existing one.</p>
+<p>If <em>fileobj</em> is given, it is used for reading or writing data. If
+it can be determined, <em>mode</em> is overridden by <em>fileobj</em>&#8216;s mode.
+<em>fileobj</em> will be used from position 0.</p>
+<p>Note: <em>fileobj</em> is not closed, when <tt class="docutils literal"><span class="pre">TarFile</span></tt> is closed.</p>
+<p><em>format</em> controls the archive format. It must be one of the
+constants <tt class="docutils literal"><span class="pre">USTAR_FORMAT</span></tt>, <tt class="docutils literal"><span class="pre">GNU_FORMAT</span></tt> or <tt class="docutils literal"><span class="pre">PAX_FORMAT</span></tt> that
+are defined at module level.</p>
+<p>New in version 2.6.</p>
+<p>The <em>tarinfo</em> argument can be used to replace the default
+<tt class="docutils literal"><span class="pre">TarInfo</span></tt> class with a different one.</p>
+<p>New in version 2.6.</p>
+<p>If <em>dereference</em> is <tt class="xref docutils literal"><span class="pre">False</span></tt>, add symbolic and hard links to the
+archive. If it is <tt class="xref docutils literal"><span class="pre">True</span></tt>, add the content of the target files to
+the archive. This has no effect on systems that do not support
+symbolic links.</p>
+<p>If <em>ignore_zeros</em> is <tt class="xref docutils literal"><span class="pre">False</span></tt>, treat an empty block as the end of
+the archive. If it is <tt class="xref docutils literal"><span class="pre">True</span></tt>, skip empty (and invalid) blocks and
+try to get as many members as possible. This is only useful for
+reading concatenated or damaged archives.</p>
+<p><em>debug</em> can be set from <tt class="docutils literal"><span class="pre">0</span></tt> (no debug messages) up to <tt class="docutils literal"><span class="pre">3</span></tt> (all
+debug messages). The messages are written to <tt class="docutils literal"><span class="pre">sys.stderr</span></tt>.</p>
+<p>If <em>errorlevel</em> is <tt class="docutils literal"><span class="pre">0</span></tt>, all errors are ignored when using
+<tt class="docutils literal"><span class="pre">TarFile.extract()</span></tt>. Nevertheless, they appear as error messages
+in the debug output, when debugging is enabled.  If <tt class="docutils literal"><span class="pre">1</span></tt>, all
+<em>fatal</em> errors are raised as <tt class="docutils literal"><span class="pre">OSError</span></tt> or <tt class="docutils literal"><span class="pre">IOError</span></tt> exceptions.
+If <tt class="docutils literal"><span class="pre">2</span></tt>, all <em>non-fatal</em> errors are raised as <tt class="docutils literal"><span class="pre">TarError</span></tt>
+exceptions as well.</p>
+<p>The <em>encoding</em> and <em>errors</em> arguments control the way strings are
+converted to unicode objects and vice versa. The default settings
+will work for most users. See section <em>Unicode issues</em> for in-depth
+information.</p>
+<p>New in version 2.6.</p>
+<p>The <em>pax_headers</em> argument is an optional dictionary of unicode
+strings which will be added as a pax global header if <em>format</em> is
+<tt class="docutils literal"><span class="pre">PAX_FORMAT</span></tt>.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>TarFile.open(...)</p>
+<blockquote>
+Alternative constructor. The <tt class="docutils literal"><span class="pre">tarfile.open()</span></tt> function is
+actually a shortcut to this classmethod.</blockquote>
+<p>TarFile.getmember(name)</p>
+<blockquote>
+<p>Return a <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object for member <em>name</em>. If <em>name</em> can not be
+found in the archive, <tt class="docutils literal"><span class="pre">KeyError</span></tt> is raised.</p>
+<dl class="docutils">
+<dt>Note: If a member occurs more than once in the archive, its last</dt>
+<dd>occurrence is assumed to be the most up-to-date version.</dd>
+</dl>
+</blockquote>
+<p>TarFile.getmembers()</p>
+<blockquote>
+Return the members of the archive as a list of <tt class="docutils literal"><span class="pre">TarInfo</span></tt> objects.
+The list has the same order as the members in the archive.</blockquote>
+<p>TarFile.getnames()</p>
+<blockquote>
+Return the members as a list of their names. It has the same order
+as the list returned by <tt class="docutils literal"><span class="pre">getmembers()</span></tt>.</blockquote>
+<p>TarFile.list(verbose=True)</p>
+<blockquote>
+Print a table of contents to <tt class="docutils literal"><span class="pre">sys.stdout</span></tt>. If <em>verbose</em> is
+<tt class="xref docutils literal"><span class="pre">False</span></tt>, only the names of the members are printed. If it is
+<tt class="xref docutils literal"><span class="pre">True</span></tt>, output similar to that of <strong>ls -l</strong> is produced.</blockquote>
+<p>TarFile.next()</p>
+<blockquote>
+Return the next member of the archive as a <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object, when
+<tt class="docutils literal"><span class="pre">TarFile</span></tt> is opened for reading. Return <tt class="xref docutils literal"><span class="pre">None</span></tt> if there is no
+more available.</blockquote>
+<p>TarFile.extractall(path=&#8221;.&#8221;, members=None)</p>
+<blockquote>
+<p>Extract all members from the archive to the current working
+directory or directory <em>path</em>. If optional <em>members</em> is given, it
+must be a subset of the list returned by <tt class="docutils literal"><span class="pre">getmembers()</span></tt>.
+Directory information like owner, modification time and permissions
+are set after all members have been extracted. This is done to work
+around two problems: A directory&#8217;s modification time is reset each
+time a file is created in it. And, if a directory&#8217;s permissions do
+not allow writing, extracting files to it will fail.</p>
+<dl class="docutils">
+<dt>Warning: Never extract archives from untrusted sources without prior</dt>
+<dd>inspection. It is possible that files are created outside of
+<em>path</em>, e.g. members that have absolute filenames starting with
+<tt class="docutils literal"><span class="pre">&quot;/&quot;</span></tt> or filenames with two dots <tt class="docutils literal"><span class="pre">&quot;..&quot;</span></tt>.</dd>
+</dl>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>TarFile.extract(member, path=&#8221;&#8220;)</p>
+<blockquote>
+<p>Extract a member from the archive to the current working directory,
+using its full name. Its file information is extracted as
+accurately as possible. <em>member</em> may be a filename or a <tt class="docutils literal"><span class="pre">TarInfo</span></tt>
+object. You can specify a different directory using <em>path</em>.</p>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">extract()</span></tt> method does not take care of several extraction</dt>
+<dd>issues. In most cases you should consider using the
+<tt class="docutils literal"><span class="pre">extractall()</span></tt> method.</dd>
+</dl>
+<p>Warning: See the warning for <tt class="docutils literal"><span class="pre">extractall()</span></tt>.</p>
+</blockquote>
+<p>TarFile.extractfile(member)</p>
+<blockquote>
+<p>Extract a member from the archive as a file object. <em>member</em> may be
+a filename or a <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object. If <em>member</em> is a regular file,
+a file-like object is returned. If <em>member</em> is a link, a file-like
+object is constructed from the link&#8217;s target. If <em>member</em> is none
+of the above, <tt class="xref docutils literal"><span class="pre">None</span></tt> is returned.</p>
+<dl class="docutils">
+<dt>Note: The file-like object is read-only.  It provides the methods</dt>
+<dd><tt class="docutils literal"><span class="pre">read()</span></tt>, <tt class="docutils literal"><span class="pre">readline()</span></tt>, <tt class="docutils literal"><span class="pre">readlines()</span></tt>, <tt class="docutils literal"><span class="pre">seek()</span></tt>,
+<tt class="docutils literal"><span class="pre">tell()</span></tt>, and <tt class="docutils literal"><span class="pre">close()</span></tt>, and also supports iteration over its
+lines.</dd>
+</dl>
+</blockquote>
+<p>TarFile.add(name, arcname=None, recursive=True, exclude=None)</p>
+<blockquote>
+<p>Add the file <em>name</em> to the archive. <em>name</em> may be any type of file
+(directory, fifo, symbolic link, etc.). If given, <em>arcname</em>
+specifies an alternative name for the file in the archive.
+Directories are added recursively by default. This can be avoided
+by setting <em>recursive</em> to <tt class="xref docutils literal"><span class="pre">False</span></tt>. If <em>exclude</em> is given it must
+be a function that takes one filename argument and returns a
+boolean value. Depending on this value the respective file is
+either excluded (<tt class="xref docutils literal"><span class="pre">True</span></tt>) or added (<tt class="xref docutils literal"><span class="pre">False</span></tt>).</p>
+<p>Changed in version 2.6: Added the <em>exclude</em> parameter.</p>
+</blockquote>
+<p>TarFile.addfile(tarinfo, fileobj=None)</p>
+<blockquote>
+<p>Add the <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object <em>tarinfo</em> to the archive. If <em>fileobj</em>
+is given, <tt class="docutils literal"><span class="pre">tarinfo.size</span></tt> bytes are read from it and added to the
+archive.  You can create <tt class="docutils literal"><span class="pre">TarInfo</span></tt> objects using
+<tt class="docutils literal"><span class="pre">gettarinfo()</span></tt>.</p>
+<dl class="docutils">
+<dt>Note: On Windows platforms, <em>fileobj</em> should always be opened with mode</dt>
+<dd><tt class="docutils literal"><span class="pre">'rb'</span></tt> to avoid irritation about the file size.</dd>
+</dl>
+</blockquote>
+<p>TarFile.gettarinfo(name=None, arcname=None, fileobj=None)</p>
+<blockquote>
+Create a <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object for either the file <em>name</em> or the file
+object <em>fileobj</em> (using <tt class="docutils literal"><span class="pre">os.fstat()</span></tt> on its file descriptor).
+You can modify some of the <tt class="docutils literal"><span class="pre">TarInfo</span></tt>&#8216;s attributes before you add
+it using <tt class="docutils literal"><span class="pre">addfile()</span></tt>. If given, <em>arcname</em> specifies an
+alternative name for the file in the archive.</blockquote>
+<p>TarFile.close()</p>
+<blockquote>
+Close the <tt class="docutils literal"><span class="pre">TarFile</span></tt>. In write mode, two finishing zero blocks are
+appended to the archive.</blockquote>
+<p>TarFile.posix</p>
+<blockquote>
+<p>Setting this to <tt class="xref docutils literal"><span class="pre">True</span></tt> is equivalent to setting the <tt class="docutils literal"><span class="pre">format</span></tt>
+attribute to <tt class="docutils literal"><span class="pre">USTAR_FORMAT</span></tt>, <tt class="xref docutils literal"><span class="pre">False</span></tt> is equivalent to
+<tt class="docutils literal"><span class="pre">GNU_FORMAT</span></tt>.</p>
+<p>Changed in version 2.4: <em>posix</em> defaults to <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<p>Deprecated since version 2.6: Use the <tt class="docutils literal"><span class="pre">format</span></tt> attribute instead.</p>
+</blockquote>
+<p>TarFile.pax_headers</p>
+<blockquote>
+<p>A dictionary containing key-value pairs of pax global headers.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+</div>
+<div class="section" id="tarinfo-objects">
+<h2>12.4.2. TarInfo Objects<a class="headerlink" href="#tarinfo-objects" title="Permalink to this headline">¶</a></h2>
+<p>A <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object represents one member in a <tt class="docutils literal"><span class="pre">TarFile</span></tt>. Aside
+from storing all required attributes of a file (like file type, size,
+time, permissions, owner etc.), it provides some useful methods to
+determine its type. It does <em>not</em> contain the file&#8217;s data itself.</p>
+<p><tt class="docutils literal"><span class="pre">TarInfo</span></tt> objects are returned by <tt class="docutils literal"><span class="pre">TarFile</span></tt>&#8216;s methods
+<tt class="docutils literal"><span class="pre">getmember()</span></tt>, <tt class="docutils literal"><span class="pre">getmembers()</span></tt> and <tt class="docutils literal"><span class="pre">gettarinfo()</span></tt>.</p>
+<p>class class tarfile.TarInfo(name=&#8221;&#8220;)</p>
+<blockquote>
+Create a <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object.</blockquote>
+<p>TarInfo.frombuf(buf)</p>
+<blockquote>
+<p>Create and return a <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object from string buffer <em>buf</em>.</p>
+<p>New in version 2.6: Raises <tt class="docutils literal"><span class="pre">HeaderError</span></tt> if the buffer is
+invalid..</p>
+</blockquote>
+<p>TarInfo.fromtarfile(tarfile)</p>
+<blockquote>
+<p>Read the next member from the <tt class="docutils literal"><span class="pre">TarFile</span></tt> object <em>tarfile</em> and
+return it as a <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>TarInfo.tobuf(format=DEFAULT_FORMAT, encoding=ENCODING, errors=&#8217;strict&#8217;)</p>
+<blockquote>
+<p>Create a string buffer from a <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object. For information
+on the arguments see the constructor of the <tt class="docutils literal"><span class="pre">TarFile</span></tt> class.</p>
+<p>Changed in version 2.6: The arguments were added.</p>
+</blockquote>
+<p>A <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object has the following public data attributes:</p>
+<p>TarInfo.name</p>
+<blockquote>
+Name of the archive member.</blockquote>
+<p>TarInfo.size</p>
+<blockquote>
+Size in bytes.</blockquote>
+<p>TarInfo.mtime</p>
+<blockquote>
+Time of last modification.</blockquote>
+<p>TarInfo.mode</p>
+<blockquote>
+Permission bits.</blockquote>
+<p>TarInfo.type</p>
+<blockquote>
+File type.  <em>type</em> is usually one of these constants: <tt class="docutils literal"><span class="pre">REGTYPE</span></tt>,
+<tt class="docutils literal"><span class="pre">AREGTYPE</span></tt>, <tt class="docutils literal"><span class="pre">LNKTYPE</span></tt>, <tt class="docutils literal"><span class="pre">SYMTYPE</span></tt>, <tt class="docutils literal"><span class="pre">DIRTYPE</span></tt>, <tt class="docutils literal"><span class="pre">FIFOTYPE</span></tt>,
+<tt class="docutils literal"><span class="pre">CONTTYPE</span></tt>, <tt class="docutils literal"><span class="pre">CHRTYPE</span></tt>, <tt class="docutils literal"><span class="pre">BLKTYPE</span></tt>, <tt class="docutils literal"><span class="pre">GNUTYPE_SPARSE</span></tt>.  To
+determine the type of a <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object more conveniently, use
+the <tt class="docutils literal"><span class="pre">is_*()</span></tt> methods below.</blockquote>
+<p>TarInfo.linkname</p>
+<blockquote>
+Name of the target file name, which is only present in <tt class="docutils literal"><span class="pre">TarInfo</span></tt>
+objects of type <tt class="docutils literal"><span class="pre">LNKTYPE</span></tt> and <tt class="docutils literal"><span class="pre">SYMTYPE</span></tt>.</blockquote>
+<p>TarInfo.uid</p>
+<blockquote>
+User ID of the user who originally stored this member.</blockquote>
+<p>TarInfo.gid</p>
+<blockquote>
+Group ID of the user who originally stored this member.</blockquote>
+<p>TarInfo.uname</p>
+<blockquote>
+User name.</blockquote>
+<p>TarInfo.gname</p>
+<blockquote>
+Group name.</blockquote>
+<p>TarInfo.pax_headers</p>
+<blockquote>
+<p>A dictionary containing key-value pairs of an associated pax
+extended header.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>A <tt class="docutils literal"><span class="pre">TarInfo</span></tt> object also provides some convenient query methods:</p>
+<p>TarInfo.isfile()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the <tt class="docutils literal"><span class="pre">Tarinfo</span></tt> object is a regular file.</blockquote>
+<p>TarInfo.isreg()</p>
+<blockquote>
+Same as <tt class="docutils literal"><span class="pre">isfile()</span></tt>.</blockquote>
+<p>TarInfo.isdir()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if it is a directory.</blockquote>
+<p>TarInfo.issym()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if it is a symbolic link.</blockquote>
+<p>TarInfo.islnk()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if it is a hard link.</blockquote>
+<p>TarInfo.ischr()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if it is a character device.</blockquote>
+<p>TarInfo.isblk()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if it is a block device.</blockquote>
+<p>TarInfo.isfifo()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if it is a FIFO.</blockquote>
+<p>TarInfo.isdev()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if it is one of character device, block device or
+FIFO.</blockquote>
+</div>
+<div class="section" id="examples">
+<h2>12.4.3. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>How to extract an entire tar archive to the current working directory:</p>
+<blockquote>
+import tarfile
+tar = tarfile.open(&#8220;sample.tar.gz&#8221;)
+tar.extractall()
+tar.close()</blockquote>
+<p>How to extract a subset of a tar archive with <tt class="docutils literal"><span class="pre">TarFile.extractall()</span></tt>
+using a generator function instead of a list:</p>
+<blockquote>
+<p>import os
+import tarfile</p>
+<dl class="docutils">
+<dt>def py_files(members):</dt>
+<dd><dl class="first last docutils">
+<dt>for tarinfo in members:</dt>
+<dd><dl class="first last docutils">
+<dt>if os.path.splitext(tarinfo.name)[1] == &#8220;.py&#8221;:</dt>
+<dd>yield tarinfo</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>tar = tarfile.open(&#8220;sample.tar.gz&#8221;)
+tar.extractall(members=py_files(tar))
+tar.close()</p>
+</blockquote>
+<p>How to create an uncompressed tar archive from a list of filenames:</p>
+<blockquote>
+<p>import tarfile
+tar = tarfile.open(&#8220;sample.tar&#8221;, &#8220;w&#8221;)
+for name in [&#8220;foo&#8221;, &#8220;bar&#8221;, &#8220;quux&#8221;]:</p>
+<blockquote>
+tar.add(name)</blockquote>
+<p>tar.close()</p>
+</blockquote>
+<p>How to read a gzip compressed tar archive and display some member
+information:</p>
+<blockquote>
+<p>import tarfile
+tar = tarfile.open(&#8220;sample.tar.gz&#8221;, &#8220;r:gz&#8221;)
+for tarinfo in tar:</p>
+<blockquote>
+<p>print tarinfo.name, &#8220;is&#8221;, tarinfo.size, &#8220;bytes in size and is&#8221;,
+if tarinfo.isreg():</p>
+<blockquote>
+print &#8220;a regular file.&#8221;</blockquote>
+<dl class="docutils">
+<dt>elif tarinfo.isdir():</dt>
+<dd>print &#8220;a directory.&#8221;</dd>
+<dt>else:</dt>
+<dd>print &#8220;something else.&#8221;</dd>
+</dl>
+</blockquote>
+<p>tar.close()</p>
+</blockquote>
+</div>
+<div class="section" id="supported-tar-formats">
+<h2>12.4.4. Supported tar formats<a class="headerlink" href="#supported-tar-formats" title="Permalink to this headline">¶</a></h2>
+<p>There are three tar formats that can be created with the <tt class="docutils literal"><span class="pre">tarfile</span></tt>
+module:</p>
+<ul>
+<li><p class="first">The POSIX.1-1988 ustar format (<tt class="docutils literal"><span class="pre">USTAR_FORMAT</span></tt>). It supports
+filenames up to a length of at best 256 characters and linknames up
+to 100 characters. The maximum file size is 8 gigabytes. This is an
+old and limited but widely supported format.</p>
+</li>
+<li><p class="first">The GNU tar format (<tt class="docutils literal"><span class="pre">GNU_FORMAT</span></tt>). It supports long filenames and
+linknames, files bigger than 8 gigabytes and sparse files. It is the
+de facto standard on GNU/Linux systems. <tt class="docutils literal"><span class="pre">tarfile</span></tt> fully supports
+the GNU tar extensions for long names, sparse file support is read-
+only.</p>
+</li>
+<li><p class="first">The POSIX.1-2001 pax format (<tt class="docutils literal"><span class="pre">PAX_FORMAT</span></tt>). It is the most
+flexible format with virtually no limits. It supports long filenames
+and linknames, large files and stores pathnames in a portable way.
+However, not all tar implementations today are able to handle pax
+archives properly.</p>
+<p>The <em>pax</em> format is an extension to the existing <em>ustar</em> format. It
+uses extra headers for information that cannot be stored otherwise.
+There are two flavours of pax headers: Extended headers only affect
+the subsequent file header, global headers are valid for the
+complete archive and affect all following files. All the data in a
+pax header is encoded in <em>UTF-8</em> for portability reasons.</p>
+</li>
+</ul>
+<p>There are some more variants of the tar format which can be read, but
+not created:</p>
+<ul class="simple">
+<li>The ancient V7 format. This is the first tar format from Unix
+Seventh Edition, storing only regular files and directories. Names
+must not be longer than 100 characters, there is no user/group name
+information. Some archives have miscalculated header checksums in
+case of fields with non-ASCII characters.</li>
+<li>The SunOS tar extended format. This format is a variant of the
+POSIX.1-2001 pax format, but is not compatible.</li>
+</ul>
+</div>
+<div class="section" id="unicode-issues">
+<h2>12.4.5. Unicode issues<a class="headerlink" href="#unicode-issues" title="Permalink to this headline">¶</a></h2>
+<p>The tar format was originally conceived to make backups on tape drives
+with the main focus on preserving file system information. Nowadays
+tar archives are commonly used for file distribution and exchanging
+archives over networks. One problem of the original format (that all
+other formats are merely variants of) is that there is no concept of
+supporting different character encodings. For example, an ordinary tar
+archive created on a <em>UTF-8</em> system cannot be read correctly on a
+<em>Latin-1</em> system if it contains non-ASCII characters. Names (i.e.
+filenames, linknames, user/group names) containing these characters
+will appear damaged.  Unfortunately, there is no way to autodetect the
+encoding of an archive.</p>
+<p>The pax format was designed to solve this problem. It stores non-ASCII
+names using the universal character encoding <em>UTF-8</em>. When a pax
+archive is read, these <em>UTF-8</em> names are converted to the encoding of
+the local file system.</p>
+<p>The details of unicode conversion are controlled by the <em>encoding</em> and
+<em>errors</em> keyword arguments of the <tt class="docutils literal"><span class="pre">TarFile</span></tt> class.</p>
+<p>The default value for <em>encoding</em> is the local character encoding. It
+is deduced from <tt class="docutils literal"><span class="pre">sys.getfilesystemencoding()</span></tt> and
+<tt class="docutils literal"><span class="pre">sys.getdefaultencoding()</span></tt>. In read mode, <em>encoding</em> is used
+exclusively to convert unicode names from a pax archive to strings in
+the local character encoding. In write mode, the use of <em>encoding</em>
+depends on the chosen archive format. In case of <tt class="docutils literal"><span class="pre">PAX_FORMAT</span></tt>, input
+names that contain non-ASCII characters need to be decoded before
+being stored as <em>UTF-8</em> strings. The other formats do not make use of
+<em>encoding</em> unless unicode objects are used as input names. These are
+converted to 8-bit character strings before they are added to the
+archive.</p>
+<p>The <em>errors</em> argument defines how characters are treated that cannot
+be converted to or from <em>encoding</em>. Possible values are listed in
+section <em>Codec Base Classes</em>. In read mode, there is an additional
+scheme <tt class="docutils literal"><span class="pre">'utf-8'</span></tt> which means that bad characters are replaced by
+their <em>UTF-8</em> representation. This is the default scheme. In write
+mode the default value for <em>errors</em> is <tt class="docutils literal"><span class="pre">'strict'</span></tt> to ensure that
+name information is not altered unnoticed.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fileformats.html" title="13. File Formats"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="zipfile.html" title="12.3. zipfile — Work with ZIP archives"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="archiving.html" >12. Data Compression and Archiving</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

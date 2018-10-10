@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>10.4. filecmp — File and Directory Comparisons &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="10. File and Directory Access" href="filesys.html" />
+    <link rel="next" title="10.5. tempfile — Generate temporary files and directories" href="tempfile.html" />
+    <link rel="prev" title="10.3. stat — Interpreting stat() results" href="stat.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="tempfile.html" title="10.5. tempfile — Generate temporary files and directories"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="stat.html" title="10.3. stat — Interpreting stat() results"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="filesys.html" accesskey="U">10. File and Directory Access</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">10.4. <tt class="docutils literal"><span class="pre">filecmp</span></tt> &#8212; File and Directory Comparisons</a><ul>
+<li><a class="reference external" href="#the-dircmp-class">10.4.1. The <tt class="docutils literal"><span class="pre">dircmp</span></tt> class</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="stat.html"
+                                  title="previous chapter">10.3. <tt class="docutils literal"><span class="pre">stat</span></tt> &#8212; Interpreting <tt class="docutils literal"><span class="pre">stat()</span></tt> results</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="tempfile.html"
+                                  title="next chapter">10.5. <tt class="docutils literal"><span class="pre">tempfile</span></tt> &#8212; Generate temporary files and directories</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/filecmp.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="filecmp-file-and-directory-comparisons">
+<h1>10.4. <tt class="docutils literal"><span class="pre">filecmp</span></tt> &#8212; File and Directory Comparisons<a class="headerlink" href="#filecmp-file-and-directory-comparisons" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">filecmp</span></tt> module defines functions to compare files and
+directories, with various optional time/correctness trade-offs. For
+comparing files, see also the <tt class="docutils literal"><span class="pre">difflib</span></tt> module.</p>
+<p>The <tt class="docutils literal"><span class="pre">filecmp</span></tt> module defines the following functions:</p>
+<p>filecmp.cmp(f1, f2[, shallow])</p>
+<blockquote>
+<p>Compare the files named <em>f1</em> and <em>f2</em>, returning <tt class="xref docutils literal"><span class="pre">True</span></tt> if they
+seem equal, <tt class="xref docutils literal"><span class="pre">False</span></tt> otherwise.</p>
+<p>Unless <em>shallow</em> is given and is false, files with identical
+<tt class="docutils literal"><span class="pre">os.stat()</span></tt> signatures are taken to be equal.</p>
+<p>Files that were compared using this function will not be compared
+again unless their <tt class="docutils literal"><span class="pre">os.stat()</span></tt> signature changes.</p>
+<p>Note that no external programs are called from this function,
+giving it portability and efficiency.</p>
+</blockquote>
+<p>filecmp.cmpfiles(dir1, dir2, common[, shallow])</p>
+<blockquote>
+<p>Compare the files in the two directories <em>dir1</em> and <em>dir2</em> whose
+names are given by <em>common</em>.</p>
+<p>Returns three lists of file names: <em>match</em>, <em>mismatch</em>, <em>errors</em>.
+<em>match</em> contains the list of files that match, <em>mismatch</em> contains
+the names of those that don&#8217;t, and <em>errors</em> lists the names of
+files which could not be compared.  Files are listed in <em>errors</em> if
+they don&#8217;t exist in one of the directories, the user lacks
+permission to read them or if the comparison could not be done for
+some other reason.</p>
+<p>The <em>shallow</em> parameter has the same meaning and default value as
+for <tt class="docutils literal"><span class="pre">filecmp.cmp()</span></tt>.</p>
+<p>For example, <tt class="docutils literal"><span class="pre">cmpfiles('a',</span> <span class="pre">'b',</span> <span class="pre">['c',</span> <span class="pre">'d/e'])</span></tt> will compare
+<tt class="docutils literal"><span class="pre">a/c</span></tt> with <tt class="docutils literal"><span class="pre">b/c</span></tt> and <tt class="docutils literal"><span class="pre">a/d/e</span></tt> with <tt class="docutils literal"><span class="pre">b/d/e</span></tt>.  <tt class="docutils literal"><span class="pre">'c'</span></tt> and
+<tt class="docutils literal"><span class="pre">'d/e'</span></tt> will each be in one of the three returned lists.</p>
+</blockquote>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">filecmp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filecmp</span><span class="o">.</span><span class="n">cmp</span><span class="p">(</span><span class="s">&#39;undoc.rst&#39;</span><span class="p">,</span> <span class="s">&#39;undoc.rst&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filecmp</span><span class="o">.</span><span class="n">cmp</span><span class="p">(</span><span class="s">&#39;undoc.rst&#39;</span><span class="p">,</span> <span class="s">&#39;index.rst&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="section" id="the-dircmp-class">
+<h2>10.4.1. The <tt class="docutils literal"><span class="pre">dircmp</span></tt> class<a class="headerlink" href="#the-dircmp-class" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">dircmp</span></tt> instances are built using this constructor:</p>
+<p>class class filecmp.dircmp(a, b[, ignore[, hide]])</p>
+<blockquote>
+<p>Construct a new directory comparison object, to compare the
+directories <em>a</em> and <em>b</em>. <em>ignore</em> is a list of names to ignore, and
+defaults to <tt class="docutils literal"><span class="pre">['RCS',</span> <span class="pre">'CVS',</span> <span class="pre">'tags']</span></tt>. <em>hide</em> is a list of names
+to hide, and defaults to <tt class="docutils literal"><span class="pre">[os.curdir,</span> <span class="pre">os.pardir]</span></tt>.</p>
+<p>The <tt class="docutils literal"><span class="pre">dircmp</span></tt> class provides the following methods:</p>
+<p>report()</p>
+<blockquote>
+Print (to <tt class="docutils literal"><span class="pre">sys.stdout</span></tt>) a comparison between <em>a</em> and <em>b</em>.</blockquote>
+<p>report_partial_closure()</p>
+<blockquote>
+Print a comparison between <em>a</em> and <em>b</em> and common immediate
+subdirectories.</blockquote>
+<p>report_full_closure()</p>
+<blockquote>
+Print a comparison between <em>a</em> and <em>b</em> and common subdirectories
+(recursively).</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">dircmp</span></tt> offers a number of interesting attributes that may
+be used to get various bits of information about the directory
+trees being compared.</p>
+<p>Note that via <tt class="docutils literal"><span class="pre">__getattr__()</span></tt> hooks, all attributes are computed
+lazily, so there is no speed penalty if only those attributes which
+are lightweight to compute are used.</p>
+<p>left_list</p>
+<blockquote>
+Files and subdirectories in <em>a</em>, filtered by <em>hide</em> and
+<em>ignore</em>.</blockquote>
+<p>right_list</p>
+<blockquote>
+Files and subdirectories in <em>b</em>, filtered by <em>hide</em> and
+<em>ignore</em>.</blockquote>
+<p>common</p>
+<blockquote>
+Files and subdirectories in both <em>a</em> and <em>b</em>.</blockquote>
+<p>left_only</p>
+<blockquote>
+Files and subdirectories only in <em>a</em>.</blockquote>
+<p>right_only</p>
+<blockquote>
+Files and subdirectories only in <em>b</em>.</blockquote>
+<p>common_dirs</p>
+<blockquote>
+Subdirectories in both <em>a</em> and <em>b</em>.</blockquote>
+<p>common_files</p>
+<blockquote>
+Files in both <em>a</em> and <em>b</em></blockquote>
+<p>common_funny</p>
+<blockquote>
+Names in both <em>a</em> and <em>b</em>, such that the type differs between
+the directories, or names for which <tt class="docutils literal"><span class="pre">os.stat()</span></tt> reports an
+error.</blockquote>
+<p>same_files</p>
+<blockquote>
+Files which are identical in both <em>a</em> and <em>b</em>.</blockquote>
+<p>diff_files</p>
+<blockquote>
+Files which are in both <em>a</em> and <em>b</em>, whose contents differ.</blockquote>
+<p>funny_files</p>
+<blockquote>
+Files which are in both <em>a</em> and <em>b</em>, but could not be compared.</blockquote>
+<p>subdirs</p>
+<blockquote>
+A dictionary mapping names in <tt class="docutils literal"><span class="pre">common_dirs</span></tt> to <tt class="docutils literal"><span class="pre">dircmp</span></tt>
+objects.</blockquote>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tempfile.html" title="10.5. tempfile — Generate temporary files and directories"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="stat.html" title="10.3. stat — Interpreting stat() results"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="filesys.html" >10. File and Directory Access</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

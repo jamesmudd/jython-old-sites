@@ -1,0 +1,492 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Chapter 16: GUI Applications &mdash; Jython Book v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '1.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Book v1.0 documentation" href="index.html" />
+    <link rel="next" title="Chapter 17: Deployment Targets" href="DeploymentTargets.html" />
+    <link rel="prev" title="Chapter 15: Introduction to Pylons" href="IntroToPylons.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="DeploymentTargets.html" title="Chapter 17: Deployment Targets"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="IntroToPylons.html" title="Chapter 15: Introduction to Pylons"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="chapter-16-gui-applications">
+<h1>Chapter 16: GUI Applications<a class="headerlink" href="#chapter-16-gui-applications" title="Permalink to this headline">¶</a></h1>
+<p>The C implementation of Python comes with Tkinter for writing Graphical User Interfaces (GUIs).
+The GUI toolkit that you get automatically with Jython is Swing, which is included with the Java Platform by default.
+Similar to CPython, there are other toolkits available for writing GUIs in Jython.
+Because Swing is available on any modern Java installation, we will focus on the use of Swing GUIs in this chapter.</p>
+<p>Swing is a large subject, and can’t be fully covered in a single chapter.
+In fact, there are entire books devoted to Swing.
+We will provide an introduction to Swing, but only enough to describe the use of Swing from Jython.
+For in-depth coverage of Swing, one of the many books or web tutorials, like the Swing tutorial at java.sun.com/docs/books/tutorial/uiswing provided by Sun Microsystems, should be used.</p>
+<p>Using Swing from Jython has a number of advantages over the use of Swing in Java.
+For example, bean properties are less verbose in Jython, and binding actions in Jython is much less verbose (in Java you have to use anonymous classes, and in Jython you can pass a function).</p>
+<p>Let’s start with a simple Swing application in Java, and then we will look at the same application in Jython.
+See Listing 16-1.</p>
+<p>Listing 16-1.</p>
+<div class="highlight-python"><pre>import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+
+public class HelloWorld {
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Hello Java!");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 300);
+        JButton button = new JButton("Click Me!");
+        button.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    System.out.println("Clicked!");
+                }
+            }
+        );
+        frame.add(button);
+        frame.setVisible(true);
+    }
+}</pre>
+</div>
+<p>This simple application draws a JFrame that is completely filled with a JButton.
+When the button is pressed, “Click Me!” prints to the command line.
+See Figure 16-1.</p>
+<p><img alt="picture_3" src="_images/picture_3.jpg" /></p>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>Figure 16-1. <a href="#id3"><span class="problematic" id="id4">**</span></a>“Click Me” printed to the command line</p>
+<p>Now let’s see what this program looks like in Jython (see Listing 16-2).</p>
+<p>Listing 16-2.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">javax.swing</span> <span class="kn">import</span> <span class="n">JButton</span><span class="p">,</span> <span class="n">JFrame</span>
+
+<span class="n">frame</span> <span class="o">=</span> <span class="n">JFrame</span><span class="p">(</span><span class="s">&#39;Hello, Jython!&#39;</span><span class="p">,</span>
+            <span class="n">defaultCloseOperation</span> <span class="o">=</span> <span class="n">JFrame</span><span class="o">.</span><span class="n">EXIT_ON_CLOSE</span><span class="p">,</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">300</span><span class="p">,</span> <span class="mf">300</span><span class="p">)</span>
+        <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">change_text</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="k">print</span> <span class="s">&#39;Clicked!&#39;</span>
+
+<span class="n">button</span> <span class="o">=</span> <span class="n">JButton</span><span class="p">(</span><span class="s">&#39;Click Me!&#39;</span><span class="p">,</span> <span class="n">actionPerformed</span><span class="o">=</span><span class="n">change_text</span><span class="p">)</span>
+<span class="n">frame</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">button</span><span class="p">)</span>
+<span class="n">frame</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>Except for the title, the application produces the same JFrame with JButton, printing “Click Me!” to the screen when the button is clicked.
+See Figure 16-2.</p>
+<p><img alt="picture_2" src="_images/picture_2.jpg" /></p>
+<p><a href="#id5"><span class="problematic" id="id6">**</span></a>Figure 16-2. <a href="#id7"><span class="problematic" id="id8">**</span></a>Results of the application created in Listing 16-2</p>
+<p>Let’s go through the Java and the Jython examples line by line to get a feel for the differences between writing Swing apps in Jython and Java.
+First the import statements:</p>
+<p>Listing 16-3. In Java</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">java.awt.event.ActionEvent</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.ActionListener</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">javax.swing.JButton</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">javax.swing.JFrame</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Listing 16-4. In Jython</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">javax.swing</span> <span class="kn">import</span> <span class="n">JButton</span><span class="p">,</span> <span class="n">JFrame</span>
+</pre></div>
+</div>
+<p>In Jython, it is always best to make imports explicit by using names, instead of</p>
+<p>from . Note that we did not need to import ActionEvent or ActionListener, since Jython’s dynamic typing allowed us to avoid mentioning these classes in our code.</p>
+<p>Next, we have some code that creates a JFrame, and then sets a couple of bean properties.</p>
+<p>Listing 16-5. In Java</p>
+<div class="highlight-python"><pre>JFrame frame = new JFrame("Hello Java!");
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+frame.setSize(300, 300);</pre>
+</div>
+<p>Listing 16-6. In Jython</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">frame</span> <span class="o">=</span> <span class="n">JFrame</span><span class="p">(</span><span class="s">&#39;Hello, Jython!&#39;</span><span class="p">,</span>
+            <span class="n">defaultCloseOperation</span> <span class="o">=</span> <span class="n">JFrame</span><span class="o">.</span><span class="n">EXIT_ON_CLOSE</span><span class="p">,</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">300</span><span class="p">,</span> <span class="mf">300</span><span class="p">)</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+<p>In Java a new JFrame is created, and then the bean properties defaultCloseOperation and size are set.
+In Jython, we are able to add the bean property setters right inside the call to the constructor.
+This shortcut is covered in detail in Chapter 6. Still, it will bear some repeating here, because bean properties are so important in Swing libraries.
+In short, if you have bean getters and setters of the form getFoo/setFoo, you can treat them as properties of the object with the name “foo.” So instead of x.getFoo() you can use x.foo.
+Instead of x.setFoo(bar) you can use x.foo = bar.
+If you take a look at any Swing app above a reasonable size, you are likely to see large blocks of setters like:</p>
+<p>Listing 16-7.</p>
+<div class="highlight-python"><pre>JTextArea t = JTextArea();
+t.setText(message)
+t.setEditable(false)
+t.setWrapStyleWord(true)
+t.setLineWrap(true)
+t.setAlignmentX(Component.LEFT_ALIGNMENT)
+t.setSize(300, 1)</pre>
+</div>
+<p>which, in our opinion, look better in the idiomatic Jython property setting style because they are so easy to read:</p>
+<p>Listing 16-8.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="n">JTextArea</span><span class="p">()</span>
+<span class="n">t</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">message</span>
+<span class="n">t</span><span class="o">.</span><span class="n">editable</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">t</span><span class="o">.</span><span class="n">wrapStyleWord</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">t</span><span class="o">.</span><span class="n">lineWrap</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">t</span><span class="o">.</span><span class="n">alignmentX</span> <span class="o">=</span> <span class="n">Component</span><span class="o">.</span><span class="n">LEFT_ALIGNMENT</span>
+<span class="n">t</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">300</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also roll the setters into the constructor:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="n">JTextArea</span><span class="p">(</span><span class="n">text</span> <span class="o">=</span> <span class="n">message</span><span class="p">,</span>
+              <span class="n">editable</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+              <span class="n">wrapStyleWord</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+              <span class="n">lineWrap</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+              <span class="n">alignmentX</span> <span class="o">=</span> <span class="n">Component</span><span class="o">.</span><span class="n">LEFT_ALIGNMENT</span><span class="p">,</span>
+              <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">300</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span>
+             <span class="p">)</span>
+</pre></div>
+</div>
+<p>When you use properties rolled into the constructor,you need to watch out for the order in which the setters will be called.
+Generally this is not a problem, as the bean properties are not usually order dependent.
+The big exception is setVisible(): you probably have to set the visible property outside of the constructor after all properties have been set to avoid any strangeness while the properties are being set.
+Going back to our short example, the next block of code creates a JButton and binds the button to an action that prints out “Click Me!”</p>
+<p>Listing 16-9. In Java</p>
+<div class="highlight-python"><pre>JButton button = new JButton("Click Me!");
+button.addActionListener(
+    new ActionListener() {
+        public void actionPerformed(ActionEvent event) {
+            System.out.println("Clicked!");
+        }
+    }
+);
+frame.add(button);</pre>
+</div>
+<p>Listing 16-10. In Jython</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">change_text</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="k">print</span> <span class="s">&#39;Clicked!&#39;</span>
+
+<span class="n">button</span> <span class="o">=</span> <span class="n">JButton</span><span class="p">(</span><span class="s">&#39;Click Me!&#39;</span><span class="p">,</span> <span class="n">actionPerformed</span><span class="o">=</span><span class="n">change_text</span><span class="p">)</span>
+<span class="n">frame</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">button</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We think Jython’s method is particularly nice here when compared to Java.
+Here we can pass a first class function “change_text” directly to the JButton in its constructor.
+This plays better than the more cumbersome Java “addActionListener,” method where we need to create an anonymous ActionListener class and define its actionPerformed method with all the ceremony necessary for static type declarations.
+This is one case where Jython’s readability really stands out.
+This works because Jython is able to automatically recognize events in Java code if they have corresponding <em>addEvent()*</em> <em>and *removeEvent()</em> methods.
+Jython takes the name of the event and makes it accessible using the nice Python syntax as long as the event methods are public.
+Finally, in both examples we set the visible property to True.
+Again, although we could have set this property in the frame constructor, the visible property is one of those rare order-dependent properties that we want to set at the right time (and in this case, last).</p>
+<p>Listing 16-11. In Java</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">frame</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">true</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Listing 16-12. In Jython</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">frame</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>Now that we have looked at a simple example, it makes sense to see what a medium sized app might look like in Jython.
+Because Twitter apps have become the “Hello World” of GUI applications these days, we will go with the trend.
+The following application gives the user a login prompt.
+When the user successfully logs in, the most recent tweets in their timeline are displayed.
+See Listing 16-13.</p>
+<p>Listing 16-13. Jython Twitter Client</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">twitter</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">javax.swing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">BoxLayout</span><span class="p">,</span> <span class="n">ImageIcon</span><span class="p">,</span> <span class="n">JButton</span><span class="p">,</span> <span class="n">JFrame</span><span class="p">,</span> <span class="n">JPanel</span><span class="p">,</span>
+        <span class="n">JPasswordField</span><span class="p">,</span> <span class="n">JLabel</span><span class="p">,</span> <span class="n">JTextArea</span><span class="p">,</span> <span class="n">JTextField</span><span class="p">,</span> <span class="n">JScrollPane</span><span class="p">,</span>
+        <span class="n">SwingConstants</span><span class="p">,</span> <span class="n">WindowConstants</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">java.awt</span> <span class="kn">import</span> <span class="n">Component</span><span class="p">,</span> <span class="n">GridLayout</span>
+<span class="kn">from</span> <span class="nn">java.net</span> <span class="kn">import</span> <span class="n">URL</span>
+<span class="kn">from</span> <span class="nn">java.lang</span> <span class="kn">import</span> <span class="n">Runnable</span>
+
+<span class="k">class</span> <span class="nc">JyTwitter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">JFrame</span><span class="p">(</span><span class="s">&quot;Jython Twitter&quot;</span><span class="p">,</span>
+                             <span class="n">defaultCloseOperation</span> <span class="o">=</span> <span class="n">WindowConstants</span><span class="o">.</span><span class="n">EXIT_ON_CLOSE</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">loginPanel</span> <span class="o">=</span> <span class="n">JPanel</span><span class="p">(</span><span class="n">GridLayout</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="mf">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loginPanel</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">usernameField</span> <span class="o">=</span> <span class="n">JTextField</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="mf">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loginPanel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">JLabel</span><span class="p">(</span><span class="s">&quot;username:&quot;</span><span class="p">,</span> <span class="n">SwingConstants</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loginPanel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">usernameField</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">passwordField</span> <span class="o">=</span> <span class="n">JPasswordField</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="mf">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loginPanel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">JLabel</span><span class="p">(</span><span class="s">&quot;password:&quot;</span><span class="p">,</span> <span class="n">SwingConstants</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loginPanel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">passwordField</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">loginButton</span> <span class="o">=</span> <span class="n">JButton</span><span class="p">(</span><span class="s">&#39;Log in&#39;</span><span class="p">,</span><span class="n">actionPerformed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">login</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loginPanel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loginButton</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">JLabel</span><span class="p">(</span><span class="s">&quot;Please Log in&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loginPanel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">&quot;Attempting to Log in...&quot;</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">usernameField</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api</span> <span class="o">=</span> <span class="n">twitter</span><span class="o">.</span><span class="n">Api</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">passwordField</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeline</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loginPanel</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">&quot;Logged in&quot;</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">&quot;Log in failed.&quot;</span>
+            <span class="k">raise</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="mf">400</span><span class="p">,</span><span class="mf">800</span>
+
+
+    <span class="k">def</span> <span class="nf">timeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+        <span class="n">timeline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">GetFriendsTimeline</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resultPanel</span> <span class="o">=</span> <span class="n">JPanel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resultPanel</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">BoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resultPanel</span><span class="p">,</span> <span class="n">BoxLayout</span><span class="o">.</span><span class="n">Y_AXIS</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">timeline</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">showTweet</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="n">scrollpane</span> <span class="o">=</span> <span class="n">JScrollPane</span><span class="p">(</span><span class="n">JScrollPane</span><span class="o">.</span><span class="n">VERTICAL_SCROLLBAR_AS_NEEDED</span><span class="p">,</span>
+                                 <span class="n">JScrollPane</span><span class="o">.</span><span class="n">HORIZONTAL_SCROLLBAR_NEVER</span><span class="p">)</span>
+        <span class="n">scrollpane</span><span class="o">.</span><span class="n">preferredSize</span> <span class="o">=</span> <span class="mf">400</span><span class="p">,</span> <span class="mf">800</span>
+        <span class="n">scrollpane</span><span class="o">.</span><span class="n">viewport</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultPanel</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">scrollpane</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">showTweet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="n">user</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">JPanel</span><span class="p">()</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">JLabel</span><span class="p">(</span><span class="n">ImageIcon</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">profile_image_url</span><span class="p">))))</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">JTextArea</span><span class="p">(</span><span class="n">text</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                        <span class="n">editable</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+                        <span class="n">wrapStyleWord</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                        <span class="n">lineWrap</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                        <span class="n">alignmentX</span> <span class="o">=</span> <span class="n">Component</span><span class="o">.</span><span class="n">LEFT_ALIGNMENT</span><span class="p">,</span>
+                        <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">300</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span>
+             <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resultPanel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">JyTwitter</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This code depends on the python-twitter package.
+This package can be found on the Python package index (PyPi).
+If you have easy_install (see Appendix A for instructions on easy_install) then you can install python-twitter like this:</p>
+<p>Listing 16-14.</p>
+<div class="highlight-python"><pre>jython easy_install python-twitter</pre>
+</div>
+<p>This will automatically install python-twitter’s dependency: simplejson.
+Now you should be able to run the application.
+You should see the login prompt shown in Figure 16-3.</p>
+<p><a href="#id9"><span class="problematic" id="id10">|</span></a>picture_5|**Figure 16-3. <a href="#id11"><span class="problematic" id="id12">**</span></a>Password prompt</p>
+<p>If you put in the wrong password, you should get the message shown in Figure 16-4.</p>
+<p><img alt="picture_6" src="_images/picture_6.jpg" /></p>
+<p><a href="#id13"><span class="problematic" id="id14">**</span></a>Figure 16-4. <a href="#id15"><span class="problematic" id="id16">**</span></a>Failed login</p>
+<p>And finally, once you have successfully logged in, you should see something that looks similar to Figure 16-5.</p>
+<p><img alt="picture_4" src="_images/picture_4.jpg" /></p>
+<p><a href="#id17"><span class="problematic" id="id18">**</span></a>Figure 16-5. <a href="#id19"><span class="problematic" id="id20">**</span></a>Login successful!</p>
+<p><a href="#id21"><span class="problematic" id="id22">|</span></a>picture_4|The constructor creates the outer frame, imaginatively called self.frame.
+We set defaultCloseOperation so that the app will terminate if the user closes the main window.
+We then create a loginPanel that holds the text fields for the user to enter username and password, and create a login button that will call the self.login method when clicked.
+We then add a “Please log in” label and make the frame visible.</p>
+<p>Listing 16-15.</p>
+<div class="highlight-python"><pre>def __init__(self):
+        self.frame = JFrame("Jython Twitter",
+                             defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE)
+
+    self.loginPanel = JPanel(GridLayout(0,2))
+    self.frame.add(self.loginPanel)
+
+    self.usernameField = JTextField('',15)
+    self.loginPanel.add(JLabel("username:", SwingConstants.RIGHT))
+    self.loginPanel.add(self.usernameField)
+
+    self.passwordField = JPasswordField('', 15)
+    self.loginPanel.add(JLabel("password:", SwingConstants.RIGHT))
+    self.loginPanel.add(self.passwordField)
+
+    self.loginButton = JButton('Log in',actionPerformed=self.login)
+    self.loginPanel.add(self.loginButton)
+
+    self.message = JLabel("Please Log in")
+    self.loginPanel.add(self.message)
+
+    self.frame.pack()
+
+    self.show()</pre>
+</div>
+<p>The login method changes the label text and calls into python-twitter to attempt a login.
+It’s in a try/except block that will display “Log in failed” if something goes wrong.
+A real application would check different types of exceptions to see what went wrong and change the display message accordingly.</p>
+<p>Listing 16-16.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">&quot;Attempting to Log in...&quot;</span>
+
+    <span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">usernameField</span><span class="o">.</span><span class="n">text</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api</span> <span class="o">=</span> <span class="n">twitter</span><span class="o">.</span><span class="n">Api</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">passwordField</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeline</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loginPanel</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">&quot;Logged in&quot;</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">&quot;Log in failed.&quot;</span>
+        <span class="k">raise</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="mf">400</span><span class="p">,</span><span class="mf">800</span>
+</pre></div>
+</div>
+<p>If the login succeeds, we call the timeline method, which populates the frame with the latest tweets that the user is following.
+In the timeline method, we call GetFriendsTimeline from the python-twitter API; then we iterate through the status objects and call showTweet on each.
+All of this gets dropped into a JScrollPane and set to a reasonable size, and then it is added to the main frame.</p>
+<p>Listing 16-17.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">timeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+    <span class="n">timeline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">GetFriendsTimeline</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">resultPanel</span> <span class="o">=</span> <span class="n">JPanel</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">resultPanel</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">BoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resultPanel</span><span class="p">,</span> <span class="n">BoxLayout</span><span class="o">.</span><span class="n">Y_AXIS</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">timeline</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">showTweet</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+    <span class="n">scrollpane</span> <span class="o">=</span> <span class="n">JScrollPane</span><span class="p">(</span><span class="n">JScrollPane</span><span class="o">.</span><span class="n">VERTICAL_SCROLLBAR_AS_NEEDED</span><span class="p">,</span>
+                             <span class="n">JScrollPane</span><span class="o">.</span><span class="n">HORIZONTAL_SCROLLBAR_NEVER</span><span class="p">)</span>
+    <span class="n">scrollpane</span><span class="o">.</span><span class="n">preferredSize</span> <span class="o">=</span> <span class="mf">400</span><span class="p">,</span> <span class="mf">800</span>
+    <span class="n">scrollpane</span><span class="o">.</span><span class="n">viewport</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultPanel</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">scrollpane</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the showTweet method, we go through the tweets and add a JLabel with the user’s icon (fetched via URL from user.profile_image_url) and a JTextArea to contain the text of the tweet.
+Note all of the bean properties that we had to set to get the JTextArea to display correctly.</p>
+<p>Listing 16-18.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">showTweet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="n">user</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">JPanel</span><span class="p">()</span>
+
+
+    <span class="n">p</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">JLabel</span><span class="p">(</span><span class="n">ImageIcon</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">profile_image_url</span><span class="p">))))</span>
+
+    <span class="n">p</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">JTextArea</span><span class="p">(</span><span class="n">text</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                    <span class="n">editable</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+                    <span class="n">wrapStyleWord</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="n">lineWrap</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="n">alignmentX</span> <span class="o">=</span> <span class="n">Component</span><span class="o">.</span><span class="n">LEFT_ALIGNMENT</span><span class="p">,</span>
+                    <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">300</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span>
+         <span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">resultPanel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>And that concludes our quick tour of Swing GUIs built via Jython.
+Again, Swing is a very large subject, so you&#8217;ll want to look into dedicated Swing resources to really get a handle on it.
+After this chapter, it should be reasonably straightforward to translate the Java Swing examples you find into Jython Swing examples.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Chapter 16: GUI Applications</a><ul>
+<li><a class="reference external" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="IntroToPylons.html"
+                                  title="previous chapter">Chapter 15:  Introduction to Pylons</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="DeploymentTargets.html"
+                                  title="next chapter">Chapter 17: Deployment Targets</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/GUIApplications.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="DeploymentTargets.html" title="Chapter 17: Deployment Targets"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="IntroToPylons.html" title="Chapter 15: Introduction to Pylons"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+    <div class="footer">
+      &copy; Copyright 2009,2010, Josh Juneau, Frank Wierzbicki, Jim Baker, Leo Soto, Victor Ng.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-13131153-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  </body>
+</html>

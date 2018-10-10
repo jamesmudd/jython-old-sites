@@ -1,0 +1,915 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7.1. string — Common string operations &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="7. String Services" href="strings.html" />
+    <link rel="next" title="7.2. re — Regular expression operations" href="re.html" />
+    <link rel="prev" title="7. String Services" href="strings.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="re.html" title="7.2. re — Regular expression operations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="strings.html" title="7. String Services"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="strings.html" accesskey="U">7. String Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">7.1. <tt class="docutils literal"><span class="pre">string</span></tt> &#8212; Common string operations</a><ul>
+<li><a class="reference external" href="#string-constants">7.1.1. String constants</a></li>
+<li><a class="reference external" href="#string-formatting">7.1.2. String Formatting</a></li>
+<li><a class="reference external" href="#format-string-syntax">7.1.3. Format String Syntax</a><ul>
+<li><a class="reference external" href="#format-specification-mini-language">7.1.3.1. Format Specification Mini-Language</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#template-strings">7.1.4. Template strings</a></li>
+<li><a class="reference external" href="#string-functions">7.1.5. String functions</a></li>
+<li><a class="reference external" href="#deprecated-string-functions">7.1.6. Deprecated string functions</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="strings.html"
+                                  title="previous chapter">7. String Services</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="re.html"
+                                  title="next chapter">7.2. <tt class="docutils literal docutils literal"><span class="pre">re</span></tt> &#8212; Regular expression operations</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/string.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="string-common-string-operations">
+<h1>7.1. <tt class="docutils literal"><span class="pre">string</span></tt> &#8212; Common string operations<a class="headerlink" href="#string-common-string-operations" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">string</span></tt> module contains a number of useful constants and
+classes, as well as some deprecated legacy functions that are also
+available as methods on strings. In addition, Python&#8217;s built-in string
+classes support the sequence type methods described in the <em>Sequence
+Types &#8212; str, unicode, list, tuple, buffer, xrange</em> section, and also
+the string-specific methods described in the <em>String Methods</em> section.
+To output formatted strings use template strings or the <tt class="docutils literal"><span class="pre">%</span></tt> operator
+described in the <em>String Formatting Operations</em> section. Also, see the
+<tt class="docutils literal"><span class="pre">re</span></tt> module for string functions based on regular expressions.</p>
+<div class="section" id="string-constants">
+<h2>7.1.1. String constants<a class="headerlink" href="#string-constants" title="Permalink to this headline">¶</a></h2>
+<p>The constants defined in this module are:</p>
+<p>string.ascii_letters</p>
+<blockquote>
+The concatenation of the <tt class="docutils literal"><span class="pre">ascii_lowercase</span></tt> and
+<tt class="docutils literal"><span class="pre">ascii_uppercase</span></tt> constants described below.  This value is not
+locale-dependent.</blockquote>
+<p>string.ascii_lowercase</p>
+<blockquote>
+The lowercase letters <tt class="docutils literal"><span class="pre">'abcdefghijklmnopqrstuvwxyz'</span></tt>.  This value
+is not locale-dependent and will not change.</blockquote>
+<p>string.ascii_uppercase</p>
+<blockquote>
+The uppercase letters <tt class="docutils literal"><span class="pre">'ABCDEFGHIJKLMNOPQRSTUVWXYZ'</span></tt>.  This value
+is not locale-dependent and will not change.</blockquote>
+<p>string.digits</p>
+<blockquote>
+The string <tt class="docutils literal"><span class="pre">'0123456789'</span></tt>.</blockquote>
+<p>string.hexdigits</p>
+<blockquote>
+The string <tt class="docutils literal"><span class="pre">'0123456789abcdefABCDEF'</span></tt>.</blockquote>
+<p>string.letters</p>
+<blockquote>
+The concatenation of the strings <tt class="docutils literal"><span class="pre">lowercase</span></tt> and <tt class="docutils literal"><span class="pre">uppercase</span></tt>
+described below.  The specific value is locale-dependent, and will
+be updated when <tt class="docutils literal"><span class="pre">locale.setlocale()</span></tt> is called.</blockquote>
+<p>string.lowercase</p>
+<blockquote>
+A string containing all the characters that are considered
+lowercase letters. On most systems this is the string
+<tt class="docutils literal"><span class="pre">'abcdefghijklmnopqrstuvwxyz'</span></tt>.  The specific value is locale-
+dependent, and will be updated when <tt class="docutils literal"><span class="pre">locale.setlocale()</span></tt> is
+called.</blockquote>
+<p>string.octdigits</p>
+<blockquote>
+The string <tt class="docutils literal"><span class="pre">'01234567'</span></tt>.</blockquote>
+<p>string.punctuation</p>
+<blockquote>
+String of ASCII characters which are considered punctuation
+characters in the <tt class="docutils literal"><span class="pre">C</span></tt> locale.</blockquote>
+<p>string.printable</p>
+<blockquote>
+String of characters which are considered printable.  This is a
+combination of <tt class="docutils literal"><span class="pre">digits</span></tt>, <tt class="docutils literal"><span class="pre">letters</span></tt>, <tt class="docutils literal"><span class="pre">punctuation</span></tt>, and
+<tt class="docutils literal"><span class="pre">whitespace</span></tt>.</blockquote>
+<p>string.uppercase</p>
+<blockquote>
+A string containing all the characters that are considered
+uppercase letters. On most systems this is the string
+<tt class="docutils literal"><span class="pre">'ABCDEFGHIJKLMNOPQRSTUVWXYZ'</span></tt>.  The specific value is locale-
+dependent, and will be updated when <tt class="docutils literal"><span class="pre">locale.setlocale()</span></tt> is
+called.</blockquote>
+<p>string.whitespace</p>
+<blockquote>
+A string containing all characters that are considered whitespace.
+On most systems this includes the characters space, tab, linefeed,
+return, formfeed, and vertical tab.</blockquote>
+</div>
+<div class="section" id="string-formatting">
+<h2>7.1.2. String Formatting<a class="headerlink" href="#string-formatting" title="Permalink to this headline">¶</a></h2>
+<p>Starting in Python 2.6, the built-in str and unicode classes provide
+the ability to do complex variable substitutions and value formatting
+via the <tt class="docutils literal"><span class="pre">str.format()</span></tt> method described in <strong>PEP 3101</strong>.  The
+<tt class="docutils literal"><span class="pre">Formatter</span></tt> class in the <tt class="docutils literal"><span class="pre">string</span></tt> module allows you to create and
+customize your own string formatting behaviors using the same
+implementation as the built-in <tt class="docutils literal"><span class="pre">format()</span></tt> method.</p>
+<p>class class string.Formatter</p>
+<blockquote>
+<p>The <tt class="docutils literal"><span class="pre">Formatter</span></tt> class has the following public methods:</p>
+<p>format(format_string, <a href="#id1"><span class="problematic" id="id2">*</span></a>args, <a href="#id3"><span class="problematic" id="id4">*</span></a>kwargs)</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">format()</span></tt> is the primary API method.  It takes a format
+template string, and an arbitrary set of positional and keyword
+argument. <tt class="docutils literal"><span class="pre">format()</span></tt> is just a wrapper that calls
+<tt class="docutils literal"><span class="pre">vformat()</span></tt>.</blockquote>
+<p>vformat(format_string, args, kwargs)</p>
+<blockquote>
+This function does the actual work of formatting.  It is exposed
+as a separate function for cases where you want to pass in a
+predefined dictionary of arguments, rather than unpacking and
+repacking the dictionary as individual arguments using the
+<tt class="docutils literal"><span class="pre">*args</span></tt> and <tt class="docutils literal"><span class="pre">**kwds</span></tt> syntax.  <tt class="docutils literal"><span class="pre">vformat()</span></tt> does the work of
+breaking up the format template string into character data and
+replacement fields.  It calls the various methods described
+below.</blockquote>
+<p>In addition, the <tt class="docutils literal"><span class="pre">Formatter</span></tt> defines a number of methods that are
+intended to be replaced by subclasses:</p>
+<p>parse(format_string)</p>
+<blockquote>
+<p>Loop over the format_string and return an iterable of tuples
+(<em>literal_text</em>, <em>field_name</em>, <em>format_spec</em>, <em>conversion</em>).
+This is used by <tt class="docutils literal"><span class="pre">vformat()</span></tt> to break the string in to either
+literal text, or replacement fields.</p>
+<p>The values in the tuple conceptually represent a span of literal
+text followed by a single replacement field.  If there is no
+literal text (which can happen if two replacement fields occur
+consecutively), then <em>literal_text</em> will be a zero-length
+string.  If there is no replacement field, then the values of
+<em>field_name</em>, <em>format_spec</em> and <em>conversion</em> will be <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+</blockquote>
+<p>get_field(field_name, args, kwargs)</p>
+<blockquote>
+Given <em>field_name</em> as returned by <tt class="docutils literal"><span class="pre">parse()</span></tt> (see above),
+convert it to an object to be formatted.  Returns a tuple (obj,
+used_key).  The default version takes strings of the form
+defined in <strong>PEP 3101</strong>, such as &#8220;0[name]&#8221; or &#8220;label.title&#8221;.
+<em>args</em> and <em>kwargs</em> are as passed in to <tt class="docutils literal"><span class="pre">vformat()</span></tt>.  The
+return value <em>used_key</em> has the same meaning as the <em>key</em>
+parameter to <tt class="docutils literal"><span class="pre">get_value()</span></tt>.</blockquote>
+<p>get_value(key, args, kwargs)</p>
+<blockquote>
+<p>Retrieve a given field value.  The <em>key</em> argument will be either
+an integer or a string.  If it is an integer, it represents the
+index of the positional argument in <em>args</em>; if it is a string,
+then it represents a named argument in <em>kwargs</em>.</p>
+<p>The <em>args</em> parameter is set to the list of positional arguments
+to <tt class="docutils literal"><span class="pre">vformat()</span></tt>, and the <em>kwargs</em> parameter is set to the
+dictionary of keyword arguments.</p>
+<p>For compound field names, these functions are only called for
+the first component of the field name; Subsequent components are
+handled through normal attribute and indexing operations.</p>
+<p>So for example, the field expression &#8216;0.name&#8217; would cause
+<tt class="docutils literal"><span class="pre">get_value()</span></tt> to be called with a <em>key</em> argument of 0.  The
+<tt class="docutils literal"><span class="pre">name</span></tt> attribute will be looked up after <tt class="docutils literal"><span class="pre">get_value()</span></tt>
+returns by calling the built-in <tt class="docutils literal"><span class="pre">getattr()</span></tt> function.</p>
+<p>If the index or keyword refers to an item that does not exist,
+then an <tt class="docutils literal"><span class="pre">IndexError</span></tt> or <tt class="docutils literal"><span class="pre">KeyError</span></tt> should be raised.</p>
+</blockquote>
+<p>check_unused_args(used_args, args, kwargs)</p>
+<blockquote>
+Implement checking for unused arguments if desired.  The
+arguments to this function is the set of all argument keys that
+were actually referred to in the format string (integers for
+positional arguments, and strings for named arguments), and a
+reference to the <em>args</em> and <em>kwargs</em> that was passed to vformat.
+The set of unused args can be calculated from these parameters.
+<tt class="docutils literal"><span class="pre">check_unused_args()</span></tt> is assumed to throw an exception if the
+check fails.</blockquote>
+<p>format_field(value, format_spec)</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">format_field()</span></tt> simply calls the global <tt class="docutils literal"><span class="pre">format()</span></tt> built-
+in.  The method is provided so that subclasses can override it.</blockquote>
+<p>convert_field(value, conversion)</p>
+<blockquote>
+Converts the value (returned by <tt class="docutils literal"><span class="pre">get_field()</span></tt>) given a
+conversion type (as in the tuple returned by the <tt class="docutils literal"><span class="pre">parse()</span></tt>
+method.)  The default version understands &#8216;r&#8217; (repr) and &#8216;s&#8217;
+(str) conversion types.</blockquote>
+</blockquote>
+</div>
+<div class="section" id="format-string-syntax">
+<h2>7.1.3. Format String Syntax<a class="headerlink" href="#format-string-syntax" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">str.format()</span></tt> method and the <tt class="docutils literal"><span class="pre">Formatter</span></tt> class share the same
+syntax for format strings (although in the case of <tt class="docutils literal"><span class="pre">Formatter</span></tt>,
+subclasses can define their own format string syntax.)</p>
+<p>Format strings contain &#8220;replacement fields&#8221; surrounded by curly braces
+<tt class="docutils literal"><span class="pre">{}</span></tt>. Anything that is not contained in braces is considered literal
+text, which is copied unchanged to the output.  If you need to include
+a brace character in the literal text, it can be escaped by doubling:
+<tt class="docutils literal"><span class="pre">{{</span></tt> and <tt class="docutils literal"><span class="pre">}}</span></tt>.</p>
+<p>The grammar for a replacement field is as follows:</p>
+<blockquote>
+replacement_field ::= &#8220;{&#8221; field_name [&#8220;!&#8221; conversion] [&#8220;:&#8221; format_spec] &#8220;}&#8221;
+field_name        ::= (identifier | integer) (&#8220;.&#8221; attribute_name | &#8220;[&#8221; element_index &#8220;]&#8221;)*
+attribute_name    ::= identifier
+element_index     ::= integer
+conversion        ::= &#8220;r&#8221; | &#8220;s&#8221;
+format_spec       ::= &lt;described in the next section&gt;</blockquote>
+<p>In less formal terms, the replacement field starts with a
+<em>field_name</em>, which can either be a number (for a positional
+argument), or an identifier (for keyword arguments).  Following this
+is an optional <em>conversion</em> field, which is preceded by an exclamation
+point <tt class="docutils literal"><span class="pre">'!'</span></tt>, and a <em>format_spec</em>, which is preceded by a colon
+<tt class="docutils literal"><span class="pre">':'</span></tt>.</p>
+<p>The <em>field_name</em> itself begins with either a number or a keyword.  If
+it&#8217;s a number, it refers to a positional argument, and if it&#8217;s a
+keyword it refers to a named keyword argument.  This can be followed
+by any number of index or attribute expressions. An expression of the
+form <tt class="docutils literal"><span class="pre">'.name'</span></tt> selects the named attribute using <tt class="docutils literal"><span class="pre">getattr()</span></tt>,
+while an expression of the form <tt class="docutils literal"><span class="pre">'[index]'</span></tt> does an index lookup
+using <tt class="docutils literal"><span class="pre">__getitem__()</span></tt>.</p>
+<p>Some simple format string examples:</p>
+<blockquote>
+&#8220;First, thou shalt count to {0}&#8221; # References first positional argument
+&#8220;My quest is {name}&#8221;             # References keyword argument &#8216;name&#8217;
+&#8220;Weight in tons {0.weight}&#8221;      # &#8216;weight&#8217; attribute of first positional arg
+&#8220;Units destroyed: {players[0]}&#8221;  # First element of keyword argument &#8216;players&#8217;.</blockquote>
+<p>The <em>conversion</em> field causes a type coercion before formatting.
+Normally, the job of formatting a value is done by the
+<tt class="docutils literal"><span class="pre">__format__()</span></tt> method of the value itself.  However, in some cases
+it is desirable to force a type to be formatted as a string,
+overriding its own definition of formatting.  By converting the value
+to a string before calling <tt class="docutils literal"><span class="pre">__format__()</span></tt>, the normal formatting
+logic is bypassed.</p>
+<p>Two conversion flags are currently supported: <tt class="docutils literal"><span class="pre">'!s'</span></tt> which calls
+<tt class="docutils literal"><span class="pre">str()</span></tt> on the value, and <tt class="docutils literal"><span class="pre">'!r'</span></tt> which calls <tt class="docutils literal"><span class="pre">repr()</span></tt>.</p>
+<p>Some examples:</p>
+<blockquote>
+&#8220;Harold&#8217;s a clever {0!s}&#8221;        # Calls str() on the argument first
+&#8220;Bring out the holy {name!r}&#8221;    # Calls repr() on the argument first</blockquote>
+<p>The <em>format_spec</em> field contains a specification of how the value
+should be presented, including such details as field width, alignment,
+padding, decimal precision and so on.  Each value type can define it&#8217;s
+own &#8220;formatting mini-language&#8221; or interpretation of the <em>format_spec</em>.</p>
+<p>Most built-in types support a common formatting mini-language, which
+is described in the next section.</p>
+<p>A <em>format_spec</em> field can also include nested replacement fields
+within it. These nested replacement fields can contain only a field
+name; conversion flags and format specifications are not allowed.  The
+replacement fields within the format_spec are substituted before the
+<em>format_spec</em> string is interpreted. This allows the formatting of a
+value to be dynamically specified.</p>
+<p>For example, suppose you wanted to have a replacement field whose
+field width is determined by another variable:</p>
+<blockquote>
+&#8220;A man with two {0:{1}}&#8221;.format(&#8220;noses&#8221;, 10)</blockquote>
+<p>This would first evaluate the inner replacement field, making the
+format string effectively:</p>
+<blockquote>
+&#8220;A man with two {0:10}&#8221;</blockquote>
+<p>Then the outer replacement field would be evaluated, producing:</p>
+<blockquote>
+&#8220;noses     &#8220;</blockquote>
+<p>Which is substituted into the string, yielding:</p>
+<blockquote>
+&#8220;A man with two noses     &#8220;</blockquote>
+<p>(The extra space is because we specified a field width of 10, and
+because left alignment is the default for strings.)</p>
+<div class="section" id="format-specification-mini-language">
+<h3>7.1.3.1. Format Specification Mini-Language<a class="headerlink" href="#format-specification-mini-language" title="Permalink to this headline">¶</a></h3>
+<p>&#8220;Format specifications&#8221; are used within replacement fields contained
+within a format string to define how individual values are presented
+(see <em>Format String Syntax</em>.)  They can also be passed directly to the
+builtin <tt class="docutils literal"><span class="pre">format()</span></tt> function.  Each formattable type may define how
+the format specification is to be interpreted.</p>
+<p>Most built-in types implement the following options for format
+specifications, although some of the formatting options are only
+supported by the numeric types.</p>
+<p>A general convention is that an empty format string (<tt class="docutils literal"><span class="pre">&quot;&quot;</span></tt>) produces
+the same result as if you had called <tt class="docutils literal"><span class="pre">str()</span></tt> on the value.</p>
+<p>The general form of a <em>standard format specifier</em> is:</p>
+<blockquote>
+format_spec ::= [[fill]align][sign][#][0][width][.precision][type]
+fill        ::= &lt;a character other than &#8216;}&#8217;&gt;
+align       ::= &#8220;&lt;&#8221; | &#8220;&gt;&#8221; | &#8220;=&#8221; | &#8220;^&#8221;
+sign        ::= &#8220;+&#8221; | &#8220;-&#8221; | &#8221; &#8221;
+width       ::= integer
+precision   ::= integer
+type        ::= &#8220;b&#8221; | &#8220;c&#8221; | &#8220;d&#8221; | &#8220;e&#8221; | &#8220;E&#8221; | &#8220;f&#8221; | &#8220;F&#8221; | &#8220;g&#8221; | &#8220;G&#8221; | &#8220;n&#8221; | &#8220;o&#8221; | &#8220;x&#8221; | &#8220;X&#8221; | &#8220;%&#8221;</blockquote>
+<p>The <em>fill</em> character can be any character other than &#8216;}&#8217; (which
+signifies the end of the field).  The presence of a fill character is
+signaled by the <em>next</em> character, which must be one of the alignment
+options. If the second character of <em>format_spec</em> is not a valid
+alignment option, then it is assumed that both the fill character and
+the alignment option are absent.</p>
+<p>The meaning of the various alignment options is as follows:</p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Option</th>
+<th class="head">Meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">'&lt;'</span></tt></td>
+<td>Forces the field to be left-aligned within the available
+space (This is the default.)</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'&gt;'</span></tt></td>
+<td>Forces the field to be right-aligned within the available
+space.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'='</span></tt></td>
+<td>Forces the padding to be placed after the sign (if any)
+but before the digits.  This is used for printing fields
+in the form &#8216;+000000120&#8217;. This alignment option is only
+valid for numeric types.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'^'</span></tt></td>
+<td>Forces the field to be centered within the available
+space.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Note that unless a minimum field width is defined, the field width
+will always be the same size as the data to fill it, so that the
+alignment option has no meaning in this case.</p>
+<p>The <em>sign</em> option is only valid for number types, and can be one of
+the following:</p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Option</th>
+<th class="head">Meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">'+'</span></tt></td>
+<td>indicates that a sign should be used for both positive as
+well as negative numbers.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'-'</span></tt></td>
+<td>indicates that a sign should be used only for negative
+numbers (this is the default behavior).</td>
+</tr>
+<tr><td>space</td>
+<td>indicates that a leading space should be used on positive
+numbers, and a minus sign on negative numbers.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">'#'</span></tt> option is only valid for integers, and only for binary,
+octal, or hexadecimal output.  If present, it specifies that the
+output will be prefixed by <tt class="docutils literal"><span class="pre">'0b'</span></tt>, <tt class="docutils literal"><span class="pre">'0o'</span></tt>, or <tt class="docutils literal"><span class="pre">'0x'</span></tt>,
+respectively.</p>
+<p><em>width</em> is a decimal integer defining the minimum field width.  If not
+specified, then the field width will be determined by the content.</p>
+<p>If the <em>width</em> field is preceded by a zero (<tt class="docutils literal"><span class="pre">'0'</span></tt>) character, this
+enables zero-padding.  This is equivalent to an <em>alignment</em> type of
+<tt class="docutils literal"><span class="pre">'='</span></tt> and a <em>fill</em> character of <tt class="docutils literal"><span class="pre">'0'</span></tt>.</p>
+<p>The <em>precision</em> is a decimal number indicating how many digits should
+be displayed after the decimal point for a floating point value
+formatted with <tt class="docutils literal"><span class="pre">'f'</span></tt> and <tt class="docutils literal"><span class="pre">'F'</span></tt>, or before and after the decimal
+point for a floating point value formatted with <tt class="docutils literal"><span class="pre">'g'</span></tt> or <tt class="docutils literal"><span class="pre">'G'</span></tt>.
+For non-number types the field indicates the maximum field size - in
+other words, how many characters will be used from the field content.
+The <em>precision</em> is not allowed for integer values.</p>
+<p>Finally, the <em>type</em> determines how the data should be presented.</p>
+<p>The available integer presentation types are:</p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Type</th>
+<th class="head">Meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">'b'</span></tt></td>
+<td>Binary format. Outputs the number in base 2.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'c'</span></tt></td>
+<td>Character. Converts the integer to the corresponding
+unicode character before printing.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'d'</span></tt></td>
+<td>Decimal Integer. Outputs the number in base 10.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'o'</span></tt></td>
+<td>Octal format. Outputs the number in base 8.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'x'</span></tt></td>
+<td>Hex format. Outputs the number in base 16, using lower-
+case letters for the digits above 9.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'X'</span></tt></td>
+<td>Hex format. Outputs the number in base 16, using upper-
+case letters for the digits above 9.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'n'</span></tt></td>
+<td>Number. This is the same as <tt class="docutils literal"><span class="pre">'d'</span></tt>, except that it uses
+the current locale setting to insert the appropriate
+number separator characters.</td>
+</tr>
+<tr><td>None</td>
+<td>The same as <tt class="docutils literal"><span class="pre">'d'</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>The available presentation types for floating point and decimal values
+are:</p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Type</th>
+<th class="head">Meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">'e'</span></tt></td>
+<td>Exponent notation. Prints the number in scientific
+notation using the letter &#8216;e&#8217; to indicate the exponent.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'E'</span></tt></td>
+<td>Exponent notation. Same as <tt class="docutils literal"><span class="pre">'e'</span></tt> except it uses an upper
+case &#8216;E&#8217; as the separator character.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'f'</span></tt></td>
+<td>Fixed point. Displays the number as a fixed-point number.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'F'</span></tt></td>
+<td>Fixed point. Same as <tt class="docutils literal"><span class="pre">'f'</span></tt>.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'g'</span></tt></td>
+<td>General format. This prints the number as a fixed-point
+number, unless the number is too large, in which case it
+switches to <tt class="docutils literal"><span class="pre">'e'</span></tt> exponent notation. Infinity and NaN
+values are formatted as <tt class="docutils literal"><span class="pre">inf</span></tt>, <tt class="docutils literal"><span class="pre">-inf</span></tt> and <tt class="docutils literal"><span class="pre">nan</span></tt>,
+respectively.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'G'</span></tt></td>
+<td>General format. Same as <tt class="docutils literal"><span class="pre">'g'</span></tt> except switches to <tt class="docutils literal"><span class="pre">'E'</span></tt>
+if the number gets to large. The representations of
+infinity and NaN are uppercased, too.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'n'</span></tt></td>
+<td>Number. This is the same as <tt class="docutils literal"><span class="pre">'g'</span></tt>, except that it uses
+the current locale setting to insert the appropriate
+number separator characters.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'%'</span></tt></td>
+<td>Percentage. Multiplies the number by 100 and displays in
+fixed (<tt class="docutils literal"><span class="pre">'f'</span></tt>) format, followed by a percent sign.</td>
+</tr>
+<tr><td>None</td>
+<td>The same as <tt class="docutils literal"><span class="pre">'g'</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+</div>
+<div class="section" id="template-strings">
+<h2>7.1.4. Template strings<a class="headerlink" href="#template-strings" title="Permalink to this headline">¶</a></h2>
+<p>Templates provide simpler string substitutions as described in <strong>PEP
+292</strong>. Instead of the normal <tt class="docutils literal"><span class="pre">%</span></tt>-based substitutions, Templates
+support <tt class="docutils literal"><span class="pre">$</span></tt>-based substitutions, using the following rules:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">$$</span></tt> is an escape; it is replaced with a single <tt class="docutils literal"><span class="pre">$</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">$identifier</span></tt> names a substitution placeholder matching a mapping
+key of <tt class="docutils literal"><span class="pre">&quot;identifier&quot;</span></tt>.  By default, <tt class="docutils literal"><span class="pre">&quot;identifier&quot;</span></tt> must spell a
+Python identifier.  The first non-identifier character after the
+<tt class="docutils literal"><span class="pre">$</span></tt> character terminates this placeholder specification.</li>
+<li><tt class="docutils literal"><span class="pre">${identifier}</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">$identifier</span></tt>.  It is required
+when valid identifier characters follow the placeholder but are not
+part of the placeholder, such as <tt class="docutils literal"><span class="pre">&quot;${noun}ification&quot;</span></tt>.</li>
+</ul>
+<p>Any other appearance of <tt class="docutils literal"><span class="pre">$</span></tt> in the string will result in a
+<tt class="docutils literal"><span class="pre">ValueError</span></tt> being raised.</p>
+<p>New in version 2.4.</p>
+<p>The <tt class="docutils literal"><span class="pre">string</span></tt> module provides a <tt class="docutils literal"><span class="pre">Template</span></tt> class that implements
+these rules.  The methods of <tt class="docutils literal"><span class="pre">Template</span></tt> are:</p>
+<p>class class string.Template(template)</p>
+<blockquote>
+<p>The constructor takes a single argument which is the template
+string.</p>
+<p>substitute(mapping[, <a href="#id5"><span class="problematic" id="id6">**</span></a>kws])</p>
+<blockquote>
+Performs the template substitution, returning a new string.
+<em>mapping</em> is any dictionary-like object with keys that match the
+placeholders in the template.  Alternatively, you can provide
+keyword arguments, where the keywords are the placeholders.
+When both <em>mapping</em> and <em>kws</em> are given and there are
+duplicates, the placeholders from <em>kws</em> take precedence.</blockquote>
+<p>safe_substitute(mapping[, <a href="#id7"><span class="problematic" id="id8">**</span></a>kws])</p>
+<blockquote>
+<p>Like <tt class="docutils literal"><span class="pre">substitute()</span></tt>, except that if placeholders are missing
+from <em>mapping</em> and <em>kws</em>, instead of raising a <tt class="docutils literal"><span class="pre">KeyError</span></tt>
+exception, the original placeholder will appear in the resulting
+string intact.  Also, unlike with <tt class="docutils literal"><span class="pre">substitute()</span></tt>, any other
+appearances of the <tt class="docutils literal"><span class="pre">$</span></tt> will simply return <tt class="docutils literal"><span class="pre">$</span></tt> instead of
+raising <tt class="docutils literal"><span class="pre">ValueError</span></tt>.</p>
+<p>While other exceptions may still occur, this method is called
+&#8220;safe&#8221; because substitutions always tries to return a usable
+string instead of raising an exception.  In another sense,
+<tt class="docutils literal"><span class="pre">safe_substitute()</span></tt> may be anything other than safe, since it
+will silently ignore malformed templates containing dangling
+delimiters, unmatched braces, or placeholders that are not valid
+Python identifiers.</p>
+</blockquote>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">Template</span></tt> instances also provide one public data attribute:</p>
+<p>string.template</p>
+<blockquote>
+This is the object passed to the constructor&#8217;s <em>template</em> argument.
+In general, you shouldn&#8217;t change it, but read-only access is not
+enforced.</blockquote>
+<p>Here is an example of how to use a Template:</p>
+<div class="highlight-python"><pre>&gt;&gt;&gt; from string import Template
+&gt;&gt;&gt; s = Template('$who likes $what')
+&gt;&gt;&gt; s.substitute(who='tim', what='kung pao')
+'tim likes kung pao'
+&gt;&gt;&gt; d = dict(who='tim')
+&gt;&gt;&gt; Template('Give $who $100').substitute(d)
+Traceback (most recent call last):
+[...]
+ValueError: Invalid placeholder in string: line 1, col 10
+&gt;&gt;&gt; Template('$who likes $what').substitute(d)
+Traceback (most recent call last):
+[...]
+KeyError: 'what'
+&gt;&gt;&gt; Template('$who likes $what').safe_substitute(d)
+'tim likes $what'</pre>
+</div>
+<p>Advanced usage: you can derive subclasses of <tt class="docutils literal"><span class="pre">Template</span></tt> to customize
+the placeholder syntax, delimiter character, or the entire regular
+expression used to parse template strings.  To do this, you can
+override these class attributes:</p>
+<ul class="simple">
+<li><em>delimiter</em> &#8211; This is the literal string describing a placeholder
+introducing delimiter.  The default value <tt class="docutils literal"><span class="pre">$</span></tt>.  Note that this
+should <em>not</em> be a regular expression, as the implementation will
+call <tt class="docutils literal"><span class="pre">re.escape()</span></tt> on this string as needed.</li>
+<li><em>idpattern</em> &#8211; This is the regular expression describing the pattern
+for non-braced placeholders (the braces will be added automatically
+as appropriate).  The default value is the regular expression
+<tt class="docutils literal"><span class="pre">[_a-z][_a-z0-9]*</span></tt>.</li>
+</ul>
+<p>Alternatively, you can provide the entire regular expression pattern
+by overriding the class attribute <em>pattern</em>.  If you do this, the
+value must be a regular expression object with four named capturing
+groups.  The capturing groups correspond to the rules given above,
+along with the invalid placeholder rule:</p>
+<ul class="simple">
+<li><em>escaped</em> &#8211; This group matches the escape sequence, e.g. <tt class="docutils literal"><span class="pre">$$</span></tt>, in
+the default pattern.</li>
+<li><em>named</em> &#8211; This group matches the unbraced placeholder name; it
+should not include the delimiter in capturing group.</li>
+<li><em>braced</em> &#8211; This group matches the brace enclosed placeholder name;
+it should not include either the delimiter or braces in the
+capturing group.</li>
+<li><em>invalid</em> &#8211; This group matches any other delimiter pattern (usually
+a single delimiter), and it should appear last in the regular
+expression.</li>
+</ul>
+</div>
+<div class="section" id="string-functions">
+<h2>7.1.5. String functions<a class="headerlink" href="#string-functions" title="Permalink to this headline">¶</a></h2>
+<p>The following functions are available to operate on string and Unicode
+objects. They are not available as string methods.</p>
+<p>string.capwords(s)</p>
+<blockquote>
+Split the argument into words using <tt class="docutils literal"><span class="pre">split()</span></tt>, capitalize each
+word using <tt class="docutils literal"><span class="pre">capitalize()</span></tt>, and join the capitalized words using
+<tt class="docutils literal"><span class="pre">join()</span></tt>.  Note that this replaces runs of whitespace characters
+by a single space, and removes leading and trailing whitespace.</blockquote>
+<p>string.maketrans(from, to)</p>
+<blockquote>
+<p>Return a translation table suitable for passing to <tt class="docutils literal"><span class="pre">translate()</span></tt>,
+that will map each character in <em>from</em> into the character at the
+same position in <em>to</em>; <em>from</em> and <em>to</em> must have the same length.</p>
+<dl class="docutils">
+<dt>Note: Don&#8217;t use strings derived from <tt class="docutils literal"><span class="pre">lowercase</span></tt> and <tt class="docutils literal"><span class="pre">uppercase</span></tt> as</dt>
+<dd>arguments; in some locales, these don&#8217;t have the same length.
+For case conversions, always use <tt class="docutils literal"><span class="pre">str.lower()</span></tt> and
+<tt class="docutils literal"><span class="pre">str.upper()</span></tt>.</dd>
+</dl>
+</blockquote>
+</div>
+<div class="section" id="deprecated-string-functions">
+<h2>7.1.6. Deprecated string functions<a class="headerlink" href="#deprecated-string-functions" title="Permalink to this headline">¶</a></h2>
+<p>The following list of functions are also defined as methods of string
+and Unicode objects; see section <em>String Methods</em> for more information
+on those.  You should consider these functions as deprecated, although
+they will not be removed until Python 3.0.  The functions defined in
+this module are:</p>
+<p>string.atof(s)</p>
+<blockquote>
+<p>Deprecated since version 2.0: Use the <tt class="docutils literal"><span class="pre">float()</span></tt> built-in
+function.</p>
+<p>Convert a string to a floating point number.  The string must have
+the standard syntax for a floating point literal in Python,
+optionally preceded by a sign (<tt class="docutils literal"><span class="pre">+</span></tt> or <tt class="docutils literal"><span class="pre">-</span></tt>).  Note that this
+behaves identical to the built-in function <tt class="docutils literal"><span class="pre">float()</span></tt> when passed
+a string.</p>
+<dl class="docutils">
+<dt>Note: When passing in a string, values for NaN and Infinity may be</dt>
+<dd>returned, depending on the underlying C library.  The specific
+set of strings accepted which cause these values to be returned
+depends entirely on the C library and is known to vary.</dd>
+</dl>
+</blockquote>
+<p>string.atoi(s[, base])</p>
+<blockquote>
+<p>Deprecated since version 2.0: Use the <tt class="docutils literal"><span class="pre">int()</span></tt> built-in function.</p>
+<p>Convert string <em>s</em> to an integer in the given <em>base</em>.  The string
+must consist of one or more digits, optionally preceded by a sign
+(<tt class="docutils literal"><span class="pre">+</span></tt> or <tt class="docutils literal"><span class="pre">-</span></tt>).  The <em>base</em> defaults to 10.  If it is 0, a
+default base is chosen depending on the leading characters of the
+string (after stripping the sign): <tt class="docutils literal"><span class="pre">0x</span></tt> or <tt class="docutils literal"><span class="pre">0X</span></tt> means 16, <tt class="docutils literal"><span class="pre">0</span></tt>
+means 8, anything else means 10.  If <em>base</em> is 16, a leading <tt class="docutils literal"><span class="pre">0x</span></tt>
+or <tt class="docutils literal"><span class="pre">0X</span></tt> is always accepted, though not required.  This behaves
+identically to the built-in function <tt class="docutils literal"><span class="pre">int()</span></tt> when passed a
+string.  (Also note: for a more flexible interpretation of numeric
+literals, use the built-in function <tt class="docutils literal"><span class="pre">eval()</span></tt>.)</p>
+</blockquote>
+<p>string.atol(s[, base])</p>
+<blockquote>
+<p>Deprecated since version 2.0: Use the <tt class="docutils literal"><span class="pre">long()</span></tt> built-in function.</p>
+<p>Convert string <em>s</em> to a long integer in the given <em>base</em>. The
+string must consist of one or more digits, optionally preceded by a
+sign (<tt class="docutils literal"><span class="pre">+</span></tt> or <tt class="docutils literal"><span class="pre">-</span></tt>). The <em>base</em> argument has the same meaning as
+for <tt class="docutils literal"><span class="pre">atoi()</span></tt>.  A trailing <tt class="docutils literal"><span class="pre">l</span></tt> or <tt class="docutils literal"><span class="pre">L</span></tt> is not allowed, except
+if the base is 0.  Note that when invoked without <em>base</em> or with
+<em>base</em> set to 10, this behaves identical to the built-in function
+<tt class="docutils literal"><span class="pre">long()</span></tt> when passed a string.</p>
+</blockquote>
+<p>string.capitalize(word)</p>
+<blockquote>
+Return a copy of <em>word</em> with only its first character capitalized.</blockquote>
+<p>string.expandtabs(s[, tabsize])</p>
+<blockquote>
+Expand tabs in a string replacing them by one or more spaces,
+depending on the current column and the given tab size.  The column
+number is reset to zero after each newline occurring in the string.
+This doesn&#8217;t understand other non-printing characters or escape
+sequences.  The tab size defaults to 8.</blockquote>
+<p>string.find(s, sub[, start[, end]])</p>
+<blockquote>
+Return the lowest index in <em>s</em> where the substring <em>sub</em> is found
+such that <em>sub</em> is wholly contained in <tt class="docutils literal"><span class="pre">s[start:end]</span></tt>.  Return
+<tt class="docutils literal"><span class="pre">-1</span></tt> on failure. Defaults for <em>start</em> and <em>end</em> and
+interpretation of negative values is the same as for slices.</blockquote>
+<p>string.rfind(s, sub[, start[, end]])</p>
+<blockquote>
+Like <tt class="docutils literal"><span class="pre">find()</span></tt> but find the highest index.</blockquote>
+<p>string.index(s, sub[, start[, end]])</p>
+<blockquote>
+Like <tt class="docutils literal"><span class="pre">find()</span></tt> but raise <tt class="docutils literal"><span class="pre">ValueError</span></tt> when the substring is not
+found.</blockquote>
+<p>string.rindex(s, sub[, start[, end]])</p>
+<blockquote>
+Like <tt class="docutils literal"><span class="pre">rfind()</span></tt> but raise <tt class="docutils literal"><span class="pre">ValueError</span></tt> when the substring is not
+found.</blockquote>
+<p>string.count(s, sub[, start[, end]])</p>
+<blockquote>
+Return the number of (non-overlapping) occurrences of substring
+<em>sub</em> in string <tt class="docutils literal"><span class="pre">s[start:end]</span></tt>. Defaults for <em>start</em> and <em>end</em>
+and interpretation of negative values are the same as for slices.</blockquote>
+<p>string.lower(s)</p>
+<blockquote>
+Return a copy of <em>s</em>, but with upper case letters converted to
+lower case.</blockquote>
+<p>string.split(s[, sep[, maxsplit]])</p>
+<blockquote>
+<p>Return a list of the words of the string <em>s</em>.  If the optional
+second argument <em>sep</em> is absent or <tt class="xref docutils literal"><span class="pre">None</span></tt>, the words are
+separated by arbitrary strings of whitespace characters (space,
+tab,  newline, return, formfeed).  If the second argument <em>sep</em> is
+present and not <tt class="xref docutils literal"><span class="pre">None</span></tt>, it specifies a string to be used as the
+word separator.  The returned list will then have one more item
+than the number of non-overlapping occurrences of the separator in
+the string.  The optional third argument <em>maxsplit</em> defaults to 0.
+If it is nonzero, at most <em>maxsplit</em> number of splits occur, and
+the remainder of the string is returned as the final element of the
+list (thus, the list will have at most <tt class="docutils literal"><span class="pre">maxsplit+1</span></tt> elements).</p>
+<p>The behavior of split on an empty string depends on the value of
+<em>sep</em>. If <em>sep</em> is not specified, or specified as <tt class="xref docutils literal"><span class="pre">None</span></tt>, the
+result will be an empty list. If <em>sep</em> is specified as any string,
+the result will be a list containing one element which is an empty
+string.</p>
+</blockquote>
+<p>string.rsplit(s[, sep[, maxsplit]])</p>
+<blockquote>
+<p>Return a list of the words of the string <em>s</em>, scanning <em>s</em> from the
+end.  To all intents and purposes, the resulting list of words is
+the same as returned by <tt class="docutils literal"><span class="pre">split()</span></tt>, except when the optional third
+argument <em>maxsplit</em> is explicitly specified and nonzero.  When
+<em>maxsplit</em> is nonzero, at most <em>maxsplit</em> number of splits &#8211; the
+<em>rightmost</em> ones &#8211; occur, and the remainder of the string is
+returned as the first element of the list (thus, the list will have
+at most <tt class="docutils literal"><span class="pre">maxsplit+1</span></tt> elements).</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>string.splitfields(s[, sep[, maxsplit]])</p>
+<blockquote>
+This function behaves identically to <tt class="docutils literal"><span class="pre">split()</span></tt>.  (In the past,
+<tt class="docutils literal"><span class="pre">split()</span></tt> was only used with one argument, while
+<tt class="docutils literal"><span class="pre">splitfields()</span></tt> was only used with two arguments.)</blockquote>
+<p>string.join(words[, sep])</p>
+<blockquote>
+Concatenate a list or tuple of words with intervening occurrences
+of  <em>sep</em>. The default value for <em>sep</em> is a single space character.
+It is always true that <tt class="docutils literal"><span class="pre">string.join(string.split(s,</span> <span class="pre">sep),</span> <span class="pre">sep)</span></tt>
+equals <em>s</em>.</blockquote>
+<p>string.joinfields(words[, sep])</p>
+<blockquote>
+This function behaves identically to <tt class="docutils literal"><span class="pre">join()</span></tt>.  (In the past,
+<tt class="docutils literal"><span class="pre">join()</span></tt> was only used with one argument, while <tt class="docutils literal"><span class="pre">joinfields()</span></tt>
+was only used with two arguments.) Note that there is no
+<tt class="docutils literal"><span class="pre">joinfields()</span></tt> method on string objects; use the <tt class="docutils literal"><span class="pre">join()</span></tt>
+method instead.</blockquote>
+<p>string.lstrip(s[, chars])</p>
+<blockquote>
+<p>Return a copy of the string with leading characters removed.  If
+<em>chars</em> is omitted or <tt class="xref docutils literal"><span class="pre">None</span></tt>, whitespace characters are removed.
+If given and not <tt class="xref docutils literal"><span class="pre">None</span></tt>, <em>chars</em> must be a string; the characters
+in the string will be stripped from the beginning of the string
+this method is called on.</p>
+<p>Changed in version 2.2.3: The <em>chars</em> parameter was added.  The
+<em>chars</em> parameter cannot be passed in earlier 2.2 versions.</p>
+</blockquote>
+<p>string.rstrip(s[, chars])</p>
+<blockquote>
+<p>Return a copy of the string with trailing characters removed.  If
+<em>chars</em> is omitted or <tt class="xref docutils literal"><span class="pre">None</span></tt>, whitespace characters are removed.
+If given and not <tt class="xref docutils literal"><span class="pre">None</span></tt>, <em>chars</em> must be a string; the characters
+in the string will be stripped from the end of the string this
+method is called on.</p>
+<p>Changed in version 2.2.3: The <em>chars</em> parameter was added.  The
+<em>chars</em> parameter cannot be passed in earlier 2.2 versions.</p>
+</blockquote>
+<p>string.strip(s[, chars])</p>
+<blockquote>
+<p>Return a copy of the string with leading and trailing characters
+removed.  If <em>chars</em> is omitted or <tt class="xref docutils literal"><span class="pre">None</span></tt>, whitespace characters
+are removed.  If given and not <tt class="xref docutils literal"><span class="pre">None</span></tt>, <em>chars</em> must be a string;
+the characters in the string will be stripped from the both ends of
+the string this method is called on.</p>
+<p>Changed in version 2.2.3: The <em>chars</em> parameter was added.  The
+<em>chars</em> parameter cannot be passed in earlier 2.2 versions.</p>
+</blockquote>
+<p>string.swapcase(s)</p>
+<blockquote>
+Return a copy of <em>s</em>, but with lower case letters converted to
+upper case and vice versa.</blockquote>
+<p>string.translate(s, table[, deletechars])</p>
+<blockquote>
+Delete all characters from <em>s</em> that are in <em>deletechars</em> (if
+present), and then translate the characters using <em>table</em>, which
+must be a 256-character string giving the translation for each
+character value, indexed by its ordinal.  If <em>table</em> is <tt class="xref docutils literal"><span class="pre">None</span></tt>,
+then only the character deletion step is performed.</blockquote>
+<p>string.upper(s)</p>
+<blockquote>
+Return a copy of <em>s</em>, but with lower case letters converted to
+upper case.</blockquote>
+<p>string.ljust(s, width)
+string.rjust(s, width)
+string.center(s, width)</p>
+<blockquote>
+These functions respectively left-justify, right-justify and center
+a string in a field of given width.  They return a string that is
+at least <em>width</em> characters wide, created by padding the string <em>s</em>
+with spaces until the given width on the right, left or both sides.
+The string is never truncated.</blockquote>
+<p>string.zfill(s, width)</p>
+<blockquote>
+Pad a numeric string on the left with zero digits until the given
+width is reached.  Strings starting with a sign are handled
+correctly.</blockquote>
+<p>string.replace(str, old, new[, maxreplace])</p>
+<blockquote>
+Return a copy of string <em>str</em> with all occurrences of substring
+<em>old</em> replaced by <em>new</em>.  If the optional argument <em>maxreplace</em> is
+given, the first <em>maxreplace</em> occurrences are replaced.</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="re.html" title="7.2. re — Regular expression operations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="strings.html" title="7. String Services"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="strings.html" >7. String Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

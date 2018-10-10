@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>27.2. codeop — Compile Python code &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="27. Custom Python Interpreters" href="custominterp.html" />
+    <link rel="next" title="28. Importing Modules" href="modules.html" />
+    <link rel="prev" title="27.1. code — Interpreter base classes" href="code.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="28. Importing Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="code.html" title="27.1. code — Interpreter base classes"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="custominterp.html" accesskey="U">27. Custom Python Interpreters</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="code.html"
+                                  title="previous chapter">27.1. <tt class="docutils literal docutils literal"><span class="pre">code</span></tt> &#8212; Interpreter base classes</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="modules.html"
+                                  title="next chapter">28. Importing Modules</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/codeop.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="codeop-compile-python-code">
+<h1>27.2. <tt class="docutils literal"><span class="pre">codeop</span></tt> &#8212; Compile Python code<a class="headerlink" href="#codeop-compile-python-code" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">codeop</span></tt> module provides utilities upon which the Python read-
+eval-print loop can be emulated, as is done in the <tt class="docutils literal"><span class="pre">code</span></tt> module.
+As a result, you probably don&#8217;t want to use the module directly; if
+you want to include such a loop in your program you probably want to
+use the <tt class="docutils literal"><span class="pre">code</span></tt> module instead.</p>
+<p>There are two parts to this job:</p>
+<ol class="arabic simple">
+<li>Being able to tell if a line of input completes a Python
+statement: in short, telling whether to print &#8216;<tt class="docutils literal"><span class="pre">&gt;&gt;&gt;</span></tt>&#8216; or
+&#8216;<tt class="docutils literal"><span class="pre">...</span></tt>&#8216; next.</li>
+<li>Remembering which future statements the user has entered, so
+subsequent input can be compiled with these in effect.</li>
+</ol>
+<p>The <tt class="docutils literal"><span class="pre">codeop</span></tt> module provides a way of doing each of these things,
+and a way of doing them both.</p>
+<p>To do just the former:</p>
+<p>codeop.compile_command(source[, filename[, symbol]])</p>
+<blockquote>
+<p>Tries to compile <em>source</em>, which should be a string of Python code
+and return a code object if <em>source</em> is valid Python code. In that
+case, the filename attribute of the code object will be <em>filename</em>,
+which defaults to <tt class="docutils literal"><span class="pre">'&lt;input&gt;'</span></tt>. Returns <tt class="xref docutils literal"><span class="pre">None</span></tt> if <em>source</em> is
+<em>not</em> valid Python code, but is a prefix of valid Python code.</p>
+<p>If there is a problem with <em>source</em>, an exception will be raised.
+<tt class="docutils literal"><span class="pre">SyntaxError</span></tt> is raised if there is invalid Python syntax, and
+<tt class="docutils literal"><span class="pre">OverflowError</span></tt> or <tt class="docutils literal"><span class="pre">ValueError</span></tt> if there is an invalid literal.</p>
+<p>The <em>symbol</em> argument determines whether <em>source</em> is compiled as a
+statement (<tt class="docutils literal"><span class="pre">'single'</span></tt>, the default) or as an <em>expression</em>
+(<tt class="docutils literal"><span class="pre">'eval'</span></tt>).  Any other value will cause <tt class="docutils literal"><span class="pre">ValueError</span></tt> to  be
+raised.</p>
+<dl class="docutils">
+<dt>Note: It is possible (but not likely) that the parser stops parsing</dt>
+<dd>with a successful outcome before reaching the end of the source;
+in this case, trailing symbols may be ignored instead of causing
+an error.  For example, a backslash followed by two newlines may
+be followed by arbitrary garbage. This will be fixed once the API
+for the parser is better.</dd>
+</dl>
+</blockquote>
+<p>class class codeop.Compile</p>
+<blockquote>
+Instances of this class have <tt class="docutils literal"><span class="pre">__call__()</span></tt> methods identical in
+signature to the built-in function <tt class="docutils literal"><span class="pre">compile()</span></tt>, but with the
+difference that if the instance compiles program text containing a
+<tt class="docutils literal"><span class="pre">__future__</span></tt> statement, the instance &#8216;remembers&#8217; and compiles all
+subsequent program texts with the statement in force.</blockquote>
+<p>class class codeop.CommandCompiler</p>
+<blockquote>
+Instances of this class have <tt class="docutils literal"><span class="pre">__call__()</span></tt> methods identical in
+signature to <tt class="docutils literal"><span class="pre">compile_command()</span></tt>; the difference is that if the
+instance compiles program text containing a <tt class="docutils literal"><span class="pre">__future__</span></tt>
+statement, the instance &#8216;remembers&#8217; and compiles all subsequent
+program texts with the statement in force.</blockquote>
+<p>A note on version compatibility: the <tt class="docutils literal"><span class="pre">Compile</span></tt> and
+<tt class="docutils literal"><span class="pre">CommandCompiler</span></tt> are new in Python 2.2.  If you want to enable the
+future-tracking features of 2.2 but also retain compatibility with 2.1
+and earlier versions of Python you can either write</p>
+<blockquote>
+<dl class="docutils">
+<dt>try:</dt>
+<dd>from codeop import CommandCompiler
+compile_command = CommandCompiler()
+del CommandCompiler</dd>
+<dt>except ImportError:</dt>
+<dd>from codeop import compile_command</dd>
+</dl>
+</blockquote>
+<p>which is a low-impact change, but introduces possibly unwanted global
+state into your program, or you can write:</p>
+<blockquote>
+<dl class="docutils">
+<dt>try:</dt>
+<dd>from codeop import CommandCompiler</dd>
+<dt>except ImportError:</dt>
+<dd><dl class="first last docutils">
+<dt>def CommandCompiler():</dt>
+<dd>from codeop import compile_command
+return compile_command</dd>
+</dl>
+</dd>
+</dl>
+</blockquote>
+<p>and then call <tt class="docutils literal"><span class="pre">CommandCompiler</span></tt> every time you need a fresh compiler
+object.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="28. Importing Modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="code.html" title="27.1. code — Interpreter base classes"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="custominterp.html" >27. Custom Python Interpreters</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

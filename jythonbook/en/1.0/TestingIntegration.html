@@ -1,0 +1,1399 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Chapter 18: Testing and Continuous Integration &mdash; Jython Book v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '1.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Book v1.0 documentation" href="index.html" />
+    <link rel="next" title="Chapter 19: Concurrency" href="Concurrency.html" />
+    <link rel="prev" title="Chapter 17: Deployment Targets" href="DeploymentTargets.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Concurrency.html" title="Chapter 19: Concurrency"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="DeploymentTargets.html" title="Chapter 17: Deployment Targets"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="chapter-18-testing-and-continuous-integration">
+<h1>Chapter 18: Testing and Continuous Integration<a class="headerlink" href="#chapter-18-testing-and-continuous-integration" title="Permalink to this headline">¶</a></h1>
+<p>Nowadays, automated testing is a fundamental activity in software development.
+In this chapter, you will see a survey of the tools available for Jython in this field.
+These tools range from common tools used in the Python world to aid with unit testing, to more complex tools available in the Java world that can be extended or driven using Jython.</p>
+<div class="section" id="python-testing-tools">
+<h2>Python Testing Tools<a class="headerlink" href="#python-testing-tools" title="Permalink to this headline">¶</a></h2>
+<p>Let’s start the chapter with a discussion of the most common Python testing tools.
+We will start with UnitTest to get a feel for the process.</p>
+<div class="section" id="unittest">
+<h3>UnitTest<a class="headerlink" href="#unittest" title="Permalink to this headline">¶</a></h3>
+<p>First we will take a look at the most classic test tool available in Python: UnitTest.
+It follows the conventions of most “xUnit” incarnations (such as JUnit); you subclass from  class, write test methods (which must have a name starting with “test”), and optionally override the methods  and  which are executed around the test methods.
+And you can use the multiple  methods provided by . The following is a very simple test case for functions of the built-in math module.</p>
+<p>Listing 18-1.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="k">class</span> <span class="nc">TestMath</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">testFloor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mf">1.01</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="o">-</span><span class="mf">2</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="o">-</span><span class="mf">1.1</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">testCeil</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">1.01</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="o">-</span><span class="mf">1.1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>There are many other assertion methods besides , of course.
+The following lists the rest of the available assertion methods:</p>
+<ul class="simple">
+<li>assertNotEqual(a,b) : The opposite of assertEqual().</li>
+<li>assertAlmostEqual(a, b): Only used for numeric comparison.
+It adds a sort of tolerance for insignificant differences by subtracting its first two arguments after rounding them to the seventh decimal place, and later comparing the result to zero.
+You can specify a different number of decimal places in the third argument.
+This is useful for comparing floating point numbers.</li>
+<li>assertNotAlmostEqual(a, b): The opposite of assertAlmostEqual().</li>
+<li>assert_(x): Accepts a Boolean argument, expecting it to be . You can use it to write other checks, such as “greater than,” or to check Boolean functions/attributes.
+(The trailing underscore is needed because  is a keyword.)</li>
+<li>assertFalse(x). The opposite of assert_().</li>
+<li>assertRaises(exception, callable). Used to assert that an exception passed as the first argument is thrown when invoking the callable specified as the second argument.
+The rest of the arguments passed to  are passed on to the callable.</li>
+</ul>
+<p>As an example, let’s extend our test of mathematical functions using some of these other assertion functions:</p>
+<p>Listing 18-2.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+
+<span class="k">class</span> <span class="nc">TestMath</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="c"># ...</span>
+
+    <span class="k">def</span> <span class="nf">testMultiplication</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="mf">3</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">testDivision</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ZeroDivisionError</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">div</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">)</span>
+        <span class="c"># The same assertion using a different idiom:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ZeroDivisionError</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="mf">1</span> <span class="o">/</span> <span class="mf">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, you may be wondering how to run this test case.
+The simple answer is to add the following to the file in which we defined it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Finally, just run the module.
+Say, if you wrote all this code on a file named , then run:</p>
+<div class="highlight-python"><pre>$ jython test_math.py</pre>
+</div>
+<p>And you will see this output:</p>
+<div class="highlight-python"><pre>....
+----------------------------------------------------------------------
+Ran 4 tests in 0.005s
+
+OK</pre>
+</div>
+<p>Each dot before the dash line represents a successfully run test.
+Let’s see what happens if we add a test that fails.
+Change the invocation  method in  to use  instead.
+If you run the module again, you will see the following output:</p>
+<p>Listing 18-3.</p>
+<div class="highlight-python"><pre>...F
+======================================================================
+FAIL: testMultiplication (__main__.TestMath)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "test_math.py", line 22, in testMultiplication
+    self.assertEqual(0.3, 0.1 * 3)
+AssertionError: 0.3 != 0.30000000000000004
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.030s
+
+FAILED (failures=1)</pre>
+</div>
+<p>As you can see, the last dot is now an “F,” and an explanation of the failure is printed, pointing out that  and  are not equal.
+The last line also shows the grand total of 1 failure.</p>
+<p>By the way, now you can imagine why using  is better than : if the test fails,  provides helpful information, which  can’t possibly provide by itself.
+To see this in action, let’s change  to use :</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestMath</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="c">#...</span>
+
+    <span class="k">def</span> <span class="nf">testMultiplication</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="mf">0.3</span> <span class="o">==</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="mf">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you run the test again, the output will be:</p>
+<div class="highlight-python"><pre>...F
+======================================================================
+FAIL: testMultiplication (__main__.TestMath)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "test_math.py", line 24, in testMultiplication
+    self.assert_(0.3 == 0.1 * 3)
+AssertionError
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.054s
+
+FAILED (failures=1)</pre>
+</div>
+<p>Now all that we have is the  and the message.
+No extra information is provided to help us diagnose the failure, as was the case when we used . That’s why all the specialized  methods are so helpful.
+Actually, with the exception of , all assertion methods accept an extra parameter meant to be the debugging message, which will be shown in case the test fails.
+That lets you write helper methods such as:</p>
+<p>Listing 18-4.</p>
+<div class="highlight-python"><pre>class SomeTestCase(unittest.TestCase):
+    def assertGreaterThan(a, b):
+        self.assert_(a &gt; b, '%d isn't greater than %d')
+
+    def testSomething(self):
+        self.assertGreaterThan(10, 4)</pre>
+</div>
+<p>As your application gets bigger, the number of test cases will grow, too.
+Eventually, you may not want to keep all the tests in one Python module, for maintainability reasons.
+Let’s create a new module named  with the following test code:</p>
+<p>Listing 18-5.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="k">class</span> <span class="nc">TestLists</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="s">&#39;bar&#39;</span><span class="p">,</span> <span class="s">&#39;baz&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">testLen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mf">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">testContains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="s">&#39;foo&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="s">&#39;bar&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="s">&#39;baz&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">testSort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">([</span><span class="s">&#39;bar&#39;</span><span class="p">,</span> <span class="s">&#39;baz&#39;</span><span class="p">,</span> <span class="s">&#39;foo&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">([</span><span class="s">&#39;bar&#39;</span><span class="p">,</span> <span class="s">&#39;baz&#39;</span><span class="p">,</span> <span class="s">&#39;foo&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the previous code, you can see an example of a  method, which allows us to avoid repeating the same initialization code on each  method.
+The method is executed once before every test.
+Similarly, the  method is executed once after each test to perform cleanup activities.</p>
+</div>
+<p>And, restoring our math tests to a good state, the  will contain the following:</p>
+<p>Listing 18-6.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+
+<span class="k">class</span> <span class="nc">TestMath</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">testFloor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mf">1.01</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="o">-</span><span class="mf">2</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="o">-</span><span class="mf">1.1</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">testCeil</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">1.01</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="o">-</span><span class="mf">1.1</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">testDivision</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ZeroDivisionError</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">div</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">)</span>
+        <span class="c"># The same assertion using a different idiom:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ZeroDivisionError</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="mf">1</span> <span class="o">/</span> <span class="mf">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">testMultiplication</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="mf">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, how do we run, in one pass, tests defined in different modules? One option is to manually build a <em>None</em>.
+A test suite is simply a collection of test cases (and/or other test suites) which, when run, will run all the test cases (and/or test suites) contained by it.
+Note that a new test case instance is built for each test method, so suites have already been built under the hood every time you have run a test module.
+Our work, then, is to “paste” the suites together.</p>
+<p>Let’s build suites using the interactive interpreter.
+First, import the involved modules:</p>
+<p>Listing 18-7.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">unittest</span><span class="o">,</span> <span class="nn">test_math</span><span class="o">,</span> <span class="nn">test_lists</span>
+</pre></div>
+</div>
+<p>Then, obtain the test suites for each one of our test modules (which were implicitly created when running them using the  shortcut), using the  class:</p>
+<p>Listing 18-8.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">loader</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">math_suite</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">loadTestsFromModule</span><span class="p">(</span><span class="n">test_math</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lists_suite</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">loadTestsFromModule</span><span class="p">(</span><span class="n">test_lists</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we build a new suite, which combines these suites:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">global_suite</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestSuite</span><span class="p">([</span><span class="n">math_suite</span><span class="p">,</span> <span class="n">lists_suite</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>And finally, we run the suite:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">global_suite</span><span class="p">)</span>
+<span class="go">.......</span>
+<span class="go">----------------------------------------------------------------------</span>
+<span class="go">Ran 7 tests in 0.010s</span>
+
+<span class="go">OK</span>
+<span class="go">&lt;unittest._TextTestResult run=7 errors=0 failures=0&gt;</span>
+</pre></div>
+</div>
+<p>Or, if you want a more verbose output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mf">2</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">global_suite</span><span class="p">)</span>
+<span class="go">testCeil (test_math.TestMath) ... ok</span>
+<span class="go">testDivision (test_math.TestMath) ... ok</span>
+<span class="go">testFloor (test_math.TestMath) ... ok</span>
+<span class="go">testMultiplication (test_math.TestMath) ... ok</span>
+<span class="go">testContains (test_lists.TestLists) ... ok</span>
+<span class="go">testLen (test_lists.TestLists) ... ok</span>
+<span class="go">testSort (test_lists.TestLists) ... ok</span>
+
+<span class="go">----------------------------------------------------------------------</span>
+<span class="go">Ran 7 tests in 0.020s</span>
+
+<span class="go">OK</span>
+<span class="go">&lt;unittest._TextTestResult run=7 errors=0 failures=0&gt;</span>
+</pre></div>
+</div>
+<p>Using this low-level knowledge about loaders, suites, and runners, you can easily write a script to run the tests of any project.
+Obviously, the details of the script will vary from project to project, depending on the way in which you decide to organize your tests.
+There are a number of other features that are included with the unittest framework.
+For more detailed information, please refer to the Python documentation.</p>
+<p>On the other hand, you won’t typically write custom scripts to run all your tests.
+Using test tools that do automatic test discovery is a much more convenient approach.
+We will look at one of them shortly.
+But first, we must show you another testing tool that is very popular in the Python world: doctests.</p>
+</div>
+<div class="section" id="doctests">
+<h3>Doctests<a class="headerlink" href="#doctests" title="Permalink to this headline">¶</a></h3>
+<p>Doctests are an ingenious combination of, well, documentation and tests.
+A doctest is, in essence, no more than a snapshot of an interactive interpreter session, mixed with paragraphs of documentation, typically inside of a docstring.
+Here is a simple example:</p>
+<p>Listing 18-9.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">is_even</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if an integer number is even.</span>
+
+<span class="sd">    &gt;&gt;&gt; is_even(0)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; is_even(2)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; is_even(3)</span>
+<span class="sd">    False</span>
+
+<span class="sd">    It works with very long numbers:</span>
+
+<span class="sd">    &gt;&gt;&gt; is_even(100000000000000000000000000000)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    And also with negatives:</span>
+
+<span class="sd">    &gt;&gt;&gt; is_even(-1000000000000000000000000000001)</span>
+<span class="sd">    False</span>
+
+<span class="sd">    But not with floats:</span>
+
+<span class="sd">    &gt;&gt;&gt; is_even(4.1)</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">    ...</span>
+<span class="sd">    ValueError: 4.1 isn&#39;t an integer</span>
+
+
+
+<span class="sd">    However, a value of type float will work as long as is an integer:</span>
+
+<span class="sd">    &gt;&gt;&gt; is_even(4.0)</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">remainder</span> <span class="o">=</span> <span class="n">number</span> <span class="o">%</span> <span class="mf">2</span>
+    <span class="k">if</span> <span class="mf">0</span> <span class="o">&lt;</span> <span class="n">remainder</span> <span class="o">&lt;</span> <span class="mf">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%f</span><span class="s"> isn&#39;t an integer&quot;</span> <span class="o">%</span> <span class="n">number</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">remainder</span> <span class="o">==</span> <span class="mf">0</span>
+</pre></div>
+</div>
+<p>Note that, if we weren’t talking about testing, we may have thought that the docstring of  is just normal documentation, in which the convention of using the interpreter prompt to mark example expressions and their outputs was adopted.
+After all, in many cases we use examples as part of the documentation.
+Take a look at Java’s  documentation, located in java.sun.com/javase/6/docs/api/java/text/SimpleDateFormat.html, and you will spot fragments like:</p>
+<ul class="simple">
+<li>“...using a pattern of mm/dd/yy and a SimpleDateFormat instance created on Jan 1, 1997, the string 01/11/12 would be interpreted as Jan 11, 2012....”</li>
+<li>“...01/02/3 or 01/02/003 are parsed, using the same pattern, as Jan 2, 3 AD....”</li>
+<li>“...&#8221;01/02/-3&#8221; is parsed as Jan 2, 4 BC....”</li>
+</ul>
+<p>The magic of doctests is that it encourages the inclusion of these examples by doubling them as tests.
+Let’s save our example code as  and add the following snippet at the end:</p>
+<p>Listing 18-10.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Then, run it:</p>
+<div class="highlight-python"><pre>$ jython even.py</pre>
+</div>
+<p>Doctests are a bit shy and don’t show any output on success.
+But to convince you that it is indeed testing our code, run it with the  option:</p>
+<div class="highlight-python"><pre>$ jython even.py -v
+
+Trying:
+    is_even(0)
+Expecting:
+    True
+ok
+Trying:
+    is_even(2)
+Expecting:
+    True
+ok
+Trying:
+    is_even(3)
+Expecting:
+    False
+ok
+Trying:
+    is_even(100000000000000000000000000000)
+Expecting:
+    True
+ok
+Trying:
+    is_even(-1000000000000000000000000000001)
+Expecting:
+    False
+ok
+Trying:
+    is_even(4.1)
+Expecting:
+    Traceback (most recent call last):
+    ...
+    ValueError: 4.1 isn't an integer
+ok
+Trying:
+    is_even(4.0)
+Expecting:
+    True
+ok
+1 items had no tests:
+    __main__
+1 items passed all tests:
+   7 tests in __main__.is_even
+7 tests in 2 items.
+7 passed and 0 failed.
+Test passed.</pre>
+</div>
+<p>Doctests are a very, very convenient way to do testing, because the interactive examples can be directly copied and pasted from the interactive shell, transforming the manual testing in documentation examples and automated tests in one shot.</p>
+<p>You don’t really <em>None</em> to include doctests as part of the documentation of the feature they test.
+Nothing stops you from writing the following code in, say, the  module:</p>
+<p>Listing 18-11.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Doctests equivalent to test_math unittests seen in the previous section.</span>
+
+<span class="sd">&gt;&gt;&gt; import math</span>
+
+<span class="sd">Tests for floor():</span>
+
+<span class="sd">&gt;&gt;&gt; math.floor(1.01)</span>
+<span class="sd">1</span>
+<span class="sd">&gt;&gt;&gt; math.floor(0.5)</span>
+<span class="sd">0</span>
+<span class="sd">&gt;&gt;&gt; math.floor(-0.5)</span>
+<span class="sd">-1</span>
+<span class="sd">&gt;&gt;&gt; math.floor(-1.1)</span>
+<span class="sd">-2</span>
+
+<span class="sd">Tests for ceil():</span>
+
+<span class="sd">&gt;&gt;&gt; math.ceil(1.01)</span>
+<span class="sd">2</span>
+<span class="sd">&gt;&gt;&gt; math.ceil(0.5)</span>
+<span class="sd">1</span>
+<span class="sd">&gt;&gt;&gt; math.ceil(-0.5)</span>
+<span class="sd">0</span>
+<span class="sd">&gt;&gt;&gt; math.ceil(-1.1)</span>
+<span class="sd">-1</span>
+
+<span class="sd">Test for division:</span>
+
+<span class="sd">&gt;&gt;&gt; 1 / 0</span>
+<span class="sd">Traceback (most recent call last):</span>
+<span class="sd">...</span>
+<span class="sd">ZeroDivisionError: integer division or modulo by zero</span>
+
+<span class="sd">Test for floating point multiplication:</span>
+
+<span class="sd">&gt;&gt;&gt; (0.3 - 0.1 * 3) &lt; 0.0000001</span>
+<span class="sd">True</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Something to note about the last test in the previous example is that, in some cases, doctests are not the cleanest way to express a test.
+Also note that, if that test fails, you will <em>None</em> get useful information about the failure.
+It will tell you that the output was  when  was expected, without the extra details that  would give you.
+The moral of the story is to realize that doctest is just another tool in the toolbox, which can fit very well in some cases, but not in others.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Speaking of doctests gotchas: the use of dictionary outputs in doctests is a very common error that breaks the portability of your doctests across Python implementations (for example, Jython, CPython, and IronPython).
+The trap here is that the order of dict keys is implementation-dependent, so the test may pass when working on some implementation and fail horribly on others.
+The workaround is to convert the dict to a sequence of tuples and sort them, using sorted(mydict.items()).That shows the big downfall of doctests: it always does a textual comparison of the expression, converting the result to string.
+It isn&#8217;t aware of the objects structure.</p>
+</div>
+<p>To take advantage of doctests, we have to follow some simple rules, like using the  prompt and leaving a blank line between sample output and the next paragraph.
+But if you think about it, it’s the same kind of sane rules that makes the documentation readable by people.</p>
+<p>The only common rule not illustrated by the examples in this section is the way to write expressions that are written on more than one line.
+As you may expect, you have to follow the same convention used by the interactive interpreter: start the continuation lines with an ellipsis (...).
+For example:</p>
+<p>Listing 18-12.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Addition is commutative:</span>
+
+<span class="sd">&gt;&gt;&gt; ((1 + 2) ==</span>
+<span class="sd">...  (2 + 1))</span>
+<span class="sd">True</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="a-complete-example">
+<h2>A Complete Example<a class="headerlink" href="#a-complete-example" title="Permalink to this headline">¶</a></h2>
+<p>Having seen the two test frameworks used in the Python world, let&#8217;s see them applied to a more meaningful program.
+We will write code to check for solutions of the eight-queens chess puzzle.
+The idea of the puzzle is to place eight queens in a chessboard, with no queen attacking each other.
+Queens can attack any piece placed in the same row, column or diagonals.
+Figure 18-1 shows one of the solutions of the puzzle.</p>
+<p><img alt="picture_8" src="_images/picture_8.png" /></p>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>Figure 18-1. <a href="#id3"><span class="problematic" id="id4">**</span></a>Eight queens chess</p>
+<p>We like to use doctests to check the contract of the program with the outside, and unittest for what we could see as the internal tests.
+We do that because external interfaces tend to be clearly documented, and automated testing of the examples in the documentation is always a great thing.
+On the other hand, unittests shine on pointing us to the very specific source of a bug, or at the very least on providing more useful debugging information than doctests.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In practice, both types of tests have strengths and weaknesses, and you may find some cases in which you will prefer the readability and simplicity of doctests and only use them on your project.
+Or you will favor the granularity and isolation of unittests and only use them on your project.
+As with many things in life, it’s a trade-off.</p>
+</div>
+<p>We’ll develop this program in a test-driven development fashion.
+The tests will be written first, as a sort of specification for our program, and code will be written later to fulfill the tests’ requirements.</p>
+<p>Let’s start by specifying the public interface of our puzzle checker, which will live on the  package.
+This is the start of the main module, :</p>
+<p>Listing 18-13.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">eightqueen.checker: Validates solutions for the eight queens puzzle.</span>
+
+<span class="sd">Provides the function is_solution(board) to determine if a board represents a</span>
+<span class="sd">valid solution of the puzzle.</span>
+
+<span class="sd">The chess board is represented by list of 8 strings, each string of length</span>
+<span class="sd">8. Positions occupied by a Queen are marked by the character &#39;Q&#39;, and empty</span>
+<span class="sd">spaces are represented by an space character.</span>
+
+<span class="sd">Here is a valid board:</span>
+
+<span class="sd">&gt;&gt;&gt; board = [</span>
+<span class="sd">...          &#39;Q       &#39;,</span>
+<span class="sd">...          &#39; Q      &#39;,</span>
+<span class="sd">...          &#39;  Q     &#39;,</span>
+<span class="sd">...          &#39;   Q    &#39;,</span>
+<span class="sd">...          &#39;    Q   &#39;,</span>
+<span class="sd">...          &#39;     Q  &#39;,</span>
+<span class="sd">...          &#39;      Q &#39;,</span>
+<span class="sd">...          &#39;       Q&#39;]</span>
+
+<span class="sd">Naturally, it is not a correct solution:</span>
+
+<span class="sd">&gt;&gt;&gt; is_solution(board)</span>
+<span class="sd">False</span>
+
+<span class="sd">Here is a correct solution:</span>
+
+<span class="sd">&gt;&gt;&gt; is_solution([</span>
+<span class="sd">...              &#39;Q       &#39;,</span>
+<span class="sd">...              &#39;    Q   &#39;,</span>
+<span class="sd">...              &#39;       Q&#39;,</span>
+<span class="sd">...              &#39;     Q  &#39;,</span>
+<span class="sd">...              &#39;  Q     &#39;,</span>
+<span class="sd">...              &#39;      Q &#39;,</span>
+<span class="sd">...              &#39; Q      &#39;,</span>
+<span class="sd">...              &#39;   Q    &#39;])</span>
+<span class="sd">True</span>
+
+<span class="sd">Malformed boards are rejected and a ValueError is thrown:</span>
+
+<span class="sd">&gt;&gt;&gt; is_solution([])</span>
+<span class="sd">Traceback (most recent call last):</span>
+<span class="sd">...</span>
+<span class="sd">ValueError: Malformed board</span>
+
+<span class="sd">Only 8 x 8 boards are supported.</span>
+
+<span class="sd">&gt;&gt;&gt; is_solution([</span>
+<span class="sd">...              &#39;Q   &#39;,</span>
+<span class="sd">...              &#39; Q  &#39;,</span>
+<span class="sd">...              &#39;  Q &#39;,</span>
+<span class="sd">...              &#39;   Q&#39;])</span>
+<span class="sd">Traceback (most recent call last):</span>
+<span class="sd">...</span>
+<span class="sd">ValueError: Malformed board</span>
+
+<span class="sd">And they must only contains Qs and spaces:</span>
+
+<span class="sd">&gt;&gt;&gt; is_solution([</span>
+<span class="sd">...              &#39;X       &#39;,</span>
+<span class="sd">...              &#39;    X   &#39;,</span>
+<span class="sd">...              &#39;       X&#39;,</span>
+<span class="sd">...              &#39;     X  &#39;,</span>
+<span class="sd">...              &#39;  X     &#39;,</span>
+<span class="sd">...              &#39;      X &#39;,</span>
+<span class="sd">...              &#39; X      &#39;,</span>
+<span class="sd">...              &#39;   X    &#39;])</span>
+<span class="sd">Traceback (most recent call last):</span>
+<span class="sd">...</span>
+<span class="sd">ValueError: Malformed board</span>
+
+<span class="sd">And the total number of Qs must be eight:</span>
+
+<span class="sd">&gt;&gt;&gt; is_solution([</span>
+<span class="sd">...              &#39;QQQQQQQQ&#39;,</span>
+<span class="sd">...              &#39;Q       &#39;,</span>
+<span class="sd">...              &#39;        &#39;,</span>
+<span class="sd">...              &#39;        &#39;,</span>
+<span class="sd">...              &#39;        &#39;,</span>
+<span class="sd">...              &#39;        &#39;,</span>
+<span class="sd">...              &#39;        &#39;,</span>
+<span class="sd">...              &#39;        &#39;])</span>
+<span class="sd">Traceback (most recent call last):</span>
+<span class="sd">...</span>
+<span class="sd">ValueError: There must be exactly 8 queens in the board</span>
+
+<span class="sd">&gt;&gt;&gt; is_solution([</span>
+<span class="sd">...              &#39;QQQQQQQ &#39;,</span>
+<span class="sd">...              &#39;        &#39;,</span>
+<span class="sd">...              &#39;        &#39;,</span>
+<span class="sd">...              &#39;        &#39;,</span>
+<span class="sd">...              &#39;        &#39;,</span>
+<span class="sd">...              &#39;        &#39;,</span>
+<span class="sd">...              &#39;        &#39;,</span>
+<span class="sd">...              &#39;        &#39;])</span>
+<span class="sd">Traceback (most recent call last):</span>
+<span class="sd">...</span>
+<span class="sd">ValueError: There must be exactly 8 queens in the board</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>That’s a good start; we know what we have to build.
+The doctests play the role of a more precise problem statement.
+Actually, it’s an executable problem statement that can be used to verify our solution to the problem.</p>
+<p>Now we will specify the “internal” interface that shows how we can solve the problem of writing the solution checker.
+It’s common practice to write the unittests on a separate module.
+So here is the code for :</p>
+<p>Listing 18-14.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">eightqueens</span> <span class="kn">import</span> <span class="n">checker</span>
+
+<span class="n">BOARD_TOO_SMALL</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Q&#39;</span> <span class="o">*</span> <span class="mf">3</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">3</span><span class="p">)]</span>
+<span class="n">BOARD_TOO_BIG</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Q&#39;</span> <span class="o">*</span> <span class="mf">10</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">10</span><span class="p">)]</span>
+<span class="n">BOARD_WITH_TOO_MANY_COLS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Q&#39;</span> <span class="o">*</span> <span class="mf">9</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">8</span><span class="p">)]</span>
+<span class="n">BOARD_WITH_TOO_MANY_ROWS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Q&#39;</span> <span class="o">*</span> <span class="mf">8</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">9</span><span class="p">)]</span>
+<span class="n">BOARD_FULL_OF_QS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Q&#39;</span> <span class="o">*</span> <span class="mf">8</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">8</span><span class="p">)]</span>
+<span class="n">BOARD_FULL_OF_CRAP</span> <span class="o">=</span> <span class="p">[</span><span class="nb">chr</span><span class="p">(</span><span class="mf">65</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="mf">8</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">8</span><span class="p">)]</span>
+<span class="n">BOARD_EMPTY</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39; &#39;</span> <span class="o">*</span> <span class="mf">8</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">8</span><span class="p">)]</span>
+
+<span class="n">BOARD_WITH_QS_IN_THE_SAME_ROW</span> <span class="o">=</span> <span class="p">[</span>
+                                 <span class="s">&#39;Q   Q   &#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;       Q&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;     Q  &#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;  Q     &#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;      Q &#39;</span><span class="p">,</span>
+                                 <span class="s">&#39; Q      &#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;   Q    &#39;</span><span class="p">]</span>
+<span class="n">BOARD_WITH_WRONG_SOLUTION</span> <span class="o">=</span> <span class="n">BOARD_WITH_QS_IN_THE_SAME_ROW</span>
+
+<span class="n">BOARD_WITH_QS_IN_THE_SAME_COL</span> <span class="o">=</span> <span class="p">[</span>
+                                 <span class="s">&#39;Q       &#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;    Q   &#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;       Q&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;Q       &#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;  Q     &#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;      Q &#39;</span><span class="p">,</span>
+                                 <span class="s">&#39; Q      &#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;   Q    &#39;</span><span class="p">]</span>
+
+<span class="n">BOARD_WITH_QS_IN_THE_SAME_DIAG_1</span> <span class="o">=</span> <span class="p">[</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;Q       &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39; Q      &#39;</span><span class="p">]</span>
+
+<span class="n">BOARD_WITH_QS_IN_THE_SAME_DIAG_2</span> <span class="o">=</span> <span class="p">[</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;   Q    &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;     Q  &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">]</span>
+
+<span class="n">BOARD_WITH_QS_IN_THE_SAME_DIAG_3</span> <span class="o">=</span> <span class="p">[</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;      Q &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;  Q     &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">]</span>
+
+
+<span class="n">BOARD_WITH_QS_IN_THE_SAME_DIAG_4</span> <span class="o">=</span> <span class="p">[</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;    Q   &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;Q       &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;        &#39;</span><span class="p">]</span>
+
+
+<span class="n">BOARD_WITH_QS_IN_THE_SAME_DIAG_5</span> <span class="o">=</span> <span class="p">[</span>
+                                    <span class="s">&#39;       Q&#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;      Q &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;     Q  &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;    Q   &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;   Q    &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;  Q     &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39; Q      &#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;Q       &#39;</span><span class="p">]</span>
+
+
+
+<span class="n">BOARD_WITH_SOLUTION</span> <span class="o">=</span> <span class="p">[</span>
+                       <span class="s">&#39;Q       &#39;</span><span class="p">,</span>
+                       <span class="s">&#39;    Q   &#39;</span><span class="p">,</span>
+                       <span class="s">&#39;       Q&#39;</span><span class="p">,</span>
+                       <span class="s">&#39;     Q  &#39;</span><span class="p">,</span>
+                       <span class="s">&#39;  Q     &#39;</span><span class="p">,</span>
+                       <span class="s">&#39;      Q &#39;</span><span class="p">,</span>
+                       <span class="s">&#39; Q      &#39;</span><span class="p">,</span>
+                       <span class="s">&#39;   Q    &#39;</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">ValidationTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">testValidateShape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">assertNotValidShape</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_validate_shape</span><span class="p">(</span><span class="n">board</span><span class="p">))</span>
+
+        <span class="c"># Some invalid shapes:</span>
+        <span class="n">assertNotValidShape</span><span class="p">([])</span>
+        <span class="n">assertNotValidShape</span><span class="p">(</span><span class="n">BOARD_TOO_SMALL</span><span class="p">)</span>
+        <span class="n">assertNotValidShape</span><span class="p">(</span><span class="n">BOARD_TOO_BIG</span><span class="p">)</span>
+        <span class="n">assertNotValidShape</span><span class="p">(</span><span class="n">BOARD_WITH_TOO_MANY_COLS</span><span class="p">)</span>
+        <span class="n">assertNotValidShape</span><span class="p">(</span><span class="n">BOARD_WITH_TOO_MANY_ROWS</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">assertValidShape</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_validate_shape</span><span class="p">(</span><span class="n">board</span><span class="p">))</span>
+
+        <span class="n">assertValidShape</span><span class="p">(</span><span class="n">BOARD_WITH_SOLUTION</span><span class="p">)</span>
+        <span class="c"># Shape validation doesn&#39;t care about board contents:</span>
+        <span class="n">assertValidShape</span><span class="p">(</span><span class="n">BOARD_FULL_OF_QS</span><span class="p">)</span>
+        <span class="n">assertValidShape</span><span class="p">(</span><span class="n">BOARD_FULL_OF_CRAP</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">testValidateContents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># Valid content =&gt; only &#39;Q&#39; and &#39; &#39; in the board</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_validate_contents</span><span class="p">(</span><span class="n">BOARD_FULL_OF_CRAP</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_validate_contents</span><span class="p">(</span><span class="n">BOARD_WITH_SOLUTION</span><span class="p">))</span>
+        <span class="c"># Content validation doesn&#39;t care about the number of queens:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_validate_contents</span><span class="p">(</span><span class="n">BOARD_FULL_OF_QS</span><span class="p">))</span>
+
+
+    <span class="k">def</span> <span class="nf">testValidateQueens</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_validate_queens</span><span class="p">(</span><span class="n">BOARD_FULL_OF_QS</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_validate_queens</span><span class="p">(</span><span class="n">BOARD_EMPTY</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_validate_queens</span><span class="p">(</span><span class="n">BOARD_WITH_SOLUTION</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_validate_queens</span><span class="p">(</span><span class="n">BOARD_WITH_WRONG_SOLUTION</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">PartialSolutionTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">testRowsOK</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_rows_ok</span><span class="p">(</span><span class="n">BOARD_WITH_SOLUTION</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_rows_ok</span><span class="p">(</span><span class="n">BOARD_WITH_QS_IN_THE_SAME_ROW</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">testColsOK</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_cols_ok</span><span class="p">(</span><span class="n">BOARD_WITH_SOLUTION</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_cols_ok</span><span class="p">(</span><span class="n">BOARD_WITH_QS_IN_THE_SAME_COL</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">testDiagonalsOK</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">_diagonals_ok</span><span class="p">(</span><span class="n">BOARD_WITH_SOLUTION</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span>
+            <span class="n">checker</span><span class="o">.</span><span class="n">_diagonals_ok</span><span class="p">(</span><span class="n">BOARD_WITH_QS_IN_THE_SAME_DIAG_1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span>
+            <span class="n">checker</span><span class="o">.</span><span class="n">_diagonals_ok</span><span class="p">(</span><span class="n">BOARD_WITH_QS_IN_THE_SAME_DIAG_2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span>
+            <span class="n">checker</span><span class="o">.</span><span class="n">_diagonals_ok</span><span class="p">(</span><span class="n">BOARD_WITH_QS_IN_THE_SAME_DIAG_3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span>
+            <span class="n">checker</span><span class="o">.</span><span class="n">_diagonals_ok</span><span class="p">(</span><span class="n">BOARD_WITH_QS_IN_THE_SAME_DIAG_4</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span>
+            <span class="n">checker</span><span class="o">.</span><span class="n">_diagonals_ok</span><span class="p">(</span><span class="n">BOARD_WITH_QS_IN_THE_SAME_DIAG_5</span><span class="p">))</span>
+
+<span class="k">class</span> <span class="nc">SolutionTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">testIsSolution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">is_solution</span><span class="p">(</span><span class="n">BOARD_WITH_SOLUTION</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">is_solution</span><span class="p">(</span><span class="n">BOARD_WITH_QS_IN_THE_SAME_COL</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">is_solution</span><span class="p">(</span><span class="n">BOARD_WITH_QS_IN_THE_SAME_ROW</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">is_solution</span><span class="p">(</span><span class="n">BOARD_WITH_QS_IN_THE_SAME_DIAG_5</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">checker</span><span class="o">.</span><span class="n">is_solution</span><span class="p">,</span> <span class="n">BOARD_TOO_SMALL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">checker</span><span class="o">.</span><span class="n">is_solution</span><span class="p">,</span> <span class="n">BOARD_FULL_OF_CRAP</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">checker</span><span class="o">.</span><span class="n">is_solution</span><span class="p">,</span> <span class="n">BOARD_EMPTY</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These unittests propose a way to solve the problem, decomposing it in two big tasks (input validation and the actual verification of solutions), and each task is decomposed on a smaller portion that is meant to be implemented by a function.
+In some way, they are an executable design of the solution.</p>
+<p>So we have a mix of doctests and unittests.
+How do we run all of them in one shot? Previously we showed you how to manually compose a test suite for unit tests belonging to different modules, so that may be an answer.
+And indeed, there is a way to add doctests to test suites: . But, because we are working on a more “real” testing example, we will use a real-world solution to this problem (as you can imagine, people got tired of the tedious work and more automated solutions appeared).</p>
+</div>
+<div class="section" id="nose">
+<h2>Nose<a class="headerlink" href="#nose" title="Permalink to this headline">¶</a></h2>
+<p>Nose is a tool for test discovery and execution.
+By default, Nose tries to run tests on any module whose name starts with “test.” You can override that, of course.
+In our case, the example code of the previous section follows the convention (the test module is named ).</p>
+<p>An easy way to install Nose is via setuptools.
+If you have not yet installed setuptools, please see Appendix A for details on doing so.
+Once you have setuptools installed, you can proceed to install Nose:</p>
+<p>Listing 18-15.</p>
+<div class="highlight-python"><pre>$ easy_install nose</pre>
+</div>
+<p>Once Nose is installed, an executable named  will appear on the bin/ directory of your Jython installation.
+Let’s try it, locating ourselves on the parent directory of  and running:</p>
+<p>Listing 18-16.</p>
+<div class="highlight-python"><pre>$ nosetests --with-doctest</pre>
+</div>
+<p>By default, Nose does <em>None</em> run doctests, so we have to explicitly enable the doctest plug-in that comes built in with Nose.</p>
+<p>Back to our example, here is the shortened output after running Nose:</p>
+<p>Listing 18-17.</p>
+<div class="highlight-python"><pre>FEEEEEE
+
+[Snipped output]
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.133s
+FAILED (errors=7, failures=1)</pre>
+</div>
+<p>Of course, all of our tests (7 unittests and 1 doctest) failed.
+It’s time to fix that.
+But first, let’s run Nose again, <em>None</em> the doctests, because we will follow the unittests to construct the solution.
+And we know that as long as our unittests fail, the doctest will also likely fail.
+Once all unittests pass, we can check our whole program against the high level doctest and see if we missed something or did it right.
+Here is the Nose output for the unittests:</p>
+<p>Listing 18-18.</p>
+<div class="highlight-python"><pre>$ nosetests
+EEEEEEE
+======================================================================
+ERROR: testIsSolution (eightqueens.test_checker.SolutionTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/path/to/eightqueens/test_checker.py", line 149, in testIsSolution
+    self.assert_(checker.is_solution(BOARD_WITH_SOLUTION))
+AttributeError: 'module' object has no attribute 'is_solution'
+
+======================================================================
+ERROR: testColsOK (eightqueens.test_checker.PartialSolutionTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/path/to/eightqueens/test_checker.py", line 100, in testColsOK
+    self.assert_(checker._cols_ok(BOARD_WITH_SOLUTION))
+AttributeError: 'module' object has no attribute '_cols_ok'
+
+======================================================================
+ERROR: testDiagonalsOK (eightqueens.test_checker.PartialSolutionTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/path/to/eightqueens/test_checker.py", line 104, in testDiagonalsOK
+    self.assert_(checker._diagonals_ok(BOARD_WITH_SOLUTION))
+AttributeError: 'module' object has no attribute '_diagonals_ok'
+
+======================================================================
+ERROR: testRowsOK (eightqueens.test_checker.PartialSolutionTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/path/to/eightqueens/test_checker.py", line 96, in testRowsOK
+    self.assert_(checker._rows_ok(BOARD_WITH_SOLUTION))
+AttributeError: 'module' object has no attribute '_rows_ok'
+
+======================================================================
+ERROR: testValidateContents (eightqueens.test_checker.ValidationTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/path/to/eightqueens/test_checker.py", line 81, in testValidateContents
+    self.assertFalse(checker._validate_contents(BOARD_FULL_OF_CRAP))
+AttributeError: 'module' object has no attribute '_validate_contents'
+
+======================================================================
+ERROR: testValidateQueens (eightqueens.test_checker.ValidationTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/path/to/eightqueens/test_checker.py", line 88, in testValidateQueens
+    self.assertFalse(checker._validate_queens(BOARD_FULL_OF_QS))
+AttributeError: 'module' object has no attribute '_validate_queens'
+
+======================================================================
+ERROR: testValidateShape (eightqueens.test_checker.ValidationTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/path/to/eightqueens/test_checker.py", line 65, in testValidateShape
+    assertNotValidShape([])
+  File "/path/to/eightqueens/test_checker.py", line 62, in assertNotValidShape
+    self.assertFalse(checker._validate_shape(board))
+AttributeError: 'module' object has no attribute '_validate_shape'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.493s
+
+FAILED (errors=7)</pre>
+</div>
+<p>Let’s start clearing the failures by coding the validation functions specified by the . That is, the , , and _ functions, in the  module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">_validate_shape</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">board</span> <span class="ow">and</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">board</span><span class="p">)</span> <span class="o">==</span> <span class="mf">8</span> <span class="ow">and</span>
+            <span class="n">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">==</span> <span class="mf">8</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">board</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">_validate_contents</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">board</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">square</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">square</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;Q&#39;</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+<span class="k">def</span> <span class="nf">_count_queens</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mf">0</span>
+    <span class="k">for</span> <span class="n">square</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">square</span> <span class="o">==</span> <span class="s">&#39;Q&#39;</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mf">1</span>
+    <span class="k">return</span> <span class="n">n</span>
+
+<span class="k">def</span> <span class="nf">_validate_queens</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mf">0</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">board</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="n">_count_queens</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">n</span> <span class="o">==</span> <span class="mf">8</span>
+</pre></div>
+</div>
+<p>And now run Nose again:</p>
+<div class="highlight-python"><pre>$ nosetests
+
+EEEE...
+======================================================================
+ERROR: testIsSolution (eightqueens.test_checker.SolutionTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/path/to/eightqueens/test_checker.py", line 149, in testIsSolution
+    self.assert_(checker.is_solution(BOARD_WITH_SOLUTION))
+AttributeError: 'module' object has no attribute 'is_solution'
+
+======================================================================
+ERROR: testColsOK (eightqueens.test_checker.PartialSolutionTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/path/to/eightqueens/test_checker.py", line 100, in testColsOK
+    self.assert_(checker._cols_ok(BOARD_WITH_SOLUTION))
+AttributeError: 'module' object has no attribute '_cols_ok'
+
+======================================================================
+ERROR: testDiagonalsOK (eightqueens.test_checker.PartialSolutionTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/path/to/eightqueens/test_checker.py", line 104, in testDiagonalsOK
+    self.assert_(checker._diagonals_ok(BOARD_WITH_SOLUTION))
+AttributeError: 'module' object has no attribute '_diagonals_ok'
+
+======================================================================
+ERROR: testRowsOK (eightqueens.test_checker.PartialSolutionTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/path/to/eightqueens/test_checker.py", line 96, in testRowsOK
+    self.assert_(checker._rows_ok(BOARD_WITH_SOLUTION))
+AttributeError: 'module' object has no attribute '_rows_ok'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.534s
+
+FAILED (errors=4)</pre>
+</div>
+<p>We passed all the validation tests! Now we should implement the functions , , and , to pass :</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">_scan_ok</span><span class="p">(</span><span class="n">board</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+    <span class="n">queen_already_found</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">board</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;Q&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">queen_already_found</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">queen_already_found</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+
+<span class="k">def</span> <span class="nf">_rows_ok</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">8</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_scan_ok</span><span class="p">(</span><span class="n">board</span><span class="p">,</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">8</span><span class="p">)]):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+<span class="k">def</span> <span class="nf">_cols_ok</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">8</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_scan_ok</span><span class="p">(</span><span class="n">board</span><span class="p">,</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">8</span><span class="p">)]):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+<span class="k">def</span> <span class="nf">_diagonals_ok</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">8</span><span class="p">):</span>
+        <span class="c"># Diagonal: (0, k), (1, k + 1), ..., (7 - k, 7)...</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_scan_ok</span><span class="p">(</span><span class="n">board</span><span class="p">,</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">8</span> <span class="o">-</span> <span class="n">k</span><span class="p">)]):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="c"># Diagonal: (k, 0), (k + 1, 1), ..., (7, 7 - k)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_scan_ok</span><span class="p">(</span><span class="n">board</span><span class="p">,</span> <span class="p">[(</span><span class="n">k</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">8</span> <span class="o">-</span> <span class="n">k</span><span class="p">)]):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="c"># Diagonal: (0, k), (1, k - 1), ..., (k, 0)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_scan_ok</span><span class="p">(</span><span class="n">board</span><span class="p">,</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mf">1</span><span class="p">)]):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="c"># Diagonal: (7, k), (6, k - 1), ..., (k, 7)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_scan_ok</span><span class="p">(</span><span class="n">board</span><span class="p">,</span> <span class="p">[(</span><span class="mf">7</span> <span class="o">-</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">8</span> <span class="o">-</span> <span class="n">k</span><span class="p">)]):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>Let’s try Nose again:</p>
+<p>Listing 18-19.</p>
+<div class="highlight-python"><pre>$ nosetests
+
+...E...
+======================================================================
+ERROR: testIsSolution (eightqueens.test_checker.SolutionTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/path/to/eightqueens/test_checker.py", line 149, in testIsSolution
+    self.assert_(checker.is_solution(BOARD_WITH_SOLUTION))
+AttributeError: 'module' object has no attribute 'is_solution'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.938s
+
+FAILED (errors=1)</pre>
+</div>
+<p>Finally, we have to assemble the pieces together to pass the test for :</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">is_solution</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_validate_shape</span><span class="p">(</span><span class="n">board</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">_validate_contents</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Malformed board&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_validate_queens</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;There must be exactly 8 queens in the board&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_rows_ok</span><span class="p">(</span><span class="n">board</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_cols_ok</span><span class="p">(</span><span class="n">board</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_diagonals_ok</span><span class="p">(</span><span class="n">board</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And we can hope that all test pass now:</p>
+<div class="highlight-python"><pre>$ nosetests
+
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.592s
+
+OK</pre>
+</div>
+<p>Indeed, they all pass.
+Moreover, we probably also pass the “problem statement,” test, expressed in our doctest:</p>
+<div class="highlight-python"><pre>$ nosetests --with-doctest
+
+........
+----------------------------------------------------------------------
+Ran 8 tests in 1.523s
+
+OK</pre>
+</div>
+<p>Objective accomplished! We have come up with a nicely documented and tested module, using the two testing tools shipped with the Python language, and Nose to run all our tests without manually building suites.
+For more information on Nose, please see the documentation available at the project web site: code.google.com/p/python-nose/.</p>
+<div class="section" id="integration-with-java">
+<h3>Integration with Java?<a class="headerlink" href="#integration-with-java" title="Permalink to this headline">¶</a></h3>
+<p>You may be wondering how to integrate the testing frameworks of Python and Java.
+It is possible to write JUnit tests in Jython, but it’s not really interesting, considering that you can test Java classes using unittest and doctest.
+The following is a perfectly valid doctest:</p>
+<p>Listing 18-20.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Tests for Java&#39;s DecimalFormat</span>
+
+<span class="sd">&gt;&gt;&gt; from java.text import DecimalFormat</span>
+
+<span class="sd">A format for money:</span>
+
+<span class="sd">&gt;&gt;&gt; dolarFormat = DecimalFormat(&quot;$ ###,###.##&quot;)</span>
+
+<span class="sd">The decimal part is only printed if needed:</span>
+
+<span class="sd">&gt;&gt;&gt; dolarFormat.format(1000)</span>
+<span class="sd">u&#39;$ 1.000&#39;</span>
+
+<span class="sd">Rounding is used when there are more decimal numbers than those defined by the</span>
+<span class="sd">format:</span>
+
+<span class="sd">&gt;&gt;&gt; dolarFormat.format(123456.789)</span>
+<span class="sd">u&#39;$ 123.456,79&#39;</span>
+
+<span class="sd">The format can be used as a parser:</span>
+
+<span class="sd">&gt;&gt;&gt; dolarFormat.parse(&#39;$ 123&#39;)</span>
+<span class="sd">123L</span>
+
+<span class="sd">The parser ignores the unparseable text after the number:</span>
+
+<span class="sd">&gt;&gt;&gt; dolarFormat.parse(&quot;$ 123abcd&quot;)</span>
+<span class="sd">123L</span>
+
+<span class="sd">However, if it can&#39;t parse a number, it throws a ParseException:</span>
+
+<span class="sd">&gt;&gt;&gt; dolarFormat.parse(&quot;abcd&quot;)</span>
+<span class="sd">Traceback (most recent call last):</span>
+<span class="sd">...</span>
+<span class="sd">ParseException: java.text.ParseException: Unparseable number: &quot;abcd&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>So you can use all that you learned in this chapter to test code written in Java.
+We find this a very powerful tool for Java development: easy, flexible, and unceremonious testing using Jython and Python testing tools!</p>
+</div>
+</div>
+<div class="section" id="continuous-integration">
+<h2>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this headline">¶</a></h2>
+<p>Martin Fowler defines continuous integration as “a software development practice where members of a team integrate their work frequently [...].
+Each integration is verified by an automated build (including test) to detect integration errors as quickly as possible.” Some software development teams report to have used this practice as early as the 1960s; however, it only became mainstream when advocated as part of the extreme programming practices.
+Nowadays, it is a widely applied practice, and in the Java world there is a wealth of tools to help with the technical challenge involved by it.</p>
+<div class="section" id="hudson">
+<h3>Hudson<a class="headerlink" href="#hudson" title="Permalink to this headline">¶</a></h3>
+<p>One tool that currently has a lot of momentum and is growing an important user base is Hudson.
+Among its prominent features are the ease of installation and configuration, and the ability to deploy it in a distributed, master/slaves environment for cross-platform testing.</p>
+<p>But we think Hudson’s main strength is its highly modular, plug-in-based architecture, which has resulted in the creation of plug-ins to support most of the version control, build and reporting tools, and many languages.
+One of them is the Jython plug-in, which allows you to use the Python language to drive your builds.</p>
+<p>You can find more details about the Hudson project at its homepage at hudson.dev.java.net.</p>
+</div>
+<div class="section" id="getting-hudson">
+<h3>Getting Hudson<a class="headerlink" href="#getting-hudson" title="Permalink to this headline">¶</a></h3>
+<p>Grab the latest version of Hudson from hudson-ci.org/latest/hudson.war.
+You can deploy it to any servlet container, such as Tomcat or Glassfish.
+But one of the cool features of Hudson is that you can test it by simply running:</p>
+<p>Listing 18-21.</p>
+<div class="highlight-python"><pre>$ java -jar hudson.war</pre>
+</div>
+<p>After a few seconds, you will see some logging output on the console, and Hudson will be up and running.
+If you visit the site localhost:8080 you will get a welcome page inviting you to start using Hudson creating new jobs.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><em>WARNING</em> The default mode of operation of Hudson fully trusts its users, letting them execute any command they want on the server, with the privileges of the user running Hudson.
+You can set stricter access control policies on the Configure System section of the Manage Hudson page.</p>
+</div>
+</div>
+<div class="section" id="installing-the-jython-plug-in">
+<h3>Installing the Jython Plug-in<a class="headerlink" href="#installing-the-jython-plug-in" title="Permalink to this headline">¶</a></h3>
+<p>Before creating jobs, we will install the Jython plug-in.
+Click on the Manage Hudson link on the left-hand menu.
+Then click Manage Plug-ins.
+Now go to the Available tab.
+You will see a very long list of plug-ins (we told you this was the greatest Hudson strength!) Find the Jython Plug-in, click on the checkbox at its left (as shown in Figure 18-2), then scroll to the end of the page and click the Install button.</p>
+<p><img alt="picture_9" src="_images/picture_9.png" /></p>
+<p><a href="#id5"><span class="problematic" id="id6">**</span></a>Figure 18-2. <a href="#id7"><span class="problematic" id="id8">**</span></a>Selecting the Jython Plug-in</p>
+<p>You will see a bar showing the progress of the download and installation, and after little while you will be presented with a screen like that shown in Figure 18-3, notifying you that the process has finished.
+Press the Restart button, wait a little bit, and you will see the welcome screen again.
+Congratulations, you now have a Jython-powered Hudson!</p>
+<p><img alt="picture_7" src="_images/picture_7.png" /></p>
+<ul class="simple">
+<li><a href="#id9"><span class="problematic" id="id10">**</span></a>Figure 18-3. <a href="#id11"><span class="problematic" id="id12">**</span></a>The Jython Plug-in is successfully installed.</li>
+</ul>
+</div>
+<div class="section" id="creating-a-hudson-job-for-a-jython-project">
+<h3>Creating a Hudson Job for a Jython Project<a class="headerlink" href="#creating-a-hudson-job-for-a-jython-project" title="Permalink to this headline">¶</a></h3>
+<p>Let’s now follow the suggestion of the welcome screen and click the Create New Job link.
+A job roughly corresponds to the instructions needed by Hudson to build a project.
+It includes:</p>
+<ul class="simple">
+<li>The location from where the source code of the project should be obtained, and how often.</li>
+<li>How to start the build process for the project.</li>
+<li>How to collect information after the build process has finished.</li>
+</ul>
+<p>After clicking the Create New Job link (the equivalent to the New Job entry on the left-hand menu), you will be asked for a name and type for the job.
+We will use the  project built on the previous section, so name the project “eightqueens”, select the “Build a free-style software project” option, and press the OK button.</p>
+<p>In the next screen, we need to set up an option on the Source Code Management section.
+You may want to experiment with your own repositories here (by default only CVS and Subversion are supported, but there are plug-ins for all the other VCSs used out there).
+For our example, we’ve hosted the code on a Subversion repository at: kenai.com/svn/jythonbook~eightqueens.
+So select Subversion and enter kenai.com/svn/jythonbook~eightqueens/trunk/eightqueens/ as the Repository URL.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Using the public repository will be enough to get a feeling of Hudson and its support of Jython.
+However, we encourage you to create your own repository so you can play freely with continuous integration, for example, committing bad code to see how failures are handled.</p>
+</div>
+<p>In the Build Triggers section, we have to specify when automated builds will happen.
+We will poll the repository so that a new build will be started after any change.
+Select Poll SCM and enter &#64;hourly in the Schedule box.
+(If you want to know all the options for the schedule, click the help icon at the right of the box.)</p>
+<p>In the Build section, we must tell Hudson how to build our project.
+By default, Hudson supports Shell scripts, Windows Batch files, and Ant scripts as build steps.
+For projects in which you mix Java and Python code and drive the build process with an ant file, the default Ant build step will suffice.
+In our case, we wrote our app in pure Python code, so we will use the Jython plug-in, which adds the Execute Jython Script build step.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">At the time of writing, the Jython plug-in (version 1.0) does not ship with the standard library.
+This is expected to change in the next version.</p>
+</div>
+<p>So, click on Add Build Step and then select Execute Jython Script.
+We will use our knowledge of test suites gained in the UnitTest section.
+The following script will be enough to run our tests:</p>
+<p>Listing 18-22.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">unittest</span><span class="o">,</span> <span class="nn">doctest</span>
+<span class="kn">from</span> <span class="nn">eightqueens</span> <span class="kn">import</span> <span class="n">checker</span><span class="p">,</span> <span class="n">test_checker</span>
+
+<span class="n">loader</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span>
+<span class="n">suite</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestSuite</span><span class="p">([</span><span class="n">loader</span><span class="o">.</span><span class="n">loadTestsFromModule</span><span class="p">(</span><span class="n">test_checker</span><span class="p">),</span>
+                            <span class="n">doctest</span><span class="o">.</span><span class="n">DocTestSuite</span><span class="p">(</span><span class="n">checker</span><span class="p">)])</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">suite</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">result</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">wasSuccessful</span><span class="p">():</span>
+   <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Figure 18-4 shows how the page looks so far for the Source Code Management, Build Triggers, and Build sections.</p>
+<p><img alt="picture_13" src="_images/picture_13.png" /></p>
+<p><a href="#id13"><span class="problematic" id="id14">**</span></a>Figure 18-4. <a href="#id15"><span class="problematic" id="id16">**</span></a>Hudson Job Configuration</p>
+<p>The next section explains how to specify an action to carry once the build has finished, ranging from collecting results from reports generated by static-analysis tools to testing runners to sending emails notifying someone of build breakage.
+We have left these options blank so far.
+Click the Save button at the bottom of the page.</p>
+<p>At this point Hudson will show the job’s main page.
+But it won’t contain anything useful, because Hudson is waiting for the hourly trigger to poll the repository and kick the build.
+But we don’t need to wait if we don’t want to: just click the Build Now link on the left-hand menu.
+Shortly, a new entry will be shown in the Build History box (also on the left side, below the menu), as shown in Figure 18-5.</p>
+<p><img alt="picture_11" src="_images/picture_11.png" /></p>
+<p><a href="#id17"><span class="problematic" id="id18">**</span></a>Figure 18-5. <a href="#id19"><span class="problematic" id="id20">**</span></a>The first build of our first job</p>
+<p>If you click on the link that just appeared, you will be directed to the page for the build we just made.
+If you click on the Console Output link on the left-hand menu, you will see what’s shown in Figure 18-6.</p>
+<p><img alt="picture_14" src="_images/picture_14.png" /></p>
+<p><a href="#id21"><span class="problematic" id="id22">**</span></a>Figure 18-6. <a href="#id23"><span class="problematic" id="id24">**</span></a>Console output for the build</p>
+<p>As you would expect, it shows that our eight tests (remember that we had seven unittests and the module doctest) all passed.</p>
+</div>
+<div class="section" id="using-nose-on-hudson">
+<h3>Using Nose on Hudson<a class="headerlink" href="#using-nose-on-hudson" title="Permalink to this headline">¶</a></h3>
+<p>You may be wondering why we crafted a custom-built script instead of using Nose, because we stated that using Nose was much better than manually creating suites.</p>
+<p>The problem is that the Jython runtime provided by the Jython Hudson plug-in comes without any extra library, so we can’t assume the existence of Nose.
+One option would be to include Nose with the source tree on the repository, but it is not convenient.</p>
+<p>One way to overcome the problem is to script the installation of Nose on the build script.
+Go back to the Job (also called Project by the Hudson user interface), select Configure on the left-hand menu, go to the Build section of the configuration, and change the Jython script for our job to:</p>
+<p>Listing 18-23.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Setup the environment</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">site</span><span class="o">,</span> <span class="nn">urllib2</span><span class="o">,</span> <span class="nn">tempfile</span>
+<span class="k">print</span> <span class="s">&quot;Base dir&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwdu</span><span class="p">()</span>
+<span class="n">site_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s">&#39;site-packages&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">site_dir</span><span class="p">):</span> <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">site_dir</span><span class="p">)</span>
+<span class="n">site</span><span class="o">.</span><span class="n">addsitedir</span><span class="p">(</span><span class="n">site_dir</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">executable</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;PYTHONPATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+<span class="c"># Get ez_setup:</span>
+<span class="n">ez_setup_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">site_dir</span><span class="p">,</span> <span class="s">&#39;ez_setup.py&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">ez_setup_path</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">file</span><span class="p">(</span><span class="n">ez_setup_path</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&#39;http://peak.telecommunity.com/dist/ez_setup.py&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c"># Install nose if not present</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">nose</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">ez_setup</span>
+    <span class="n">ez_setup</span><span class="o">.</span><span class="n">main</span><span class="p">([</span><span class="s">&#39;--install-dir&#39;</span><span class="p">,</span> <span class="n">site_dir</span><span class="p">,</span> <span class="s">&#39;nose&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">mod</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;nose&#39;</span><span class="p">):</span>
+            <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">mod</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">site_dir</span><span class="p">):</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">site_dir</span><span class="p">)</span>
+    <span class="n">site</span><span class="o">.</span><span class="n">addsitedir</span><span class="p">(</span><span class="n">site_dir</span><span class="p">)</span>
+    <span class="kn">import</span> <span class="nn">nose</span>
+
+<span class="c"># Run Tests!</span>
+<span class="n">nose</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;nosetests&#39;</span><span class="p">,</span> <span class="s">&#39;-v&#39;</span><span class="p">,</span> <span class="s">&#39;--with-doctest&#39;</span><span class="p">,</span> <span class="s">&#39;--with-xunit&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The first half of the script is plumbing to download  () and set an environment in which it will work.
+Then, we check for the availability of Nose, and if it&#8217;s not present we install it using .</p>
+<p>The interesting part is the last line:</p>
+<p>Listing 18-24.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">nose</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;nosetests&#39;</span><span class="p">,</span> <span class="s">&#39;-v&#39;</span><span class="p">,</span> <span class="s">&#39;--with-doctest&#39;</span><span class="p">,</span> <span class="s">&#39;--with-xunit&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Here we are invoking Nose from python code, but using the command line syntax.
+Note the usage of the  option.
+It generates JUnit-compatible XML reports for our tests, which can be read by Hudson to generate very useful test reports.
+By default, Nose will generate a file called  on the current directory.</p>
+<p>To let Hudson know where the report can be found, scroll to the Post Build Actions section in the configuration, check “Publish JUnit test result reports,” and enter “” in the Test Report XMLs input box.
+Press Save.
+If Hudson points you that  “doesn’t match anything,” don’t worry: just press Save again.
+Of course it doesn’t match anything <em>None</em>, because we haven’t run the build again.</p>
+<p>Trigger the build again, and after the build is finished, click on the link for it on the Build History box, or go to the job page and following the Last build [...] permalink).
+Figure 18-7 shows what you see if you look at the Console Output, and Figure 18-8 shows what you see on the Test Results page.</p>
+<p><img alt="picture_10" src="_images/picture_10.png" /></p>
+<p><a href="#id25"><span class="problematic" id="id26">**</span></a>Figure 18-7. <a href="#id27"><span class="problematic" id="id28">**</span></a>Nose&#8217;s Output on Hudson</p>
+<p><img alt="picture_15" src="_images/picture_15.png" /></p>
+<p><em>None**Hudson’s test reports</em></p>
+<p>Navigation on your test results is a very powerful feature of Hudson.
+But it shines when you have failures or tons of tests, which is not the case on this example.
+But we wanted to show it in action, so we fabricated some failures on the code to show you some screenshots.
+Look at Figure 18-9 and Figure 18-10 to get an idea of what you get from Hudson.</p>
+<p><img alt="picture_16" src="_images/picture_16.png" /></p>
+<p><a href="#id29"><span class="problematic" id="id30">**</span></a>Figure 18-9. <a href="#id31"><span class="problematic" id="id32">**</span></a>Graph of test results over time</p>
+<p><a href="#id33"><span class="problematic" id="id34">**</span></a>Figure 18-10. <a href="#id35"><span class="problematic" id="id36">**</span></a>Test report showing failures</p>
+<p><img alt="picture_12" src="_images/picture_12.png" /></p>
+<p>We had to use a slightly more complicated script to use Nose and Hudson together, but it has the advantage that it will probably work untouched for a long time, unlike the original script manually built the suite, which would have to be modified each time a new test module is created.</p>
+</div>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Testing is fertile ground for Jython usage, because you can exploit the flexibility of Python to write concise tests for Java APIs, which also tend to be more readable than the ones written with JUnit.
+Doctests in particular don’t have a parallel in the Java world, and can be a powerful way to introduce the practice of automated testing for people who want it to be simple and easy.</p>
+<p>Integration with continuous integration tools, and Hudson in particular, lets you get the maximum from your tests, avoid unnoticed test breakages and delivers a live history of your project health and evolution.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Chapter 18: Testing and Continuous Integration</a><ul>
+<li><a class="reference external" href="#python-testing-tools">Python Testing Tools</a><ul>
+<li><a class="reference external" href="#unittest">UnitTest</a></li>
+<li><a class="reference external" href="#doctests">Doctests</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#a-complete-example">A Complete Example</a></li>
+<li><a class="reference external" href="#nose">Nose</a><ul>
+<li><a class="reference external" href="#integration-with-java">Integration with Java?</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#continuous-integration">Continuous Integration</a><ul>
+<li><a class="reference external" href="#hudson">Hudson</a></li>
+<li><a class="reference external" href="#getting-hudson">Getting Hudson</a></li>
+<li><a class="reference external" href="#installing-the-jython-plug-in">Installing the Jython Plug-in</a></li>
+<li><a class="reference external" href="#creating-a-hudson-job-for-a-jython-project">Creating a Hudson Job for a Jython Project</a></li>
+<li><a class="reference external" href="#using-nose-on-hudson">Using Nose on Hudson</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="DeploymentTargets.html"
+                                  title="previous chapter">Chapter 17: Deployment Targets</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="Concurrency.html"
+                                  title="next chapter">Chapter 19: Concurrency</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/TestingIntegration.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Concurrency.html" title="Chapter 19: Concurrency"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="DeploymentTargets.html" title="Chapter 17: Deployment Targets"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+    <div class="footer">
+      &copy; Copyright 2009,2010, Josh Juneau, Frank Wierzbicki, Jim Baker, Leo Soto, Victor Ng.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-13131153-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  </body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>18.4. mhlib — Access to MH mailboxes &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="18. Internet Data Handling" href="netdata.html" />
+    <link rel="next" title="18.5. mimetools — Tools for parsing MIME messages" href="mimetools.html" />
+    <link rel="prev" title="18.3. mailbox — Manipulate mailboxes in various formats" href="mailbox.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="mimetools.html" title="18.5. mimetools — Tools for parsing MIME messages"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mailbox.html" title="18.3. mailbox — Manipulate mailboxes in various formats"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" accesskey="U">18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">18.4. <tt class="docutils literal"><span class="pre">mhlib</span></tt> &#8212; Access to MH mailboxes</a><ul>
+<li><a class="reference external" href="#mh-objects">18.4.1. MH Objects</a></li>
+<li><a class="reference external" href="#folder-objects">18.4.2. Folder Objects</a></li>
+<li><a class="reference external" href="#message-objects">18.4.3. Message Objects</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="mailbox.html"
+                                  title="previous chapter">18.3. <tt class="docutils literal docutils literal docutils literal"><span class="pre">mailbox</span></tt> &#8212; Manipulate mailboxes in various formats</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="mimetools.html"
+                                  title="next chapter">18.5. <tt class="docutils literal"><span class="pre">mimetools</span></tt> &#8212; Tools for parsing MIME messages</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/mhlib.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="mhlib-access-to-mh-mailboxes">
+<h1>18.4. <tt class="docutils literal"><span class="pre">mhlib</span></tt> &#8212; Access to MH mailboxes<a class="headerlink" href="#mhlib-access-to-mh-mailboxes" title="Permalink to this headline">¶</a></h1>
+<p>Deprecated since version 2.6: The <tt class="docutils literal"><span class="pre">mhlib</span></tt> module has been removed in
+Python 3.0. Use the <tt class="docutils literal"><span class="pre">mailbox</span></tt> instead.</p>
+<p>The <tt class="docutils literal"><span class="pre">mhlib</span></tt> module provides a Python interface to MH folders and
+their contents.</p>
+<p>The module contains three basic classes, <tt class="docutils literal"><span class="pre">MH</span></tt>, which represents a
+particular collection of folders, <tt class="docutils literal"><span class="pre">Folder</span></tt>, which represents a
+single folder, and <tt class="docutils literal"><span class="pre">Message</span></tt>, which represents a single message.</p>
+<p>class class mhlib.MH([path[, profile]])</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">MH</span></tt> represents a collection of MH folders.</blockquote>
+<p>class class mhlib.Folder(mh, name)</p>
+<blockquote>
+The <tt class="docutils literal"><span class="pre">Folder</span></tt> class represents a single folder and its messages.</blockquote>
+<p>class class mhlib.Message(folder, number[, name])</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">Message</span></tt> objects represent individual messages in a folder.  The
+Message class is derived from <tt class="docutils literal"><span class="pre">mimetools.Message</span></tt>.</blockquote>
+<div class="section" id="mh-objects">
+<h2>18.4.1. MH Objects<a class="headerlink" href="#mh-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">MH</span></tt> instances have the following methods:</p>
+<p>MH.error(format[, ...])</p>
+<blockquote>
+Print an error message &#8211; can be overridden.</blockquote>
+<p>MH.getprofile(key)</p>
+<blockquote>
+Return a profile entry (<tt class="xref docutils literal"><span class="pre">None</span></tt> if not set).</blockquote>
+<p>MH.getpath()</p>
+<blockquote>
+Return the mailbox pathname.</blockquote>
+<p>MH.getcontext()</p>
+<blockquote>
+Return the current folder name.</blockquote>
+<p>MH.setcontext(name)</p>
+<blockquote>
+Set the current folder name.</blockquote>
+<p>MH.listfolders()</p>
+<blockquote>
+Return a list of top-level folders.</blockquote>
+<p>MH.listallfolders()</p>
+<blockquote>
+Return a list of all folders.</blockquote>
+<p>MH.listsubfolders(name)</p>
+<blockquote>
+Return a list of direct subfolders of the given folder.</blockquote>
+<p>MH.listallsubfolders(name)</p>
+<blockquote>
+Return a list of all subfolders of the given folder.</blockquote>
+<p>MH.makefolder(name)</p>
+<blockquote>
+Create a new folder.</blockquote>
+<p>MH.deletefolder(name)</p>
+<blockquote>
+Delete a folder &#8211; must have no subfolders.</blockquote>
+<p>MH.openfolder(name)</p>
+<blockquote>
+Return a new open folder object.</blockquote>
+</div>
+<div class="section" id="folder-objects">
+<h2>18.4.2. Folder Objects<a class="headerlink" href="#folder-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">Folder</span></tt> instances represent open folders and have the following
+methods:</p>
+<p>Folder.error(format[, ...])</p>
+<blockquote>
+Print an error message &#8211; can be overridden.</blockquote>
+<p>Folder.getfullname()</p>
+<blockquote>
+Return the folder&#8217;s full pathname.</blockquote>
+<p>Folder.getsequencesfilename()</p>
+<blockquote>
+Return the full pathname of the folder&#8217;s sequences file.</blockquote>
+<p>Folder.getmessagefilename(n)</p>
+<blockquote>
+Return the full pathname of message <em>n</em> of the folder.</blockquote>
+<p>Folder.listmessages()</p>
+<blockquote>
+Return a list of messages in the folder (as numbers).</blockquote>
+<p>Folder.getcurrent()</p>
+<blockquote>
+Return the current message number.</blockquote>
+<p>Folder.setcurrent(n)</p>
+<blockquote>
+Set the current message number to <em>n</em>.</blockquote>
+<p>Folder.parsesequence(seq)</p>
+<blockquote>
+Parse msgs syntax into list of messages.</blockquote>
+<p>Folder.getlast()</p>
+<blockquote>
+Get last message, or <tt class="docutils literal"><span class="pre">0</span></tt> if no messages are in the folder.</blockquote>
+<p>Folder.setlast(n)</p>
+<blockquote>
+Set last message (internal use only).</blockquote>
+<p>Folder.getsequences()</p>
+<blockquote>
+Return dictionary of sequences in folder.  The sequence names are
+used  as keys, and the values are the lists of message numbers in
+the sequences.</blockquote>
+<p>Folder.putsequences(dict)</p>
+<blockquote>
+Return dictionary of sequences in folder name: list.</blockquote>
+<p>Folder.removemessages(list)</p>
+<blockquote>
+Remove messages in list from folder.</blockquote>
+<p>Folder.refilemessages(list, tofolder)</p>
+<blockquote>
+Move messages in list to other folder.</blockquote>
+<p>Folder.movemessage(n, tofolder, ton)</p>
+<blockquote>
+Move one message to a given destination in another folder.</blockquote>
+<p>Folder.copymessage(n, tofolder, ton)</p>
+<blockquote>
+Copy one message to a given destination in another folder.</blockquote>
+</div>
+<div class="section" id="message-objects">
+<h2>18.4.3. Message Objects<a class="headerlink" href="#message-objects" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">Message</span></tt> class adds one method to those of
+<tt class="docutils literal"><span class="pre">mimetools.Message</span></tt>:</p>
+<p>Message.openmessage(n)</p>
+<blockquote>
+Return a new open message object (costs a file descriptor).</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mimetools.html" title="18.5. mimetools — Tools for parsing MIME messages"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mailbox.html" title="18.3. mailbox — Manipulate mailboxes in various formats"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" >18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

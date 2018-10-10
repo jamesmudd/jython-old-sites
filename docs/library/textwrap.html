@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7.7. textwrap — Text wrapping and filling &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="7. String Services" href="strings.html" />
+    <link rel="next" title="7.8. codecs — Codec registry and base classes" href="codecs.html" />
+    <link rel="prev" title="7.5. StringIO — Read and write strings as files" href="stringio.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="codecs.html" title="7.8. codecs — Codec registry and base classes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="stringio.html" title="7.5. StringIO — Read and write strings as files"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="strings.html" accesskey="U">7. String Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="stringio.html"
+                                  title="previous chapter">7.5. <tt class="docutils literal docutils literal docutils literal"><span class="pre">StringIO</span></tt> &#8212; Read and write strings as files</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="codecs.html"
+                                  title="next chapter">7.8. <tt class="docutils literal docutils literal"><span class="pre">codecs</span></tt> &#8212; Codec registry and base classes</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/textwrap.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="textwrap-text-wrapping-and-filling">
+<h1>7.7. <tt class="docutils literal"><span class="pre">textwrap</span></tt> &#8212; Text wrapping and filling<a class="headerlink" href="#textwrap-text-wrapping-and-filling" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.3.</p>
+<p>The <tt class="docutils literal"><span class="pre">textwrap</span></tt> module provides two convenience functions, <tt class="docutils literal"><span class="pre">wrap()</span></tt>
+and <tt class="docutils literal"><span class="pre">fill()</span></tt>, as well as <tt class="docutils literal"><span class="pre">TextWrapper</span></tt>, the class that does all
+the work, and a utility function  <tt class="docutils literal"><span class="pre">dedent()</span></tt>.  If you&#8217;re just
+wrapping or filling one or two  text strings, the convenience
+functions should be good enough; otherwise,  you should use an
+instance of <tt class="docutils literal"><span class="pre">TextWrapper</span></tt> for efficiency.</p>
+<p>textwrap.wrap(text[, width[, ...]])</p>
+<blockquote>
+<p>Wraps the single paragraph in <em>text</em> (a string) so every line is at
+most <em>width</em> characters long.  Returns a list of output lines,
+without final newlines.</p>
+<p>Optional keyword arguments correspond to the instance attributes of
+<tt class="docutils literal"><span class="pre">TextWrapper</span></tt>, documented below.  <em>width</em> defaults to <tt class="docutils literal"><span class="pre">70</span></tt>.</p>
+</blockquote>
+<p>textwrap.fill(text[, width[, ...]])</p>
+<blockquote>
+<p>Wraps the single paragraph in <em>text</em>, and returns a single string
+containing the wrapped paragraph.  <tt class="docutils literal"><span class="pre">fill()</span></tt> is shorthand for</p>
+<blockquote>
+&#8220;n&#8221;.join(wrap(text, ...))</blockquote>
+<p>In particular, <tt class="docutils literal"><span class="pre">fill()</span></tt> accepts exactly the same keyword
+arguments as <tt class="docutils literal"><span class="pre">wrap()</span></tt>.</p>
+</blockquote>
+<p>Both <tt class="docutils literal"><span class="pre">wrap()</span></tt> and <tt class="docutils literal"><span class="pre">fill()</span></tt> work by creating a <tt class="docutils literal"><span class="pre">TextWrapper</span></tt>
+instance and calling a single method on it.  That instance is not
+reused, so for applications that wrap/fill many text strings, it will
+be more efficient for you to create your own <tt class="docutils literal"><span class="pre">TextWrapper</span></tt> object.</p>
+<p>Text is preferably wrapped on whitespaces and right after the hyphens
+in hyphenated words; only then will long words be broken if necessary,
+unless <tt class="docutils literal"><span class="pre">TextWrapper.break_long_words</span></tt> is set to false.</p>
+<p>An additional utility function, <tt class="docutils literal"><span class="pre">dedent()</span></tt>, is provided to remove
+indentation from strings that have unwanted whitespace to the left of
+the text.</p>
+<p>textwrap.dedent(text)</p>
+<blockquote>
+<p>Remove any common leading whitespace from every line in <em>text</em>.</p>
+<p>This can be used to make triple-quoted strings line up with the
+left edge of the display, while still presenting them in the source
+code in indented form.</p>
+<p>Note that tabs and spaces are both treated as whitespace, but they
+are not equal: the lines <tt class="docutils literal"><span class="pre">&quot;</span>&nbsp; <span class="pre">hello&quot;</span></tt> and <tt class="docutils literal"><span class="pre">&quot;\thello&quot;</span></tt> are
+considered to have no common leading whitespace.  (This behaviour
+is new in Python 2.5; older versions of this module incorrectly
+expanded tabs before searching for common leading whitespace.)</p>
+<p>For example:</p>
+<blockquote>
+<dl class="docutils">
+<dt>def test():</dt>
+<dd><p class="first"># end first line with to avoid the empty line!
+s = &#8216;&#8217;&#8216;hello</p>
+<blockquote>
+world</blockquote>
+<p class="last">&#8216;&#8217;&#8217;
+print repr(s)          # prints &#8216;    hellon      worldn    &#8216;
+print repr(dedent(s))  # prints &#8216;hellon  worldn&#8217;</p>
+</dd>
+</dl>
+</blockquote>
+</blockquote>
+<p>class class textwrap.TextWrapper(...)</p>
+<blockquote>
+<p>The <tt class="docutils literal"><span class="pre">TextWrapper</span></tt> constructor accepts a number of optional
+keyword arguments.  Each argument corresponds to one instance
+attribute, so for example</p>
+<blockquote>
+wrapper = TextWrapper(initial_indent=&#8221;* &#8220;)</blockquote>
+<p>is the same as</p>
+<blockquote>
+wrapper = TextWrapper()
+wrapper.initial_indent = &#8220;* &#8220;</blockquote>
+<p>You can re-use the same <tt class="docutils literal"><span class="pre">TextWrapper</span></tt> object many times, and you
+can change any of its options through direct assignment to instance
+attributes between uses.</p>
+<p>The <tt class="docutils literal"><span class="pre">TextWrapper</span></tt> instance attributes (and keyword arguments to
+the constructor) are as follows:</p>
+<p>width</p>
+<blockquote>
+(default: <tt class="docutils literal"><span class="pre">70</span></tt>) The maximum length of wrapped lines.  As long
+as there are no individual words in the input text longer than
+<tt class="docutils literal"><span class="pre">width</span></tt>, <tt class="docutils literal"><span class="pre">TextWrapper</span></tt> guarantees that no output line will
+be longer than <tt class="docutils literal"><span class="pre">width</span></tt> characters.</blockquote>
+<p>expand_tabs</p>
+<blockquote>
+(default: <tt class="xref docutils literal"><span class="pre">True</span></tt>) If true, then all tab characters in <em>text</em>
+will be expanded to spaces using the <tt class="docutils literal"><span class="pre">expandtabs()</span></tt> method of
+<em>text</em>.</blockquote>
+<p>replace_whitespace</p>
+<blockquote>
+<p>(default: <tt class="xref docutils literal"><span class="pre">True</span></tt>) If true, each whitespace character (as
+defined by <tt class="docutils literal"><span class="pre">string.whitespace</span></tt>) remaining after tab expansion
+will be replaced by a single space.</p>
+<dl class="docutils">
+<dt>Note: If <tt class="docutils literal"><span class="pre">expand_tabs</span></tt> is false and <tt class="docutils literal"><span class="pre">replace_whitespace</span></tt> is</dt>
+<dd>true, each tab character will be replaced by a single space,
+which is <em>not</em> the same as tab expansion.</dd>
+</dl>
+</blockquote>
+<p>drop_whitespace</p>
+<blockquote>
+<p>(default: <tt class="xref docutils literal"><span class="pre">True</span></tt>) If true, whitespace that, after wrapping,
+happens to end up at the beginning or end of a line is dropped
+(leading whitespace in the first line is always preserved,
+though).</p>
+<p>New in version 2.6: Whitespace was always dropped in earlier
+versions.</p>
+</blockquote>
+<p>initial_indent</p>
+<blockquote>
+(default: <tt class="docutils literal"><span class="pre">''</span></tt>) String that will be prepended to the first
+line of wrapped output.  Counts towards the length of the first
+line.</blockquote>
+<p>subsequent_indent</p>
+<blockquote>
+(default: <tt class="docutils literal"><span class="pre">''</span></tt>) String that will be prepended to all lines of
+wrapped output except the first.  Counts towards the length of
+each line except the first.</blockquote>
+<p>fix_sentence_endings</p>
+<blockquote>
+<p>(default: <tt class="xref docutils literal"><span class="pre">False</span></tt>) If true, <tt class="docutils literal"><span class="pre">TextWrapper</span></tt> attempts to detect
+sentence endings and ensure that sentences are always separated
+by exactly two spaces.  This is generally desired for text in a
+monospaced font. However, the sentence detection algorithm is
+imperfect: it assumes that a sentence ending consists of a
+lowercase letter followed by one of <tt class="docutils literal"><span class="pre">'.'</span></tt>, <tt class="docutils literal"><span class="pre">'!'</span></tt>, or
+<tt class="docutils literal"><span class="pre">'?'</span></tt>, possibly followed by one of <tt class="docutils literal"><span class="pre">'&quot;'</span></tt> or <tt class="docutils literal"><span class="pre">&quot;'&quot;</span></tt>,
+followed by a space.  One problem with this is algorithm is that
+it is unable to detect the difference between &#8220;Dr.&#8221; in</p>
+<blockquote>
+[...] Dr. Frankenstein&#8217;s monster [...]</blockquote>
+<p>and &#8220;Spot.&#8221; in</p>
+<blockquote>
+[...] See Spot. See Spot run [...]</blockquote>
+<p><tt class="docutils literal"><span class="pre">fix_sentence_endings</span></tt> is false by default.</p>
+<p>Since the sentence detection algorithm relies on
+<tt class="docutils literal"><span class="pre">string.lowercase</span></tt> for the definition of &#8220;lowercase letter,&#8221;
+and a convention of using two spaces after a period to separate
+sentences on the same line, it is specific to English-language
+texts.</p>
+</blockquote>
+<p>break_long_words</p>
+<blockquote>
+(default: <tt class="xref docutils literal"><span class="pre">True</span></tt>) If true, then words longer than <tt class="docutils literal"><span class="pre">width</span></tt>
+will be broken in order to ensure that no lines are longer than
+<tt class="docutils literal"><span class="pre">width</span></tt>.  If it is false, long words will not be broken, and
+some lines may be longer than <tt class="docutils literal"><span class="pre">width</span></tt>.  (Long words will be
+put on a line by themselves, in order to minimize the amount by
+which <tt class="docutils literal"><span class="pre">width</span></tt> is exceeded.)</blockquote>
+<p>break_on_hyphens</p>
+<blockquote>
+<p>(default: <tt class="xref docutils literal"><span class="pre">True</span></tt>) If true, wrapping will occur preferably on
+whitespaces and right after hyphens in compound words, as it is
+customary in English. If false, only whitespaces will be
+considered as potentially good places for line breaks, but you
+need to set <tt class="docutils literal"><span class="pre">break_long_words</span></tt> to false if you want truly
+insecable words.  Default behaviour in previous versions was to
+always allow breaking hyphenated words.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">TextWrapper</span></tt> also provides two public methods, analogous to the
+module-level convenience functions:</p>
+<p>wrap(text)</p>
+<blockquote>
+Wraps the single paragraph in <em>text</em> (a string) so every line is
+at most <tt class="docutils literal"><span class="pre">width</span></tt> characters long.  All wrapping options are
+taken from instance attributes of the <tt class="docutils literal"><span class="pre">TextWrapper</span></tt> instance.
+Returns a list of output lines, without final newlines.</blockquote>
+<p>fill(text)</p>
+<blockquote>
+Wraps the single paragraph in <em>text</em>, and returns a single
+string containing the wrapped paragraph.</blockquote>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="codecs.html" title="7.8. codecs — Codec registry and base classes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="stringio.html" title="7.5. StringIO — Read and write strings as files"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="strings.html" >7. String Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

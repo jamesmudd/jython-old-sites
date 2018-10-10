@@ -1,0 +1,337 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>20.15. uuid — UUID objects according to RFC 4122 &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="20. Internet Protocols and Support" href="internet.html" />
+    <link rel="next" title="20.16. urlparse — Parse URLs into components" href="urlparse.html" />
+    <link rel="prev" title="20.14. telnetlib — Telnet client" href="telnetlib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="urlparse.html" title="20.16. urlparse — Parse URLs into components"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="telnetlib.html" title="20.14. telnetlib — Telnet client"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" accesskey="U">20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">20.15. <tt class="docutils literal"><span class="pre">uuid</span></tt> &#8212; UUID objects according to RFC 4122</a><ul>
+<li><a class="reference external" href="#example">20.15.1. Example</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="telnetlib.html"
+                                  title="previous chapter">20.14. <tt class="docutils literal docutils literal docutils literal"><span class="pre">telnetlib</span></tt> &#8212; Telnet client</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="urlparse.html"
+                                  title="next chapter">20.16. <tt class="docutils literal docutils literal docutils literal"><span class="pre">urlparse</span></tt> &#8212; Parse URLs into components</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/uuid.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="uuid-uuid-objects-according-to-rfc-4122">
+<h1>20.15. <tt class="docutils literal"><span class="pre">uuid</span></tt> &#8212; UUID objects according to RFC 4122<a class="headerlink" href="#uuid-uuid-objects-according-to-rfc-4122" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.5.</p>
+<p>This module provides immutable <tt class="docutils literal"><span class="pre">UUID</span></tt> objects (the <tt class="docutils literal"><span class="pre">UUID</span></tt> class)
+and the functions <tt class="docutils literal"><span class="pre">uuid1()</span></tt>, <tt class="docutils literal"><span class="pre">uuid3()</span></tt>, <tt class="docutils literal"><span class="pre">uuid4()</span></tt>, <tt class="docutils literal"><span class="pre">uuid5()</span></tt>
+for generating version 1, 3, 4, and 5 UUIDs as specified in <strong>RFC
+4122</strong>.</p>
+<p>If all you want is a unique ID, you should probably call <tt class="docutils literal"><span class="pre">uuid1()</span></tt>
+or <tt class="docutils literal"><span class="pre">uuid4()</span></tt>.  Note that <tt class="docutils literal"><span class="pre">uuid1()</span></tt> may compromise privacy since it
+creates a UUID containing the computer&#8217;s network address.  <tt class="docutils literal"><span class="pre">uuid4()</span></tt>
+creates a random UUID.</p>
+<p>class class uuid.UUID([hex[, bytes[, bytes_le[, fields[, int[, version]]]]]])</p>
+<blockquote>
+<p>Create a UUID from either a string of 32 hexadecimal digits, a
+string of 16 bytes as the <em>bytes</em> argument, a string of 16 bytes in
+little-endian order as the <em>bytes_le</em> argument, a tuple of six
+integers (32-bit <em>time_low</em>, 16-bit <em>time_mid</em>, 16-bit
+<em>time_hi_version</em>, 8-bit <em>clock_seq_hi_variant</em>, 8-bit
+<em>clock_seq_low</em>, 48-bit <em>node</em>) as the <em>fields</em> argument, or a
+single 128-bit integer as the <em>int</em> argument.  When a string of hex
+digits is given, curly braces, hyphens, and a URN prefix are all
+optional.  For example, these expressions all yield the same UUID:</p>
+<blockquote>
+<p>UUID(&#8216;{12345678-1234-5678-1234-567812345678}&#8217;)
+UUID(&#8216;12345678123456781234567812345678&#8217;)
+UUID(&#8216;<a class="reference external" href="urn:uuid:12345678-1234-5678-1234-567812345678">urn:uuid:12345678-1234-5678-1234-567812345678</a>&#8216;)
+UUID(bytes=&#8217;x12x34x56x78&#8217;<a href="#id1"><span class="problematic" id="id2">*</span></a>4)
+UUID(bytes_le=&#8217;x78x56x34x12x34x12x78x56&#8217; +</p>
+<blockquote>
+&#8216;x12x34x56x78x12x34x56x78&#8217;)</blockquote>
+<p>UUID(fields=(0x12345678, 0x1234, 0x5678, 0x12, 0x34, 0x567812345678))
+UUID(int=0x12345678123456781234567812345678)</p>
+</blockquote>
+<p>Exactly one of <em>hex</em>, <em>bytes</em>, <em>bytes_le</em>, <em>fields</em>, or <em>int</em> must
+be given. The <em>version</em> argument is optional; if given, the
+resulting UUID will have its variant and version number set
+according to RFC 4122, overriding bits in the given <em>hex</em>, <em>bytes</em>,
+<em>bytes_le</em>, <em>fields</em>, or <em>int</em>.</p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">UUID</span></tt> instances have these read-only attributes:</p>
+<p>UUID.bytes</p>
+<blockquote>
+The UUID as a 16-byte string (containing the six integer fields in
+big-endian byte order).</blockquote>
+<p>UUID.bytes_le</p>
+<blockquote>
+The UUID as a 16-byte string (with <em>time_low</em>, <em>time_mid</em>, and
+<em>time_hi_version</em> in little-endian byte order).</blockquote>
+<p>UUID.fields</p>
+<blockquote>
+<p>A tuple of the six integer fields of the UUID, which are also
+available as six individual attributes and two derived attributes:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="49%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Field</th>
+<th class="head">Meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">time_low</span></tt></td>
+<td>the first 32 bits of the UUID</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">time_mid</span></tt></td>
+<td>the next 16 bits of the UUID</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">time_hi_version</span></tt></td>
+<td>the next 16 bits of the UUID</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">clock_seq_hi_variant</span></tt></td>
+<td>the next 8 bits of the UUID</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">clock_seq_low</span></tt></td>
+<td>the next 8 bits of the UUID</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">node</span></tt></td>
+<td>the last 48 bits of the UUID</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">time</span></tt></td>
+<td>the 60-bit timestamp</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">clock_seq</span></tt></td>
+<td>the 14-bit sequence number</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>UUID.hex</p>
+<blockquote>
+The UUID as a 32-character hexadecimal string.</blockquote>
+<p>UUID.int</p>
+<blockquote>
+The UUID as a 128-bit integer.</blockquote>
+<p>UUID.urn</p>
+<blockquote>
+The UUID as a URN as specified in RFC 4122.</blockquote>
+<p>UUID.variant</p>
+<blockquote>
+The UUID variant, which determines the internal layout of the UUID.
+This will be one of the integer constants <tt class="docutils literal"><span class="pre">RESERVED_NCS</span></tt>,
+<tt class="docutils literal"><span class="pre">RFC_4122</span></tt>, <tt class="docutils literal"><span class="pre">RESERVED_MICROSOFT</span></tt>, or <tt class="docutils literal"><span class="pre">RESERVED_FUTURE</span></tt>.</blockquote>
+<p>UUID.version</p>
+<blockquote>
+The UUID version number (1 through 5, meaningful only when the
+variant is <tt class="docutils literal"><span class="pre">RFC_4122</span></tt>).</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">uuid</span></tt> module defines the following functions:</p>
+<p>uuid.getnode()</p>
+<blockquote>
+Get the hardware address as a 48-bit positive integer.  The first
+time this runs, it may launch a separate program, which could be
+quite slow.  If all attempts to obtain the hardware address fail,
+we choose a random 48-bit number with its eighth bit set to 1 as
+recommended in RFC 4122.  &#8220;Hardware address&#8221; means the MAC address
+of a network interface, and on a machine with multiple network
+interfaces the MAC address of any one of them may be returned.</blockquote>
+<p>uuid.uuid1([node[, clock_seq]])</p>
+<blockquote>
+Generate a UUID from a host ID, sequence number, and the current
+time. If <em>node</em> is not given, <tt class="docutils literal"><span class="pre">getnode()</span></tt> is used to obtain the
+hardware address. If <em>clock_seq</em> is given, it is used as the
+sequence number; otherwise a random 14-bit sequence number is
+chosen.</blockquote>
+<p>uuid.uuid3(namespace, name)</p>
+<blockquote>
+Generate a UUID based on the MD5 hash of a namespace identifier
+(which is a UUID) and a name (which is a string).</blockquote>
+<p>uuid.uuid4()</p>
+<blockquote>
+Generate a random UUID.</blockquote>
+<p>uuid.uuid5(namespace, name)</p>
+<blockquote>
+Generate a UUID based on the SHA-1 hash of a namespace identifier
+(which is a UUID) and a name (which is a string).</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">uuid</span></tt> module defines the following namespace identifiers for
+use with <tt class="docutils literal"><span class="pre">uuid3()</span></tt> or <tt class="docutils literal"><span class="pre">uuid5()</span></tt>.</p>
+<p>uuid.NAMESPACE_DNS</p>
+<blockquote>
+When this namespace is specified, the <em>name</em> string is a fully-
+qualified domain name.</blockquote>
+<p>uuid.NAMESPACE_URL</p>
+<blockquote>
+When this namespace is specified, the <em>name</em> string is a URL.</blockquote>
+<p>uuid.NAMESPACE_OID</p>
+<blockquote>
+When this namespace is specified, the <em>name</em> string is an ISO OID.</blockquote>
+<p>uuid.NAMESPACE_X500</p>
+<blockquote>
+When this namespace is specified, the <em>name</em> string is an X.500 DN
+in DER or a text output format.</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">uuid</span></tt> module defines the following constants for the possible
+values of the <tt class="docutils literal"><span class="pre">variant</span></tt> attribute:</p>
+<p>uuid.RESERVED_NCS</p>
+<blockquote>
+Reserved for NCS compatibility.</blockquote>
+<p>uuid.RFC_4122</p>
+<blockquote>
+Specifies the UUID layout given in <strong>RFC 4122</strong>.</blockquote>
+<p>uuid.RESERVED_MICROSOFT</p>
+<blockquote>
+Reserved for Microsoft compatibility.</blockquote>
+<p>uuid.RESERVED_FUTURE</p>
+<blockquote>
+Reserved for future definition.</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt><strong>RFC 4122</strong> - A Universally Unique IDentifier (UUID) URN Namespace</dt>
+<dd>This specification defines a Uniform Resource Name namespace for
+UUIDs, the internal format of UUIDs, and methods of generating
+UUIDs.</dd>
+</dl>
+</blockquote>
+<div class="section" id="example">
+<h2>20.15.1. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Here are some examples of typical usage of the <tt class="docutils literal"><span class="pre">uuid</span></tt> module:</p>
+<blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
+</pre></div>
+</div>
+<p># make a UUID based on the host ID and current time
+&gt;&gt;&gt; uuid.uuid1()
+UUID(&#8216;a8098c1a-f86e-11da-bd1a-00112444be1e&#8217;)</p>
+<p># make a UUID using an MD5 hash of a namespace UUID and a name
+&gt;&gt;&gt; uuid.uuid3(uuid.NAMESPACE_DNS, &#8216;python.org&#8217;)
+UUID(&#8216;6fa459ea-ee8a-3ca4-894e-db77e160355e&#8217;)</p>
+<p># make a random UUID
+&gt;&gt;&gt; uuid.uuid4()
+UUID(&#8216;16fd2706-8baf-433b-82eb-8c7fada847da&#8217;)</p>
+<p># make a UUID using a SHA-1 hash of a namespace UUID and a name
+&gt;&gt;&gt; uuid.uuid5(uuid.NAMESPACE_DNS, &#8216;python.org&#8217;)
+UUID(&#8216;886313e1-3b8a-5372-9b90-0c9aee199e5d&#8217;)</p>
+<p># make a UUID from a string of hex digits (braces and hyphens ignored)
+&gt;&gt;&gt; x = uuid.UUID(&#8216;{00010203-0405-0607-0809-0a0b0c0d0e0f}&#8217;)</p>
+<p># convert a UUID to a string of hex digits in standard form
+&gt;&gt;&gt; str(x)
+&#8216;00010203-0405-0607-0809-0a0b0c0d0e0f&#8217;</p>
+<p># get the raw 16 bytes of the UUID
+&gt;&gt;&gt; x.bytes
+&#8216;x00x01x02x03x04x05x06x07x08tnx0bx0crx0ex0f&#8217;</p>
+<p># make a UUID from a 16-byte string
+&gt;&gt;&gt; uuid.UUID(bytes=x.bytes)
+UUID(&#8216;00010203-0405-0607-0809-0a0b0c0d0e0f&#8217;)</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="urlparse.html" title="20.16. urlparse — Parse URLs into components"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="telnetlib.html" title="20.14. telnetlib — Telnet client"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" >20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

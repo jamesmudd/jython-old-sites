@@ -1,0 +1,646 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>13.1. csv — CSV File Reading and Writing &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="13. File Formats" href="fileformats.html" />
+    <link rel="next" title="13.2. ConfigParser — Configuration file parser" href="configparser.html" />
+    <link rel="prev" title="13. File Formats" href="fileformats.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="configparser.html" title="13.2. ConfigParser — Configuration file parser"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fileformats.html" title="13. File Formats"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="fileformats.html" accesskey="U">13. File Formats</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">13.1. <tt class="docutils literal"><span class="pre">csv</span></tt> &#8212; CSV File Reading and Writing</a><ul>
+<li><a class="reference external" href="#module-contents">13.1.1. Module Contents</a></li>
+<li><a class="reference external" href="#dialects-and-formatting-parameters">13.1.2. Dialects and Formatting Parameters</a></li>
+<li><a class="reference external" href="#reader-objects">13.1.3. Reader Objects</a></li>
+<li><a class="reference external" href="#writer-objects">13.1.4. Writer Objects</a></li>
+<li><a class="reference external" href="#examples">13.1.5. Examples</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="fileformats.html"
+                                  title="previous chapter">13. File Formats</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="configparser.html"
+                                  title="next chapter">13.2. <tt class="docutils literal docutils literal"><span class="pre">ConfigParser</span></tt> &#8212; Configuration file parser</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/csv.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="csv-csv-file-reading-and-writing">
+<h1>13.1. <tt class="docutils literal"><span class="pre">csv</span></tt> &#8212; CSV File Reading and Writing<a class="headerlink" href="#csv-csv-file-reading-and-writing" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.3.</p>
+<p>The so-called CSV (Comma Separated Values) format is the most common
+import and export format for spreadsheets and databases.  There is no
+&#8220;CSV standard&#8221;, so the format is operationally defined by the many
+applications which read and write it.  The lack of a standard means
+that subtle differences often exist in the data produced and consumed
+by different applications.  These differences can make it annoying to
+process CSV files from multiple sources.  Still, while the delimiters
+and quoting characters vary, the overall format is similar enough that
+it is possible to write a single module which can efficiently
+manipulate such data, hiding the details of reading and writing the
+data from the programmer.</p>
+<p>The <tt class="docutils literal"><span class="pre">csv</span></tt> module implements classes to read and write tabular data
+in CSV format.  It allows programmers to say, &#8220;write this data in the
+format preferred by Excel,&#8221; or &#8220;read data from this file which was
+generated by Excel,&#8221; without knowing the precise details of the CSV
+format used by Excel.  Programmers can also describe the CSV formats
+understood by other applications or define their own special-purpose
+CSV formats.</p>
+<p>The <tt class="docutils literal"><span class="pre">csv</span></tt> module&#8217;s <tt class="docutils literal"><span class="pre">reader</span></tt> and <tt class="docutils literal"><span class="pre">writer</span></tt> objects read and write
+sequences.  Programmers can also read and write data in dictionary
+form using the <tt class="docutils literal"><span class="pre">DictReader</span></tt> and <tt class="docutils literal"><span class="pre">DictWriter</span></tt> classes.</p>
+<dl class="docutils">
+<dt>Note: This version of the <tt class="docutils literal"><span class="pre">csv</span></tt> module doesn&#8217;t support Unicode input.</dt>
+<dd>Also, there are currently some issues regarding ASCII NUL
+characters.  Accordingly, all input should be UTF-8 or printable
+ASCII to be safe; see the examples in section <em>Examples</em>. These
+restrictions will be removed in the future.</dd>
+</dl>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt><strong>PEP 305</strong> - CSV File API</dt>
+<dd>The Python Enhancement Proposal which proposed this addition to
+Python.</dd>
+</dl>
+</blockquote>
+<div class="section" id="module-contents">
+<h2>13.1.1. Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">csv</span></tt> module defines the following functions:</p>
+<p>csv.reader(csvfile[, dialect=&#8217;excel&#8217;][, fmtparam])</p>
+<blockquote>
+<p>Return a reader object which will iterate over lines in the given
+<em>csvfile</em>. <em>csvfile</em> can be any object which supports the
+<em>iterator</em> protocol and returns a string each time its <tt class="docutils literal"><span class="pre">next()</span></tt>
+method is called &#8212; file objects and list objects are both
+suitable.   If <em>csvfile</em> is a file object, it must be opened with
+the &#8216;b&#8217; flag on platforms where that makes a difference.  An
+optional <em>dialect</em> parameter can be given which is used to define a
+set of parameters specific to a particular CSV dialect.  It may be
+an instance of a subclass of the <tt class="docutils literal"><span class="pre">Dialect</span></tt> class or one of the
+strings returned by the <tt class="docutils literal"><span class="pre">list_dialects()</span></tt> function.  The other
+optional <em>fmtparam</em> keyword arguments can be given to override
+individual formatting parameters in the current dialect.  For full
+details about the dialect and formatting parameters, see section
+<em>Dialects and Formatting Parameters</em>.</p>
+<p>All data read are returned as strings.  No automatic data type
+conversion is performed.</p>
+<p>A short usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spamReader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s">&#39;eggs.csv&#39;</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="n">quotechar</span><span class="o">=</span><span class="s">&#39;|&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">spamReader</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+<span class="go">Spam, Spam, Spam, Spam, Spam, Baked Beans</span>
+<span class="go">Spam, Lovely Spam, Wonderful Spam</span>
+</pre></div>
+</div>
+<p>Changed in version 2.5: The parser is now stricter with respect to
+multi-line quoted fields. Previously, if a line ended within a
+quoted field without a terminating newline character, a newline
+would be inserted into the returned field. This behavior caused
+problems when reading files which contained carriage return
+characters within fields. The behavior was changed to return the
+field without inserting newlines. As a consequence, if newlines
+embedded within fields are important, the input should be split
+into lines in a manner which preserves the newline characters.</p>
+</blockquote>
+<p>csv.writer(csvfile[, dialect=&#8217;excel&#8217;][, fmtparam])</p>
+<blockquote>
+<p>Return a writer object responsible for converting the user&#8217;s data
+into delimited strings on the given file-like object.  <em>csvfile</em>
+can be any object with a <tt class="docutils literal"><span class="pre">write()</span></tt> method.  If <em>csvfile</em> is a
+file object, it must be opened with the &#8216;b&#8217; flag on platforms where
+that makes a difference.  An optional <em>dialect</em> parameter can be
+given which is used to define a set of parameters specific to a
+particular CSV dialect.  It may be an instance of a subclass of the
+<tt class="docutils literal"><span class="pre">Dialect</span></tt> class or one of the strings returned by the
+<tt class="docutils literal"><span class="pre">list_dialects()</span></tt> function.  The other optional <em>fmtparam</em>
+keyword arguments can be given to override individual formatting
+parameters in the current dialect.  For full details about the
+dialect and formatting parameters, see section <em>Dialects and
+Formatting Parameters</em>. To make it as easy as possible to interface
+with modules which implement the DB API, the value <tt class="xref docutils literal"><span class="pre">None</span></tt> is
+written as the empty string.  While this isn&#8217;t a reversible
+transformation, it makes it easier to dump SQL NULL data values to
+CSV files without preprocessing the data returned from a
+<tt class="docutils literal"><span class="pre">cursor.fetch*</span></tt> call. All other non-string data are stringified
+with <tt class="docutils literal"><span class="pre">str()</span></tt> before being written.</p>
+<p>A short usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spamWriter</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s">&#39;eggs.csv&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="p">,</span>
+<span class="gp">... </span>                        <span class="n">quotechar</span><span class="o">=</span><span class="s">&#39;|&#39;</span><span class="p">,</span> <span class="n">quoting</span><span class="o">=</span><span class="n">QUOTE_MINIMAL</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spamWriter</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s">&#39;Spam&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;Baked Beans&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spamWriter</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s">&#39;Spam&#39;</span><span class="p">,</span> <span class="s">&#39;Lovely Spam&#39;</span><span class="p">,</span> <span class="s">&#39;Wonderful Spam&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</blockquote>
+<p>csv.register_dialect(name[, dialect][, fmtparam])</p>
+<blockquote>
+Associate <em>dialect</em> with <em>name</em>.  <em>name</em> must be a string or
+Unicode object. The dialect can be specified either by passing a
+sub-class of <tt class="docutils literal"><span class="pre">Dialect</span></tt>, or by <em>fmtparam</em> keyword arguments, or
+both, with keyword arguments overriding parameters of the dialect.
+For full details about the dialect and formatting parameters, see
+section <em>Dialects and Formatting Parameters</em>.</blockquote>
+<p>csv.unregister_dialect(name)</p>
+<blockquote>
+Delete the dialect associated with <em>name</em> from the dialect
+registry.  An <tt class="docutils literal"><span class="pre">Error</span></tt> is raised if <em>name</em> is not a registered
+dialect name.</blockquote>
+<p>csv.get_dialect(name)</p>
+<blockquote>
+<p>Return the dialect associated with <em>name</em>.  An <tt class="docutils literal"><span class="pre">Error</span></tt> is raised
+if <em>name</em> is not a registered dialect name.</p>
+<p>Changed in version 2.5: This function now returns an immutable
+<tt class="docutils literal"><span class="pre">Dialect</span></tt>.  Previously an instance of the requested dialect was
+returned.  Users could modify the underlying class, changing the
+behavior of active readers and writers.</p>
+</blockquote>
+<p>csv.list_dialects()</p>
+<blockquote>
+Return the names of all registered dialects.</blockquote>
+<p>csv.field_size_limit([new_limit])</p>
+<blockquote>
+<p>Returns the current maximum field size allowed by the parser. If
+<em>new_limit</em> is given, this becomes the new limit.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">csv</span></tt> module defines the following classes:</p>
+<p>class class csv.DictReader(csvfile[, fieldnames=None[, restkey=None[, restval=None[, dialect=&#8217;excel&#8217;[, <a href="#id1"><span class="problematic" id="id2">*</span></a>args, <a href="#id3"><span class="problematic" id="id4">**</span></a>kwds]]]]])</p>
+<blockquote>
+Create an object which operates like a regular reader but maps the
+information read into a dict whose keys are given by the optional
+<em>fieldnames</em> parameter. If the <em>fieldnames</em> parameter is omitted,
+the values in the first row of the <em>csvfile</em> will be used as the
+fieldnames. If the row read has fewer fields than the fieldnames
+sequence, the value of <em>restval</em> will be used as the default value.
+If the row read has more fields than the fieldnames sequence, the
+remaining data is added as a sequence keyed by the value of
+<em>restkey</em>.  If the row read has fewer fields than the fieldnames
+sequence, the remaining keys take the value of the optional
+<em>restval</em> parameter.  Any other optional or keyword arguments are
+passed to the underlying <tt class="docutils literal"><span class="pre">reader</span></tt> instance.</blockquote>
+<p>class class csv.DictWriter(csvfile, fieldnames[, restval=&#8217;&#8216;[, extrasaction=&#8217;raise&#8217;[, dialect=&#8217;excel&#8217;[, <a href="#id5"><span class="problematic" id="id6">*</span></a>args, <a href="#id7"><span class="problematic" id="id8">**</span></a>kwds]]]])</p>
+<blockquote>
+<p>Create an object which operates like a regular writer but maps
+dictionaries onto output rows.  The <em>fieldnames</em> parameter
+identifies the order in which values in the dictionary passed to
+the <tt class="docutils literal"><span class="pre">writerow()</span></tt> method are written to the <em>csvfile</em>.  The
+optional <em>restval</em> parameter specifies the value to be written if
+the dictionary is missing a key in <em>fieldnames</em>.  If the dictionary
+passed to the <tt class="docutils literal"><span class="pre">writerow()</span></tt> method contains a key not found in
+<em>fieldnames</em>, the optional <em>extrasaction</em> parameter indicates what
+action to take.  If it is set to <tt class="docutils literal"><span class="pre">'raise'</span></tt> a <tt class="docutils literal"><span class="pre">ValueError</span></tt> is
+raised.  If it is set to <tt class="docutils literal"><span class="pre">'ignore'</span></tt>, extra values in the
+dictionary are ignored.  Any other optional or keyword arguments
+are passed to the underlying <tt class="docutils literal"><span class="pre">writer</span></tt> instance.</p>
+<p>Note that unlike the <tt class="docutils literal"><span class="pre">DictReader</span></tt> class, the <em>fieldnames</em>
+parameter of the <tt class="docutils literal"><span class="pre">DictWriter</span></tt> is not optional.  Since Python&#8217;s
+<tt class="docutils literal"><span class="pre">dict</span></tt> objects are not ordered, there is not enough information
+available to deduce the order in which the row should be written to
+the <em>csvfile</em>.</p>
+</blockquote>
+<p>class class csv.Dialect</p>
+<blockquote>
+The <tt class="docutils literal"><span class="pre">Dialect</span></tt> class is a container class relied on primarily for
+its attributes, which are used to define the parameters for a
+specific <tt class="docutils literal"><span class="pre">reader</span></tt> or <tt class="docutils literal"><span class="pre">writer</span></tt> instance.</blockquote>
+<p>class class csv.excel</p>
+<blockquote>
+The <tt class="docutils literal"><span class="pre">excel</span></tt> class defines the usual properties of an Excel-
+generated CSV file.  It is registered with the dialect name
+<tt class="docutils literal"><span class="pre">'excel'</span></tt>.</blockquote>
+<p>class class csv.excel_tab</p>
+<blockquote>
+The <tt class="docutils literal"><span class="pre">excel_tab</span></tt> class defines the usual properties of an Excel-
+generated TAB-delimited file.  It is registered with the dialect
+name <tt class="docutils literal"><span class="pre">'excel-tab'</span></tt>.</blockquote>
+<p>class class csv.Sniffer</p>
+<blockquote>
+<p>The <tt class="docutils literal"><span class="pre">Sniffer</span></tt> class is used to deduce the format of a CSV file.</p>
+<p>The <tt class="docutils literal"><span class="pre">Sniffer</span></tt> class provides two methods:</p>
+<p>sniff(sample[, delimiters=None])</p>
+<blockquote>
+Analyze the given <em>sample</em> and return a <tt class="docutils literal"><span class="pre">Dialect</span></tt> subclass
+reflecting the parameters found.  If the optional <em>delimiters</em>
+parameter is given, it is interpreted as a string containing
+possible valid delimiter characters.</blockquote>
+<p>has_header(sample)</p>
+<blockquote>
+Analyze the sample text (presumed to be in CSV format) and
+return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the first row appears to be a series of
+column headers.</blockquote>
+</blockquote>
+<p>An example for <tt class="docutils literal"><span class="pre">Sniffer</span></tt> use:</p>
+<blockquote>
+csvfile = open(&#8220;example.csv&#8221;)
+dialect = csv.Sniffer().sniff(csvfile.read(1024))
+csvfile.seek(0)
+reader = csv.reader(csvfile, dialect)
+# ... process CSV file contents here ...</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">csv</span></tt> module defines the following constants:</p>
+<p>csv.QUOTE_ALL</p>
+<blockquote>
+Instructs <tt class="docutils literal"><span class="pre">writer</span></tt> objects to quote all fields.</blockquote>
+<p>csv.QUOTE_MINIMAL</p>
+<blockquote>
+Instructs <tt class="docutils literal"><span class="pre">writer</span></tt> objects to only quote those fields which
+contain special characters such as <em>delimiter</em>, <em>quotechar</em> or any
+of the characters in <em>lineterminator</em>.</blockquote>
+<p>csv.QUOTE_NONNUMERIC</p>
+<blockquote>
+<p>Instructs <tt class="docutils literal"><span class="pre">writer</span></tt> objects to quote all non-numeric fields.</p>
+<p>Instructs the reader to convert all non-quoted fields to type
+<em>float</em>.</p>
+</blockquote>
+<p>csv.QUOTE_NONE</p>
+<blockquote>
+<p>Instructs <tt class="docutils literal"><span class="pre">writer</span></tt> objects to never quote fields.  When the
+current <em>delimiter</em> occurs in output data it is preceded by the
+current <em>escapechar</em> character.  If <em>escapechar</em> is not set, the
+writer will raise <tt class="docutils literal"><span class="pre">Error</span></tt> if any characters that require escaping
+are encountered.</p>
+<p>Instructs <tt class="docutils literal"><span class="pre">reader</span></tt> to perform no special processing of quote
+characters.</p>
+</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">csv</span></tt> module defines the following exception:</p>
+<p>exception exception csv.Error</p>
+<blockquote>
+Raised by any of the functions when an error is detected.</blockquote>
+</div>
+<div class="section" id="dialects-and-formatting-parameters">
+<h2>13.1.2. Dialects and Formatting Parameters<a class="headerlink" href="#dialects-and-formatting-parameters" title="Permalink to this headline">¶</a></h2>
+<p>To make it easier to specify the format of input and output records,
+specific formatting parameters are grouped together into dialects.  A
+dialect is a subclass of the <tt class="docutils literal"><span class="pre">Dialect</span></tt> class having a set of
+specific methods and a single <tt class="docutils literal"><span class="pre">validate()</span></tt> method.  When creating
+<tt class="docutils literal"><span class="pre">reader</span></tt> or <tt class="docutils literal"><span class="pre">writer</span></tt> objects, the programmer can specify a string
+or a subclass of the <tt class="docutils literal"><span class="pre">Dialect</span></tt> class as the dialect parameter.  In
+addition to, or instead of, the <em>dialect</em> parameter, the programmer
+can also specify individual formatting parameters, which have the same
+names as the attributes defined below for the <tt class="docutils literal"><span class="pre">Dialect</span></tt> class.</p>
+<p>Dialects support the following attributes:</p>
+<p>Dialect.delimiter</p>
+<blockquote>
+A one-character string used to separate fields.  It defaults to
+<tt class="docutils literal"><span class="pre">','</span></tt>.</blockquote>
+<p>Dialect.doublequote</p>
+<blockquote>
+<p>Controls how instances of <em>quotechar</em> appearing inside a field
+should be themselves be quoted.  When <tt class="xref docutils literal"><span class="pre">True</span></tt>, the character is
+doubled. When <tt class="xref docutils literal"><span class="pre">False</span></tt>, the <em>escapechar</em> is used as a prefix to
+the <em>quotechar</em>.  It defaults to <tt class="xref docutils literal"><span class="pre">True</span></tt>.</p>
+<p>On output, if <em>doublequote</em> is <tt class="xref docutils literal"><span class="pre">False</span></tt> and no <em>escapechar</em> is
+set, <tt class="docutils literal"><span class="pre">Error</span></tt> is raised if a <em>quotechar</em> is found in a field.</p>
+</blockquote>
+<p>Dialect.escapechar</p>
+<blockquote>
+A one-character string used by the writer to escape the <em>delimiter</em>
+if <em>quoting</em> is set to <tt class="docutils literal"><span class="pre">QUOTE_NONE</span></tt> and the <em>quotechar</em> if
+<em>doublequote</em> is <tt class="xref docutils literal"><span class="pre">False</span></tt>. On reading, the <em>escapechar</em> removes
+any special meaning from the following character. It defaults to
+<tt class="xref docutils literal"><span class="pre">None</span></tt>, which disables escaping.</blockquote>
+<p>Dialect.lineterminator</p>
+<blockquote>
+<p>The string used to terminate lines produced by the <tt class="docutils literal"><span class="pre">writer</span></tt>. It
+defaults to <tt class="docutils literal"><span class="pre">'\r\n'</span></tt>.</p>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">reader</span></tt> is hard-coded to recognise either <tt class="docutils literal"><span class="pre">'\r'</span></tt> or</dt>
+<dd><tt class="docutils literal"><span class="pre">'\n'</span></tt> as end-of-line, and ignores <em>lineterminator</em>. This
+behavior may change in the future.</dd>
+</dl>
+</blockquote>
+<p>Dialect.quotechar</p>
+<blockquote>
+A one-character string used to quote fields containing special
+characters, such as the <em>delimiter</em> or <em>quotechar</em>, or which
+contain new-line characters.  It defaults to <tt class="docutils literal"><span class="pre">'&quot;'</span></tt>.</blockquote>
+<p>Dialect.quoting</p>
+<blockquote>
+Controls when quotes should be generated by the writer and
+recognised by the reader.  It can take on any of the <tt class="docutils literal"><span class="pre">QUOTE_*</span></tt>
+constants (see section <em>Module Contents</em>) and defaults to
+<tt class="docutils literal"><span class="pre">QUOTE_MINIMAL</span></tt>.</blockquote>
+<p>Dialect.skipinitialspace</p>
+<blockquote>
+When <tt class="xref docutils literal"><span class="pre">True</span></tt>, whitespace immediately following the <em>delimiter</em> is
+ignored. The default is <tt class="xref docutils literal"><span class="pre">False</span></tt>.</blockquote>
+</div>
+<div class="section" id="reader-objects">
+<h2>13.1.3. Reader Objects<a class="headerlink" href="#reader-objects" title="Permalink to this headline">¶</a></h2>
+<p>Reader objects (<tt class="docutils literal"><span class="pre">DictReader</span></tt> instances and objects returned by the
+<tt class="docutils literal"><span class="pre">reader()</span></tt> function) have the following public methods:</p>
+<p>csvreader.next()</p>
+<blockquote>
+Return the next row of the reader&#8217;s iterable object as a list,
+parsed according to the current dialect.</blockquote>
+<p>Reader objects have the following public attributes:</p>
+<p>csvreader.dialect</p>
+<blockquote>
+A read-only description of the dialect in use by the parser.</blockquote>
+<p>csvreader.line_num</p>
+<blockquote>
+<p>The number of lines read from the source iterator. This is not the
+same as the number of records returned, as records can span
+multiple lines.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>DictReader objects have the following public attribute:</p>
+<p>csvreader.fieldnames</p>
+<blockquote>
+<p>If not passed as a parameter when creating the object, this
+attribute is initialized upon first access or when the first record
+is read from the file.</p>
+<p>Changed in version 2.6.</p>
+</blockquote>
+</div>
+<div class="section" id="writer-objects">
+<h2>13.1.4. Writer Objects<a class="headerlink" href="#writer-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">Writer</span></tt> objects (<tt class="docutils literal"><span class="pre">DictWriter</span></tt> instances and objects returned by
+the <tt class="docutils literal"><span class="pre">writer()</span></tt> function) have the following public methods.  A <em>row</em>
+must be a sequence of strings or numbers for <tt class="docutils literal"><span class="pre">Writer</span></tt> objects and a
+dictionary mapping fieldnames to strings or numbers (by passing them
+through <tt class="docutils literal"><span class="pre">str()</span></tt> first) for <tt class="docutils literal"><span class="pre">DictWriter</span></tt> objects.  Note that
+complex numbers are written out surrounded by parens. This may cause
+some problems for other programs which read CSV files (assuming they
+support complex numbers at all).</p>
+<p>csvwriter.writerow(row)</p>
+<blockquote>
+Write the <em>row</em> parameter to the writer&#8217;s file object, formatted
+according to the current dialect.</blockquote>
+<p>csvwriter.writerows(rows)</p>
+<blockquote>
+Write all the <em>rows</em> parameters (a list of <em>row</em> objects as
+described above) to the writer&#8217;s file object, formatted according
+to the current dialect.</blockquote>
+<p>Writer objects have the following public attribute:</p>
+<p>csvwriter.dialect</p>
+<blockquote>
+A read-only description of the dialect in use by the writer.</blockquote>
+</div>
+<div class="section" id="examples">
+<h2>13.1.5. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>The simplest example of reading a CSV file:</p>
+<blockquote>
+<p>import csv
+reader = csv.reader(open(&#8220;some.csv&#8221;, &#8220;rb&#8221;))
+for row in reader:</p>
+<blockquote>
+print row</blockquote>
+</blockquote>
+<p>Reading a file with an alternate format:</p>
+<blockquote>
+<p>import csv
+reader = csv.reader(open(&#8220;passwd&#8221;, &#8220;rb&#8221;), delimiter=&#8217;:&#8217;, quoting=csv.QUOTE_NONE)
+for row in reader:</p>
+<blockquote>
+print row</blockquote>
+</blockquote>
+<p>The corresponding simplest possible writing example is:</p>
+<blockquote>
+import csv
+writer = csv.writer(open(&#8220;some.csv&#8221;, &#8220;wb&#8221;))
+writer.writerows(someiterable)</blockquote>
+<p>Registering a new dialect:</p>
+<blockquote>
+<p>import csv</p>
+<p>csv.register_dialect(&#8216;unixpwd&#8217;, delimiter=&#8217;:&#8217;, quoting=csv.QUOTE_NONE)</p>
+<p>reader = csv.reader(open(&#8220;passwd&#8221;, &#8220;rb&#8221;), &#8216;unixpwd&#8217;)</p>
+</blockquote>
+<p>A slightly more advanced use of the reader &#8212; catching and reporting
+errors:</p>
+<blockquote>
+<p>import csv, sys
+filename = &#8220;some.csv&#8221;
+reader = csv.reader(open(filename, &#8220;rb&#8221;))
+try:</p>
+<blockquote>
+<dl class="docutils">
+<dt>for row in reader:</dt>
+<dd>print row</dd>
+</dl>
+</blockquote>
+<dl class="docutils">
+<dt>except csv.Error, e:</dt>
+<dd>sys.exit(&#8216;file %s, line %d: %s&#8217; % (filename, reader.line_num, e))</dd>
+</dl>
+</blockquote>
+<p>And while the module doesn&#8217;t directly support parsing strings, it can
+easily be done:</p>
+<blockquote>
+<p>import csv
+for row in csv.reader([&#8216;one,two,three&#8217;]):</p>
+<blockquote>
+print row</blockquote>
+</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">csv</span></tt> module doesn&#8217;t directly support reading and writing
+Unicode, but it is 8-bit-clean save for some problems with ASCII NUL
+characters.  So you can write functions or classes that handle the
+encoding and decoding for you as long as you avoid encodings like
+UTF-16 that use NULs.  UTF-8 is recommended.</p>
+<p><tt class="docutils literal"><span class="pre">unicode_csv_reader()</span></tt> below is a <em>generator</em> that wraps
+<tt class="docutils literal"><span class="pre">csv.reader</span></tt> to handle Unicode CSV data (a list of Unicode strings).
+<tt class="docutils literal"><span class="pre">utf_8_encoder()</span></tt> is a <em>generator</em> that encodes the Unicode strings
+as UTF-8, one string (or row) at a time.  The encoded strings are
+parsed by the CSV reader, and <tt class="docutils literal"><span class="pre">unicode_csv_reader()</span></tt> decodes the
+UTF-8-encoded cells back into Unicode:</p>
+<blockquote>
+<p>import csv</p>
+<dl class="docutils">
+<dt>def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, <a href="#id9"><span class="problematic" id="id10">**</span></a>kwargs):</dt>
+<dd><p class="first"># csv.py doesn&#8217;t do Unicode; encode temporarily as UTF-8:
+csv_reader = csv.reader(utf_8_encoder(unicode_csv_data),</p>
+<blockquote>
+dialect=dialect, <a href="#id11"><span class="problematic" id="id12">**</span></a>kwargs)</blockquote>
+<dl class="last docutils">
+<dt>for row in csv_reader:</dt>
+<dd># decode UTF-8 back to Unicode, cell by cell:
+yield [unicode(cell, &#8216;utf-8&#8217;) for cell in row]</dd>
+</dl>
+</dd>
+<dt>def utf_8_encoder(unicode_csv_data):</dt>
+<dd><dl class="first last docutils">
+<dt>for line in unicode_csv_data:</dt>
+<dd>yield line.encode(&#8216;utf-8&#8217;)</dd>
+</dl>
+</dd>
+</dl>
+</blockquote>
+<p>For all other encodings the following <tt class="docutils literal"><span class="pre">UnicodeReader</span></tt> and
+<tt class="docutils literal"><span class="pre">UnicodeWriter</span></tt> classes can be used. They take an additional
+<em>encoding</em> parameter in their constructor and make sure that the data
+passes the real reader or writer encoded as UTF-8:</p>
+<blockquote>
+<p>import csv, codecs, cStringIO</p>
+<dl class="docutils">
+<dt>class UTF8Recoder:</dt>
+<dd><p class="first">&#8220;&#8221;&#8221;
+Iterator that reads an encoded stream and reencodes the input to UTF-8
+&#8220;&#8221;&#8221;
+def __init__(self, f, encoding):</p>
+<blockquote>
+self.reader = codecs.getreader(encoding)(f)</blockquote>
+<dl class="last docutils">
+<dt>def __iter__(self):</dt>
+<dd>return self</dd>
+<dt>def next(self):</dt>
+<dd>return self.reader.next().encode(&#8220;utf-8&#8221;)</dd>
+</dl>
+</dd>
+<dt>class UnicodeReader:</dt>
+<dd><p class="first">&#8220;&#8221;&#8221;
+A CSV reader which will iterate over lines in the CSV file &#8220;f&#8221;,
+which is encoded in the given encoding.
+&#8220;&#8221;&#8220;</p>
+<dl class="last docutils">
+<dt>def __init__(self, f, dialect=csv.excel, encoding=&#8221;utf-8&#8221;, <a href="#id13"><span class="problematic" id="id14">**</span></a>kwds):</dt>
+<dd>f = UTF8Recoder(f, encoding)
+self.reader = csv.reader(f, dialect=dialect, <a href="#id15"><span class="problematic" id="id16">**</span></a>kwds)</dd>
+<dt>def next(self):</dt>
+<dd>row = self.reader.next()
+return [unicode(s, &#8220;utf-8&#8221;) for s in row]</dd>
+<dt>def __iter__(self):</dt>
+<dd>return self</dd>
+</dl>
+</dd>
+<dt>class UnicodeWriter:</dt>
+<dd><p class="first">&#8220;&#8221;&#8221;
+A CSV writer which will write rows to CSV file &#8220;f&#8221;,
+which is encoded in the given encoding.
+&#8220;&#8221;&#8220;</p>
+<dl class="last docutils">
+<dt>def __init__(self, f, dialect=csv.excel, encoding=&#8221;utf-8&#8221;, <a href="#id17"><span class="problematic" id="id18">**</span></a>kwds):</dt>
+<dd># Redirect output to a queue
+self.queue = cStringIO.StringIO()
+self.writer = csv.writer(self.queue, dialect=dialect, <a href="#id19"><span class="problematic" id="id20">**</span></a>kwds)
+self.stream = f
+self.encoder = codecs.getincrementalencoder(encoding)()</dd>
+<dt>def writerow(self, row):</dt>
+<dd>self.writer.writerow([s.encode(&#8220;utf-8&#8221;) for s in row])
+# Fetch UTF-8 output from the queue ...
+data = self.queue.getvalue()
+data = data.decode(&#8220;utf-8&#8221;)
+# ... and reencode it into the target encoding
+data = self.encoder.encode(data)
+# write to the target stream
+self.stream.write(data)
+# empty queue
+self.queue.truncate(0)</dd>
+<dt>def writerows(self, rows):</dt>
+<dd><dl class="first last docutils">
+<dt>for row in rows:</dt>
+<dd>self.writerow(row)</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="configparser.html" title="13.2. ConfigParser — Configuration file parser"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="fileformats.html" title="13. File Formats"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="fileformats.html" >13. File Formats</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>19.7. xml.dom.minidom — Lightweight DOM implementation &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="19. Structured Markup Processing Tools" href="markup.html" />
+    <link rel="next" title="19.8. xml.dom.pulldom — Support for building partial DOM trees" href="xml.dom.pulldom.html" />
+    <link rel="prev" title="19.6. xml.dom — The Document Object Model API" href="xml.dom.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="xml.dom.pulldom.html" title="19.8. xml.dom.pulldom — Support for building partial DOM trees"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="xml.dom.html" title="19.6. xml.dom — The Document Object Model API"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="markup.html" accesskey="U">19. Structured Markup Processing Tools</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">19.7. <tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt> &#8212; Lightweight DOM implementation</a><ul>
+<li><a class="reference external" href="#dom-objects">19.7.1. DOM Objects</a></li>
+<li><a class="reference external" href="#dom-example">19.7.2. DOM Example</a></li>
+<li><a class="reference external" href="#minidom-and-the-dom-standard">19.7.3. minidom and the DOM standard</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="xml.dom.html"
+                                  title="previous chapter">19.6. <tt class="docutils literal docutils literal docutils literal"><span class="pre">xml.dom</span></tt> &#8212; The Document Object Model API</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="xml.dom.pulldom.html"
+                                  title="next chapter">19.8. <tt class="docutils literal"><span class="pre">xml.dom.pulldom</span></tt> &#8212; Support for building partial DOM trees</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/xml.dom.minidom.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="xml-dom-minidom-lightweight-dom-implementation">
+<h1>19.7. <tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt> &#8212; Lightweight DOM implementation<a class="headerlink" href="#xml-dom-minidom-lightweight-dom-implementation" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.0.</p>
+<p><tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt> is a light-weight implementation of the Document
+Object Model interface.  It is intended to be simpler than the full
+DOM and also significantly smaller.</p>
+<p>DOM applications typically start by parsing some XML into a DOM.  With
+<tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt>, this is done through the parse functions:</p>
+<blockquote>
+<p>from xml.dom.minidom import parse, parseString</p>
+<p>dom1 = parse(&#8216;c:\temp\mydata.xml&#8217;) # parse an XML file by name</p>
+<p>datasource = open(&#8216;c:\temp\mydata.xml&#8217;)
+dom2 = parse(datasource)   # parse an open file</p>
+<p>dom3 = parseString(&#8216;&lt;myxml&gt;Some data&lt;empty/&gt; some more data&lt;/myxml&gt;&#8217;)</p>
+</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">parse()</span></tt> function can take either a filename or an open file
+object.</p>
+<p>xml.dom.minidom.parse(filename_or_file[, parser[, bufsize]])</p>
+<blockquote>
+Return a <tt class="docutils literal"><span class="pre">Document</span></tt> from the given input. <em>filename_or_file</em> may
+be either a file name, or a file-like object. <em>parser</em>, if given,
+must be a SAX2 parser object. This function will change the
+document handler of the parser and activate namespace support;
+other parser configuration (like setting an entity resolver) must
+have been done in advance.</blockquote>
+<p>If you have XML in a string, you can use the <tt class="docutils literal"><span class="pre">parseString()</span></tt>
+function instead:</p>
+<p>xml.dom.minidom.parseString(string[, parser])</p>
+<blockquote>
+Return a <tt class="docutils literal"><span class="pre">Document</span></tt> that represents the <em>string</em>. This method
+creates a <tt class="docutils literal"><span class="pre">StringIO</span></tt> object for the string and passes that on to
+<tt class="docutils literal"><span class="pre">parse()</span></tt>.</blockquote>
+<p>Both functions return a <tt class="docutils literal"><span class="pre">Document</span></tt> object representing the content
+of the document.</p>
+<p>What the <tt class="docutils literal"><span class="pre">parse()</span></tt> and <tt class="docutils literal"><span class="pre">parseString()</span></tt> functions do is connect an
+XML parser with a &#8220;DOM builder&#8221; that can accept parse events from any
+SAX parser and convert them into a DOM tree.  The name of the
+functions are perhaps misleading, but are easy to grasp when learning
+the interfaces.  The parsing of the document will be completed before
+these functions return; it&#8217;s simply that these functions do not
+provide a parser implementation themselves.</p>
+<p>You can also create a <tt class="docutils literal"><span class="pre">Document</span></tt> by calling a method on a &#8220;DOM
+Implementation&#8221; object.  You can get this object either by calling the
+<tt class="docutils literal"><span class="pre">getDOMImplementation()</span></tt> function in the <tt class="docutils literal"><span class="pre">xml.dom</span></tt> package or the
+<tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt> module. Using the implementation from the
+<tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt> module will always return a <tt class="docutils literal"><span class="pre">Document</span></tt> instance
+from the minidom implementation, while the version from <tt class="docutils literal"><span class="pre">xml.dom</span></tt>
+may provide an alternate implementation (this is likely if you have
+the PyXML package installed).  Once you have a <tt class="docutils literal"><span class="pre">Document</span></tt>, you can
+add child nodes to it to populate the DOM:</p>
+<blockquote>
+<p>from xml.dom.minidom import getDOMImplementation</p>
+<p>impl = getDOMImplementation()</p>
+<p>newdoc = impl.createDocument(None, &#8220;some_tag&#8221;, None)
+top_element = newdoc.documentElement
+text = newdoc.createTextNode(&#8216;Some textual content.&#8217;)
+top_element.appendChild(text)</p>
+</blockquote>
+<p>Once you have a DOM document object, you can access the parts of your
+XML document through its properties and methods.  These properties are
+defined in the DOM specification.  The main property of the document
+object is the <tt class="docutils literal"><span class="pre">documentElement</span></tt> property.  It gives you the main
+element in the XML document: the one that holds all others.  Here is
+an example program:</p>
+<blockquote>
+dom3 = parseString(&#8220;&lt;myxml&gt;Some data&lt;/myxml&gt;&#8221;)
+assert dom3.documentElement.tagName == &#8220;myxml&#8221;</blockquote>
+<p>When you are finished with a DOM, you should clean it up.  This is
+necessary because some versions of Python do not support garbage
+collection of objects that refer to each other in a cycle.  Until this
+restriction is removed from all versions of Python, it is safest to
+write your code as if cycles would not be cleaned up.</p>
+<p>The way to clean up a DOM is to call its <tt class="docutils literal"><span class="pre">unlink()</span></tt> method:</p>
+<blockquote>
+dom1.unlink()
+dom2.unlink()
+dom3.unlink()</blockquote>
+<p><tt class="docutils literal"><span class="pre">unlink()</span></tt> is a <tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt>-specific extension to the DOM
+API. After calling <tt class="docutils literal"><span class="pre">unlink()</span></tt> on a node, the node and its
+descendants are essentially useless.</p>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Document Object Model (DOM) Level 1 Specification</dt>
+<dd>The W3C recommendation for the DOM supported by
+<tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt>.</dd>
+</dl>
+</blockquote>
+<div class="section" id="dom-objects">
+<h2>19.7.1. DOM Objects<a class="headerlink" href="#dom-objects" title="Permalink to this headline">¶</a></h2>
+<p>The definition of the DOM API for Python is given as part of the
+<tt class="docutils literal"><span class="pre">xml.dom</span></tt> module documentation.  This section lists the differences
+between the API and <tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt>.</p>
+<p>Node.unlink()</p>
+<blockquote>
+Break internal references within the DOM so that it will be garbage
+collected on versions of Python without cyclic GC.  Even when
+cyclic GC is available, using this can make large amounts of memory
+available sooner, so calling this on DOM objects as soon as they
+are no longer needed is good practice.  This only needs to be
+called on the <tt class="docutils literal"><span class="pre">Document</span></tt> object, but may be called on child nodes
+to discard children of that node.</blockquote>
+<p>Node.writexml(writer[, indent=&#8221;&#8220;[, addindent=&#8221;&#8220;[, newl=&#8221;&#8220;[, encoding=&#8221;&#8220;]]]])</p>
+<blockquote>
+<p>Write XML to the writer object.  The writer should have a
+<tt class="docutils literal"><span class="pre">write()</span></tt> method which matches that of the file object interface.
+The <em>indent</em> parameter is the indentation of the current node.  The
+<em>addindent</em> parameter is the incremental indentation to use for
+subnodes of the current one.  The <em>newl</em> parameter specifies the
+string to use to terminate newlines.</p>
+<p>Changed in version 2.1: The optional keyword parameters <em>indent</em>,
+<em>addindent</em>, and <em>newl</em> were added to support pretty output.</p>
+<p>Changed in version 2.3: For the <tt class="docutils literal"><span class="pre">Document</span></tt> node, an additional
+keyword argument <em>encoding</em> can be used to specify the encoding
+field of the XML header.</p>
+</blockquote>
+<p>Node.toxml([encoding])</p>
+<blockquote>
+<p>Return the XML that the DOM represents as a string.</p>
+<p>With no argument, the XML header does not specify an encoding, and
+the result is Unicode string if the default encoding cannot
+represent all characters in the document. Encoding this string in
+an encoding other than UTF-8 is likely incorrect, since UTF-8 is
+the default encoding of XML.</p>
+<p>With an explicit <em>encoding</em> [1] argument, the result is a byte
+string in the specified encoding. It is recommended that this
+argument is always specified. To avoid <tt class="docutils literal"><span class="pre">UnicodeError</span></tt> exceptions
+in case of unrepresentable text data, the encoding argument should
+be specified as &#8220;utf-8&#8221;.</p>
+<p>Changed in version 2.3: the <em>encoding</em> argument was introduced; see
+<tt class="docutils literal"><span class="pre">writexml()</span></tt>.</p>
+</blockquote>
+<p>Node.toprettyxml([indent=&#8221;&#8220;[, newl=&#8221;&#8220;[, encoding=&#8221;&#8220;]]])</p>
+<blockquote>
+<p>Return a pretty-printed version of the document. <em>indent</em> specifies
+the indentation string and defaults to a tabulator; <em>newl</em>
+specifies the string emitted at the end of each line and defaults
+to <tt class="docutils literal"><span class="pre">\n</span></tt>.</p>
+<p>New in version 2.1.</p>
+<p>Changed in version 2.3: the encoding argument was introduced; see
+<tt class="docutils literal"><span class="pre">writexml()</span></tt>.</p>
+</blockquote>
+<p>The following standard DOM methods have special considerations with
+<tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt>:</p>
+<p>Node.cloneNode(deep)</p>
+<blockquote>
+Although this method was present in the version of
+<tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt> packaged with Python 2.0, it was seriously
+broken.  This has been corrected for subsequent releases.</blockquote>
+</div>
+<div class="section" id="dom-example">
+<h2>19.7.2. DOM Example<a class="headerlink" href="#dom-example" title="Permalink to this headline">¶</a></h2>
+<p>This example program is a fairly realistic example of a simple
+program. In this particular case, we do not take much advantage of the
+flexibility of the DOM.</p>
+<blockquote>
+<p>import xml.dom.minidom</p>
+<p>document = &#8220;&#8221;&#8220;&lt;slideshow&gt;
+&lt;title&gt;Demo slideshow&lt;/title&gt;
+&lt;slide&gt;&lt;title&gt;Slide title&lt;/title&gt;
+&lt;point&gt;This is a demo&lt;/point&gt;
+&lt;point&gt;Of a program for processing slides&lt;/point&gt;
+&lt;/slide&gt;</p>
+<p>&lt;slide&gt;&lt;title&gt;Another demo slide&lt;/title&gt;
+&lt;point&gt;It is important&lt;/point&gt;
+&lt;point&gt;To have more than&lt;/point&gt;
+&lt;point&gt;one slide&lt;/point&gt;
+&lt;/slide&gt;
+&lt;/slideshow&gt;
+&#8220;&#8221;&#8220;</p>
+<p>dom = xml.dom.minidom.parseString(document)</p>
+<dl class="docutils">
+<dt>def getText(nodelist):</dt>
+<dd><p class="first">rc = &#8220;&#8221;
+for node in nodelist:</p>
+<blockquote>
+<dl class="docutils">
+<dt>if node.nodeType == node.TEXT_NODE:</dt>
+<dd>rc = rc + node.data</dd>
+</dl>
+</blockquote>
+<p class="last">return rc</p>
+</dd>
+<dt>def handleSlideshow(slideshow):</dt>
+<dd>print &#8220;&lt;html&gt;&#8221;
+handleSlideshowTitle(slideshow.getElementsByTagName(&#8220;title&#8221;)[0])
+slides = slideshow.getElementsByTagName(&#8220;slide&#8221;)
+handleToc(slides)
+handleSlides(slides)
+print &#8220;&lt;/html&gt;&#8221;</dd>
+<dt>def handleSlides(slides):</dt>
+<dd><dl class="first last docutils">
+<dt>for slide in slides:</dt>
+<dd>handleSlide(slide)</dd>
+</dl>
+</dd>
+<dt>def handleSlide(slide):</dt>
+<dd>handleSlideTitle(slide.getElementsByTagName(&#8220;title&#8221;)[0])
+handlePoints(slide.getElementsByTagName(&#8220;point&#8221;))</dd>
+<dt>def handleSlideshowTitle(title):</dt>
+<dd>print &#8220;&lt;title&gt;%s&lt;/title&gt;&#8221; % getText(title.childNodes)</dd>
+<dt>def handleSlideTitle(title):</dt>
+<dd>print &#8220;&lt;h2&gt;%s&lt;/h2&gt;&#8221; % getText(title.childNodes)</dd>
+<dt>def handlePoints(points):</dt>
+<dd><p class="first">print &#8220;&lt;ul&gt;&#8221;
+for point in points:</p>
+<blockquote>
+handlePoint(point)</blockquote>
+<p class="last">print &#8220;&lt;/ul&gt;&#8221;</p>
+</dd>
+<dt>def handlePoint(point):</dt>
+<dd>print &#8220;&lt;li&gt;%s&lt;/li&gt;&#8221; % getText(point.childNodes)</dd>
+<dt>def handleToc(slides):</dt>
+<dd><dl class="first last docutils">
+<dt>for slide in slides:</dt>
+<dd>title = slide.getElementsByTagName(&#8220;title&#8221;)[0]
+print &#8220;&lt;p&gt;%s&lt;/p&gt;&#8221; % getText(title.childNodes)</dd>
+</dl>
+</dd>
+</dl>
+<p>handleSlideshow(dom)</p>
+</blockquote>
+</div>
+<div class="section" id="minidom-and-the-dom-standard">
+<h2>19.7.3. minidom and the DOM standard<a class="headerlink" href="#minidom-and-the-dom-standard" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt> module is essentially a DOM 1.0-compatible DOM
+with some DOM 2 features (primarily namespace features).</p>
+<p>Usage of the DOM interface in Python is straight-forward.  The
+following mapping rules apply:</p>
+<ul class="simple">
+<li>Interfaces are accessed through instance objects. Applications
+should not instantiate the classes themselves; they should use the
+creator functions available on the <tt class="docutils literal"><span class="pre">Document</span></tt> object. Derived
+interfaces support all operations (and attributes) from the base
+interfaces, plus any new operations.</li>
+<li>Operations are used as methods. Since the DOM uses only <tt class="docutils literal"><span class="pre">in</span></tt>
+parameters, the arguments are passed in normal order (from left to
+right). There are no optional arguments. <tt class="docutils literal"><span class="pre">void</span></tt> operations return
+<tt class="xref docutils literal"><span class="pre">None</span></tt>.</li>
+<li>IDL attributes map to instance attributes. For compatibility with
+the OMG IDL language mapping for Python, an attribute <tt class="docutils literal"><span class="pre">foo</span></tt> can
+also be accessed through accessor methods <tt class="docutils literal"><span class="pre">_get_foo()</span></tt> and
+<tt class="docutils literal"><span class="pre">_set_foo()</span></tt>.  <tt class="docutils literal"><span class="pre">readonly</span></tt> attributes must not be changed; this
+is not enforced at runtime.</li>
+<li>The types <tt class="docutils literal"><span class="pre">short</span> <span class="pre">int</span></tt>, <tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span></tt>, <tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">long</span></tt>,
+and <tt class="docutils literal"><span class="pre">boolean</span></tt> all map to Python integer objects.</li>
+<li>The type <tt class="docutils literal"><span class="pre">DOMString</span></tt> maps to Python strings. <tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt>
+supports either byte or Unicode strings, but will normally produce
+Unicode strings. Values of type <tt class="docutils literal"><span class="pre">DOMString</span></tt> may also be <tt class="xref docutils literal"><span class="pre">None</span></tt>
+where allowed to have the IDL <tt class="docutils literal"><span class="pre">null</span></tt> value by the DOM
+specification from the W3C.</li>
+<li><tt class="docutils literal"><span class="pre">const</span></tt> declarations map to variables in their respective scope
+(e.g. <tt class="docutils literal"><span class="pre">xml.dom.minidom.Node.PROCESSING_INSTRUCTION_NODE</span></tt>); they
+must not be changed.</li>
+<li><tt class="docutils literal"><span class="pre">DOMException</span></tt> is currently not supported in <tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt>.
+Instead, <tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt> uses standard Python exceptions such as
+<tt class="docutils literal"><span class="pre">TypeError</span></tt> and <tt class="docutils literal"><span class="pre">AttributeError</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">NodeList</span></tt> objects are implemented using Python&#8217;s built-in list
+type. Starting with Python 2.2, these objects provide the interface
+defined in the DOM specification, but with earlier versions of
+Python they do not support the official API.  They are, however,
+much more &#8220;Pythonic&#8221; than the interface defined in the W3C
+recommendations.</li>
+</ul>
+<p>The following interfaces have no implementation in
+<tt class="docutils literal"><span class="pre">xml.dom.minidom</span></tt>:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">DOMTimeStamp</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">DocumentType</span></tt> (added in Python 2.1)</li>
+<li><tt class="docutils literal"><span class="pre">DOMImplementation</span></tt> (added in Python 2.1)</li>
+<li><tt class="docutils literal"><span class="pre">CharacterData</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">CDATASection</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">Notation</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">Entity</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">EntityReference</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">DocumentFragment</span></tt></li>
+</ul>
+<p>Most of these reflect information in the XML document that is not of
+general utility to most DOM users.</p>
+<p>-[ Footnotes ]-</p>
+<dl class="docutils">
+<dt>[1] The encoding string included in XML output should conform to the</dt>
+<dd>appropriate standards. For example, &#8220;UTF-8&#8221; is valid, but &#8220;UTF8&#8221;
+is not. See <a class="reference external" href="http://www.w3.org/TR/2006/REC-xml11-20060816/#NT">http://www.w3.org/TR/2006/REC-xml11-20060816/#NT</a>-
+EncodingDecl and <a class="reference external" href="http://www.iana.org/assignments/character-sets">http://www.iana.org/assignments/character-sets</a> .</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xml.dom.pulldom.html" title="19.8. xml.dom.pulldom — Support for building partial DOM trees"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="xml.dom.html" title="19.6. xml.dom — The Document Object Model API"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="markup.html" >19. Structured Markup Processing Tools</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

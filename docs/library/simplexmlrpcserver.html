@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>20.23. SimpleXMLRPCServer — Basic XML-RPC server &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="20. Internet Protocols and Support" href="internet.html" />
+    <link rel="next" title="20.24. DocXMLRPCServer — Self-documenting XML-RPC server" href="docxmlrpcserver.html" />
+    <link rel="prev" title="20.22. xmlrpclib — XML-RPC client access" href="xmlrpclib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="docxmlrpcserver.html" title="20.24. DocXMLRPCServer — Self-documenting XML-RPC server"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="xmlrpclib.html" title="20.22. xmlrpclib — XML-RPC client access"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" accesskey="U">20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">20.23. <tt class="docutils literal"><span class="pre">SimpleXMLRPCServer</span></tt> &#8212; Basic XML-RPC server</a><ul>
+<li><a class="reference external" href="#simplexmlrpcserver-objects">20.23.1. SimpleXMLRPCServer Objects</a><ul>
+<li><a class="reference external" href="#simplexmlrpcserver-example">20.23.1.1. SimpleXMLRPCServer Example</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#cgixmlrpcrequesthandler">20.23.2. CGIXMLRPCRequestHandler</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="xmlrpclib.html"
+                                  title="previous chapter">20.22. <tt class="docutils literal docutils literal"><span class="pre">xmlrpclib</span></tt> &#8212; XML-RPC client access</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="docxmlrpcserver.html"
+                                  title="next chapter">20.24. <tt class="docutils literal docutils literal docutils literal"><span class="pre">DocXMLRPCServer</span></tt> &#8212; Self-documenting XML-RPC server</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/simplexmlrpcserver.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="simplexmlrpcserver-basic-xml-rpc-server">
+<h1>20.23. <tt class="docutils literal"><span class="pre">SimpleXMLRPCServer</span></tt> &#8212; Basic XML-RPC server<a class="headerlink" href="#simplexmlrpcserver-basic-xml-rpc-server" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">SimpleXMLRPCServer</span></tt> module has been merged into</dt>
+<dd><tt class="docutils literal"><span class="pre">xmlrpc.server</span></tt> in Python 3.0.  The <em>2to3</em> tool will automatically
+adapt imports when converting your sources to 3.0.</dd>
+</dl>
+<p>New in version 2.2.</p>
+<p>The <tt class="docutils literal"><span class="pre">SimpleXMLRPCServer</span></tt> module provides a basic server framework
+for XML-RPC servers written in Python.  Servers can either be free
+standing, using <tt class="docutils literal"><span class="pre">SimpleXMLRPCServer</span></tt>, or embedded in a CGI
+environment, using <tt class="docutils literal"><span class="pre">CGIXMLRPCRequestHandler</span></tt>.</p>
+<p>class class SimpleXMLRPCServer.SimpleXMLRPCServer(addr[, requestHandler[, logRequests[, allow_none[, encoding]]]])</p>
+<blockquote>
+<p>Create a new server instance.  This class provides methods for
+registration of functions that can be called by the XML-RPC
+protocol.  The <em>requestHandler</em> parameter should be a factory for
+request handler instances; it defaults to
+<tt class="docutils literal"><span class="pre">SimpleXMLRPCRequestHandler</span></tt>.  The <em>addr</em> and <em>requestHandler</em>
+parameters are passed to the <tt class="docutils literal"><span class="pre">SocketServer.TCPServer</span></tt>
+constructor.  If <em>logRequests</em> is true (the default), requests will
+be logged; setting this parameter to false will turn off logging.
+The <em>allow_none</em> and <em>encoding</em> parameters are passed on to
+<tt class="docutils literal"><span class="pre">xmlrpclib</span></tt> and control the XML-RPC responses that will be
+returned from the server. The <em>bind_and_activate</em> parameter
+controls whether <tt class="docutils literal"><span class="pre">server_bind()</span></tt> and <tt class="docutils literal"><span class="pre">server_activate()</span></tt> are
+called immediately by the constructor; it defaults to true. Setting
+it to false allows code to manipulate the <em>allow_reuse_address</em>
+class variable before the address is bound.</p>
+<p>Changed in version 2.5: The <em>allow_none</em> and <em>encoding</em> parameters
+were added.</p>
+<p>Changed in version 2.6: The <em>bind_and_activate</em> parameter was
+added.</p>
+</blockquote>
+<p>class class SimpleXMLRPCServer.CGIXMLRPCRequestHandler([allow_none[, encoding]])</p>
+<blockquote>
+<p>Create a new instance to handle XML-RPC requests in a CGI
+environment.  The <em>allow_none</em> and <em>encoding</em> parameters are passed
+on to  <tt class="docutils literal"><span class="pre">xmlrpclib</span></tt> and control the XML-RPC responses that will be
+returned  from the server.</p>
+<p>New in version 2.3.</p>
+<p>Changed in version 2.5: The <em>allow_none</em> and <em>encoding</em> parameters
+were added.</p>
+</blockquote>
+<p>class class SimpleXMLRPCServer.SimpleXMLRPCRequestHandler</p>
+<blockquote>
+Create a new request handler instance.  This request handler
+supports <tt class="docutils literal"><span class="pre">POST</span></tt> requests and modifies logging so that the
+<em>logRequests</em> parameter to the <tt class="docutils literal"><span class="pre">SimpleXMLRPCServer</span></tt> constructor
+parameter is honored.</blockquote>
+<div class="section" id="simplexmlrpcserver-objects">
+<h2>20.23.1. SimpleXMLRPCServer Objects<a class="headerlink" href="#simplexmlrpcserver-objects" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">SimpleXMLRPCServer</span></tt> class is based on
+<tt class="docutils literal"><span class="pre">SocketServer.TCPServer</span></tt> and provides a means of creating simple,
+stand alone XML-RPC servers.</p>
+<p>SimpleXMLRPCServer.register_function(function[, name])</p>
+<blockquote>
+Register a function that can respond to XML-RPC requests.  If
+<em>name</em> is given, it will be the method name associated with
+<em>function</em>, otherwise <tt class="docutils literal"><span class="pre">function.__name__</span></tt> will be used.  <em>name</em>
+can be either a normal or Unicode string, and may contain
+characters not legal in Python identifiers, including the period
+character.</blockquote>
+<p>SimpleXMLRPCServer.register_instance(instance[, allow_dotted_names])</p>
+<blockquote>
+<p>Register an object which is used to expose method names which have
+not been registered using <tt class="docutils literal"><span class="pre">register_function()</span></tt>.  If <em>instance</em>
+contains a <tt class="docutils literal"><span class="pre">_dispatch()</span></tt> method, it is called with the requested
+method name and the parameters from the request.  Its API is <tt class="docutils literal"><span class="pre">def</span>
+<span class="pre">_dispatch(self,</span> <span class="pre">method,</span> <span class="pre">params)</span></tt> (note that <em>params</em> does not
+represent a variable argument list).  If it calls an underlying
+function to perform its task, that function is called as
+<tt class="docutils literal"><span class="pre">func(*params)</span></tt>, expanding the parameter list. The return value
+from <tt class="docutils literal"><span class="pre">_dispatch()</span></tt> is returned to the client as the result.  If
+<em>instance</em> does not have a <tt class="docutils literal"><span class="pre">_dispatch()</span></tt> method, it is searched
+for an attribute matching the name of the requested method.</p>
+<p>If the optional <em>allow_dotted_names</em> argument is true and the
+instance does not have a <tt class="docutils literal"><span class="pre">_dispatch()</span></tt> method, then if the
+requested method name contains periods, each component of the
+method name is searched for individually, with the effect that a
+simple hierarchical search is performed.  The value found from this
+search is then called with the parameters from the request, and the
+return value is passed back to the client.</p>
+<dl class="docutils">
+<dt>Warning: Enabling the <em>allow_dotted_names</em> option allows intruders to</dt>
+<dd>access your module&#8217;s global variables and may allow intruders to
+execute arbitrary code on your machine.  Only use this option on
+a secure, closed network.</dd>
+</dl>
+<p>Changed in version 2.3.5,: 2.4.1 <em>allow_dotted_names</em> was added to
+plug a security hole; prior versions are insecure.</p>
+</blockquote>
+<p>SimpleXMLRPCServer.register_introspection_functions()</p>
+<blockquote>
+<p>Registers the XML-RPC introspection functions
+<tt class="docutils literal"><span class="pre">system.listMethods</span></tt>, <tt class="docutils literal"><span class="pre">system.methodHelp</span></tt> and
+<tt class="docutils literal"><span class="pre">system.methodSignature</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>SimpleXMLRPCServer.register_multicall_functions()</p>
+<blockquote>
+Registers the XML-RPC multicall function system.multicall.</blockquote>
+<p>SimpleXMLRPCRequestHandler.rpc_paths</p>
+<blockquote>
+<p>An attribute value that must be a tuple listing valid path portions
+of the URL for receiving XML-RPC requests.  Requests posted to
+other paths will result in a 404 &#8220;no such page&#8221; HTTP error.  If
+this tuple is empty, all paths will be considered valid. The
+default value is <tt class="docutils literal"><span class="pre">('/',</span> <span class="pre">'/RPC2')</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<div class="section" id="simplexmlrpcserver-example">
+<h3>20.23.1.1. SimpleXMLRPCServer Example<a class="headerlink" href="#simplexmlrpcserver-example" title="Permalink to this headline">¶</a></h3>
+<p>Server code:</p>
+<blockquote>
+<p>from SimpleXMLRPCServer import SimpleXMLRPCServer
+from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler</p>
+<p># Restrict to a particular path.
+class RequestHandler(SimpleXMLRPCRequestHandler):</p>
+<blockquote>
+rpc_paths = (&#8216;/RPC2&#8217;,)</blockquote>
+<p># Create server
+server = SimpleXMLRPCServer((&#8220;localhost&#8221;, 8000),</p>
+<blockquote>
+requestHandler=RequestHandler)</blockquote>
+<p>server.register_introspection_functions()</p>
+<p># Register pow() function; this will use the value of
+# pow.__name__ as the name, which is just &#8216;pow&#8217;.
+server.register_function(pow)</p>
+<p># Register a function under a different name
+def adder_function(x,y):</p>
+<blockquote>
+return x + y</blockquote>
+<p>server.register_function(adder_function, &#8216;add&#8217;)</p>
+<p># Register an instance; all the methods of the instance are
+# published as XML-RPC methods (in this case, just &#8216;div&#8217;).
+class MyFuncs:</p>
+<blockquote>
+<dl class="docutils">
+<dt>def div(self, x, y):</dt>
+<dd>return x // y</dd>
+</dl>
+</blockquote>
+<p>server.register_instance(MyFuncs())</p>
+<p># Run the server&#8217;s main loop
+server.serve_forever()</p>
+</blockquote>
+<p>The following client code will call the methods made available by the
+preceding server:</p>
+<blockquote>
+<p>import xmlrpclib</p>
+<p>s = xmlrpclib.ServerProxy(&#8216;<a class="reference external" href="http://localhost:8000">http://localhost:8000</a>&#8216;)
+print s.pow(2,3)  # Returns 2**3 = 8
+print s.add(2,3)  # Returns 5
+print s.div(5,2)  # Returns 5//2 = 2</p>
+<p># Print list of available methods
+print s.system.listMethods()</p>
+</blockquote>
+</div>
+</div>
+<div class="section" id="cgixmlrpcrequesthandler">
+<h2>20.23.2. CGIXMLRPCRequestHandler<a class="headerlink" href="#cgixmlrpcrequesthandler" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">CGIXMLRPCRequestHandler</span></tt> class can be used to  handle XML-RPC
+requests sent to Python CGI scripts.</p>
+<p>CGIXMLRPCRequestHandler.register_function(function[, name])</p>
+<blockquote>
+Register a function that can respond to XML-RPC requests. If
+<em>name</em> is given, it will be the method name associated with
+function, otherwise <em>function.__name__</em> will be used. <em>name</em> can be
+either a normal or Unicode string, and may contain  characters not
+legal in Python identifiers, including the period character.</blockquote>
+<p>CGIXMLRPCRequestHandler.register_instance(instance)</p>
+<blockquote>
+Register an object which is used to expose method names  which have
+not been registered using <tt class="docutils literal"><span class="pre">register_function()</span></tt>. If  instance
+contains a <tt class="docutils literal"><span class="pre">_dispatch()</span></tt> method, it is called with the  requested
+method name and the parameters from the  request; the return value
+is returned to the client as the result. If instance does not have
+a <tt class="docutils literal"><span class="pre">_dispatch()</span></tt> method, it is searched for an attribute matching
+the name of the requested method; if  the requested method name
+contains periods, each  component of the method name is searched
+for individually,  with the effect that a simple hierarchical
+search is performed. The value found from this search is then
+called with the  parameters from the request, and the return value
+is passed  back to the client.</blockquote>
+<p>CGIXMLRPCRequestHandler.register_introspection_functions()</p>
+<blockquote>
+Register the XML-RPC introspection functions
+<tt class="docutils literal"><span class="pre">system.listMethods</span></tt>, <tt class="docutils literal"><span class="pre">system.methodHelp</span></tt> and
+<tt class="docutils literal"><span class="pre">system.methodSignature</span></tt>.</blockquote>
+<p>CGIXMLRPCRequestHandler.register_multicall_functions()</p>
+<blockquote>
+Register the XML-RPC multicall function <tt class="docutils literal"><span class="pre">system.multicall</span></tt>.</blockquote>
+<p>CGIXMLRPCRequestHandler.handle_request([request_text = None])</p>
+<blockquote>
+Handle a XML-RPC request. If <em>request_text</em> is given, it  should be
+the POST data provided by the HTTP server,  otherwise the contents
+of stdin will be used.</blockquote>
+<p>Example:</p>
+<blockquote>
+<dl class="docutils">
+<dt>class MyFuncs:</dt>
+<dd>def div(self, x, y) : return x // y</dd>
+</dl>
+<p>handler = CGIXMLRPCRequestHandler()
+handler.register_function(pow)
+handler.register_function(lambda x,y: x+y, &#8216;add&#8217;)
+handler.register_introspection_functions()
+handler.register_instance(MyFuncs())
+handler.handle_request()</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="docxmlrpcserver.html" title="20.24. DocXMLRPCServer — Self-documenting XML-RPC server"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="xmlrpclib.html" title="20.22. xmlrpclib — XML-RPC client access"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" >20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

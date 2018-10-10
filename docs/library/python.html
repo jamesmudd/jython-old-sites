@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>26. Python Runtime Services &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="The Python Standard Library and What Comes with Jython" href="indexprogress.html" />
+    <link rel="next" title="26.1. sys — System-specific parameters and functions" href="sys.html" />
+    <link rel="prev" title="25.6. trace — Trace or track Python statement execution" href="trace.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="sys.html" title="26.1. sys — System-specific parameters and functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="trace.html" title="25.6. trace — Trace or track Python statement execution"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" accesskey="U">The Python Standard Library and What Comes with Jython</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="trace.html"
+                                  title="previous chapter">25.6. <tt class="docutils literal"><span class="pre">trace</span></tt> &#8212; Trace or track Python statement execution</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="sys.html"
+                                  title="next chapter">26.1. <tt class="docutils literal docutils literal"><span class="pre">sys</span></tt> &#8212; System-specific parameters and functions</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/python.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="python-runtime-services">
+<span id="python"></span><h1>26. Python Runtime Services<a class="headerlink" href="#python-runtime-services" title="Permalink to this headline">¶</a></h1>
+<p>The modules described in this chapter provide a wide range of services related
+to the Python interpreter and its interaction with its environment.  Here&#8217;s an
+overview:</p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="sys.html">26.1. <tt class="docutils literal"><span class="pre">sys</span></tt> &#8212; System-specific parameters and functions</a></li>
+<li class="toctree-l1"><a class="reference external" href="__builtin__.html">26.2. <tt class="docutils literal"><span class="pre">__builtin__</span></tt> &#8212; Built-in objects</a></li>
+<li class="toctree-l1"><a class="reference external" href="__main__.html">26.3. <tt class="docutils literal"><span class="pre">__main__</span></tt> &#8212; Top-level script environment</a></li>
+<li class="toctree-l1"><a class="reference external" href="warnings.html">26.4. <tt class="docutils literal"><span class="pre">warnings</span></tt> &#8212; Warning control</a><ul>
+<li class="toctree-l2"><a class="reference external" href="warnings.html#warning-categories">26.4.1. Warning Categories</a></li>
+<li class="toctree-l2"><a class="reference external" href="warnings.html#the-warnings-filter">26.4.2. The Warnings Filter</a></li>
+<li class="toctree-l2"><a class="reference external" href="warnings.html#temporarily-suppressing-warnings">26.4.3. Temporarily Suppressing Warnings</a></li>
+<li class="toctree-l2"><a class="reference external" href="warnings.html#testing-warnings">26.4.4. Testing Warnings</a></li>
+<li class="toctree-l2"><a class="reference external" href="warnings.html#available-functions">26.4.5. Available Functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="warnings.html#available-context-managers">26.4.6. Available Context Managers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="contextlib.html">26.5. <tt class="docutils literal"><span class="pre">contextlib</span></tt> &#8212; Utilities for <tt class="docutils literal"><span class="pre">with</span></tt>-statement contexts.</a></li>
+<li class="toctree-l1"><a class="reference external" href="atexit.html">26.6. <tt class="docutils literal"><span class="pre">atexit</span></tt> &#8212; Exit handlers</a><ul>
+<li class="toctree-l2"><a class="reference external" href="atexit.html#atexit-example">26.6.1. <tt class="docutils literal"><span class="pre">atexit</span></tt> Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="traceback.html">26.7. <tt class="docutils literal"><span class="pre">traceback</span></tt> &#8212; Print or retrieve a stack traceback</a><ul>
+<li class="toctree-l2"><a class="reference external" href="traceback.html#traceback-examples">26.7.1. Traceback Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="__future__.html">26.8. <tt class="docutils literal"><span class="pre">__future__</span></tt> &#8212; Future statement definitions</a></li>
+<li class="toctree-l1"><a class="reference external" href="gc.html">26.9. <tt class="docutils literal"><span class="pre">gc</span></tt> &#8212; Garbage Collector interface</a></li>
+<li class="toctree-l1"><a class="reference external" href="inspect.html">26.10. <tt class="docutils literal"><span class="pre">inspect</span></tt> &#8212; Inspect live objects</a><ul>
+<li class="toctree-l2"><a class="reference external" href="inspect.html#types-and-members">26.10.1. Types and members</a></li>
+<li class="toctree-l2"><a class="reference external" href="inspect.html#retrieving-source-code">26.10.2. Retrieving source code</a></li>
+<li class="toctree-l2"><a class="reference external" href="inspect.html#classes-and-functions">26.10.3. Classes and functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="inspect.html#the-interpreter-stack">26.10.4. The interpreter stack</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="site.html">26.11. <tt class="docutils literal"><span class="pre">site</span></tt> &#8212; Site-specific configuration hook</a></li>
+<li class="toctree-l1"><a class="reference external" href="user.html">26.12. <tt class="docutils literal"><span class="pre">user</span></tt> &#8212; User-specific configuration hook</a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sys.html" title="26.1. sys — System-specific parameters and functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="trace.html" title="25.6. trace — Trace or track Python statement execution"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

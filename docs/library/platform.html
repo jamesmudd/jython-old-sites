@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.7. platform — Access to underlying platform’s identifying data. &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="15. Generic Operating System Services" href="allos.html" />
+    <link rel="next" title="15.8. errno — Standard errno system symbols" href="errno.html" />
+    <link rel="prev" title="15.6. getpass — Portable password input" href="getpass.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="errno.html" title="15.8. errno — Standard errno system symbols"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="getpass.html" title="15.6. getpass — Portable password input"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="allos.html" accesskey="U">15. Generic Operating System Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">15.7. <tt class="docutils literal"><span class="pre">platform</span></tt> &#8212;  Access to underlying platform&#8217;s identifying data.</a><ul>
+<li><a class="reference external" href="#cross-platform">15.7.1. Cross Platform</a></li>
+<li><a class="reference external" href="#java-platform">15.7.2. Java Platform</a></li>
+<li><a class="reference external" href="#windows-platform">15.7.3. Windows Platform</a><ul>
+<li><a class="reference external" href="#win95-98-specific">15.7.3.1. Win95/98 specific</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#mac-os-platform">15.7.4. Mac OS Platform</a></li>
+<li><a class="reference external" href="#unix-platforms">15.7.5. Unix Platforms</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="getpass.html"
+                                  title="previous chapter">15.6. <tt class="docutils literal docutils literal docutils literal"><span class="pre">getpass</span></tt> &#8212; Portable password input</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="errno.html"
+                                  title="next chapter">15.8. <tt class="docutils literal docutils literal"><span class="pre">errno</span></tt> &#8212; Standard errno system symbols</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/platform.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="platform-access-to-underlying-platform-s-identifying-data">
+<h1>15.7. <tt class="docutils literal"><span class="pre">platform</span></tt> &#8212;  Access to underlying platform&#8217;s identifying data.<a class="headerlink" href="#platform-access-to-underlying-platform-s-identifying-data" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.3.</p>
+<dl class="docutils">
+<dt>Note: Specific platforms listed alphabetically, with Linux included in the</dt>
+<dd>Unix section.</dd>
+</dl>
+<div class="section" id="cross-platform">
+<h2>15.7.1. Cross Platform<a class="headerlink" href="#cross-platform" title="Permalink to this headline">¶</a></h2>
+<p>platform.architecture(executable=sys.executable, bits=&#8217;&#8216;, linkage=&#8217;&#8216;)</p>
+<blockquote>
+<p>Queries the given executable (defaults to the Python interpreter
+binary) for various architecture information.</p>
+<p>Returns a tuple <tt class="docutils literal"><span class="pre">(bits,</span> <span class="pre">linkage)</span></tt> which contain information about
+the bit architecture and the linkage format used for the
+executable. Both values are returned as strings.</p>
+<p>Values that cannot be determined are returned as given by the
+parameter presets. If bits is given as <tt class="docutils literal"><span class="pre">''</span></tt>, the
+<tt class="docutils literal"><span class="pre">sizeof(pointer)()</span></tt> (or <tt class="docutils literal"><span class="pre">sizeof(long)()</span></tt> on Python version &lt;
+1.5.2) is used as indicator for the supported pointer size.</p>
+<p>The function relies on the system&#8217;s <tt class="docutils literal"><span class="pre">file</span></tt> command to do the
+actual work. This is available on most if not all Unix  platforms
+and some non-Unix platforms and then only if the executable points
+to the Python interpreter.  Reasonable defaults are used when the
+above needs are not met.</p>
+</blockquote>
+<p>platform.machine()</p>
+<blockquote>
+Returns the machine type, e.g. <tt class="docutils literal"><span class="pre">'i386'</span></tt>. An empty string is
+returned if the value cannot be determined.</blockquote>
+<p>platform.node()</p>
+<blockquote>
+Returns the computer&#8217;s network name (may not be fully qualified!).
+An empty string is returned if the value cannot be determined.</blockquote>
+<p>platform.platform(aliased=0, terse=0)</p>
+<blockquote>
+<p>Returns a single string identifying the underlying platform with as
+much useful information as possible.</p>
+<p>The output is intended to be <em>human readable</em> rather than machine
+parseable. It may look different on different platforms and this is
+intended.</p>
+<p>If <em>aliased</em> is true, the function will use aliases for various
+platforms that report system names which differ from their common
+names, for example SunOS will be reported as Solaris.  The
+<tt class="docutils literal"><span class="pre">system_alias()</span></tt> function is used to implement this.</p>
+<p>Setting <em>terse</em> to true causes the function to return only the
+absolute minimum information needed to identify the platform.</p>
+</blockquote>
+<p>platform.processor()</p>
+<blockquote>
+<p>Returns the (real) processor name, e.g. <tt class="docutils literal"><span class="pre">'amdk6'</span></tt>.</p>
+<p>An empty string is returned if the value cannot be determined. Note
+that many platforms do not provide this information or simply
+return the same value as for <tt class="docutils literal"><span class="pre">machine()</span></tt>.  NetBSD does this.</p>
+</blockquote>
+<p>platform.python_build()</p>
+<blockquote>
+Returns a tuple <tt class="docutils literal"><span class="pre">(buildno,</span> <span class="pre">builddate)</span></tt> stating the Python build
+number and date as strings.</blockquote>
+<p>platform.python_compiler()</p>
+<blockquote>
+Returns a string identifying the compiler used for compiling
+Python.</blockquote>
+<p>platform.python_branch()</p>
+<blockquote>
+<p>Returns a string identifying the Python implementation SCM branch.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>platform.python_implementation()</p>
+<blockquote>
+<p>Returns a string identifying the Python implementation. Possible
+return values are: &#8216;CPython&#8217;, &#8216;IronPython&#8217;, &#8216;Jython&#8217;</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>platform.python_revision()</p>
+<blockquote>
+<p>Returns a string identifying the Python implementation SCM
+revision.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>platform.python_version()</p>
+<blockquote>
+<p>Returns the Python version as string <tt class="docutils literal"><span class="pre">'major.minor.patchlevel'</span></tt></p>
+<p>Note that unlike the Python <tt class="docutils literal"><span class="pre">sys.version</span></tt>, the returned value
+will always include the patchlevel (it defaults to 0).</p>
+</blockquote>
+<p>platform.python_version_tuple()</p>
+<blockquote>
+<p>Returns the Python version as tuple <tt class="docutils literal"><span class="pre">(major,</span> <span class="pre">minor,</span> <span class="pre">patchlevel)</span></tt>
+of strings.</p>
+<p>Note that unlike the Python <tt class="docutils literal"><span class="pre">sys.version</span></tt>, the returned value
+will always include the patchlevel (it defaults to <tt class="docutils literal"><span class="pre">'0'</span></tt>).</p>
+</blockquote>
+<p>platform.release()</p>
+<blockquote>
+Returns the system&#8217;s release, e.g. <tt class="docutils literal"><span class="pre">'2.2.0'</span></tt> or <tt class="docutils literal"><span class="pre">'NT'</span></tt> An empty
+string is returned if the value cannot be determined.</blockquote>
+<p>platform.system()</p>
+<blockquote>
+Returns the system/OS name, e.g. <tt class="docutils literal"><span class="pre">'Linux'</span></tt>, <tt class="docutils literal"><span class="pre">'Windows'</span></tt>, or
+<tt class="docutils literal"><span class="pre">'Java'</span></tt>. An empty string is returned if the value cannot be
+determined.</blockquote>
+<p>platform.system_alias(system, release, version)</p>
+<blockquote>
+Returns <tt class="docutils literal"><span class="pre">(system,</span> <span class="pre">release,</span> <span class="pre">version)</span></tt> aliased to common marketing
+names used for some systems.  It also does some reordering of the
+information in some cases where it would otherwise cause confusion.</blockquote>
+<p>platform.version()</p>
+<blockquote>
+Returns the system&#8217;s release version, e.g. <tt class="docutils literal"><span class="pre">'#3</span> <span class="pre">on</span> <span class="pre">degas'</span></tt>. An
+empty string is returned if the value cannot be determined.</blockquote>
+<p>platform.uname()</p>
+<blockquote>
+<p>Fairly portable uname interface. Returns a tuple of strings
+<tt class="docutils literal"><span class="pre">(system,</span> <span class="pre">node,</span> <span class="pre">release,</span> <span class="pre">version,</span> <span class="pre">machine,</span> <span class="pre">processor)</span></tt>
+identifying the underlying platform.</p>
+<p>Note that unlike the <tt class="docutils literal"><span class="pre">os.uname()</span></tt> function this also returns
+possible processor information as additional tuple entry.</p>
+<p>Entries which cannot be determined are set to <tt class="docutils literal"><span class="pre">''</span></tt>.</p>
+</blockquote>
+</div>
+<div class="section" id="java-platform">
+<h2>15.7.2. Java Platform<a class="headerlink" href="#java-platform" title="Permalink to this headline">¶</a></h2>
+<p>platform.java_ver(release=&#8217;&#8216;, vendor=&#8217;&#8216;, vminfo=(&#8216;&#8217;, &#8216;&#8217;, &#8216;&#8217;), osinfo=(&#8216;&#8217;, &#8216;&#8217;, &#8216;&#8217;))</p>
+<blockquote>
+<p>Version interface for JPython.</p>
+<p>Returns a tuple <tt class="docutils literal"><span class="pre">(release,</span> <span class="pre">vendor,</span> <span class="pre">vminfo,</span> <span class="pre">osinfo)</span></tt> with <em>vminfo</em>
+being a tuple <tt class="docutils literal"><span class="pre">(vm_name,</span> <span class="pre">vm_release,</span> <span class="pre">vm_vendor)</span></tt> and <em>osinfo</em>
+being a tuple <tt class="docutils literal"><span class="pre">(os_name,</span> <span class="pre">os_version,</span> <span class="pre">os_arch)</span></tt>. Values which
+cannot be determined are set to the defaults given as parameters
+(which all default to <tt class="docutils literal"><span class="pre">''</span></tt>).</p>
+</blockquote>
+</div>
+<div class="section" id="windows-platform">
+<h2>15.7.3. Windows Platform<a class="headerlink" href="#windows-platform" title="Permalink to this headline">¶</a></h2>
+<p>platform.win32_ver(release=&#8217;&#8216;, version=&#8217;&#8216;, csd=&#8217;&#8216;, ptype=&#8217;&#8216;)</p>
+<blockquote>
+<p>Get additional version information from the Windows Registry and
+return a tuple <tt class="docutils literal"><span class="pre">(version,</span> <span class="pre">csd,</span> <span class="pre">ptype)</span></tt> referring to version
+number, CSD level and OS type (multi/single processor).</p>
+<p>As a hint: <em>ptype</em> is <tt class="docutils literal"><span class="pre">'Uniprocessor</span> <span class="pre">Free'</span></tt> on single processor
+NT machines and <tt class="docutils literal"><span class="pre">'Multiprocessor</span> <span class="pre">Free'</span></tt> on multi processor
+machines. The <em>&#8216;Free&#8217;</em> refers to the OS version being free of
+debugging code. It could also state <em>&#8216;Checked&#8217;</em> which means the OS
+version uses debugging code, i.e. code that checks arguments,
+ranges, etc.</p>
+<dl class="docutils">
+<dt>Note: Note: this function works best with Mark Hammond&#8217;s <tt class="docutils literal"><span class="pre">win32all</span></tt></dt>
+<dd>package installed, but also on Python 2.3 and later (support for
+this was added in Python 2.6). It obviously only runs on Win32
+compatible platforms.</dd>
+</dl>
+</blockquote>
+<div class="section" id="win95-98-specific">
+<h3>15.7.3.1. Win95/98 specific<a class="headerlink" href="#win95-98-specific" title="Permalink to this headline">¶</a></h3>
+<p>platform.popen(cmd, mode=&#8217;r&#8217;, bufsize=None)</p>
+<blockquote>
+Portable <tt class="docutils literal"><span class="pre">popen()</span></tt> interface.  Find a working popen
+implementation preferring <tt class="docutils literal"><span class="pre">win32pipe.popen()</span></tt>.  On Windows NT,
+<tt class="docutils literal"><span class="pre">win32pipe.popen()</span></tt> should work; on Windows 9x it hangs due to
+bugs in the MS C library.</blockquote>
+</div>
+</div>
+<div class="section" id="mac-os-platform">
+<h2>15.7.4. Mac OS Platform<a class="headerlink" href="#mac-os-platform" title="Permalink to this headline">¶</a></h2>
+<p>platform.mac_ver(release=&#8217;&#8216;, versioninfo=(&#8216;&#8217;, &#8216;&#8217;, &#8216;&#8217;), machine=&#8217;&#8216;)</p>
+<blockquote>
+<p>Get Mac OS version information and return it as tuple <tt class="docutils literal"><span class="pre">(release,</span>
+<span class="pre">versioninfo,</span> <span class="pre">machine)</span></tt> with <em>versioninfo</em> being a tuple
+<tt class="docutils literal"><span class="pre">(version,</span> <span class="pre">dev_stage,</span> <span class="pre">non_release_version)</span></tt>.</p>
+<p>Entries which cannot be determined are set to <tt class="docutils literal"><span class="pre">''</span></tt>.  All tuple
+entries are strings.</p>
+<p>Documentation for the underlying <tt class="docutils literal"><span class="pre">gestalt()</span></tt> API is available
+online at <a class="reference external" href="http://www.rgaros.nl/gestalt/">http://www.rgaros.nl/gestalt/</a>.</p>
+</blockquote>
+</div>
+<div class="section" id="unix-platforms">
+<h2>15.7.5. Unix Platforms<a class="headerlink" href="#unix-platforms" title="Permalink to this headline">¶</a></h2>
+<p>platform.dist(distname=&#8217;&#8216;, version=&#8217;&#8216;, id=&#8217;&#8216;, supported_dists=(&#8216;SuSE&#8217;, &#8216;debian&#8217;, &#8216;redhat&#8217;, &#8216;mandrake&#8217;, ...))</p>
+<blockquote>
+This is another name for <tt class="docutils literal"><span class="pre">linux_distribution()</span></tt>.</blockquote>
+<p>platform.linux_distribution(distname=&#8217;&#8216;, version=&#8217;&#8216;, id=&#8217;&#8216;, supported_dists=(&#8216;SuSE&#8217;, &#8216;debian&#8217;, &#8216;redhat&#8217;, &#8216;mandrake&#8217;, ...), full_distribution_name=1)</p>
+<blockquote>
+<p>Tries to determine the name of the Linux OS distribution name.</p>
+<p><tt class="docutils literal"><span class="pre">supported_dists</span></tt> may be given to define the set of Linux
+distributions to look for. It defaults to a list of currently
+supported Linux distributions identified by their release file
+name.</p>
+<p>If <tt class="docutils literal"><span class="pre">full_distribution_name</span></tt> is true (default), the full
+distribution read from the OS is returned. Otherwise the short name
+taken from <tt class="docutils literal"><span class="pre">supported_dists</span></tt> is used.</p>
+<p>Returns a tuple <tt class="docutils literal"><span class="pre">(distname,version,id)</span></tt> which defaults to the
+args given as parameters.  <tt class="docutils literal"><span class="pre">id</span></tt> is the item in parentheses after
+the version number.  It is usually the version codename.</p>
+</blockquote>
+<p>platform.libc_ver(executable=sys.executable, lib=&#8217;&#8216;, version=&#8217;&#8216;, chunksize=2048)</p>
+<blockquote>
+<p>Tries to determine the libc version against which the file
+executable (defaults to the Python interpreter) is linked.  Returns
+a tuple of strings <tt class="docutils literal"><span class="pre">(lib,</span> <span class="pre">version)</span></tt> which default to the given
+parameters in case the lookup fails.</p>
+<p>Note that this function has intimate knowledge of how different
+libc versions add symbols to the executable is probably only usable
+for executables compiled using <strong>gcc</strong>.</p>
+<p>The file is read and scanned in chunks of <em>chunksize</em> bytes.</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="errno.html" title="15.8. errno — Standard errno system symbols"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="getpass.html" title="15.6. getpass — Portable password input"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="allos.html" >15. Generic Operating System Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

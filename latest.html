@@ -1,0 +1,911 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<title></title>
+<link rel="stylesheet" href="../cssold/html4css1.css" type="text/css" />
+<link type="text/css" href="css/newstyle.css" rel="stylesheet"> 
+<!--[if lt IE 7]>
+<script defer type="text/javascript" src="css/pngfix.js"></script>
+<![endif]-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="css/ddaccordion.js">
+/***********************************************
+* Accordion Content script- (c) Dynamic Drive DHTML code library (www.dynamicdrive.com)
+* Visit http://www.dynamicDrive.com for hundreds of DHTML scripts
+* This notice must stay intact for legal use
+***********************************************/
+</script>
+<script type="text/javascript">
+        ddaccordion.init({
+	headerclass: "silverheader", //Shared CSS class name of headers group
+	contentclass: "submenu", //Shared CSS class name of contents group
+	revealtype: "mouseover", //Reveal content when user clicks or onmouseover the header? Valid value: "click", "clickgo", or "mouseover"
+	mouseoverdelay: 200, //if revealtype="mouseover", set delay in milliseconds before header expands onMouseover
+	collapseprev: true, //Collapse previous content (so only one open at any time)? true/false
+	defaultexpanded: [0], //index of content(s) open by default [index1, index2, etc] [] denotes no content
+	onemustopen: true, //Specify whether at least one header should be open always (so never all headers closed)
+	animatedefault: false, //Should contents open by default be animated into view?
+	persiststate: true, //persist state of opened contents within browser session?
+	toggleclass: ["", "selected"], //Two CSS classes to be applied to the header when it's collapsed and expanded, respectively ["class1", "class2"]
+	togglehtml: ["", "", ""], //Additional HTML added to the header when it's collapsed and expanded, respectively  ["position", "html1", "html2"] (see docs)
+	animatespeed: "fast", //speed of animation: integer in milliseconds (ie: 200), or keywords "fast", "normal", or "slow"
+	oninit:function(headers, expandedindices){ //custom code to run when headers have initalized
+		//do nothing
+	},
+	onopenclose:function(header, index, state, isuseractivated){ //custom code to run whenever a header is opened or closed
+		//do nothing
+	}
+            }) 
+        </script>
+</head>
+<body>
+<div id="container">
+<div id="top">
+<div id="header">
+<div id="grouplogo">
+<a href="./" ><img class="logoImage" alt="Jython" style="border: 0px; padding-top: 20px; position:absolute; left: 35px" src="css/jython.png" title="Jython"></a>
+</div>
+<div class="latest_release" style="position:absolute; color:#000; width:180px; top: 15px; right: 30px; padding:0px 10px 10px 30px; font-size:11px; background:url('css/latest_release_bg.png') no-repeat">
+<p style="top: 25px; color:#000">Latest release - 2.7.0<br/>
+<a style="color:#000" href="latest.html">View Release Notes</a><br/>
+Download: <a style="color:#000" href="http://search.maven.org/remotecontent?filepath=org/python/jython-installer/2.7.0/jython-installer-2.7.0.jar">.jar</a>
+</div>
+<div class="searchbox">
+<form action="http://www.google.com/search" method="get" class="roundtopsmall">
+<input value="www.jython.org" name="sitesearch" type="hidden"><input size="25" id="searchbox" name="q" id="query" type="text">&nbsp; 
+                    <input name="Search" value="Search" type="submit">
+</form></p>
+</div>
+</div></div>
+<h2 id="topper">Jython: Python for the Java Platform</h2>
+<div id="wrapper">
+<div id="content"><div class="document">
+
+
+<div class="section" id="jython-2-7rc3-release-notes">
+<h1>Jython 2.7rc3 Release Notes</h1>
+<div class="section" id="bugs-fixed">
+<h2>Bugs fixed</h2>
+<blockquote>
+<ul class="simple">
+<li>[ 2311, 2319 ] Many compatibility fixes for launcher (bin/jython, bin/jython.exe)</li>
+<li>[ 2332 ] jython -m test.regrtest -e now finds the tests it should</li>
+<li>[ 1572 ] sys-package-mgr console messages silenced by default. Thanks to Emmanuel Jannetti.</li>
+<li>[ 2327 ] Tests in org/python/tests/imp run only with  proper path</li>
+<li>[ 2105 ] Fix inconsistent conversion of PyObject to String in StdoutWrapper</li>
+<li>[ 1795 ] Support both subclassing from Java in a Python class and a Python implementation of __tojava__</li>
+<li>[ 1861 ] Fix threading.Lock to support non-reentrant semantics</li>
+<li>[ 2323 ] Fixes pickling issues in object.__reduce__ and cPickle.{load, loads}</li>
+<li>[ 1540 ] Fix stack overflow due to how proxies for Java classes resolve super method in Java</li>
+<li>[ 2325 ] Enable piping input into Jython without getting extraneous prompt output</li>
+<li>[ 2324 ] Fix index computation for StringBuilder after seek back in cStringIO</li>
+<li>[ 2171 ] Fixed direct calls to __pow__() on int, long and float with a modulo of None</li>
+<li>[ 2326 ] Java's weakly consistent iteration of ConcurrentMap is compatible with mutation</li>
+<li>[ 2322 ] Refreshed several networking modules from CPython 2.7.9 due to CVE-2013-1752</li>
+<li>[ 1670 ] Added automatic type coercion of decimal.Decimal to java.lang.{Double, Float}</li>
+<li>Pull in hand coded AST work into code gen in asdl_antlr</li>
+<li>[ 2307 ] Fixed normalization of paths on Windows</li>
+<li>Module tempfile now returns temporary directory in proper case (See also CPython issue 14255)</li>
+<li>Faster extended slice deletion in bytearray.</li>
+<li>[ 2304 ] Fixed __module__ missing from functions in the time and operator modules</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="jython-2-7rc2-release-notes">
+<h1>Jython 2.7rc2 Release Notes</h1>
+<div class="section" id="id1">
+<h2>Bugs fixed</h2>
+<blockquote>
+<ul class="simple">
+<li>[ 2301 ] time.strftime now always returns a bytestring (fixes pip on Japanese locales)</li>
+<li>[ 2297 ] Updates Jython installer to use jython.exe</li>
+<li>[ 2298 ] Fix setuptools wheel bundled by ensurepip so it checks for Windows on Jython</li>
+<li>[ 2300 ] Fix bin/jython.py to not consume subcommand args</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="new-features">
+<h2>New features</h2>
+<blockquote>
+<ul class="simple">
+<li>Installer installs pip, setuptools by default, but custom builds can de-select.
+Does not change standalone usage. (Runs jython -m ensurepip as last install step.)</li>
+<li>Makes jython.py be the default launcher (as bin/jython) if CPython 2.7 is available.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="removed-support">
+<h2>Removed support</h2>
+<blockquote>
+<ul class="simple">
+<li>Installer no longer supports using an alternative JRE when generating Jython launchers.
+Instead just use JAVA_HOME environment variable to select the desired JRE.
+(Removed because of the new native launcher, jython.exe, that is now used on Windows.)</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="jython-2-7rc1-release-notes">
+<h1>Jython 2.7rc1 Release Notes</h1>
+<div class="section" id="id2">
+<h2>Bugs fixed</h2>
+<blockquote>
+<ul class="simple">
+<li>[ 1793 ] Fix relative seek in read/write mode via a non-buffered readinto() method</li>
+<li>[ 2282 ] Speed up startup with compiled $py.class files included for standalone, full jars</li>
+<li>[ 1371, 2283, 2296 ] More robustness wrt security managers, python.home, import of non-ascii names</li>
+<li>[ 2068 ] Use position(long) setter to manually update file channel's position post-write.</li>
+<li>[ 2288 ] Posix link and symlink support now uses NIO2</li>
+<li>[ 2120 ] Use Java instead of JNR for os.chmod, os.mkdir when running on Windows</li>
+<li>[ 2226 ] Matches CPython's re support of what counts as a Unicode whitespace codepoint</li>
+<li>[ 1725 ] Speed up re matching by not executing SRE_STATE#TRACE in the sre regex engine</li>
+<li>Exceptions with non-ascii args should not cause an exception when displayed on console</li>
+<li>[ 2274 ] Remove Jython-specific pythonpath, test_pythonpath; update pwd to support unicode</li>
+<li>[ 2289 ] Ensure core types are Serializable, specifically PyUnicode</li>
+<li>[ 2272 ] Generalize adding special slots (__dict__, __weakref__); adds support for Werkzeug</li>
+<li>[ 2280 ] Avoid deadlock at shutdown with synchronization of PySystemStateCloser, FinalizeTrigger</li>
+<li>[ 2275 ] Upgrade JLine to support keyboard layouts using AltGr (such as Finnish) on Windows</li>
+<li>Improve robustness of socket and SSL support, especially error handling</li>
+<li>time.sleep(0) should always attempt to yield CPU</li>
+<li>[ 2271 ] Restore __tojava__ to datetime.{date, datetime, time} classes</li>
+<li>[ 2084, 1729 ] Robust handling of sun.misc.Signal exceptions across various JVM implementations</li>
+<li>[ 2189 ] Add java_user scheme to support user directory installs</li>
+<li>Fix Popen._internal_poll so that it does not race with java.lang.Process finalization</li>
+<li>Fix reflection-based garbage collection traversal for CPython compatible gc semantics</li>
+<li>[ 1491 ] Windows launcher now uses jython.exe (built with PyInstaller) instead of jython.bat
+This means that pip, nosetests, yolk, and other installed tool scripts finally work on Windows</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="id3">
+<h2>New features</h2>
+<blockquote>
+<ul class="simple">
+<li>Can add a __dict__ slot descriptor to a subclass of Java classes, such as java.util.HashMap</li>
+<li>Directly execute zip files or dirs with top level __main__.py to support wrapper scripts
+generated by distlib, part of pip</li>
+<li>Reflection-based traversal is now activated by default as a fallback for ordinary traversal.
+This impacts third-party extenders of PyObject. A warning is emitted that suggests next steps
+on how to avoid this cost.</li>
+<li>Uses classpath wildcard in jython.py/jython.exe to minimize the launcher command line,
+(main benefit is Jython developers on Windows using dev builds)</li>
+<li>Adds new Jython launcher written in Python, bin/jython.py, to be run by CPython 2.7</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="jython-2-7b4-release-notes">
+<h1>Jython 2.7b4 Release Notes</h1>
+<div class="section" id="id4">
+<h2>Bugs Fixed</h2>
+<blockquote>
+<ul>
+<li><p class="first">[ 2032 ] Fixed typo in compiler/pycodegen.py</p>
+</li>
+<li><p class="first">[ 2190 ] Raise ValueError when unichr() is called with isolated surrogate codepoint</p>
+</li>
+<li><p class="first">[ 1057 ] Finalizer support (__del__) for new style classes</p>
+</li>
+<li><p class="first">[ 2192 ] Server requests were hanging using jython, django and django-jython</p>
+</li>
+<li><p class="first">[ 2204 ] Minimum (core) install will now suport Jython console</p>
+</li>
+<li><p class="first">[ 2184 ] inspect.callargs, including anonymous tuples in function params</p>
+</li>
+<li><p class="first">[ 2100 ] Fix deficiencies in PyUnicode beyond the BMP</p>
+</li>
+<li><p class="first">Fix bug in supporting meta path importers for six</p>
+</li>
+<li><p class="first">[ 2183 ] Rework function attributes support</p>
+</li>
+<li><p class="first">[ 2115 ] Allow bound methods as arg for single method interface param</p>
+</li>
+<li><p class="first">[ 2163 ] Refactor Py, PySystemState to init constants early</p>
+</li>
+<li><p class="first">[ 2217 ] Update serial release to 3 for sys.version_info</p>
+</li>
+<li><p class="first">[ 2090, 1494 ] Behaviour of long in the JSR-223 engine</p>
+</li>
+<li><p class="first">[ 2196 ] Do not emit duplicate entries in building standalone jar</p>
+</li>
+<li><p class="first">[ 1708 ] Ensure regrtest runs in a C locale to avoid failures</p>
+</li>
+<li><p class="first">[ 2037 ] Prevent non-byte values appearing in str()</p>
+</li>
+<li><p class="first">[ 2205 ] Guard via module import lock all entry points from Java into import</p>
+</li>
+<li><p class="first">[ 1631 ] Fully proxy java.util.Map objects as Python dicts</p>
+</li>
+<li><p class="first">[ 2215 ] Fully proxy java.util.List objects as Python lists</p>
+</li>
+<li><p class="first">[ 2242 ] select.select and related socket.connect_ex fixes</p>
+</li>
+<li><p class="first">[ 2241 ] Fully proxy java.util.Set objects as Python sets</p>
+</li>
+<li><p class="first">[ 2239, 1825 ] os.getenv, os.listdir may return unicode instead of bytes</p>
+</li>
+<li><p class="first">[ 2110 ] Update Java Native Runtime jars</p>
+</li>
+<li><p class="first">[ 2236 ] Interactive parser does not accept try ... except E as e: syntax</p>
+</li>
+<li><p class="first">[ 2232 ] Visit class decorators when visiting class def in scopes compilation</p>
+</li>
+<li><p class="first">[ 2247 ] dict.pop should not add additional quoting in KeyError</p>
+</li>
+<li><p class="first">[ 2238 ] os.system now uses a simpler wrapping of ProcessBuilder</p>
+</li>
+<li><p class="first">[ 1561 ] Raises NotImplementedError if abstract method from Java is not implemented</p>
+</li>
+<li><p class="first">[ 2221 ] Implement Popen.pid</p>
+</li>
+<li><p class="first">[ 2150 ] Fix regrtest to support -x to exclude tests</p>
+</li>
+<li><p class="first">[ 1152612 ] All dict methods for __dict__ except views</p>
+</li>
+<li><p class="first">[ 1762054 ] Add webbrowser module</p>
+</li>
+<li><p class="first">[ 2252 ] Args in sys.argv are now unicode if characters &gt; 127</p>
+</li>
+<li><p class="first">[ 2092 ] Upgrade to JLine2 and add tab completion support</p>
+</li>
+<li><p class="first">[ 2236 ] Interactive parser does not accept try ... except E as e: syntax</p>
+</li>
+<li><p class="first">[ 2237 ] Fully conformant math and cmath support</p>
+</li>
+<li><p class="first">[ 2244 ] More robust testing of math and cmath modules</p>
+</li>
+<li><dl class="first docutils">
+<dt>[ 2224 ] id(...) now persists object resurrection and a pattern is provided to solve similar issues</dt>
+<dd><p class="first last">(i.e. attributes bound to a PyObject via a WeakHashMap) in an analogue way (See JyAttribute.java).</p>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="id5">
+<h2>New features</h2>
+<blockquote>
+<ul class="simple">
+<li>Full support of Python buffer protocol, along with Java ByteBuffer support</li>
+<li>Add index to PyUnicode facilitating O(1) access to strings beyond the BMP.</li>
+<li>java.util.{Map, List, Set} are now treated as subclasses of the
+corresponding Python abstract base classes</li>
+<li>jythonlib module to simplify usage of Java internals from Python;
+weakref collections now directly use corresponding collections from
+Google Guava and java.util</li>
+<li>CPython's _json.c was ported to Java to speed up JSON encoding/decoding</li>
+<li>Upgraded third party libraries</li>
+<li>Initial support for ensurepip module</li>
+<li>Callbacks can be registered/unregistered to be notified when
+bytecode is loaded, using jythonlib.bytecodetools</li>
+<li>Jython now features an optional, but recommended-to-implement traverseproc-mechanism
+like CPython. This enables some new gc-features to optionally emulate CPython-specific
+gc-behavior. See doc in gc.java and Traverseproc.java.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="potentially-backwards-breaking-changes-removing-silent-errors">
+<h2>Potentially backwards breaking changes, removing silent errors</h2>
+<blockquote>
+<ul class="simple">
+<li>remove method on proxied List objects now follows Python
+sematics: a ValueError is raised if the item is not found in the
+java.util.List. In the past, Java semantics were used, with a
+boolean returned indicating if the item was removed or
+not. Given how this interacted with Jython, such remove
+invocations were in the past silent, and perhaps were actually a
+bug.</li>
+<li>d[key_not_present], if d implement java.util.Map, no longer
+returns None, but raises KeyError, which means this behavior now
+matches standard dict semantics.</li>
+<li>Abstract methods of an inherited class or interface from Java now raise
+NotImplementedError, instead of returning None (in Java, null) or some
+&quot;zero&quot;, if they are not implemented in the extending Python class.</li>
+<li>os.getenv, os.listdir, sys.argv now return unicode instead of
+str values if a given value is not ascii, thus allowing such
+values to be passed through to Java, eg
+java.io.File(sys.argv[1]). Earlier such behavior was potentially
+silently failing in Python functions, but passing through to
+Java because of bug 2037. This behavior conforms with Python
+3.x, which uses Unicode.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="jython-2-7b3-release-notes">
+<h1>Jython 2.7b3 release notes</h1>
+<div class="section" id="id6">
+<h2>Bugs Fixed</h2>
+<blockquote>
+<ul>
+<li><p class="first">[ 2225 ] Jython+django-jython - no module named site</p>
+</li>
+<li><p class="first">[ 1497 ] ast classes do not have appropiate base classes</p>
+</li>
+<li><p class="first">[ 1980 ] ast.Eq, ast.Gt, ast.GtE, ast.In, ast.Is, ast.IsNot, ast.Lt, ast.LtE, ast.NotEq and ast.NotIn should be subclasses of ast.cmpop</p>
+</li>
+<li><p class="first">[ 1981 ] ast.And and ast.Or should be subclasses of ast.boolop</p>
+</li>
+<li><p class="first">[ 2130 ] Fix max such that any raised ValueError uses the correct error message text</p>
+</li>
+<li><p class="first">[ 2180 ] default encoding is not UTF-8</p>
+</li>
+<li><p class="first">[ 2094, 2147, 2174 ] Fix bugs in select.poll, threadpool group closing, and SSL handshaking</p>
+</li>
+<li><p class="first">[ 2178 ] Update Apache Commons Compression to 1.8.1 for jar-complete builds</p>
+</li>
+<li><p class="first">[ 2176 ] Fix bz2.BZ2File.read so it reads the number of requested bytes</p>
+</li>
+<li><p class="first">[ 2028 ] Implement unicode._formatter_parser and unicode._formatter_parser</p>
+</li>
+<li><p class="first">[ 1747 ] Synchonize runClosers upon shutdown</p>
+</li>
+<li><p class="first">[ 1898 ] Support subprocess termination vs terminate/kill methods</p>
+</li>
+<li><p class="first">[ 2096 ] Fix subprocess construction such that handles are inherited if not set</p>
+</li>
+<li><p class="first">[ 2123 ] Preserve original name of console encoding</p>
+</li>
+<li><p class="first">[ 1728 ] Make PyDictionary#equals() more robust, similar to PyTuple and PyList</p>
+</li>
+<li><p class="first">[ 2040 ] Ensure that bz2 decompression has enough data to decode</p>
+</li>
+<li><p class="first">[ 2146 ] Fix xrange compliance</p>
+</li>
+<li><p class="first">[ 1591 ] Interactive interpreter stuck on '...' loop</p>
+</li>
+<li><p class="first">[ 1982 ] Modify enumerate such that it can it work with arbitrarily long integers</p>
+</li>
+<li><p class="first">[ 2155 ] Enable IP address objects to be used as tuples</p>
+</li>
+<li><p class="first">[ 1991 ] Subclassed itertools classes can now chain, and be iterated by Java code</p>
+</li>
+<li><p class="first">[ 2062 ] os.write accepts objects having the buffer API</p>
+</li>
+<li><p class="first">[ 1949 ] Update collections.deque to 2.7 compliance, and is now threadsafe</p>
+</li>
+<li><p class="first">[ 1066 ] Add CJK codecs, as well as other codecs available in Java but not in Jython directly</p>
+</li>
+<li><p class="first">[ 2112 ] time.strptime now uses _strptime.py</p>
+</li>
+<li><p class="first">[ 2123 ] Use Java codec throughout parser (not sometimes a Python one)</p>
+</li>
+<li><p class="first">[ 2078 ] Fix tuple creation for inet6 addresses, and support for bound inet4 socket local address</p>
+</li>
+<li><p class="first">[ 2088 ] Fix defaultdict so that derived classes __missing__ methods are not ignored</p>
+</li>
+<li><p class="first">[ 2108 ] Cannot set attribute to instances of AST/PythonTree (blocks pyflakes)</p>
+</li>
+<li><p class="first">[ 1982 ] builtin function enumerate() should support an optional 'start' argument</p>
+</li>
+<li><p class="first">[ 1896215 ] findResource(s) for SyspathJavaLoader</p>
+</li>
+<li><p class="first">[ 2140 ] Raise ValueError on args of invalid domain for math.sqrt, math.log</p>
+</li>
+<li><p class="first">[ 2119 ] Updated <a href="#id7"><span class="problematic" id="id8">*</span></a>Derived.java classes as generated by src/templates/gderived.py.</p>
+<div class="system-message" id="id7">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/home/alex/checkout/jython-website/dist/latest.txt</tt>, line 226); <em><a href="#id8">backlink</a></em></p>
+<p>Inline emphasis start-string without end-string.</p>
+</div>
+</li>
+<li><p class="first">[ 2087 ] Updated defaultdict to use LoadingCache idiom instead of deprecated ComputingMap</p>
+</li>
+<li><p class="first">[ 2133 ] Fix memory leak by doing computed loads only with __getitem__ in defaultdict</p>
+</li>
+<li><p class="first">Full bz2 support</p>
+</li>
+<li><p class="first">Fix the struct module so that struct.Struct class can be derived from.</p>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="work-on-resource-cleanup">
+<h2>Work on resource cleanup</h2>
+<blockquote>
+<ul class="simple">
+<li>RefReaperThread is now a Runnable to avoid ClassLoader resource leaks</li>
+<li>ShutdownCloser is now a Runnable to avoid subclass audit issues under a SecurityManager</li>
+<li>Remove shadowing of mutable statics in PySystemState, instead make them instance variables</li>
+<li>Fix PySystemState such that it supports AutoCloseable, Closeable</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="potentially-backwards-breaking-changes">
+<h2>Potentially backwards breaking changes</h2>
+<blockquote>
+<ul class="simple">
+<li>Fix ThreadState so that Jython runtime can be unloaded, using Object[1] indirection</li>
+<li>Use weakkey/weakvalue when caching ThreadState for a given thread, instead of using ThreadLocal</li>
+<li>recursion_count is now more approximate, because not all entry/exit pairs are tracked</li>
+<li>By default, site module is imported when using PythonInterpreter
+Use -Dpython.import.site=false (as of RC1) to not import site at all</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="id9">
+<h2>New Features</h2>
+<blockquote>
+<ul class="simple">
+<li>Added socket reboot work, using Netty 4 to fully support socket, select, and ssl API</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="jython-2-7b2-release-notes">
+<h1>Jython 2.7b2 Release Notes</h1>
+<div class="section" id="id10">
+<h2>Bugs Fixed</h2>
+<blockquote>
+<ul class="simple">
+<li>[ 1753 ] zlib doesn't call end() on compress and decompress</li>
+<li>[ 1860 ] test failures in test_array.py</li>
+<li>[ 1862 ] cStringIO does not support arrays as arguments</li>
+<li>[ 1876 ] PYTHONIOENCODING unsupported, used (among others) by PyDev</li>
+<li>[ 1926 ] Adjust MutableSet.pop test so we do not need to skip it</li>
+<li>[ 1964 ] time.strptime() does not support %f in format</li>
+<li>[ 2005 ] threading.Event object's wait([timeout]) function returns null instead of True/False.</li>
+<li>[ 2013 ] %x hex formatting takes O(N^2) time.</li>
+<li>[ 2020 ] str.translate should delete characters in the second arg when table is None</li>
+<li>[ 2027 ] Discrepancy in bin(-num) output</li>
+<li>[ 2033 ] test_strptime fails: test_mar1_comes_after_feb29_even_when_omitting_the_year</li>
+<li>[ 2046 ] sys.stdin.readline() hangs when used interactively (JLine, Windows)</li>
+<li>[ 2060 ] Thread ident missing</li>
+<li>[ 2071 ] datetime strftime %f does not work</li>
+<li>[ 2075 ] Incorrect padding for hex format strings</li>
+<li>[ 2082 ] Unexpected (Pdb) prompt during regression tests</li>
+<li>[ 2083 ] os.unlink() can delete directories</li>
+<li>[ 2089 ] sys.stdout not flushed after sys.exit</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="id11">
+<h2>New Features</h2>
+<blockquote>
+<ul class="simple">
+<li>Command line option -E (ignore environment variables)</li>
+<li>Environment variable PYTHONIOENCODING, and corresponding registry items</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="id12">
+<h2>Removed support</h2>
+<blockquote>
+<ul class="simple">
+<li>No longer supports Java 6; the minimum version is now Java 7</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="jython-2-5-4rc1-release-notes">
+<h1>Jython 2.5.4rc1 Release Notes</h1>
+<div class="section" id="id13">
+<h2>Bugs Fixed</h2>
+<blockquote>
+<ul class="simple">
+<li>[ 1936 ] JBoss 7, vfs protocol in use for jarFileName in PySystemState.</li>
+<li>[ 1972 ] jython 2.5.3 sys.stdin.readline() hangs when jython launched as subprocess on Mac OS X.</li>
+<li>[ 1962 ] Interactive console in Jython 2.5.3 needs CRTL-D to execute command.</li>
+<li>[ 1676 ] NPE in defaultdict</li>
+<li>[ 1481 ] jython throws java.lang.IllegalArgumentException instead of ValueError.</li>
+<li>[ 1716 ] xrange slicing raises NPE.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="jython-2-7b1-release-notes">
+<h1>Jython 2.7b1 Release Notes</h1>
+<div class="section" id="id14">
+<h2>New Features</h2>
+<blockquote>
+<ul class="simple">
+<li>bytearray complete</li>
+<li>a buffer API</li>
+<li>memoryview</li>
+<li>bz2 module</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="id15">
+<h2>Bugs Fixed</h2>
+<blockquote>
+<ul class="simple">
+<li>[ 1716 ] xrange slicing raises NPE.</li>
+<li>[ 1968 ] Fixes for test_csv.py.</li>
+<li>[ 1989 ] condition.notify_all() is missing.</li>
+<li>[ 1994 ] threading.Event doesn't have is_set method fixed.</li>
+<li>[ 1327 ] ThreadState needs API cleanup work</li>
+<li>[ 1309 ] Server sockets do not support client options and propagate them to 'accept'ed client sockets.</li>
+<li>[ 1951 ] Bytecode Interpreter stack optimization for larger arguments</li>
+<li>[ 1894 ] bytearray does not support '+' or .join()</li>
+<li>[ 1921 ] compiler module broken in Jython 2.7</li>
+<li>[ 1920 ] Backport CO_FUTURE_PRINT_FUNCTION to Lib/compiler/pycodegen.py</li>
+<li>[ 1914 ] Float formatting broken in many non-English locales in Jython 2.7</li>
+<li>[ 1909 ] attrgetter does not parse dotted attributes</li>
+<li>[ 1924 ] Implement operator.methodcaller</li>
+<li>[ 1934 ] Break itertools.compress into a separate class</li>
+<li>[ 1933 ] Break itertools.cycle into a separate class</li>
+<li>[ 1932 ] Make check for iterability in chain() arguments lazy</li>
+<li>[ 1931 ] Check that there are exactly 2 filter args</li>
+<li>[ 1913 ] Support short -W options</li>
+<li>[ 1897 ] 2.7.0ax only has partial ssl support</li>
+<li>array_class in jarray module returns the &quot;Array of a type&quot; class</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="jython-2-5-3rc1-release-notes">
+<h1>Jython 2.5.3rc1 Release Notes</h1>
+<div class="section" id="bugs-fixed-summary-of-all-since-2-5-2">
+<h2>Bugs Fixed - (Summary of all since 2.5.2)</h2>
+<blockquote>
+<ul class="simple">
+<li>[ 1952 ] __import__(): Handling of non-dict globals argument incompatible with CPython</li>
+<li>[ 1754 ] modjy does not provide appropriate wsgi.input file-like object</li>
+<li>[ 1908 ] Patch for 'Unmapped exception: java.net.NoRouteToHostException'</li>
+<li>[ 1871 ] Relative import in module gets imported to top level (regression)</li>
+<li>[ 1854 ] set().pop() race condition</li>
+<li>[ 1730 ] functools.partial incorrectly makes __doc__ property readonly</li>
+<li>[ 1537 ] expat: org.python.apache.xerces.parsers.SAXParser</li>
+<li>[ 1268 ] SAX parsers wants to load external DTDs, causing an exception</li>
+<li>[ 1805 ] threading.Thread always gets name &quot;Thread&quot; instead of a discriminating one</li>
+<li>[ 1866 ] Parser does not have mismatch token error messages caught by BaseRecognizer</li>
+<li>[ 1837 ] gderived.py and template Ant target fail on Windows</li>
+<li>[ 1536 ] NPE in org.python.jsr223.PyScriptEngine:187</li>
+<li>[ 1640 ] cStringIO does not complain on getvalue after close</li>
+<li>[ 1721 ] NPE when using JSR 223 (TestCase+Patch)</li>
+<li>[ 1749 ] function descriptor doesn't work in interactive console</li>
+<li>[ 1816 ] Jython Interactive Console makes system beep noise too much</li>
+<li>[ 1829 ] test_socket.py failing on Ubuntu (Oneiric)</li>
+<li>[ 1844 ] bad host returned by getsockname</li>
+<li>[ 1727 ] Error in Jython 2.5.2 with os.stat and varargs</li>
+<li>[ 1735 ] return type of os.read is unicode, not str</li>
+<li>[ 1755 ] os.utime('/tmp/nonexistent-file', None) fails to raise OSError</li>
+<li>[ 1768 ] sax.parse doesn't handle attributes with name 'id' correctly</li>
+<li>[ 1803 ] _tcpsocket doesn't have 'family' attribute</li>
+<li>[ 1804 ] _tcpsocket doesn't have 'type' and 'proto' attributes</li>
+<li>[ 1809 ] socket.getaddrinfo sometimes returns an object that crashes in __str__</li>
+<li>[ 1811 ] Recursive import bug w/ SQLAlchemy 0.7.3</li>
+<li>[ 1819 ] Incorrect handling of Java object toString methods returning null</li>
+<li>[ 1824 ] os.link() can silently fail</li>
+<li>[ 1825 ] EnvironmentError.filename is <cite>str</cite> even if original name is <cite>unicode</cite></li>
+<li>[ 1828 ] Problems inheriting from long</li>
+<li>[ 1833 ] Trouble passing Python objects through a Java class back to Python</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="jython-2-5-2-release-notes">
+<h1>Jython 2.5.2 Release Notes</h1>
+<p>The following features have been added and bugs have been repaired for 2.5.2.  For a look at the complete roadmap for Jython along with links for the PEPs and other information, please look at the <a class="reference external" href="http://wiki.python.org/jython/RoadMap">roadmap</a>:</p>
+<div class="section" id="id16">
+<h2>New Features</h2>
+<blockquote>
+<ul class="simple">
+<li>The socket module now includes ipv6 support</li>
+<li>The socket module now also includes Internationalized Domain Names (RFC 3490) support on Java 6</li>
+<li>Performance improvements around method invocation. 2.5.2 runs the richards benchmark 3x faster and the pystone benchmark 20% faster than 2.5.1</li>
+<li>The posix/nt module was rewritten in Java and the performance of its often performance-critical stat function has significantly improved</li>
+<li>Improved OSError errno messages on Windows</li>
+<li>Slightly improved startup time (ongoing Issue #1380)</li>
+<li>Better readline module emulation (required for IPython support)</li>
+<li>Python functions can be directly passed to Java methods that take a single method interface (such as Callable or Runnable)</li>
+<li>Add google indexer (by Yin Wang and Steve Yegge)</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="id17">
+<h2>Bugs Fixed</h2>
+<div class="section" id="rc4">
+<h3>2.5.2-rc4</h3>
+<blockquote>
+<ul class="simple">
+<li>[ 1667 ] thread.local subclasses with constructor params fail</li>
+<li>[ 1698 ] warnings module fails under JSR-223</li>
+<li>[ 1697 ] Wrong error message when http connection can not be established</li>
+<li>[ 1210 ] Lib/socket.py doesn't allow IPv6 sockets and fails with an AssertionError</li>
+<li>[ 1700 ] &quot;virtualenv is not compatible&quot; to 2.5.2rc3</li>
+<li>[ 1701 ] Files are not flushed properly when opened from the EDT (partial fix)</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="rc3">
+<h3>2.5.2-rc3</h3>
+<blockquote>
+<ul class="simple">
+<li>[ 1674 ] PDB crashes under the JSR-223 scripting engine</li>
+<li>[ 1680 ] jython -c option is not parsed right</li>
+<li>[ 1681 ] JSR-223, Jython 2.5.2 and implementing Java Interfaces from Python</li>
+<li>[ 1675 ] Jython exits prematurely when executing a file, thus killing Swing windows</li>
+<li>[ 1682 ] exit code of 0 on unhandled exception</li>
+<li>[ 1668 ] strptime('','') works on cpython but not on jython</li>
+<li>[ 1693 ] Unicode sys.path elements cause UnicodeErrors on import</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="rc2">
+<h3>2.5.2-rc2</h3>
+<blockquote>
+<ul class="simple">
+<li>[ 1665 ] cPickle calls __import__ with illegal parameters</li>
+<li>[ 1628 ] getpass.getpass echoes input</li>
+<li>Fix logic to detect that a console is interactive (related to #1133)</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="rc1">
+<h3>2.5.2-rc1</h3>
+<blockquote>
+<ul class="simple">
+<li>[  1133 ] Support ipython and other completers with readline emulation</li>
+<li>[  1642 ] JSR223 PyScriptEngine#getInterface returns a NPE when called with zero args</li>
+<li>[  1662 ] time.strptime does not use Java date format strings properly</li>
+<li>[  1543 ] PyArray fails to clean up pre-allocated space</li>
+<li>[  1661 ] Error at on exit in TCC/LE</li>
+<li>[  1639 ] JBoss 5, vfszip protocol in use for jarFileName in PySystemState</li>
+<li>[  1660 ] threading module memory leak</li>
+<li>[  1452 ] pydoc help() function fails because sys.executable is None in stand-alone Jython</li>
+<li>[  1568 ] sys.stdout.encoding returns wrong value in Windows with Jython 2.5.1 (fixed on Java 6 only)</li>
+<li>[  1647 ] zxJDBC does not handle NVARCHAR</li>
+<li>SocketServer module now supports ephemeral server ports (by using port  0); see discussion for #1660</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="b2">
+<h3>2.5.2-b2</h3>
+<blockquote>
+<ul class="simple">
+<li>[ 1327 ] Classloaders cannot GC, which exhausts permgen (partial  bug fix)</li>
+<li>[ 1604 ] PyBuiltinCallable.Info should be serializable</li>
+<li>[ 1397 ] Bugs in PyList and PyJavaType.ListIndexDelegate slice setting</li>
+<li>[ 1503 ] Java constructors should take keyword arguments</li>
+<li>[ 1648,1495,1516 ] Incomplete implementation of pep328 for relative imports</li>
+<li>[ 1611 ] Jython bytecode violated JLS, causing NPE on Sun's JVM when using -Xcomp option</li>
+<li>[ 1643 ] Tools subdirectory still exists in trunk</li>
+<li>[ 1455 ] Classes loaded dynamically from sys.path do not have their package defined</li>
+<li>[ 1555 ] Jython does not publish MIME types via JSR 223 (ScriptEngine.getFactory().getMimeTypes() is empty).</li>
+<li>[ 1632 ] cPickle.Unpickler does not allow assignment of find_global</li>
+<li>[ 1395 ] PyList.indexOf() and PyTuple.indexOf() do not function properly</li>
+<li>[ 1373 ] Jython ClassLoader getResource does not work</li>
+<li>[ 1506 ] Jython applies PEP263 pattern for determining source-code encoding on noncomments</li>
+<li>[ 1630 ] threading.Thread lacks __tojava__ method</li>
+<li>[ 1558 ] PyFunction to single method interface wrapping does not andle java.lang.Object methods</li>
+<li>[ 1622 ] array type prevents __radd__ fallback</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="b1">
+<h3>2.5.2-b1</h3>
+<blockquote>
+<ul class="simple">
+<li>[ 1614 ] minidom chunks the character input on multi-line values</li>
+<li>[ 1615 ] Can't invoke Java method that takes a variable number of arguments with zero arguments</li>
+<li>[ 1605 ] float preference over PyComplex as arg to __call__ breaks logic</li>
+<li>[ 1586 ] weakref reference count leak when kwargs are used</li>
+<li>[ 1601 ] Can't serialize PyCode object</li>
+<li>[ 1551 ] Java objects cannot be copied by the copy module</li>
+<li>[ 1375 ] XML SAX: attrs.get((None, 'attr')) gives NPE</li>
+<li>[ 1488 ] sax JyInputSourceWrapper does not support unicode strings</li>
+<li>[ 1510 ] minidom is not parsing comment information correctly</li>
+<li>[ 1549 ] Wrapping an InputStream with a PyFile wrongly carries out line-ending translation.</li>
+<li>[ 1583 ] xml.dom.Node.data returns bytestrings of decoded unicode</li>
+<li>[ 1515 ] modjy sometimes adds None to the sys.path</li>
+<li>[ 1507 ] modjy crashes if any query string parameters are not set with '='</li>
+<li>[ 1473 ] modjy servlet doesn't import site-packages by default</li>
+<li>[ 1474 ] modjy servlet doesn't call atexit handlers</li>
+<li>[ 1225 ] socket.getservbyname/port() not yet supported</li>
+<li>[ 1532 ] Cannot use docstring when defining class</li>
+<li>[ 1530 ] BoolOp in multiple assign causes VerifyError</li>
+<li>[ 1478 ] defaultdict &amp; weakref.WeakKeyDictionary [TypeError: first argument must be callable]</li>
+<li>[ 1487 ] Import of module with latin-1 chars fails on utf-8 file encoding</li>
+<li>[ 1449 ] Ellipsis comparison different from Python 2.5 to Jython 2.5</li>
+<li>[ 1493 ] tarfile.extractall() throws &quot;AttributeError: 'module' object has no attribute 'chown'&quot; when called by root</li>
+<li>[ 1470 ] os.mkdir Errno difference from cpython</li>
+<li>[ 1496 ] fix os.listdir errno for non-existing dirs</li>
+<li>[ 1499 ] PostgreSQL datahandler should return Decimals instead of floats for NUMERIC/DECIMAL columns</li>
+<li>[ 1477 ] os.setpgrp and posix.setpgrp fail with TypeError</li>
+<li>[ 1396 ] Assigning os module funcs as class attributes incompatible with CPython</li>
+<li>[ 1504 ] Inheriting twice from the same Java interface causes MRO problems</li>
+<li>[ 1511 ] PySet doesn't support Java serialization</li>
+<li>[ 1426 ] JSR 223 Bindings changes not taking effect and leaking between threads; unnecessary synchronization</li>
+<li>[ 1548 ] Parentheses in CLASSPATH cause errors in jython.bat</li>
+<li>[ 1576 ] files opened in 'a+' mode not readable</li>
+<li>[ 1563 ] unicode() for Java objects working differently in 2.2 and 2.5</li>
+<li>[ 1566 ] os.popen(cmd).read() returns <cite>rn</cite> as newline on Windows with Jython 2.5</li>
+<li>[ 1517 ] TypeError: get_referrers</li>
+<li>[ 1502 ] string-escape codec incorrect</li>
+<li>[ 1534 ] new style object __dict__[name] ignored</li>
+<li>[ 1479 ] xml parser file lock</li>
+<li>[ 1582 ] com.ziclix.python.sql.PyConnection leaks memory</li>
+<li>[ 1520 ] os.listdir doesn't return unicode when requested</li>
+<li>[ 1483 ] optparse std module dies on non-ASCII unicode data</li>
+<li>[ 1390 ] ihooks fails due to unimplemented methods in imp module</li>
+<li>[ 1456 ] sys.trace/profile attributes cause: AttributeError: write-only attr: trace in PyAMF</li>
+<li>[ 1385 ] generator.throw uncaught on new generator doesn't stop the generator</li>
+<li>[ 1596 ] SynchronizedCallable does not report that it is callable [suggested fix]</li>
+<li>[ 1557 ] jython.bat doesn't work in 4nt</li>
+<li>[ 1567 ] [Windows] Wildcard Parameter * gets expanded to filename</li>
+<li>[ 1594 ] Glob patterns like .txt processed incorrectly on startup</li>
+<li>[ 1356 ] [Windows] test_subprocess test_communicate_pipe_buf fails</li>
+<li>[ 1595 ] [patch] CachedJarsPackageManager cannot write cache for packages in jar over 64k</li>
+<li>[ 1522 ] repeated execution of external python scripts causing PermGen out of memory exception</li>
+<li>Fix runtime issues during exitfuncs triggered via SystemRestart (such as
+during Django or Pylons development mode reloading)</li>
+<li>Fix pickling of collections.defaultdict objects</li>
+<li>Fix the cmath module to accept objects implementing the __float__ method</li>
+<li>Add google indexer (by Yin Wang and Steve Yegge)</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="jython-2-5-1-release-notes">
+<h1>Jython 2.5.1 Release Notes</h1>
+<p>The following features have been added and bugs have been repaired for 2.5.1.  For a look at the complete roadmap for Jython along with links for the PEPs and other information, please look at the <a class="reference external" href="http://wiki.python.org/jython/RoadMap">roadmap</a>:</p>
+<div class="section" id="id18">
+<h2>New Features</h2>
+<blockquote>
+<ul class="simple">
+<li>zxJDBC supports the with-statement: connections are committed or rollbacked; cursors are closed</li>
+<li>Upgraded to ANTLR 3.1.3</li>
+<li>[ 1859477 ] Dynamically loaded ServletFilters like PyServlet</li>
+<li>Built in JSR 223 scripting engine, with LiveTribe JSR 223 implementation for JDK 5</li>
+<li>Jython &quot;-J-classpath cp_args_here&quot; now works as expected for unix shell.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="id19">
+<h2>Bugs Fixed</h2>
+<blockquote>
+<ul class="simple">
+<li>[ 1466 ] wrong handling of append only files</li>
+<li>[ 1079 ] fixed regression on issue: twisted.python.threadable module: missing attribute '_RLock'</li>
+<li>[ 1461 ] assert statement should lookup AssertionError using getglobal</li>
+<li>[ 1425 ] distutils/util.py assumes too much posix</li>
+<li>[ 1457 ] Cannot write an array in a file opened in r+b mode.</li>
+<li>[ 1382 ] __cmp__ on certain types raises ArrayStoreException</li>
+<li>[ 1443 ] Can't update() hashlib.sha1() with array.array('c')</li>
+<li>[ 1444 ] Can't zlib.compress() with array.array('c')</li>
+<li>[ 1458 ] Builtin codecs aren't available without standard lib</li>
+<li>[ 645615 ] cannot import through symbolic links</li>
+<li>[ 1366 ] parsing of lamda expression fails</li>
+<li>[ 1365 ] continuation lines fail in interactive interpreter</li>
+<li>[ 1377 ] Event names shadowed by a field name on Java types leads to a NPE</li>
+<li>[ 1381 ] Redundant declarations of interface implementation hides overriden methods</li>
+<li>[ 1189 ] MD5 hash is incorrectly calculated when string contains non-latin chars and using python md5 lib</li>
+<li>[ 1802339 ] Problem printing unicode when stdout intercepted</li>
+<li>[ 1145 ] Jython 2.5 compatibility problem with JSR 223</li>
+<li>[ 1400 ] Evaluating expression via JSR 223 ScriptEngine returns null instead of True/False</li>
+<li>[ 1413 ] Array data type (PostgreSQL) is not supported (NPE)</li>
+<li>[ 1434 ] Cannot get return code from a process started with os.popen with Jython 2.5 (worked in 2.2)</li>
+<li>[ 1391 ] socket.getaddrinfo() breaks ftplib FTP client</li>
+<li>[ 1409 ] JSR-233 engine version numbers backwards</li>
+<li>[ 1408 ] JSR-223 engine doesn't implement I/O redirection</li>
+<li>[ 1393 ] TypeError: _new_impl(): expected 1 args; got 0</li>
+<li>[ 1415 ] ast Node creation fails with no arg constructors</li>
+<li>[ 1405 ] Executing __run__.py from .jar throws exception(SystemExit: 0) in main when sys.exit(0) is called</li>
+<li>[ 1439 ] Can't write() array.array</li>
+<li>[ 1139 ] crashes on isinstance</li>
+<li>[ 1430 ] Oracle JDBC Connection close</li>
+<li>[ 1406 ] Parsing a simple PEP 342 coroutine crashes Jython 2.5</li>
+<li>[ 1407 ] ClassCastException in plain Python coroutine</li>
+<li>[ 1424 ] Relative imports do not work in some cases</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="jython-2-5-0-release-notes">
+<h1>Jython 2.5.0 Release Notes</h1>
+<p>The following features have been added for 2.5.0.  For a look at the complete roadmap for 2.5 along with links for the PEPs and other information, please look at the <a class="reference external" href="http://wiki.python.org/jython/RoadMap">roadmap</a>:</p>
+<blockquote>
+<ul class="simple">
+<li>yield is always a keyword</li>
+<li>int() will now return a long instead of raising OverflowError if a number is too large</li>
+<li>list.insert() changed to be consistent with negative slice indexing</li>
+<li>list.index() takes optional start, stop arguments.</li>
+<li>Dictionaries gained a pop() method and .fromkeys() class method.</li>
+<li>dict() constructor takes keyword arguments.</li>
+<li>Many type objects are now callable.</li>
+<li>PEP 279: enumerate() built-in added.</li>
+<li>PEP 218: A Standard Set Datatype</li>
+<li>PEP 273: Importing Modules from Zip Archives</li>
+<li>PEP 278: Universal Newline Support</li>
+<li>PEP 282: logging package</li>
+<li>PEP 285: A Boolean Type</li>
+<li>PEP 293: Codec Error Handling Callbacks</li>
+<li>PEP 302: New Import Hooks</li>
+<li>PEP 307: Pickle Enhancements</li>
+<li>PEP 324: subprocess module</li>
+<li>optparse module</li>
+<li>ExposeAnnotations</li>
+<li>Move antlr parser in /trunk/sandbox/ast to trunk</li>
+<li>Hookup asm compiler to antlr, solidify and add 2.5 features</li>
+<li>PEP 289: Generator expressions</li>
+<li>PEP 263: Defining Python Source Code Encodings</li>
+<li>PEP 318: Function/method decorators</li>
+<li>PEP 308: Conditional expressions</li>
+<li>PEP 343: 'with' statement</li>
+<li>PEP 342: Coroutines via generators</li>
+<li>PEP 341: Unified try/except/finally</li>
+<li>PEP 352: Exceptions as new-style classes</li>
+<li>UpgradeTo25CPythonLib</li>
+<li>PEP 292: Simpler String Substitutions</li>
+<li>PEP 327: decimal type</li>
+<li>UpgradeTo25CPythonLib</li>
+<li>Ongoing parser fixes (universal newlines, line numbering, newline handling, interactive interpreter bugs)</li>
+<li>PEP 237: Unifying int/long</li>
+<li>PEP 357: Allowing Any Object to be Used for Slicing</li>
+<li>PEP 309: Partial Function Application</li>
+<li>PEP 305: csv module</li>
+<li>PEP 338: Executing modules as scripts</li>
+<li>unicodedata module</li>
+<li>PEP 328: Multi-line and absolute/relative imports</li>
+<li>elementtree module -&gt; jython-elementtree</li>
+<li>New Java integration (based on new style classes)</li>
+<li>cjkcodecs</li>
+<li>bz2 module</li>
+<li>ReplaceJythonc</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<a class="reference external" href="latest.txt">View document source</a>.
+
+</div>
+</div>
+</div>
+<div id="navigation"><div class="navcontainer"><ul class="navlist">
+<li class="menutitle">About</li>
+<li class="menupageitem"><a href="index.html">Welcome</a></li> 
+<li class="menupageitem"><a href="downloads.html">Download</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/InstallationInstructions">Installation</a></li> 
+<li class="menupageitem"><a href="http://sourceforge.net/mail/?group_id=12867">Mailing Lists</a></li> 
+<li class="menupageitem"><a href="license.html">License</a></li> 
+<li class="menupageitem"><a href="http://www.python.org/psf/">Foundation</a></li> 
+<li class="menupageitem"><a href="oldsites.html">Archived Sites</a></li> 
+<li class="menupageitem"><a href="acknowledgments.html">Acknowledgments</a></li> 
+<li class="menutitle">Documentation</li>
+<li class="menupageitem"><a href="currentdocs.html">Current Docs</a></li> 
+<li class="menupageitem"><a href="http://www.jython.org/devguide/">Core Development</a></li> 
+<li class="menupageitem"><a href="http://www.jython.org/jythonbook/en/1.0">Jython Book</a></li> 
+<li class="menutitle">Wiki links</li>
+<li class="menupageitem"><a href="http://wiki.python.org/jython/">Front page/News</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/JythonFaq">FAQ</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/WhyJython">Why Jython?</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/UserGuide">User Guide</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/JythonBibliography">Books and Articles</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/JythonMonthly/Newsletters">Jython Monthly</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/ReportingBugs">Reporting Bugs</a></li> 
+</ul>
+</div>
+</div>
+<div id="extra">
+<div class="applemenu">
+<div class="silverheader"><a>Using Jython</a></div>
+<div class="submenu">
+<iframe src="faq.htm" style="border: 0px; width:100%;height:100%"></iframe>
+</div>
+<div class="silverheader"><a>IRC Chat</a></div>
+<div class="submenu">
+<iframe style="border: 0px; width: 100%; height: 100%" src="JythonIrcLogin.html"></iframe>
+</div>
+<div class="silverheader"><a>Developer Information</a></div>
+<div class="submenu">
+<iframe src="developer.htm" style="border: 0px; width:100%; height:100%"></iframe>
+</div>
+</div>
+<br/><br/>
+</div>
+<div id="footer">
+<ul><li><a href="http://wiki.python.org/jython/JythonFaq">About</a></li>
+<li><a href="http://www.jython.org/jythonpodcast/">Jython Podcast</a></li>
+<li><a href="license.html">License</a>
+</ul>
+</div>
+</div></body>

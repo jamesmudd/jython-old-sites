@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.9. mutex — Mutual exclusion support &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="8. Data Types" href="datatypes.html" />
+    <link rel="next" title="8.10. Queue — A synchronized queue class" href="queue.html" />
+    <link rel="prev" title="8.8. sched — Event scheduler" href="sched.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="queue.html" title="8.10. Queue — A synchronized queue class"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="sched.html" title="8.8. sched — Event scheduler"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" accesskey="U">8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">8.9. <tt class="docutils literal"><span class="pre">mutex</span></tt> &#8212; Mutual exclusion support</a><ul>
+<li><a class="reference external" href="#mutex-objects">8.9.1. Mutex Objects</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="sched.html"
+                                  title="previous chapter">8.8. <tt class="docutils literal"><span class="pre">sched</span></tt> &#8212; Event scheduler</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="queue.html"
+                                  title="next chapter">8.10. <tt class="docutils literal"><span class="pre">Queue</span></tt> &#8212; A synchronized queue class</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/mutex.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="mutex-mutual-exclusion-support">
+<h1>8.9. <tt class="docutils literal"><span class="pre">mutex</span></tt> &#8212; Mutual exclusion support<a class="headerlink" href="#mutex-mutual-exclusion-support" title="Permalink to this headline">¶</a></h1>
+<p>Deprecated since version The: <tt class="docutils literal"><span class="pre">mutex</span></tt> module has been removed in
+Python 3.0.</p>
+<p>The <tt class="docutils literal"><span class="pre">mutex</span></tt> module defines a class that allows mutual-exclusion via
+acquiring and releasing locks. It does not require (or imply)
+<tt class="docutils literal"><span class="pre">threading</span></tt> or multi-tasking, though it could be useful for those
+purposes.</p>
+<p>The <tt class="docutils literal"><span class="pre">mutex</span></tt> module defines the following class:</p>
+<p>class class mutex.mutex</p>
+<blockquote>
+<p>Create a new (unlocked) mutex.</p>
+<p>A mutex has two pieces of state &#8212; a &#8220;locked&#8221; bit and a queue.
+When the mutex is not locked, the queue is empty. Otherwise, the
+queue contains zero or more <tt class="docutils literal"><span class="pre">(function,</span> <span class="pre">argument)</span></tt> pairs
+representing functions (or methods) waiting to acquire the lock.
+When the mutex is unlocked while the queue is not empty, the first
+queue entry is removed and its  <tt class="docutils literal"><span class="pre">function(argument)</span></tt> pair called,
+implying it now has the lock.</p>
+<p>Of course, no multi-threading is implied &#8211; hence the funny
+interface for <tt class="docutils literal"><span class="pre">lock()</span></tt>, where a function is called once the lock
+is acquired.</p>
+</blockquote>
+<div class="section" id="mutex-objects">
+<h2>8.9.1. Mutex Objects<a class="headerlink" href="#mutex-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">mutex</span></tt> objects have following methods:</p>
+<p>mutex.test()</p>
+<blockquote>
+Check whether the mutex is locked.</blockquote>
+<p>mutex.testandset()</p>
+<blockquote>
+&#8220;Atomic&#8221; test-and-set, grab the lock if it is not set, and return
+<tt class="xref docutils literal"><span class="pre">True</span></tt>, otherwise, return <tt class="xref docutils literal"><span class="pre">False</span></tt>.</blockquote>
+<p>mutex.lock(function, argument)</p>
+<blockquote>
+Execute <tt class="docutils literal"><span class="pre">function(argument)</span></tt>, unless the mutex is locked. In the
+case it is locked, place the function and argument on the queue.
+See <tt class="docutils literal"><span class="pre">unlock()</span></tt> for explanation of when <tt class="docutils literal"><span class="pre">function(argument)</span></tt> is
+executed in that case.</blockquote>
+<p>mutex.unlock()</p>
+<blockquote>
+Unlock the mutex if queue is empty, otherwise execute the first
+element in the queue.</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="queue.html" title="8.10. Queue — A synchronized queue class"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="sched.html" title="8.8. sched — Event scheduler"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" >8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

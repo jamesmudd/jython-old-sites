@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>29.9. compileall — Byte-compile Python libraries &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="29. Python Language Services" href="language.html" />
+    <link rel="next" title="29.10. dis — Disassembler for Python bytecode" href="dis.html" />
+    <link rel="prev" title="29.8. py_compile — Compile Python source files" href="py_compile.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="dis.html" title="29.10. dis — Disassembler for Python bytecode"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="py_compile.html" title="29.8. py_compile — Compile Python source files"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="language.html" accesskey="U">29. Python Language Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="py_compile.html"
+                                  title="previous chapter">29.8. <tt class="docutils literal"><span class="pre">py_compile</span></tt> &#8212; Compile Python source files</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="dis.html"
+                                  title="next chapter">29.10. <tt class="docutils literal"><span class="pre">dis</span></tt> &#8212; Disassembler for Python bytecode</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/compileall.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="compileall-byte-compile-python-libraries">
+<h1>29.9. <tt class="docutils literal"><span class="pre">compileall</span></tt> &#8212; Byte-compile Python libraries<a class="headerlink" href="#compileall-byte-compile-python-libraries" title="Permalink to this headline">¶</a></h1>
+<p>This module provides some utility functions to support installing
+Python libraries.  These functions compile Python source files in a
+directory tree, allowing users without permission to write to the
+libraries to take advantage of cached byte-code files.</p>
+<p>This module may also be used as a script (using the <em>-m</em> Python flag)
+to compile Python sources.  Directories to recursively traverse
+(passing <em>-l</em> stops the recursive behavior) for sources are listed on
+the command line.  If no arguments are given, the invocation is
+equivalent to <tt class="docutils literal"><span class="pre">-l</span> <span class="pre">sys.path</span></tt>.  Printing lists of the files compiled
+can be disabled with the <em>-q</em> flag.  In addition, the <em>-x</em> option
+takes a regular expression argument.  All files that match the
+expression will be skipped.</p>
+<p>compileall.compile_dir(dir[, maxlevels[, ddir[, force[, rx[, quiet]]]]])</p>
+<blockquote>
+<p>Recursively descend the directory tree named by <em>dir</em>, compiling
+all <tt class="docutils literal"><span class="pre">.py</span></tt> files along the way.  The <em>maxlevels</em> parameter is used
+to limit the depth of the recursion; it defaults to <tt class="docutils literal"><span class="pre">10</span></tt>.  If
+<em>ddir</em> is given, it is used as the base path from  which the
+filenames used in error messages will be generated. If <em>force</em> is
+true, modules are re-compiled even if the timestamps are up to
+date.</p>
+<p>If <em>rx</em> is given, it specifies a regular expression of file names
+to exclude from the search; that expression is searched for in the
+full path.</p>
+<p>If <em>quiet</em> is true, nothing is printed to the standard output in
+normal operation.</p>
+</blockquote>
+<p>compileall.compile_path([skip_curdir[, maxlevels[, force]]])</p>
+<blockquote>
+Byte-compile all the <tt class="docutils literal"><span class="pre">.py</span></tt> files found along <tt class="docutils literal"><span class="pre">sys.path</span></tt>. If
+<em>skip_curdir</em> is true (the default), the current directory is not
+included in the search.  The <em>maxlevels</em> and <em>force</em> parameters
+default to <tt class="docutils literal"><span class="pre">0</span></tt> and are passed to the <tt class="docutils literal"><span class="pre">compile_dir()</span></tt> function.</blockquote>
+<p>To force a recompile of all the <tt class="docutils literal"><span class="pre">.py</span></tt> files in the <tt class="docutils literal"><span class="pre">Lib/</span></tt>
+subdirectory and all its subdirectories:</p>
+<blockquote>
+<p>import compileall</p>
+<p>compileall.compile_dir(&#8216;Lib/&#8217;, force=True)</p>
+<p># Perform same compilation, excluding files in .svn directories.
+import re
+compileall.compile_dir(&#8216;Lib/&#8217;, rx=re.compile(&#8216;/[.]svn&#8217;), force=True)</p>
+</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">py_compile</span></tt></dt>
+<dd>Byte-compile a single source file.</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dis.html" title="29.10. dis — Disassembler for Python bytecode"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="py_compile.html" title="29.8. py_compile — Compile Python source files"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="language.html" >29. Python Language Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

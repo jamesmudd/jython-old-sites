@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9. Numeric and Mathematical Modules &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="The Python Standard Library and What Comes with Jython" href="indexprogress.html" />
+    <link rel="next" title="9.1. math — Mathematical functions" href="math.html" />
+    <link rel="prev" title="8.19. repr — Alternate repr() implementation" href="repr.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="math.html" title="9.1. math — Mathematical functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="repr.html" title="8.19. repr — Alternate repr() implementation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" accesskey="U">The Python Standard Library and What Comes with Jython</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="repr.html"
+                                  title="previous chapter">8.19. <tt class="docutils literal"><span class="pre">repr</span></tt> &#8212; Alternate <tt class="docutils literal"><span class="pre">repr()</span></tt> implementation</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="math.html"
+                                  title="next chapter">9.1. <tt class="docutils literal docutils literal docutils literal"><span class="pre">math</span></tt> &#8212; Mathematical functions</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/numeric.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="numeric-and-mathematical-modules">
+<span id="numeric"></span><h1>9. Numeric and Mathematical Modules<a class="headerlink" href="#numeric-and-mathematical-modules" title="Permalink to this headline">¶</a></h1>
+<p>The modules described in this chapter provide numeric and math-related functions
+and data types. The <tt class="xref docutils literal"><span class="pre">numbers</span></tt> module defines an abstract hierarchy of
+numeric types. The <tt class="xref docutils literal"><span class="pre">math</span></tt> and <tt class="xref docutils literal"><span class="pre">cmath</span></tt> modules contain various
+mathematical functions for floating-point and complex numbers. For users more
+interested in decimal accuracy than in speed, the <tt class="xref docutils literal"><span class="pre">decimal</span></tt> module supports
+exact representations of decimal numbers.</p>
+<p>The following modules are documented in this chapter:</p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="math.html">9.1. <tt class="docutils literal"><span class="pre">math</span></tt> &#8212; Mathematical functions</a><ul>
+<li class="toctree-l2"><a class="reference external" href="math.html#number-theoretic-and-representation-functions">9.1.1. Number-theoretic and representation functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="math.html#power-and-logarithmic-functions">9.1.2. Power and logarithmic functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="math.html#trigonometric-functions">9.1.3. Trigonometric functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="math.html#angular-conversion">9.1.4. Angular conversion</a></li>
+<li class="toctree-l2"><a class="reference external" href="math.html#hyperbolic-functions">9.1.5. Hyperbolic functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="math.html#constants">9.1.6. Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="cmath.html">9.2. <tt class="docutils literal"><span class="pre">cmath</span></tt> &#8212; Mathematical functions for complex numbers</a><ul>
+<li class="toctree-l2"><a class="reference external" href="cmath.html#conversions-to-and-from-polar-coordinates">9.2.1. Conversions to and from polar coordinates</a></li>
+<li class="toctree-l2"><a class="reference external" href="cmath.html#power-and-logarithmic-functions">9.2.2. Power and logarithmic functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="cmath.html#trigonometric-functions">9.2.3. Trigonometric functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="cmath.html#hyperbolic-functions">9.2.4. Hyperbolic functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="cmath.html#classification-functions">9.2.5. Classification functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="cmath.html#constants">9.2.6. Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="decimal.html">9.3. <tt class="docutils literal"><span class="pre">decimal</span></tt> &#8212; Decimal fixed point and floating point arithmetic</a><ul>
+<li class="toctree-l2"><a class="reference external" href="decimal.html#quick-start-tutorial">9.3.1. Quick-start Tutorial</a></li>
+<li class="toctree-l2"><a class="reference external" href="decimal.html#decimal-objects">9.3.2. Decimal objects</a><ul>
+<li class="toctree-l3"><a class="reference external" href="decimal.html#logical-operands">9.3.2.1. Logical operands</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference external" href="decimal.html#context-objects">9.3.3. Context objects</a></li>
+<li class="toctree-l2"><a class="reference external" href="decimal.html#signals">9.3.4. Signals</a></li>
+<li class="toctree-l2"><a class="reference external" href="decimal.html#floating-point-notes">9.3.5. Floating Point Notes</a><ul>
+<li class="toctree-l3"><a class="reference external" href="decimal.html#mitigating-round-off-error-with-increased-precision">9.3.5.1. Mitigating round-off error with increased precision</a></li>
+<li class="toctree-l3"><a class="reference external" href="decimal.html#special-values">9.3.5.2. Special values</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference external" href="decimal.html#working-with-threads">9.3.6. Working with threads</a></li>
+<li class="toctree-l2"><a class="reference external" href="decimal.html#recipes">9.3.7. Recipes</a></li>
+<li class="toctree-l2"><a class="reference external" href="decimal.html#decimal-faq">9.3.8. Decimal FAQ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="random.html">9.4. <tt class="docutils literal"><span class="pre">random</span></tt> &#8212; Generate pseudo-random numbers</a></li>
+<li class="toctree-l1"><a class="reference external" href="itertools.html">9.5. <tt class="docutils literal"><span class="pre">itertools</span></tt> &#8212; Functions creating iterators for efficient looping</a><ul>
+<li class="toctree-l2"><a class="reference external" href="itertools.html#itertool-functions">9.5.1. Itertool functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="itertools.html#examples">9.5.2. Examples</a></li>
+<li class="toctree-l2"><a class="reference external" href="itertools.html#recipes">9.5.3. Recipes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="functools.html">9.6. <tt class="docutils literal"><span class="pre">functools</span></tt> &#8212; Higher order functions and operations on callable objects</a><ul>
+<li class="toctree-l2"><a class="reference external" href="functools.html#partial-objects">9.6.1. <tt class="docutils literal"><span class="pre">partial</span></tt> Objects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="operator.html">9.7. <tt class="docutils literal"><span class="pre">operator</span></tt> &#8212; Standard operators as functions</a><ul>
+<li class="toctree-l2"><a class="reference external" href="operator.html#mapping-operators-to-functions">9.7.1. Mapping Operators to Functions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="math.html" title="9.1. math — Mathematical functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="repr.html" title="8.19. repr — Alternate repr() implementation"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

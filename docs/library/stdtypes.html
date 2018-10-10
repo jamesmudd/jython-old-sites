@@ -1,0 +1,2628 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5. Built-in Types &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="The Python Standard Library and What Comes with Jython" href="indexprogress.html" />
+    <link rel="next" title="6. Built-in Exceptions" href="exceptions.html" />
+    <link rel="prev" title="4. Built-in Objects" href="objects.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="exceptions.html" title="6. Built-in Exceptions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="objects.html" title="4. Built-in Objects"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" accesskey="U">The Python Standard Library and What Comes with Jython</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">5. Built-in Types</a><ul>
+<li><a class="reference external" href="#truth-value-testing">5.1. Truth Value Testing</a></li>
+<li><a class="reference external" href="#boolean-operations-and-or-not">5.2. Boolean Operations &#8212; <tt class="docutils literal"><span class="pre">and</span></tt>, <tt class="docutils literal"><span class="pre">or</span></tt>, <tt class="docutils literal"><span class="pre">not</span></tt></a></li>
+<li><a class="reference external" href="#comparisons">5.3. Comparisons</a></li>
+<li><a class="reference external" href="#numeric-types-int-float-long-complex">5.4. Numeric Types &#8212; <tt class="docutils literal"><span class="pre">int</span></tt>, <tt class="docutils literal"><span class="pre">float</span></tt>, <tt class="docutils literal"><span class="pre">long</span></tt>, <tt class="docutils literal"><span class="pre">complex</span></tt></a><ul>
+<li><a class="reference external" href="#bit-string-operations-on-integer-types">5.4.1. Bit-string Operations on Integer Types</a></li>
+<li><a class="reference external" href="#additional-methods-on-float">5.4.2. Additional Methods on Float</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#iterator-types">5.5. Iterator Types</a></li>
+<li><a class="reference external" href="#sequence-types-str-unicode-list-tuple-buffer-xrange">5.6. Sequence Types &#8212; <tt class="docutils literal"><span class="pre">str</span></tt>, <tt class="docutils literal"><span class="pre">unicode</span></tt>, <tt class="docutils literal"><span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">tuple</span></tt>, <tt class="docutils literal"><span class="pre">buffer</span></tt>, <tt class="docutils literal"><span class="pre">xrange</span></tt></a><ul>
+<li><a class="reference external" href="#string-methods">5.6.1. String Methods</a></li>
+<li><a class="reference external" href="#string-formatting-operations">5.6.2. String Formatting Operations</a></li>
+<li><a class="reference external" href="#xrange-type">5.6.3. XRange Type</a></li>
+<li><a class="reference external" href="#mutable-sequence-types">5.6.4. Mutable Sequence Types</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#set-types-set-frozenset">5.7. Set Types &#8212; <tt class="docutils literal"><span class="pre">set</span></tt>, <tt class="docutils literal"><span class="pre">frozenset</span></tt></a></li>
+<li><a class="reference external" href="#mapping-types-dict">5.8. Mapping Types &#8212; <tt class="docutils literal"><span class="pre">dict</span></tt></a></li>
+<li><a class="reference external" href="#file-objects">5.9. File Objects</a></li>
+<li><a class="reference external" href="#context-manager-types">5.10. Context Manager Types</a></li>
+<li><a class="reference external" href="#other-built-in-types">5.11. Other Built-in Types</a><ul>
+<li><a class="reference external" href="#modules">5.11.1. Modules</a></li>
+<li><a class="reference external" href="#classes-and-class-instances">5.11.2. Classes and Class Instances</a></li>
+<li><a class="reference external" href="#functions">5.11.3. Functions</a></li>
+<li><a class="reference external" href="#methods">5.11.4. Methods</a></li>
+<li><a class="reference external" href="#code-objects">5.11.5. Code Objects</a></li>
+<li><a class="reference external" href="#type-objects">5.11.6. Type Objects</a></li>
+<li><a class="reference external" href="#the-null-object">5.11.7. The Null Object</a></li>
+<li><a class="reference external" href="#the-ellipsis-object">5.11.8. The Ellipsis Object</a></li>
+<li><a class="reference external" href="#boolean-values">5.11.9. Boolean Values</a></li>
+<li><a class="reference external" href="#internal-objects">5.11.10. Internal Objects</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#special-attributes">5.12. Special Attributes</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="objects.html"
+                                  title="previous chapter">4. Built-in Objects</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="exceptions.html"
+                                  title="next chapter">6. Built-in Exceptions</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/stdtypes.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="built-in-types">
+<h1>5. Built-in Types<a class="headerlink" href="#built-in-types" title="Permalink to this headline">¶</a></h1>
+<p>The following sections describe the standard types that are built into
+the interpreter.</p>
+<dl class="docutils">
+<dt>Note: Historically (until release 2.2), Python&#8217;s built-in types have</dt>
+<dd>differed from user-defined types because it was not possible to use
+the built-in types as the basis for object-oriented inheritance.
+This limitation no longer exists.</dd>
+</dl>
+<p>The principal built-in types are numerics, sequences, mappings, files,
+classes, instances and exceptions.</p>
+<p>Some operations are supported by several object types; in particular,
+practically all objects can be compared, tested for truth value, and
+converted to a string (with the <tt class="docutils literal"><span class="pre">repr()</span></tt> function or the slightly
+different <tt class="docutils literal"><span class="pre">str()</span></tt> function).  The latter function is implicitly used
+when an object is written by the <tt class="docutils literal"><span class="pre">print()</span></tt> function.</p>
+<div class="section" id="truth-value-testing">
+<h2>5.1. Truth Value Testing<a class="headerlink" href="#truth-value-testing" title="Permalink to this headline">¶</a></h2>
+<p>Any object can be tested for truth value, for use in an <tt class="docutils literal"><span class="pre">if</span></tt> or
+<tt class="docutils literal"><span class="pre">while</span></tt> condition or as operand of the Boolean operations below. The
+following values are considered false:</p>
+<ul class="simple">
+<li><tt class="xref docutils literal"><span class="pre">None</span></tt></li>
+<li><tt class="xref docutils literal"><span class="pre">False</span></tt></li>
+<li>zero of any numeric type, for example, <tt class="docutils literal"><span class="pre">0</span></tt>, <tt class="docutils literal"><span class="pre">0L</span></tt>, <tt class="docutils literal"><span class="pre">0.0</span></tt>,
+<tt class="docutils literal"><span class="pre">0j</span></tt>.</li>
+<li>any empty sequence, for example, <tt class="docutils literal"><span class="pre">''</span></tt>, <tt class="docutils literal"><span class="pre">()</span></tt>, <tt class="docutils literal"><span class="pre">[]</span></tt>.</li>
+<li>any empty mapping, for example, <tt class="docutils literal"><span class="pre">{}</span></tt>.</li>
+<li>instances of user-defined classes, if the class defines a
+<tt class="docutils literal"><span class="pre">__nonzero__()</span></tt> or <tt class="docutils literal"><span class="pre">__len__()</span></tt> method, when that method returns
+the integer zero or <tt class="docutils literal"><span class="pre">bool</span></tt> value <tt class="xref docutils literal"><span class="pre">False</span></tt>. [1]</li>
+</ul>
+<p>All other values are considered true &#8212; so objects of many types are
+always true.</p>
+<p>Operations and built-in functions that have a Boolean result always
+return <tt class="docutils literal"><span class="pre">0</span></tt> or <tt class="xref docutils literal"><span class="pre">False</span></tt> for false and <tt class="docutils literal"><span class="pre">1</span></tt> or <tt class="xref docutils literal"><span class="pre">True</span></tt> for true,
+unless otherwise stated. (Important exception: the Boolean operations
+<tt class="docutils literal"><span class="pre">or</span></tt> and <tt class="docutils literal"><span class="pre">and</span></tt> always return one of their operands.)</p>
+</div>
+<div class="section" id="boolean-operations-and-or-not">
+<h2>5.2. Boolean Operations &#8212; <tt class="docutils literal"><span class="pre">and</span></tt>, <tt class="docutils literal"><span class="pre">or</span></tt>, <tt class="docutils literal"><span class="pre">not</span></tt><a class="headerlink" href="#boolean-operations-and-or-not" title="Permalink to this headline">¶</a></h2>
+<p>These are the Boolean operations, ordered by ascending priority:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="59%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Operation</th>
+<th class="head">Result</th>
+<th class="head">Notes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">or</span> <span class="pre">y</span></tt></td>
+<td>if <em>x</em> is false, then <em>y</em>, else
+<em>x</em></td>
+<td><ol class="first last arabic simple">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">and</span> <span class="pre">y</span></tt></td>
+<td>if <em>x</em> is false, then <em>x</em>, else
+<em>y</em></td>
+<td><ol class="first last arabic simple" start="2">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">not</span> <span class="pre">x</span></tt></td>
+<td>if <em>x</em> is false, then <tt class="xref docutils literal"><span class="pre">True</span></tt>,
+else <tt class="xref docutils literal"><span class="pre">False</span></tt></td>
+<td><ol class="first last arabic simple" start="3">
+<li></li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<ol class="arabic simple">
+<li>This is a short-circuit operator, so it only evaluates the second
+argument if the first one is <tt class="xref docutils literal"><span class="pre">False</span></tt>.</li>
+<li>This is a short-circuit operator, so it only evaluates the second
+argument if the first one is <tt class="xref docutils literal"><span class="pre">True</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">not</span></tt> has a lower priority than non-Boolean operators, so <tt class="docutils literal"><span class="pre">not</span> <span class="pre">a</span>
+<span class="pre">==</span> <span class="pre">b</span></tt> is interpreted as <tt class="docutils literal"><span class="pre">not</span> <span class="pre">(a</span> <span class="pre">==</span> <span class="pre">b)</span></tt>, and <tt class="docutils literal"><span class="pre">a</span> <span class="pre">==</span> <span class="pre">not</span> <span class="pre">b</span></tt> is a
+syntax error.</li>
+</ol>
+</div>
+<div class="section" id="comparisons">
+<h2>5.3. Comparisons<a class="headerlink" href="#comparisons" title="Permalink to this headline">¶</a></h2>
+<p>Comparison operations are supported by all objects.  They all have the
+same priority (which is higher than that of the Boolean operations).
+Comparisons can be chained arbitrarily; for example, <tt class="docutils literal"><span class="pre">x</span> <span class="pre">&lt;</span> <span class="pre">y</span> <span class="pre">&lt;=</span> <span class="pre">z</span></tt> is
+equivalent to <tt class="docutils literal"><span class="pre">x</span> <span class="pre">&lt;</span> <span class="pre">y</span> <span class="pre">and</span> <span class="pre">y</span> <span class="pre">&lt;=</span> <span class="pre">z</span></tt>, except that <em>y</em> is evaluated only
+once (but in both cases <em>z</em> is not evaluated at all when <tt class="docutils literal"><span class="pre">x</span> <span class="pre">&lt;</span> <span class="pre">y</span></tt> is
+found to be false).</p>
+<p>This table summarizes the comparison operations:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="54%" />
+<col width="18%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Operation</th>
+<th class="head">Meaning</th>
+<th class="head">Notes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">&lt;</span></tt></td>
+<td>strictly less than</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">&lt;=</span></tt></td>
+<td>less than or equal</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">&gt;</span></tt></td>
+<td>strictly greater than</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">&gt;=</span></tt></td>
+<td>greater than or equal</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">==</span></tt></td>
+<td>equal</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">!=</span></tt></td>
+<td>not equal</td>
+<td><ol class="first last arabic simple">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">is</span></tt></td>
+<td>object identity</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">is</span> <span class="pre">not</span></tt></td>
+<td>negated object identity</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">!=</span></tt> can also be written <tt class="docutils literal"><span class="pre">&lt;&gt;</span></tt>, but this is an obsolete usage
+kept for backwards compatibility only. New code should always use
+<tt class="docutils literal"><span class="pre">!=</span></tt>.</li>
+</ol>
+<p>Objects of different types, except different numeric types and
+different string types, never compare equal; such objects are ordered
+consistently but arbitrarily (so that sorting a heterogeneous array
+yields a consistent result). Furthermore, some types (for example,
+file objects) support only a degenerate notion of comparison where any
+two objects of that type are unequal.  Again, such objects are ordered
+arbitrarily but consistently. The <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt> and <tt class="docutils literal"><span class="pre">&gt;=</span></tt>
+operators will raise a <tt class="docutils literal"><span class="pre">TypeError</span></tt> exception when any operand is a
+complex number.</p>
+<p>Instances of a class normally compare as non-equal unless the class
+defines the <tt class="docutils literal"><span class="pre">__cmp__()</span></tt> method.  Refer to <em>Basic customization</em>) for
+information on the use of this method to effect object comparisons.</p>
+<p><strong>Implementation note:</strong> Objects of different types except numbers are
+ordered by their type names; objects of the same types that don&#8217;t
+support proper comparison are ordered by their address.</p>
+<p>Two more operations with the same syntactic priority, <tt class="docutils literal"><span class="pre">in</span></tt> and <tt class="docutils literal"><span class="pre">not</span>
+<span class="pre">in</span></tt>, are supported only by sequence types (below).</p>
+</div>
+<div class="section" id="numeric-types-int-float-long-complex">
+<h2>5.4. Numeric Types &#8212; <tt class="docutils literal"><span class="pre">int</span></tt>, <tt class="docutils literal"><span class="pre">float</span></tt>, <tt class="docutils literal"><span class="pre">long</span></tt>, <tt class="docutils literal"><span class="pre">complex</span></tt><a class="headerlink" href="#numeric-types-int-float-long-complex" title="Permalink to this headline">¶</a></h2>
+<p>There are four distinct numeric types: <em>plain integers</em>, <em>long
+integers</em>,  <em>floating point numbers</em>, and <em>complex numbers</em>. In
+addition, Booleans are a subtype of plain integers. Plain integers
+(also just called <em>integers</em>) are implemented using <tt class="docutils literal"><span class="pre">long</span></tt> in C,
+which gives them at least 32 bits of precision (<tt class="docutils literal"><span class="pre">sys.maxint</span></tt> is
+always set to the maximum plain integer value for the current
+platform, the minimum value is <tt class="docutils literal"><span class="pre">-sys.maxint</span> <span class="pre">-</span> <span class="pre">1</span></tt>).  Long integers
+have unlimited precision. Floating point numbers are implemented using
+<tt class="docutils literal"><span class="pre">double</span></tt> in C. All bets on their precision are off unless you happen
+to know the machine you are working with.</p>
+<p>Complex numbers have a real and imaginary part, which are each
+implemented using <tt class="docutils literal"><span class="pre">double</span></tt> in C.  To extract these parts from a
+complex number <em>z</em>, use <tt class="docutils literal"><span class="pre">z.real</span></tt> and <tt class="docutils literal"><span class="pre">z.imag</span></tt>.</p>
+<p>Numbers are created by numeric literals or as the result of built-in
+functions and operators.  Unadorned integer literals (including
+binary, hex, and octal numbers) yield plain integers unless the value
+they denote is too large to be represented as a plain integer, in
+which case they yield a long integer. Integer literals with an <tt class="docutils literal"><span class="pre">'L'</span></tt>
+or <tt class="docutils literal"><span class="pre">'l'</span></tt> suffix yield long integers (<tt class="docutils literal"><span class="pre">'L'</span></tt> is preferred because
+<tt class="docutils literal"><span class="pre">1l</span></tt> looks too much like eleven!).  Numeric literals containing a
+decimal point or an exponent sign yield floating point numbers.
+Appending <tt class="docutils literal"><span class="pre">'j'</span></tt> or <tt class="docutils literal"><span class="pre">'J'</span></tt> to a numeric literal yields a complex
+number with a zero real part. A complex numeric literal is the sum of
+a real and an imaginary part.</p>
+<p>Python fully supports mixed arithmetic: when a binary arithmetic
+operator has operands of different numeric types, the operand with the
+&#8220;narrower&#8221; type is widened to that of the other, where plain integer
+is narrower than long integer is narrower than floating point is
+narrower than complex. Comparisons between numbers of mixed type use
+the same rule. [2] The constructors <tt class="docutils literal"><span class="pre">int()</span></tt>, <tt class="docutils literal"><span class="pre">long()</span></tt>,
+<tt class="docutils literal"><span class="pre">float()</span></tt>, and <tt class="docutils literal"><span class="pre">complex()</span></tt> can be used to produce numbers of a
+specific type.</p>
+<p>All builtin numeric types support the following operations. See <em>The
+power operator</em> and later sections for the operators&#8217; priorities.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="52%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Operation</th>
+<th class="head">Result</th>
+<th class="head">Notes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></tt></td>
+<td>sum of <em>x</em> and <em>y</em></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">-</span> <span class="pre">y</span></tt></td>
+<td>difference of <em>x</em> and <em>y</em></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">*</span> <span class="pre">y</span></tt></td>
+<td>product of <em>x</em> and <em>y</em></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">/</span> <span class="pre">y</span></tt></td>
+<td>quotient of <em>x</em> and <em>y</em></td>
+<td><ol class="first last arabic simple">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">//</span> <span class="pre">y</span></tt></td>
+<td>(floored) quotient of <em>x</em> and <em>y</em></td>
+<td>(4)(5)</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">%</span> <span class="pre">y</span></tt></td>
+<td>remainder of <tt class="docutils literal"><span class="pre">x</span> <span class="pre">/</span> <span class="pre">y</span></tt></td>
+<td><ol class="first last arabic simple" start="4">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">-x</span></tt></td>
+<td><em>x</em> negated</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">+x</span></tt></td>
+<td><em>x</em> unchanged</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">abs(x)</span></tt></td>
+<td>absolute value or magnitude of
+<em>x</em></td>
+<td><ol class="first last arabic simple" start="3">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">int(x)</span></tt></td>
+<td><em>x</em> converted to integer</td>
+<td><ol class="first last arabic simple" start="2">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">long(x)</span></tt></td>
+<td><em>x</em> converted to long integer</td>
+<td><ol class="first last arabic simple" start="2">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">float(x)</span></tt></td>
+<td><em>x</em> converted to floating point</td>
+<td><ol class="first last arabic simple" start="6">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">complex(re,im)</span></tt></td>
+<td>a complex number with real part
+<em>re</em>, imaginary part <em>im</em>. <em>im</em>
+defaults to zero.</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">c.conjugate()</span></tt></td>
+<td>conjugate of the complex number
+<em>c</em>. (Identity on real numbers)</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">divmod(x,</span> <span class="pre">y)</span></tt></td>
+<td>the pair <tt class="docutils literal"><span class="pre">(x</span> <span class="pre">//</span> <span class="pre">y,</span> <span class="pre">x</span> <span class="pre">%</span> <span class="pre">y)</span></tt></td>
+<td>(3)(4)</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">pow(x,</span> <span class="pre">y)</span></tt></td>
+<td><em>x</em> to the power <em>y</em></td>
+<td>(3)(7)</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">**</span> <span class="pre">y</span></tt></td>
+<td><em>x</em> to the power <em>y</em></td>
+<td><ol class="first last arabic simple" start="7">
+<li></li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<ol class="arabic">
+<li><p class="first">For (plain or long) integer division, the result is an integer. The
+result is always rounded towards minus infinity: 1/2 is 0, (-1)/2
+is -1, 1/(-2) is -1, and (-1)/(-2) is 0.  Note that the result is a
+long integer if either operand is a long integer, regardless of the
+numeric value.</p>
+</li>
+<li><p class="first">Conversion from floats using <tt class="docutils literal"><span class="pre">int()</span></tt> or <tt class="docutils literal"><span class="pre">long()</span></tt> truncates
+toward zero like the related function, <tt class="docutils literal"><span class="pre">math.trunc()</span></tt>.  Use the
+function <tt class="docutils literal"><span class="pre">math.floor()</span></tt> to round downward and <tt class="docutils literal"><span class="pre">math.ceil()</span></tt> to
+round upward.</p>
+</li>
+<li><p class="first">See <em>Built-in Functions</em> for a full description.</p>
+</li>
+<li><p class="first">Complex floor division operator, modulo operator, and <tt class="docutils literal"><span class="pre">divmod()</span></tt>.</p>
+<p>Deprecated since version 2.3: Instead convert to float using
+<tt class="docutils literal"><span class="pre">abs()</span></tt> if appropriate.</p>
+</li>
+<li><p class="first">Also referred to as integer division.  The resultant value is a
+whole integer, though the result&#8217;s type is not necessarily int.</p>
+</li>
+<li><p class="first">float also accepts the strings &#8220;nan&#8221; and &#8220;inf&#8221; with an optional
+prefix &#8220;+&#8221; or &#8220;-&#8221; for Not a Number (NaN) and positive or negative
+infinity.</p>
+<p>New in version 2.6.</p>
+</li>
+<li><p class="first">Python defines <tt class="docutils literal"><span class="pre">pow(0,</span> <span class="pre">0)</span></tt> and <tt class="docutils literal"><span class="pre">0</span> <span class="pre">**</span> <span class="pre">0</span></tt> to be <tt class="docutils literal"><span class="pre">1</span></tt>, as is
+common for programming languages.</p>
+</li>
+</ol>
+<p>All <tt class="docutils literal"><span class="pre">numbers.Real</span></tt> types (<tt class="docutils literal"><span class="pre">int</span></tt>, <tt class="docutils literal"><span class="pre">long</span></tt>, and <tt class="docutils literal"><span class="pre">float</span></tt>) also
+include the following operations:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="54%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Operation</th>
+<th class="head">Result</th>
+<th class="head">Notes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">math.trunc(x)</span></tt></td>
+<td><em>x</em> truncated to Integral</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">round(x[,</span> <span class="pre">n])</span></tt></td>
+<td><em>x</em> rounded to n digits, rounding
+half to even. If n is omitted, it
+defaults to 0.</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">math.floor(x)</span></tt></td>
+<td>the greatest integral float &lt;= <em>x</em></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">math.ceil(x)</span></tt></td>
+<td>the least integral float &gt;= <em>x</em></td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="bit-string-operations-on-integer-types">
+<h3>5.4.1. Bit-string Operations on Integer Types<a class="headerlink" href="#bit-string-operations-on-integer-types" title="Permalink to this headline">¶</a></h3>
+<p>Plain and long integer types support additional operations that make
+sense only for bit-strings.  Negative numbers are treated as their 2&#8217;s
+complement value (for long integers, this assumes a sufficiently large
+number of bits that no overflow occurs during the operation).</p>
+<p>The priorities of the binary bitwise operations are all lower than the
+numeric operations and higher than the comparisons; the unary
+operation <tt class="docutils literal"><span class="pre">~</span></tt> has the same priority as the other unary numeric
+operations (<tt class="docutils literal"><span class="pre">+</span></tt> and <tt class="docutils literal"><span class="pre">-</span></tt>).</p>
+<p>This table lists the bit-string operations sorted in ascending
+priority:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="57%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Operation</th>
+<th class="head">Result</th>
+<th class="head">Notes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">|</span> <span class="pre">y</span></tt></td>
+<td>bitwise <em>or</em> of <em>x</em> and <em>y</em></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">^</span> <span class="pre">y</span></tt></td>
+<td>bitwise <em>exclusive or</em> of <em>x</em>
+and <em>y</em></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">&amp;</span> <span class="pre">y</span></tt></td>
+<td>bitwise <em>and</em> of <em>x</em> and <em>y</em></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">&lt;&lt;</span> <span class="pre">n</span></tt></td>
+<td><em>x</em> shifted left by <em>n</em> bits</td>
+<td>(1)(2)</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">&gt;&gt;</span> <span class="pre">n</span></tt></td>
+<td><em>x</em> shifted right by <em>n</em> bits</td>
+<td>(1)(3)</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">~x</span></tt></td>
+<td>the bits of <em>x</em> inverted</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<ol class="arabic simple">
+<li>Negative shift counts are illegal and cause a <tt class="docutils literal"><span class="pre">ValueError</span></tt> to be
+raised.</li>
+<li>A left shift by <em>n</em> bits is equivalent to multiplication by
+<tt class="docutils literal"><span class="pre">pow(2,</span> <span class="pre">n)</span></tt>.  A long integer is returned if the result exceeds
+the range of plain integers.</li>
+<li>A right shift by <em>n</em> bits is equivalent to division by <tt class="docutils literal"><span class="pre">pow(2,</span>
+<span class="pre">n)</span></tt>.</li>
+</ol>
+</div>
+<div class="section" id="additional-methods-on-float">
+<h3>5.4.2. Additional Methods on Float<a class="headerlink" href="#additional-methods-on-float" title="Permalink to this headline">¶</a></h3>
+<p>The float type has some additional methods.</p>
+<p>float.as_integer_ratio()</p>
+<blockquote>
+<p>Return a pair of integers whose ratio is exactly equal to the
+original float and with a positive denominator.  Raises
+<tt class="docutils literal"><span class="pre">OverflowError</span></tt> on infinities and a <tt class="docutils literal"><span class="pre">ValueError</span></tt> on NaNs.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>Two methods support conversion to and from hexadecimal strings.  Since
+Python&#8217;s floats are stored internally as binary numbers, converting a
+float to or from a <em>decimal</em> string usually involves a small rounding
+error.  In contrast, hexadecimal strings allow exact representation
+and specification of floating-point numbers.  This can be useful when
+debugging, and in numerical work.</p>
+<p>float.hex()</p>
+<blockquote>
+<p>Return a representation of a floating-point number as a hexadecimal
+string.  For finite floating-point numbers, this representation
+will always include a leading <tt class="docutils literal"><span class="pre">0x</span></tt> and a trailing <tt class="docutils literal"><span class="pre">p</span></tt> and
+exponent.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>float.fromhex(s)</p>
+<blockquote>
+<p>Class method to return the float represented by a hexadecimal
+string <em>s</em>.  The string <em>s</em> may have leading and trailing
+whitespace.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>Note that <tt class="docutils literal"><span class="pre">float.hex()</span></tt> is an instance method, while
+<tt class="docutils literal"><span class="pre">float.fromhex()</span></tt> is a class method.</p>
+<p>A hexadecimal string takes the form:</p>
+<blockquote>
+[sign] [&#8216;0x&#8217;] integer [&#8216;.&#8217; fraction] [&#8216;p&#8217; exponent]</blockquote>
+<p>where the optional <tt class="docutils literal"><span class="pre">sign</span></tt> may by either <tt class="docutils literal"><span class="pre">+</span></tt> or <tt class="docutils literal"><span class="pre">-</span></tt>, <tt class="docutils literal"><span class="pre">integer</span></tt>
+and <tt class="docutils literal"><span class="pre">fraction</span></tt> are strings of hexadecimal digits, and <tt class="docutils literal"><span class="pre">exponent</span></tt>
+is a decimal integer with an optional leading sign.  Case is not
+significant, and there must be at least one hexadecimal digit in
+either the integer or the fraction.  This syntax is similar to the
+syntax specified in section 6.4.4.2 of the C99 standard, and also to
+the syntax used in Java 1.5 onwards.  In particular, the output of
+<tt class="docutils literal"><span class="pre">float.hex()</span></tt> is usable as a hexadecimal floating-point literal in C
+or Java code, and hexadecimal strings produced by C&#8217;s <tt class="docutils literal"><span class="pre">%a</span></tt> format
+character or Java&#8217;s <tt class="docutils literal"><span class="pre">Double.toHexString</span></tt> are accepted by
+<tt class="docutils literal"><span class="pre">float.fromhex()</span></tt>.</p>
+<p>Note that the exponent is written in decimal rather than hexadecimal,
+and that it gives the power of 2 by which to multiply the coefficient.
+For example, the hexadecimal string <tt class="docutils literal"><span class="pre">0x3.a7p10</span></tt> represents the
+floating-point number <tt class="docutils literal"><span class="pre">(3</span> <span class="pre">+</span> <span class="pre">10./16</span> <span class="pre">+</span> <span class="pre">7./16**2)</span> <span class="pre">*</span> <span class="pre">2.0**10</span></tt>, or
+<tt class="docutils literal"><span class="pre">3740.0</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s">&#39;0x3.a7p10&#39;</span><span class="p">)</span>
+<span class="go">3740.0</span>
+</pre></div>
+</div>
+<p>Applying the reverse conversion to <tt class="docutils literal"><span class="pre">3740.0</span></tt> gives a different
+hexadecimal string representing the same number:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="o">.</span><span class="n">hex</span><span class="p">(</span><span class="mf">3740.0</span><span class="p">)</span>
+<span class="go">&#39;0x1.d380000000000p+11&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="iterator-types">
+<h2>5.5. Iterator Types<a class="headerlink" href="#iterator-types" title="Permalink to this headline">¶</a></h2>
+<p>New in version 2.2.</p>
+<p>Python supports a concept of iteration over containers.  This is
+implemented using two distinct methods; these are used to allow user-
+defined classes to support iteration.  Sequences, described below in
+more detail, always support the iteration methods.</p>
+<p>One method needs to be defined for container objects to provide
+iteration support:</p>
+<p>container.__iter__()</p>
+<blockquote>
+Return an iterator object.  The object is required to support the
+iterator protocol described below.  If a container supports
+different types of iteration, additional methods can be provided to
+specifically request iterators for those iteration types.  (An
+example of an object supporting multiple forms of iteration would
+be a tree structure which supports both breadth-first and depth-
+first traversal.)  This method corresponds to the <tt class="docutils literal"><span class="pre">tp_iter</span></tt> slot
+of the type structure for Python objects in the Python/C API.</blockquote>
+<p>The iterator objects themselves are required to support the following
+two methods, which together form the <em>iterator protocol</em>:</p>
+<p>iterator.__iter__()</p>
+<blockquote>
+Return the iterator object itself.  This is required to allow both
+containers and iterators to be used with the <tt class="docutils literal"><span class="pre">for</span></tt> and <tt class="docutils literal"><span class="pre">in</span></tt>
+statements. This method corresponds to the <tt class="docutils literal"><span class="pre">tp_iter</span></tt> slot of the
+type structure for Python objects in the Python/C API.</blockquote>
+<p>iterator.next()</p>
+<blockquote>
+Return the next item from the container.  If there are no further
+items, raise the <tt class="docutils literal"><span class="pre">StopIteration</span></tt> exception.  This method
+corresponds to the <tt class="docutils literal"><span class="pre">tp_iternext</span></tt> slot of the type structure for
+Python objects in the Python/C API.</blockquote>
+<p>Python defines several iterator objects to support iteration over
+general and specific sequence types, dictionaries, and other more
+specialized forms.  The specific types are not important beyond their
+implementation of the iterator protocol.</p>
+<p>The intention of the protocol is that once an iterator&#8217;s <tt class="docutils literal"><span class="pre">next()</span></tt>
+method raises <tt class="docutils literal"><span class="pre">StopIteration</span></tt>, it will continue to do so on
+subsequent calls. Implementations that do not obey this property are
+deemed broken.  (This constraint was added in Python 2.3; in Python
+2.2, various iterators are broken according to this rule.)</p>
+<p>Python&#8217;s <a href="#id1"><span class="problematic" id="id2">*</span></a>generator*s provide a convenient way to implement the
+iterator protocol.  If a container object&#8217;s <tt class="docutils literal"><span class="pre">__iter__()</span></tt> method is
+implemented as a generator, it will automatically return an iterator
+object (technically, a generator object) supplying the <tt class="docutils literal"><span class="pre">__iter__()</span></tt>
+and <tt class="docutils literal"><span class="pre">next()</span></tt> methods.</p>
+</div>
+<div class="section" id="sequence-types-str-unicode-list-tuple-buffer-xrange">
+<h2>5.6. Sequence Types &#8212; <tt class="docutils literal"><span class="pre">str</span></tt>, <tt class="docutils literal"><span class="pre">unicode</span></tt>, <tt class="docutils literal"><span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">tuple</span></tt>, <tt class="docutils literal"><span class="pre">buffer</span></tt>, <tt class="docutils literal"><span class="pre">xrange</span></tt><a class="headerlink" href="#sequence-types-str-unicode-list-tuple-buffer-xrange" title="Permalink to this headline">¶</a></h2>
+<p>There are six sequence types: strings, Unicode strings, lists, tuples,
+buffers, and xrange objects.</p>
+<p>For other containers see the built in <tt class="docutils literal"><span class="pre">dict</span></tt> and <tt class="docutils literal"><span class="pre">set</span></tt> classes,
+and the <tt class="docutils literal"><span class="pre">collections</span></tt> module.</p>
+<p>String literals are written in single or double quotes: <tt class="docutils literal"><span class="pre">'xyzzy'</span></tt>,
+<tt class="docutils literal"><span class="pre">&quot;frobozz&quot;</span></tt>.  See <em>String literals</em> for more about string literals.
+Unicode strings are much like strings, but are specified in the syntax
+using a preceding <tt class="docutils literal"><span class="pre">'u'</span></tt> character: <tt class="docutils literal"><span class="pre">u'abc'</span></tt>, <tt class="docutils literal"><span class="pre">u&quot;def&quot;</span></tt>. In
+addition to the functionality described here, there are also string-
+specific methods described in the <em>String Methods</em> section. Lists are
+constructed with square brackets, separating items with commas: <tt class="docutils literal"><span class="pre">[a,</span>
+<span class="pre">b,</span> <span class="pre">c]</span></tt>. Tuples are constructed by the comma operator (not within
+square brackets), with or without enclosing parentheses, but an empty
+tuple must have the enclosing parentheses, such as <tt class="docutils literal"><span class="pre">a,</span> <span class="pre">b,</span> <span class="pre">c</span></tt> or
+<tt class="docutils literal"><span class="pre">()</span></tt>.  A single item tuple must have a trailing comma, such as
+<tt class="docutils literal"><span class="pre">(d,)</span></tt>.</p>
+<p>Buffer objects are not directly supported by Python syntax, but can be
+created by calling the builtin function <tt class="docutils literal"><span class="pre">buffer()</span></tt>.  They don&#8217;t
+support concatenation or repetition.</p>
+<p>Objects of type xrange are similar to buffers in that there is no
+specific syntax to create them, but they are created using the
+<tt class="docutils literal"><span class="pre">xrange()</span></tt> function.  They don&#8217;t support slicing, concatenation or
+repetition, and using <tt class="docutils literal"><span class="pre">in</span></tt>, <tt class="docutils literal"><span class="pre">not</span> <span class="pre">in</span></tt>, <tt class="docutils literal"><span class="pre">min()</span></tt> or <tt class="docutils literal"><span class="pre">max()</span></tt> on
+them is inefficient.</p>
+<p>Most sequence types support the following operations.  The <tt class="docutils literal"><span class="pre">in</span></tt> and
+<tt class="docutils literal"><span class="pre">not</span> <span class="pre">in</span></tt> operations have the same priorities as the comparison
+operations.  The <tt class="docutils literal"><span class="pre">+</span></tt> and <tt class="docutils literal"><span class="pre">*</span></tt> operations have the same priority as
+the corresponding numeric operations. [3] Additional methods are
+provided for <em>Mutable Sequence Types</em>.</p>
+<p>This table lists the sequence operations sorted in ascending priority
+(operations in the same box have the same priority).  In the table,
+<em>s</em> and <em>t</em> are sequences of the same type; <em>n</em>, <em>i</em> and <em>j</em> are
+integers:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="52%" />
+<col width="18%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Operation</th>
+<th class="head">Result</th>
+<th class="head">Notes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">in</span> <span class="pre">s</span></tt></td>
+<td><tt class="xref docutils literal"><span class="pre">True</span></tt> if an item of <em>s</em> is
+equal to <em>x</em>, else <tt class="xref docutils literal"><span class="pre">False</span></tt></td>
+<td><ol class="first last arabic simple">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">x</span> <span class="pre">not</span> <span class="pre">in</span> <span class="pre">s</span></tt></td>
+<td><tt class="xref docutils literal"><span class="pre">False</span></tt> if an item of <em>s</em> is
+equal to <em>x</em>, else <tt class="xref docutils literal"><span class="pre">True</span></tt></td>
+<td><ol class="first last arabic simple">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s</span> <span class="pre">+</span> <span class="pre">t</span></tt></td>
+<td>the concatenation of <em>s</em> and <em>t</em></td>
+<td><ol class="first last arabic simple" start="6">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s</span> <span class="pre">*</span> <span class="pre">n,</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">s</span></tt></td>
+<td><em>n</em> shallow copies of <em>s</em>
+concatenated</td>
+<td><ol class="first last arabic simple" start="2">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s[i]</span></tt></td>
+<td><em>i</em>&#8216;th item of <em>s</em>, origin 0</td>
+<td><ol class="first last arabic simple" start="3">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s[i:j]</span></tt></td>
+<td>slice of <em>s</em> from <em>i</em> to <em>j</em></td>
+<td>(3)(4)</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s[i:j:k]</span></tt></td>
+<td>slice of <em>s</em> from <em>i</em> to <em>j</em>
+with step <em>k</em></td>
+<td>(3)(5)</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">len(s)</span></tt></td>
+<td>length of <em>s</em></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">min(s)</span></tt></td>
+<td>smallest item of <em>s</em></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">max(s)</span></tt></td>
+<td>largest item of <em>s</em></td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>Sequence types also support comparisons. In particular, tuples and
+lists are compared lexicographically by comparing corresponding
+elements. This means that to compare equal, every element must compare
+equal and the two sequences must be of the same type and have the same
+length. (For full details see <em>Comparisons</em> in the language
+reference.)</p>
+<p>Notes:</p>
+<ol class="arabic">
+<li><p class="first">When <em>s</em> is a string or Unicode string object the <tt class="docutils literal"><span class="pre">in</span></tt> and <tt class="docutils literal"><span class="pre">not</span>
+<span class="pre">in</span></tt> operations act like a substring test.  In Python versions
+before 2.3, <em>x</em> had to be a string of length 1. In Python 2.3 and
+beyond, <em>x</em> may be a string of any length.</p>
+</li>
+<li><p class="first">Values of <em>n</em> less than <tt class="docutils literal"><span class="pre">0</span></tt> are treated as <tt class="docutils literal"><span class="pre">0</span></tt> (which yields an
+empty sequence of the same type as <em>s</em>).  Note also that the copies
+are shallow; nested structures are not copied.  This often haunts
+new Python programmers; consider:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span> <span class="o">=</span> <span class="p">[[]]</span> <span class="o">*</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span>
+<span class="go">[[], [], []]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span>
+<span class="go">[[3], [3], [3]]</span>
+</pre></div>
+</div>
+<p>What has happened is that <tt class="docutils literal"><span class="pre">[[]]</span></tt> is a one-element list containing
+an empty list, so all three elements of <tt class="docutils literal"><span class="pre">[[]]</span> <span class="pre">*</span> <span class="pre">3</span></tt> are (pointers
+to) this single empty list.  Modifying any of the elements of
+<tt class="docutils literal"><span class="pre">lists</span></tt> modifies this single list. You can create a list of
+different lists this way:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span>
+<span class="go">[[3], [5], [7]]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">If <em>i</em> or <em>j</em> is negative, the index is relative to the end of the
+string: <tt class="docutils literal"><span class="pre">len(s)</span> <span class="pre">+</span> <span class="pre">i</span></tt> or <tt class="docutils literal"><span class="pre">len(s)</span> <span class="pre">+</span> <span class="pre">j</span></tt> is substituted.  But note
+that <tt class="docutils literal"><span class="pre">-0</span></tt> is still <tt class="docutils literal"><span class="pre">0</span></tt>.</p>
+</li>
+<li><p class="first">The slice of <em>s</em> from <em>i</em> to <em>j</em> is defined as the sequence of
+items with index <em>k</em> such that <tt class="docutils literal"><span class="pre">i</span> <span class="pre">&lt;=</span> <span class="pre">k</span> <span class="pre">&lt;</span> <span class="pre">j</span></tt>.  If <em>i</em> or <em>j</em> is
+greater than <tt class="docutils literal"><span class="pre">len(s)</span></tt>, use <tt class="docutils literal"><span class="pre">len(s)</span></tt>.  If <em>i</em> is omitted or
+<tt class="xref docutils literal"><span class="pre">None</span></tt>, use <tt class="docutils literal"><span class="pre">0</span></tt>.  If <em>j</em> is omitted or <tt class="xref docutils literal"><span class="pre">None</span></tt>, use
+<tt class="docutils literal"><span class="pre">len(s)</span></tt>.  If <em>i</em> is greater than or equal to <em>j</em>, the slice is
+empty.</p>
+</li>
+<li><p class="first">The slice of <em>s</em> from <em>i</em> to <em>j</em> with step <em>k</em> is defined as the
+sequence of items with index  <tt class="docutils literal"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">i</span> <span class="pre">+</span> <span class="pre">n*k</span></tt> such that <tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">n</span> <span class="pre">&lt;</span>
+<span class="pre">(j-i)/k</span></tt>.  In other words, the indices are <tt class="docutils literal"><span class="pre">i</span></tt>, <tt class="docutils literal"><span class="pre">i+k</span></tt>,
+<tt class="docutils literal"><span class="pre">i+2*k</span></tt>, <tt class="docutils literal"><span class="pre">i+3*k</span></tt> and so on, stopping when <em>j</em> is reached (but
+never including <em>j</em>).  If <em>i</em> or <em>j</em> is greater than <tt class="docutils literal"><span class="pre">len(s)</span></tt>,
+use <tt class="docutils literal"><span class="pre">len(s)</span></tt>.  If <em>i</em> or <em>j</em> are omitted or <tt class="xref docutils literal"><span class="pre">None</span></tt>, they become
+&#8220;end&#8221; values (which end depends on the sign of <em>k</em>).  Note, <em>k</em>
+cannot be zero. If <em>k</em> is <tt class="xref docutils literal"><span class="pre">None</span></tt>, it is treated like <tt class="docutils literal"><span class="pre">1</span></tt>.</p>
+</li>
+<li><p class="first">If <em>s</em> and <em>t</em> are both strings, some Python implementations such
+as CPython can usually perform an in-place optimization for
+assignments of the form <tt class="docutils literal"><span class="pre">s=s+t</span></tt> or <tt class="docutils literal"><span class="pre">s+=t</span></tt>.  When applicable,
+this optimization makes quadratic run-time much less likely.  This
+optimization is both version and implementation dependent. For
+performance sensitive code, it is preferable to use the
+<tt class="docutils literal"><span class="pre">str.join()</span></tt> method which assures consistent linear concatenation
+performance across versions and implementations.</p>
+<p>Changed in version 2.4: Formerly, string concatenation never
+occurred in-place.</p>
+</li>
+</ol>
+<div class="section" id="string-methods">
+<h3>5.6.1. String Methods<a class="headerlink" href="#string-methods" title="Permalink to this headline">¶</a></h3>
+<p>Below are listed the string methods which both 8-bit strings and
+Unicode objects support. Note that none of these methods take keyword
+arguments.</p>
+<p>In addition, Python&#8217;s strings support the sequence type methods
+described in the <em>Sequence Types &#8212; str, unicode, list, tuple,
+buffer, xrange</em> section. To output formatted strings use template
+strings or the <tt class="docutils literal"><span class="pre">%</span></tt> operator described in the <em>String Formatting
+Operations</em> section. Also, see the <tt class="docutils literal"><span class="pre">re</span></tt> module for string functions
+based on regular expressions.</p>
+<p>str.capitalize()</p>
+<blockquote>
+<p>Return a copy of the string with only its first character
+capitalized.</p>
+<p>For 8-bit strings, this method is locale-dependent.</p>
+</blockquote>
+<p>str.center(width[, fillchar])</p>
+<blockquote>
+<p>Return centered in a string of length <em>width</em>. Padding is done
+using the specified <em>fillchar</em> (default is a space).</p>
+<p>Changed in version 2.4: Support for the <em>fillchar</em> argument.</p>
+</blockquote>
+<p>str.count(sub[, start[, end]])</p>
+<blockquote>
+Return the number of non-overlapping occurrences of substring <em>sub</em>
+in the range [<em>start</em>, <em>end</em>].  Optional arguments <em>start</em> and
+<em>end</em> are interpreted as in slice notation.</blockquote>
+<p>str.decode([encoding[, errors]])</p>
+<blockquote>
+<p>Decodes the string using the codec registered for <em>encoding</em>.
+<em>encoding</em> defaults to the default string encoding.  <em>errors</em> may
+be given to set a different error handling scheme.  The default is
+<tt class="docutils literal"><span class="pre">'strict'</span></tt>, meaning that encoding errors raise <tt class="docutils literal"><span class="pre">UnicodeError</span></tt>.
+Other possible values are <tt class="docutils literal"><span class="pre">'ignore'</span></tt>, <tt class="docutils literal"><span class="pre">'replace'</span></tt> and any other
+name registered via <tt class="docutils literal"><span class="pre">codecs.register_error()</span></tt>, see section <em>Codec
+Base Classes</em>.</p>
+<p>New in version 2.2.</p>
+<p>Changed in version 2.3: Support for other error handling schemes
+added.</p>
+</blockquote>
+<p>str.encode([encoding[, errors]])</p>
+<blockquote>
+<p>Return an encoded version of the string.  Default encoding is the
+current default string encoding.  <em>errors</em> may be given to set a
+different error handling scheme.  The default for <em>errors</em> is
+<tt class="docutils literal"><span class="pre">'strict'</span></tt>, meaning that encoding errors raise a
+<tt class="docutils literal"><span class="pre">UnicodeError</span></tt>.  Other possible values are <tt class="docutils literal"><span class="pre">'ignore'</span></tt>,
+<tt class="docutils literal"><span class="pre">'replace'</span></tt>, <tt class="docutils literal"><span class="pre">'xmlcharrefreplace'</span></tt>, <tt class="docutils literal"><span class="pre">'backslashreplace'</span></tt> and
+any other name registered via <tt class="docutils literal"><span class="pre">codecs.register_error()</span></tt>, see
+section <em>Codec Base Classes</em>. For a list of possible encodings, see
+section <em>Standard Encodings</em>.</p>
+<p>New in version 2.0.</p>
+<p>Changed in version 2.3: Support for <tt class="docutils literal"><span class="pre">'xmlcharrefreplace'</span></tt> and
+<tt class="docutils literal"><span class="pre">'backslashreplace'</span></tt> and other error handling schemes added.</p>
+</blockquote>
+<p>str.endswith(suffix[, start[, end]])</p>
+<blockquote>
+<p>Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the string ends with the specified <em>suffix</em>,
+otherwise return <tt class="xref docutils literal"><span class="pre">False</span></tt>.  <em>suffix</em> can also be a tuple of
+suffixes to look for.  With optional <em>start</em>, test beginning at
+that position.  With optional <em>end</em>, stop comparing at that
+position.</p>
+<p>Changed in version 2.5: Accept tuples as <em>suffix</em>.</p>
+</blockquote>
+<p>str.expandtabs([tabsize])</p>
+<blockquote>
+Return a copy of the string where all tab characters are replaced
+by one or more spaces, depending on the current column and the
+given tab size.  The column number is reset to zero after each
+newline occurring in the string. If <em>tabsize</em> is not given, a tab
+size of <tt class="docutils literal"><span class="pre">8</span></tt> characters is assumed.  This doesn&#8217;t understand other
+non-printing characters or escape sequences.</blockquote>
+<p>str.find(sub[, start[, end]])</p>
+<blockquote>
+Return the lowest index in the string where substring <em>sub</em> is
+found, such that <em>sub</em> is contained in the range [<em>start</em>, <em>end</em>].
+Optional arguments <em>start</em> and <em>end</em> are interpreted as in slice
+notation.  Return <tt class="docutils literal"><span class="pre">-1</span></tt> if <em>sub</em> is not found.</blockquote>
+<p>str.format(format_string, <a href="#id3"><span class="problematic" id="id4">*</span></a>args, <a href="#id5"><span class="problematic" id="id6">**</span></a>kwargs)</p>
+<blockquote>
+<p>Perform a string formatting operation.  The <em>format_string</em>
+argument can contain literal text or replacement fields delimited
+by braces <tt class="docutils literal"><span class="pre">{}</span></tt>.  Each replacement field contains either the
+numeric index of a positional argument, or the name of a keyword
+argument.  Returns a copy of <em>format_string</em> where each replacement
+field is replaced with the string value of the corresponding
+argument.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&quot;The sum of 1 + 2 is {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">&#39;The sum of 1 + 2 is 3&#39;</span>
+</pre></div>
+</div>
+<p>See <em>Format String Syntax</em> for a description of the various
+formatting options that can be specified in format strings.</p>
+<p>This method of string formatting is the new standard in Python 3.0,
+and should be preferred to the <tt class="docutils literal"><span class="pre">%</span></tt> formatting described in
+<em>String Formatting Operations</em> in new code.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>str.index(sub[, start[, end]])</p>
+<blockquote>
+Like <tt class="docutils literal"><span class="pre">find()</span></tt>, but raise <tt class="docutils literal"><span class="pre">ValueError</span></tt> when the substring is not
+found.</blockquote>
+<p>str.isalnum()</p>
+<blockquote>
+<p>Return true if all characters in the string are alphanumeric and
+there is at least one character, false otherwise.</p>
+<p>For 8-bit strings, this method is locale-dependent.</p>
+</blockquote>
+<p>str.isalpha()</p>
+<blockquote>
+<p>Return true if all characters in the string are alphabetic and
+there is at least one character, false otherwise.</p>
+<p>For 8-bit strings, this method is locale-dependent.</p>
+</blockquote>
+<p>str.isdigit()</p>
+<blockquote>
+<p>Return true if all characters in the string are digits and there is
+at least one character, false otherwise.</p>
+<p>For 8-bit strings, this method is locale-dependent.</p>
+</blockquote>
+<p>str.islower()</p>
+<blockquote>
+<p>Return true if all cased characters in the string are lowercase and
+there is at least one cased character, false otherwise.</p>
+<p>For 8-bit strings, this method is locale-dependent.</p>
+</blockquote>
+<p>str.isspace()</p>
+<blockquote>
+<p>Return true if there are only whitespace characters in the string
+and there is at least one character, false otherwise.</p>
+<p>For 8-bit strings, this method is locale-dependent.</p>
+</blockquote>
+<p>str.istitle()</p>
+<blockquote>
+<p>Return true if the string is a titlecased string and there is at
+least one character, for example uppercase characters may only
+follow uncased characters and lowercase characters only cased ones.
+Return false otherwise.</p>
+<p>For 8-bit strings, this method is locale-dependent.</p>
+</blockquote>
+<p>str.isupper()</p>
+<blockquote>
+<p>Return true if all cased characters in the string are uppercase and
+there is at least one cased character, false otherwise.</p>
+<p>For 8-bit strings, this method is locale-dependent.</p>
+</blockquote>
+<p>str.join(seq)</p>
+<blockquote>
+Return a string which is the concatenation of the strings in the
+sequence <em>seq</em>. The separator between elements is the string
+providing this method.</blockquote>
+<p>str.ljust(width[, fillchar])</p>
+<blockquote>
+<p>Return the string left justified in a string of length <em>width</em>.
+Padding is done using the specified <em>fillchar</em> (default is a
+space).  The original string is returned if <em>width</em> is less than
+<tt class="docutils literal"><span class="pre">len(s)</span></tt>.</p>
+<p>Changed in version 2.4: Support for the <em>fillchar</em> argument.</p>
+</blockquote>
+<p>str.lower()</p>
+<blockquote>
+<p>Return a copy of the string converted to lowercase.</p>
+<p>For 8-bit strings, this method is locale-dependent.</p>
+</blockquote>
+<p>str.lstrip([chars])</p>
+<blockquote>
+<p>Return a copy of the string with leading characters removed.  The
+<em>chars</em> argument is a string specifying the set of characters to be
+removed.  If omitted or <tt class="xref docutils literal"><span class="pre">None</span></tt>, the <em>chars</em> argument defaults to
+removing whitespace.  The <em>chars</em> argument is not a prefix; rather,
+all combinations of its values are stripped:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;   spacious   &#39;</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span>
+<span class="go">&#39;spacious   &#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;www.example.com&#39;</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&#39;cmowz.&#39;</span><span class="p">)</span>
+<span class="go">&#39;example.com&#39;</span>
+</pre></div>
+</div>
+<p>Changed in version 2.2.2: Support for the <em>chars</em> argument.</p>
+</blockquote>
+<p>str.partition(sep)</p>
+<blockquote>
+<p>Split the string at the first occurrence of <em>sep</em>, and return a
+3-tuple containing the part before the separator, the separator
+itself, and the part after the separator.  If the separator is not
+found, return a 3-tuple containing the string itself, followed by
+two empty strings.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>str.replace(old, new[, count])</p>
+<blockquote>
+Return a copy of the string with all occurrences of substring <em>old</em>
+replaced by <em>new</em>.  If the optional argument <em>count</em> is given, only
+the first <em>count</em> occurrences are replaced.</blockquote>
+<p>str.rfind(sub[, start[, end]])</p>
+<blockquote>
+Return the highest index in the string where substring <em>sub</em> is
+found, such that <em>sub</em> is contained within s[start,end].  Optional
+arguments <em>start</em> and <em>end</em> are interpreted as in slice notation.
+Return <tt class="docutils literal"><span class="pre">-1</span></tt> on failure.</blockquote>
+<p>str.rindex(sub[, start[, end]])</p>
+<blockquote>
+Like <tt class="docutils literal"><span class="pre">rfind()</span></tt> but raises <tt class="docutils literal"><span class="pre">ValueError</span></tt> when the substring <em>sub</em>
+is not found.</blockquote>
+<p>str.rjust(width[, fillchar])</p>
+<blockquote>
+<p>Return the string right justified in a string of length <em>width</em>.
+Padding is done using the specified <em>fillchar</em> (default is a
+space). The original string is returned if <em>width</em> is less than
+<tt class="docutils literal"><span class="pre">len(s)</span></tt>.</p>
+<p>Changed in version 2.4: Support for the <em>fillchar</em> argument.</p>
+</blockquote>
+<p>str.rpartition(sep)</p>
+<blockquote>
+<p>Split the string at the last occurrence of <em>sep</em>, and return a
+3-tuple containing the part before the separator, the separator
+itself, and the part after the separator.  If the separator is not
+found, return a 3-tuple containing two empty strings, followed by
+the string itself.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>str.rsplit([sep[, maxsplit]])</p>
+<blockquote>
+<p>Return a list of the words in the string, using <em>sep</em> as the
+delimiter string. If <em>maxsplit</em> is given, at most <em>maxsplit</em> splits
+are done, the <em>rightmost</em> ones.  If <em>sep</em> is not specified or
+<tt class="xref docutils literal"><span class="pre">None</span></tt>, any whitespace string is a separator.  Except for
+splitting from the right, <tt class="docutils literal"><span class="pre">rsplit()</span></tt> behaves like <tt class="docutils literal"><span class="pre">split()</span></tt>
+which is described in detail below.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>str.rstrip([chars])</p>
+<blockquote>
+<p>Return a copy of the string with trailing characters removed.  The
+<em>chars</em> argument is a string specifying the set of characters to be
+removed.  If omitted or <tt class="xref docutils literal"><span class="pre">None</span></tt>, the <em>chars</em> argument defaults to
+removing whitespace.  The <em>chars</em> argument is not a suffix; rather,
+all combinations of its values are stripped:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;   spacious   &#39;</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+<span class="go">&#39;   spacious&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;mississippi&#39;</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;ipz&#39;</span><span class="p">)</span>
+<span class="go">&#39;mississ&#39;</span>
+</pre></div>
+</div>
+<p>Changed in version 2.2.2: Support for the <em>chars</em> argument.</p>
+</blockquote>
+<p>str.split([sep[, maxsplit]])</p>
+<blockquote>
+<p>Return a list of the words in the string, using <em>sep</em> as the
+delimiter string.  If <em>maxsplit</em> is given, at most <em>maxsplit</em>
+splits are done (thus, the list will have at most <tt class="docutils literal"><span class="pre">maxsplit+1</span></tt>
+elements).  If <em>maxsplit</em> is not specified, then there is no limit
+on the number of splits (all possible splits are made).</p>
+<p>If <em>sep</em> is given, consecutive delimiters are not grouped together
+and are deemed to delimit empty strings (for example,
+<tt class="docutils literal"><span class="pre">'1,,2'.split(',')</span></tt> returns <tt class="docutils literal"><span class="pre">['1',</span> <span class="pre">'',</span> <span class="pre">'2']</span></tt>).  The <em>sep</em>
+argument may consist of multiple characters (for example,
+<tt class="docutils literal"><span class="pre">'1&lt;&gt;2&lt;&gt;3'.split('&lt;&gt;')</span></tt> returns <tt class="docutils literal"><span class="pre">['1',</span> <span class="pre">'2',</span> <span class="pre">'3']</span></tt>). Splitting
+an empty string with a specified separator returns <tt class="docutils literal"><span class="pre">['']</span></tt>.</p>
+<p>If <em>sep</em> is not specified or is <tt class="xref docutils literal"><span class="pre">None</span></tt>, a different splitting
+algorithm is applied: runs of consecutive whitespace are regarded
+as a single separator, and the result will contain no empty strings
+at the start or end if the string has leading or trailing
+whitespace.  Consequently, splitting an empty string or a string
+consisting of just whitespace with a <tt class="xref docutils literal"><span class="pre">None</span></tt> separator returns
+<tt class="docutils literal"><span class="pre">[]</span></tt>.</p>
+<p>For example, <tt class="docutils literal"><span class="pre">'</span> <span class="pre">1</span>&nbsp; <span class="pre">2</span>&nbsp;&nbsp; <span class="pre">3</span>&nbsp; <span class="pre">'.split()</span></tt> returns <tt class="docutils literal"><span class="pre">['1',</span> <span class="pre">'2',</span> <span class="pre">'3']</span></tt>,
+and <tt class="docutils literal"><span class="pre">'</span>&nbsp; <span class="pre">1</span>&nbsp; <span class="pre">2</span>&nbsp;&nbsp; <span class="pre">3</span>&nbsp; <span class="pre">'.split(None,</span> <span class="pre">1)</span></tt> returns <tt class="docutils literal"><span class="pre">['1',</span> <span class="pre">'2</span>&nbsp;&nbsp; <span class="pre">3</span>&nbsp; <span class="pre">']</span></tt>.</p>
+</blockquote>
+<p>str.splitlines([keepends])</p>
+<blockquote>
+Return a list of the lines in the string, breaking at line
+boundaries.  Line breaks are not included in the resulting list
+unless <em>keepends</em> is given and true.</blockquote>
+<p>str.startswith(prefix[, start[, end]])</p>
+<blockquote>
+<p>Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if string starts with the <em>prefix</em>, otherwise
+return <tt class="xref docutils literal"><span class="pre">False</span></tt>. <em>prefix</em> can also be a tuple of prefixes to look
+for.  With optional <em>start</em>, test string beginning at that
+position.  With optional <em>end</em>, stop comparing string at that
+position.</p>
+<p>Changed in version 2.5: Accept tuples as <em>prefix</em>.</p>
+</blockquote>
+<p>str.strip([chars])</p>
+<blockquote>
+<p>Return a copy of the string with the leading and trailing
+characters removed. The <em>chars</em> argument is a string specifying the
+set of characters to be removed. If omitted or <tt class="xref docutils literal"><span class="pre">None</span></tt>, the
+<em>chars</em> argument defaults to removing whitespace. The <em>chars</em>
+argument is not a prefix or suffix; rather, all combinations of its
+values are stripped:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;   spacious   &#39;</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<span class="go">&#39;spacious&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;www.example.com&#39;</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;cmowz.&#39;</span><span class="p">)</span>
+<span class="go">&#39;example&#39;</span>
+</pre></div>
+</div>
+<p>Changed in version 2.2.2: Support for the <em>chars</em> argument.</p>
+</blockquote>
+<p>str.swapcase()</p>
+<blockquote>
+<p>Return a copy of the string with uppercase characters converted to
+lowercase and vice versa.</p>
+<p>For 8-bit strings, this method is locale-dependent.</p>
+</blockquote>
+<p>str.title()</p>
+<blockquote>
+<p>Return a titlecased version of the string: words start with
+uppercase characters, all remaining cased characters are lowercase.</p>
+<p>For 8-bit strings, this method is locale-dependent.</p>
+</blockquote>
+<p>str.translate(table[, deletechars])</p>
+<blockquote>
+<p>Return a copy of the string where all characters occurring in the
+optional argument <em>deletechars</em> are removed, and the remaining
+characters have been mapped through the given translation table,
+which must be a string of length 256.</p>
+<p>You can use the <tt class="docutils literal"><span class="pre">maketrans()</span></tt> helper function in the <tt class="docutils literal"><span class="pre">string</span></tt>
+module to create a translation table. For string objects, set the
+<em>table</em> argument to <tt class="xref docutils literal"><span class="pre">None</span></tt> for translations that only delete
+characters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;read this short text&#39;</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;aeiou&#39;</span><span class="p">)</span>
+<span class="go">&#39;rd ths shrt txt&#39;</span>
+</pre></div>
+</div>
+<p>New in version 2.6: Support for a <tt class="xref docutils literal"><span class="pre">None</span></tt> <em>table</em> argument.</p>
+<p>For Unicode objects, the <tt class="docutils literal"><span class="pre">translate()</span></tt> method does not accept the
+optional <em>deletechars</em> argument.  Instead, it returns a copy of the
+<em>s</em> where all characters have been mapped through the given
+translation table which must be a mapping of Unicode ordinals to
+Unicode ordinals, Unicode strings or <tt class="xref docutils literal"><span class="pre">None</span></tt>. Unmapped characters
+are left untouched. Characters mapped to <tt class="xref docutils literal"><span class="pre">None</span></tt> are deleted.
+Note, a more flexible approach is to create a custom character
+mapping codec using the <tt class="docutils literal"><span class="pre">codecs</span></tt> module (see <tt class="docutils literal"><span class="pre">encodings.cp1251</span></tt>
+for an example).</p>
+</blockquote>
+<p>str.upper()</p>
+<blockquote>
+<p>Return a copy of the string converted to uppercase.</p>
+<p>For 8-bit strings, this method is locale-dependent.</p>
+</blockquote>
+<p>str.zfill(width)</p>
+<blockquote>
+<p>Return the numeric string left filled with zeros in a string of
+length <em>width</em>.  A sign prefix is handled correctly.  The original
+string is returned if <em>width</em> is less than <tt class="docutils literal"><span class="pre">len(s)</span></tt>.</p>
+<p>New in version 2.2.2.</p>
+</blockquote>
+<p>The following methods are present only on unicode objects:</p>
+<p>unicode.isnumeric()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if there are only numeric characters in S,
+<tt class="xref docutils literal"><span class="pre">False</span></tt> otherwise. Numeric characters include digit characters,
+and all characters that have the Unicode numeric value property,
+e.g. U+2155, VULGAR FRACTION ONE FIFTH.</blockquote>
+<p>unicode.isdecimal()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if there are only decimal characters in S,
+<tt class="xref docutils literal"><span class="pre">False</span></tt> otherwise. Decimal characters include digit characters,
+and all characters that that can be used to form decimal-radix
+numbers, e.g. U+0660, ARABIC-INDIC DIGIT ZERO.</blockquote>
+</div>
+<div class="section" id="string-formatting-operations">
+<h3>5.6.2. String Formatting Operations<a class="headerlink" href="#string-formatting-operations" title="Permalink to this headline">¶</a></h3>
+<p>String and Unicode objects have one unique built-in operation: the
+<tt class="docutils literal"><span class="pre">%</span></tt> operator (modulo).  This is also known as the string
+<em>formatting</em> or <em>interpolation</em> operator.  Given <tt class="docutils literal"><span class="pre">format</span> <span class="pre">%</span> <span class="pre">values</span></tt>
+(where <em>format</em> is a string or Unicode object), <tt class="docutils literal"><span class="pre">%</span></tt> conversion
+specifications in <em>format</em> are replaced with zero or more elements of
+<em>values</em>.  The effect is similar to the using <tt class="docutils literal"><span class="pre">sprintf()</span></tt> in the C
+language.  If <em>format</em> is a Unicode object, or if any of the objects
+being converted using the <tt class="docutils literal"><span class="pre">%s</span></tt> conversion are Unicode objects, the
+result will also be a Unicode object.</p>
+<p>If <em>format</em> requires a single argument, <em>values</em> may be a single non-
+tuple object. [4]  Otherwise, <em>values</em> must be a tuple with exactly
+the number of items specified by the format string, or a single
+mapping object (for example, a dictionary).</p>
+<p>A conversion specifier contains two or more characters and has the
+following components, which must occur in this order:</p>
+<ol class="arabic simple">
+<li>The <tt class="docutils literal"><span class="pre">'%'</span></tt> character, which marks the start of the specifier.</li>
+<li>Mapping key (optional), consisting of a parenthesised sequence of
+characters (for example, <tt class="docutils literal"><span class="pre">(somename)</span></tt>).</li>
+<li>Conversion flags (optional), which affect the result of some
+conversion types.</li>
+<li>Minimum field width (optional).  If specified as an <tt class="docutils literal"><span class="pre">'*'</span></tt>
+(asterisk), the actual width is read from the next element of the
+tuple in <em>values</em>, and the object to convert comes after the
+minimum field width and optional precision.</li>
+<li>Precision (optional), given as a <tt class="docutils literal"><span class="pre">'.'</span></tt> (dot) followed by the
+precision.  If specified as <tt class="docutils literal"><span class="pre">'*'</span></tt> (an asterisk), the actual width
+is read from the next element of the tuple in <em>values</em>, and the
+value to convert comes after the precision.</li>
+<li>Length modifier (optional).</li>
+<li>Conversion type.</li>
+</ol>
+<p>When the right argument is a dictionary (or other mapping type), then
+the formats in the string <em>must</em> include a parenthesised mapping key
+into that dictionary inserted immediately after the <tt class="docutils literal"><span class="pre">'%'</span></tt> character.
+The mapping key selects the value to be formatted from the mapping.
+For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s">&#39;</span><span class="si">%(language)s</span><span class="s"> has %(#)03d quote types.&#39;</span> <span class="o">%</span> \
+<span class="gp">... </span>      <span class="p">{</span><span class="s">&#39;language&#39;</span><span class="p">:</span> <span class="s">&quot;Python&quot;</span><span class="p">,</span> <span class="s">&quot;#&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="go">Python has 002 quote types.</span>
+</pre></div>
+</div>
+<p>In this case no <tt class="docutils literal"><span class="pre">*</span></tt> specifiers may occur in a format (since they
+require a sequential parameter list).</p>
+<p>The conversion flag characters are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Flag</th>
+<th class="head">Meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">'#'</span></tt></td>
+<td>The value conversion will use the &#8220;alternate form&#8221; (where defined
+below).</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'0'</span></tt></td>
+<td>The conversion will be zero padded for numeric values.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'-'</span></tt></td>
+<td>The converted value is left adjusted (overrides the <tt class="docutils literal"><span class="pre">'0'</span></tt>
+conversion if both are given).</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'</span> <span class="pre">'</span></tt></td>
+<td>(a space) A blank should be left before a positive number (or empty
+string) produced by a signed conversion.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'+'</span></tt></td>
+<td>A sign character (<tt class="docutils literal"><span class="pre">'+'</span></tt> or <tt class="docutils literal"><span class="pre">'-'</span></tt>) will precede the conversion
+(overrides a &#8220;space&#8221; flag).</td>
+</tr>
+</tbody>
+</table>
+<p>A length modifier (<tt class="docutils literal"><span class="pre">h</span></tt>, <tt class="docutils literal"><span class="pre">l</span></tt>, or <tt class="docutils literal"><span class="pre">L</span></tt>) may be present, but is
+ignored as it is not necessary for Python &#8211; so e.g. <tt class="docutils literal"><span class="pre">%ld</span></tt> is
+identical to <tt class="docutils literal"><span class="pre">%d</span></tt>.</p>
+<p>The conversion types are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="71%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Conversion</th>
+<th class="head">Meaning</th>
+<th class="head">Notes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">'d'</span></tt></td>
+<td>Signed integer decimal.</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'i'</span></tt></td>
+<td>Signed integer decimal.</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'o'</span></tt></td>
+<td>Signed octal value.</td>
+<td><ol class="first last arabic simple">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'u'</span></tt></td>
+<td>Obsolete type &#8211; it is identical to <tt class="docutils literal"><span class="pre">'d'</span></tt>.</td>
+<td><ol class="first last arabic simple" start="7">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'x'</span></tt></td>
+<td>Signed hexadecimal (lowercase).</td>
+<td><ol class="first last arabic simple" start="2">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'X'</span></tt></td>
+<td>Signed hexadecimal (uppercase).</td>
+<td><ol class="first last arabic simple" start="2">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'e'</span></tt></td>
+<td>Floating point exponential format (lowercase).</td>
+<td><ol class="first last arabic simple" start="3">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'E'</span></tt></td>
+<td>Floating point exponential format (uppercase).</td>
+<td><ol class="first last arabic simple" start="3">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'f'</span></tt></td>
+<td>Floating point decimal format.</td>
+<td><ol class="first last arabic simple" start="3">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'F'</span></tt></td>
+<td>Floating point decimal format.</td>
+<td><ol class="first last arabic simple" start="3">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'g'</span></tt></td>
+<td>Floating point format. Uses lowercase exponential
+format if exponent is less than -4 or not less than
+precision, decimal format otherwise.</td>
+<td><ol class="first last arabic simple" start="4">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'G'</span></tt></td>
+<td>Floating point format. Uses uppercase exponential
+format if exponent is less than -4 or not less than
+precision, decimal format otherwise.</td>
+<td><ol class="first last arabic simple" start="4">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'c'</span></tt></td>
+<td>Single character (accepts integer or single character
+string).</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'r'</span></tt></td>
+<td>String (converts any python object using <tt class="docutils literal"><span class="pre">repr()</span></tt>).</td>
+<td><ol class="first last arabic simple" start="5">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'s'</span></tt></td>
+<td>String (converts any python object using <tt class="docutils literal"><span class="pre">str()</span></tt>).</td>
+<td><ol class="first last arabic simple" start="6">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">'%'</span></tt></td>
+<td>No argument is converted, results in a <tt class="docutils literal"><span class="pre">'%'</span></tt>
+character in the result.</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<ol class="arabic">
+<li><p class="first">The alternate form causes a leading zero (<tt class="docutils literal"><span class="pre">'0'</span></tt>) to be inserted
+between left-hand padding and the formatting of the number if the
+leading character of the result is not already a zero.</p>
+</li>
+<li><p class="first">The alternate form causes a leading <tt class="docutils literal"><span class="pre">'0x'</span></tt> or <tt class="docutils literal"><span class="pre">'0X'</span></tt> (depending
+on whether the <tt class="docutils literal"><span class="pre">'x'</span></tt> or <tt class="docutils literal"><span class="pre">'X'</span></tt> format was used) to be inserted
+between left-hand padding and the formatting of the number if the
+leading character of the result is not already a zero.</p>
+</li>
+<li><p class="first">The alternate form causes the result to always contain a decimal
+point, even if no digits follow it.</p>
+<p>The precision determines the number of digits after the decimal
+point and defaults to 6.</p>
+</li>
+<li><p class="first">The alternate form causes the result to always contain a decimal
+point, and trailing zeroes are not removed as they would otherwise
+be.</p>
+<p>The precision determines the number of significant digits before
+and after the decimal point and defaults to 6.</p>
+</li>
+<li><p class="first">The <tt class="docutils literal"><span class="pre">%r</span></tt> conversion was added in Python 2.0.</p>
+<p>The precision determines the maximal number of characters used.</p>
+</li>
+<li><p class="first">If the object or format provided is a <tt class="docutils literal"><span class="pre">unicode</span></tt> string, the
+resulting string will also be <tt class="docutils literal"><span class="pre">unicode</span></tt>.</p>
+<p>The precision determines the maximal number of characters used.</p>
+</li>
+<li><p class="first">See <strong>PEP 237</strong>.</p>
+</li>
+</ol>
+<p>Since Python strings have an explicit length, <tt class="docutils literal"><span class="pre">%s</span></tt> conversions do
+not assume that <tt class="docutils literal"><span class="pre">'\0'</span></tt> is the end of the string.</p>
+<p>For safety reasons, floating point precisions are clipped to 50;
+<tt class="docutils literal"><span class="pre">%f</span></tt> conversions for numbers whose absolute value is over 1e50 are
+replaced by <tt class="docutils literal"><span class="pre">%g</span></tt> conversions. [5]  All other errors raise
+exceptions.</p>
+<p>Additional string operations are defined in standard modules
+<tt class="docutils literal"><span class="pre">string</span></tt> and <tt class="docutils literal"><span class="pre">re</span></tt>.</p>
+</div>
+<div class="section" id="xrange-type">
+<h3>5.6.3. XRange Type<a class="headerlink" href="#xrange-type" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">xrange</span></tt> type is an immutable sequence which is commonly used
+for looping.  The advantage of the <tt class="docutils literal"><span class="pre">xrange</span></tt> type is that an
+<tt class="docutils literal"><span class="pre">xrange</span></tt> object will always take the same amount of memory, no
+matter the size of the range it represents.  There are no consistent
+performance advantages.</p>
+<p>XRange objects have very little behavior: they only support indexing,
+iteration, and the <tt class="docutils literal"><span class="pre">len()</span></tt> function.</p>
+</div>
+<div class="section" id="mutable-sequence-types">
+<h3>5.6.4. Mutable Sequence Types<a class="headerlink" href="#mutable-sequence-types" title="Permalink to this headline">¶</a></h3>
+<p>List objects support additional operations that allow in-place
+modification of the object. Other mutable sequence types (when added
+to the language) should also support these operations. Strings and
+tuples are immutable sequence types: such objects cannot be modified
+once created. The following operations are defined on mutable sequence
+types (where <em>x</em> is an arbitrary object):</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="38%" />
+<col width="26%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Operation</th>
+<th class="head">Result</th>
+<th class="head">Notes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">s[i]</span> <span class="pre">=</span> <span class="pre">x</span></tt></td>
+<td>item <em>i</em> of <em>s</em> is replaced by
+<em>x</em></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s[i:j]</span> <span class="pre">=</span> <span class="pre">t</span></tt></td>
+<td>slice of <em>s</em> from <em>i</em> to <em>j</em> is
+replaced by the contents of the
+iterable <em>t</em></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">del</span> <span class="pre">s[i:j]</span></tt></td>
+<td>same as <tt class="docutils literal"><span class="pre">s[i:j]</span> <span class="pre">=</span> <span class="pre">[]</span></tt></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s[i:j:k]</span> <span class="pre">=</span> <span class="pre">t</span></tt></td>
+<td>the elements of <tt class="docutils literal"><span class="pre">s[i:j:k]</span></tt> are
+replaced by those of <em>t</em></td>
+<td><ol class="first last arabic simple">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">del</span> <span class="pre">s[i:j:k]</span></tt></td>
+<td>removes the elements of
+<tt class="docutils literal"><span class="pre">s[i:j:k]</span></tt> from the list</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s.append(x)</span></tt></td>
+<td>same as <tt class="docutils literal"><span class="pre">s[len(s):len(s)]</span> <span class="pre">=</span>
+<span class="pre">[x]</span></tt></td>
+<td><ol class="first last arabic simple" start="2">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s.extend(x)</span></tt></td>
+<td>same as <tt class="docutils literal"><span class="pre">s[len(s):len(s)]</span> <span class="pre">=</span> <span class="pre">x</span></tt></td>
+<td><ol class="first last arabic simple" start="3">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s.count(x)</span></tt></td>
+<td>return number of <em>i</em>&#8216;s for which
+<tt class="docutils literal"><span class="pre">s[i]</span> <span class="pre">==</span> <span class="pre">x</span></tt></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s.index(x[,</span> <span class="pre">i[,</span> <span class="pre">j]])</span></tt></td>
+<td>return smallest <em>k</em> such that
+<tt class="docutils literal"><span class="pre">s[k]</span> <span class="pre">==</span> <span class="pre">x</span></tt> and <tt class="docutils literal"><span class="pre">i</span> <span class="pre">&lt;=</span> <span class="pre">k</span> <span class="pre">&lt;</span> <span class="pre">j</span></tt></td>
+<td><ol class="first last arabic simple" start="4">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s.insert(i,</span> <span class="pre">x)</span></tt></td>
+<td>same as <tt class="docutils literal"><span class="pre">s[i:i]</span> <span class="pre">=</span> <span class="pre">[x]</span></tt></td>
+<td><ol class="first last arabic simple" start="5">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s.pop([i])</span></tt></td>
+<td>same as <tt class="docutils literal"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">s[i];</span> <span class="pre">del</span> <span class="pre">s[i];</span>
+<span class="pre">return</span> <span class="pre">x</span></tt></td>
+<td><ol class="first last arabic simple" start="6">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s.remove(x)</span></tt></td>
+<td>same as <tt class="docutils literal"><span class="pre">del</span> <span class="pre">s[s.index(x)]</span></tt></td>
+<td><ol class="first last arabic simple" start="4">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s.reverse()</span></tt></td>
+<td>reverses the items of <em>s</em> in
+place</td>
+<td><ol class="first last arabic simple" start="7">
+<li></li>
+</ol>
+</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">s.sort([cmp[,</span> <span class="pre">key[,</span>
+<span class="pre">reverse]]])</span></tt></td>
+<td>sort the items of <em>s</em> in place</td>
+<td>(7)(8)(9)(10)</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<ol class="arabic">
+<li><p class="first"><em>t</em> must have the same length as the slice it is  replacing.</p>
+</li>
+<li><p class="first">The C implementation of Python has historically accepted multiple
+parameters and implicitly joined them into a tuple; this no longer
+works in Python 2.0.  Use of this misfeature has been deprecated
+since Python 1.4.</p>
+</li>
+<li><p class="first"><em>x</em> can be any iterable object.</p>
+</li>
+<li><p class="first">Raises <tt class="docutils literal"><span class="pre">ValueError</span></tt> when <em>x</em> is not found in <em>s</em>. When a negative
+index is passed as the second or third parameter to the <tt class="docutils literal"><span class="pre">index()</span></tt>
+method, the list length is added, as for slice indices.  If it is
+still negative, it is truncated to zero, as for slice indices.</p>
+<p>Changed in version 2.3: Previously, <tt class="docutils literal"><span class="pre">index()</span></tt> didn&#8217;t have
+arguments for specifying start and stop positions.</p>
+</li>
+<li><p class="first">When a negative index is passed as the first parameter to the
+<tt class="docutils literal"><span class="pre">insert()</span></tt> method, the list length is added, as for slice
+indices.  If it is still negative, it is truncated to zero, as for
+slice indices.</p>
+<p>Changed in version 2.3: Previously, all negative indices were
+truncated to zero.</p>
+</li>
+<li><p class="first">The <tt class="docutils literal"><span class="pre">pop()</span></tt> method is only supported by the list and array types.
+The optional argument <em>i</em> defaults to <tt class="docutils literal"><span class="pre">-1</span></tt>, so that by default
+the last item is removed and returned.</p>
+</li>
+<li><p class="first">The <tt class="docutils literal"><span class="pre">sort()</span></tt> and <tt class="docutils literal"><span class="pre">reverse()</span></tt> methods modify the list in place
+for economy of space when sorting or reversing a large list.  To
+remind you that they operate by side effect, they don&#8217;t return the
+sorted or reversed list.</p>
+</li>
+<li><p class="first">The <tt class="docutils literal"><span class="pre">sort()</span></tt> method takes optional arguments for controlling the
+comparisons.</p>
+<p><em>cmp</em> specifies a custom comparison function of two arguments (list
+items) which should return a negative, zero or positive number
+depending on whether the first argument is considered smaller than,
+equal to, or larger than the second argument: <tt class="docutils literal"><span class="pre">cmp=lambda</span> <span class="pre">x,y:</span>
+<span class="pre">cmp(x.lower(),</span> <span class="pre">y.lower())</span></tt>.  The default value is <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<p><em>key</em> specifies a function of one argument that is used to extract
+a comparison key from each list element: <tt class="docutils literal"><span class="pre">key=str.lower</span></tt>.  The
+default value is <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<p><em>reverse</em> is a boolean value.  If set to <tt class="xref docutils literal"><span class="pre">True</span></tt>, then the list
+elements are sorted as if each comparison were reversed.</p>
+<p>In general, the <em>key</em> and <em>reverse</em> conversion processes are much
+faster than specifying an equivalent <em>cmp</em> function.  This is
+because <em>cmp</em> is called multiple times for each list element while
+<em>key</em> and <em>reverse</em> touch each element only once.</p>
+<p>Changed in version 2.3: Support for <tt class="xref docutils literal"><span class="pre">None</span></tt> as an equivalent to
+omitting <em>cmp</em> was added.</p>
+<p>Changed in version 2.4: Support for <em>key</em> and <em>reverse</em> was added.</p>
+</li>
+<li><p class="first">Starting with Python 2.3, the <tt class="docutils literal"><span class="pre">sort()</span></tt> method is guaranteed to be
+stable.  A sort is stable if it guarantees not to change the
+relative order of elements that compare equal &#8212; this is helpful
+for sorting in multiple passes (for example, sort by department,
+then by salary grade).</p>
+</li>
+<li><p class="first">While a list is being sorted, the effect of attempting to mutate,
+or even inspect, the list is undefined.  The C implementation of
+Python 2.3 and newer makes the list appear empty for the duration,
+and raises <tt class="docutils literal"><span class="pre">ValueError</span></tt> if it can detect that the list has been
+mutated during a sort.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="set-types-set-frozenset">
+<h2>5.7. Set Types &#8212; <tt class="docutils literal"><span class="pre">set</span></tt>, <tt class="docutils literal"><span class="pre">frozenset</span></tt><a class="headerlink" href="#set-types-set-frozenset" title="Permalink to this headline">¶</a></h2>
+<p>A <em>set</em> object is an unordered collection of distinct <em>hashable</em>
+objects. Common uses include membership testing, removing duplicates
+from a sequence, and computing mathematical operations such as
+intersection, union, difference, and symmetric difference. (For other
+containers see the built in <tt class="docutils literal"><span class="pre">dict</span></tt>, <tt class="docutils literal"><span class="pre">list</span></tt>, and <tt class="docutils literal"><span class="pre">tuple</span></tt> classes,
+and the <tt class="docutils literal"><span class="pre">collections</span></tt> module.)</p>
+<p>New in version 2.4.</p>
+<p>Like other collections, sets support <tt class="docutils literal"><span class="pre">x</span> <span class="pre">in</span> <span class="pre">set</span></tt>, <tt class="docutils literal"><span class="pre">len(set)</span></tt>, and
+<tt class="docutils literal"><span class="pre">for</span> <span class="pre">x</span> <span class="pre">in</span> <span class="pre">set</span></tt>.  Being an unordered collection, sets do not record
+element position or order of insertion.  Accordingly, sets do not
+support indexing, slicing, or other sequence-like behavior.</p>
+<p>There are currently two builtin set types, <tt class="docutils literal"><span class="pre">set</span></tt> and <tt class="docutils literal"><span class="pre">frozenset</span></tt>.
+The <tt class="docutils literal"><span class="pre">set</span></tt> type is mutable &#8212; the contents can be changed using
+methods like <tt class="docutils literal"><span class="pre">add()</span></tt> and <tt class="docutils literal"><span class="pre">remove()</span></tt>.  Since it is mutable, it has
+no hash value and cannot be used as either a dictionary key or as an
+element of another set. The <tt class="docutils literal"><span class="pre">frozenset</span></tt> type is immutable and
+<em>hashable</em> &#8212; its contents cannot be altered after it is created; it
+can therefore be used as a dictionary key or as an element of another
+set.</p>
+<p>The constructors for both classes work the same:</p>
+<p>class class set([iterable])
+class class frozenset([iterable])</p>
+<blockquote>
+<p>Return a new set or frozenset object whose elements are taken from
+<em>iterable</em>.  The elements of a set must be hashable.  To represent
+sets of sets, the inner sets must be <tt class="docutils literal"><span class="pre">frozenset</span></tt> objects.  If
+<em>iterable</em> is not specified, a new empty set is returned.</p>
+<p>Instances of <tt class="docutils literal"><span class="pre">set</span></tt> and <tt class="docutils literal"><span class="pre">frozenset</span></tt> provide the following
+operations:</p>
+<p>len(s)</p>
+<blockquote>
+Return the cardinality of set <em>s</em>.</blockquote>
+<p>x in s</p>
+<blockquote>
+Test <em>x</em> for membership in <em>s</em>.</blockquote>
+<p>x not in s</p>
+<blockquote>
+Test <em>x</em> for non-membership in <em>s</em>.</blockquote>
+<p>isdisjoint(other)</p>
+<blockquote>
+<p>Return True if the set has no elements in common with <em>other</em>.
+Sets are disjoint if and only if their intersection is the empty
+set.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>issubset(other)
+set &lt;= other</p>
+<blockquote>
+Test whether every element in the set is in <em>other</em>.</blockquote>
+<p>set &lt; other</p>
+<blockquote>
+Test whether the set is a true subset of <em>other</em>, that is, <tt class="docutils literal"><span class="pre">set</span>
+<span class="pre">&lt;=</span> <span class="pre">other</span> <span class="pre">and</span> <span class="pre">set</span> <span class="pre">!=</span> <span class="pre">other</span></tt>.</blockquote>
+<p>issuperset(other)
+set &gt;= other</p>
+<blockquote>
+Test whether every element in <em>other</em> is in the set.</blockquote>
+<p>set &gt; other</p>
+<blockquote>
+Test whether the set is a true superset of <em>other</em>, that is,
+<tt class="docutils literal"><span class="pre">set</span> <span class="pre">&gt;=</span> <span class="pre">other</span> <span class="pre">and</span> <span class="pre">set</span> <span class="pre">!=</span> <span class="pre">other</span></tt>.</blockquote>
+<p>union(other, ...)
+set | other | ...</p>
+<blockquote>
+<p>Return a new set with elements from the set and all others.</p>
+<p>Changed in version 2.6: Accepts multiple input iterables.</p>
+</blockquote>
+<p>intersection(other, ...)
+set &amp; other &amp; ...</p>
+<blockquote>
+<p>Return a new set with elements common to the set and all others.</p>
+<p>Changed in version 2.6: Accepts multiple input iterables.</p>
+</blockquote>
+<p>difference(other, ...)
+set - other - ...</p>
+<blockquote>
+<p>Return a new set with elements in the set that are not in the
+others.</p>
+<p>Changed in version 2.6: Accepts multiple input iterables.</p>
+</blockquote>
+<p>symmetric_difference(other)
+set ^ other</p>
+<blockquote>
+Return a new set with elements in either the set or <em>other</em> but
+not both.</blockquote>
+<p>copy()</p>
+<blockquote>
+Return a new set with a shallow copy of <em>s</em>.</blockquote>
+<p>Note, the non-operator versions of <tt class="docutils literal"><span class="pre">union()</span></tt>, <tt class="docutils literal"><span class="pre">intersection()</span></tt>,
+<tt class="docutils literal"><span class="pre">difference()</span></tt>, and <tt class="docutils literal"><span class="pre">symmetric_difference()</span></tt>, <tt class="docutils literal"><span class="pre">issubset()</span></tt>,
+and <tt class="docutils literal"><span class="pre">issuperset()</span></tt> methods will accept any iterable as an
+argument.  In contrast, their operator based counterparts require
+their arguments to be sets.  This precludes error-prone
+constructions like <tt class="docutils literal"><span class="pre">set('abc')</span> <span class="pre">&amp;</span> <span class="pre">'cbs'</span></tt> in favor of the more
+readable <tt class="docutils literal"><span class="pre">set('abc').intersection('cbs')</span></tt>.</p>
+<p>Both <tt class="docutils literal"><span class="pre">set</span></tt> and <tt class="docutils literal"><span class="pre">frozenset</span></tt> support set to set comparisons. Two
+sets are equal if and only if every element of each set is
+contained in the other (each is a subset of the other). A set is
+less than another set if and only if the first set is a proper
+subset of the second set (is a subset, but is not equal). A set is
+greater than another set if and only if the first set is a proper
+superset of the second set (is a superset, but is not equal).</p>
+<p>Instances of <tt class="docutils literal"><span class="pre">set</span></tt> are compared to instances of <tt class="docutils literal"><span class="pre">frozenset</span></tt>
+based on their members.  For example, <tt class="docutils literal"><span class="pre">set('abc')</span> <span class="pre">==</span>
+<span class="pre">frozenset('abc')</span></tt> returns <tt class="xref docutils literal"><span class="pre">True</span></tt> and so does <tt class="docutils literal"><span class="pre">set('abc')</span> <span class="pre">in</span>
+<span class="pre">set([frozenset('abc')])</span></tt>.</p>
+<p>The subset and equality comparisons do not generalize to a complete
+ordering function.  For example, any two disjoint sets are not
+equal and are not subsets of each other, so <em>all</em> of the following
+return <tt class="xref docutils literal"><span class="pre">False</span></tt>: <tt class="docutils literal"><span class="pre">a&lt;b</span></tt>, <tt class="docutils literal"><span class="pre">a==b</span></tt>, or <tt class="docutils literal"><span class="pre">a&gt;b</span></tt>. Accordingly, sets
+do not implement the <tt class="docutils literal"><span class="pre">__cmp__()</span></tt> method.</p>
+<p>Since sets only define partial ordering (subset relationships), the
+output of the <tt class="docutils literal"><span class="pre">list.sort()</span></tt> method is undefined for lists of
+sets.</p>
+<p>Set elements, like dictionary keys, must be <em>hashable</em>.</p>
+<p>Binary operations that mix <tt class="docutils literal"><span class="pre">set</span></tt> instances with <tt class="docutils literal"><span class="pre">frozenset</span></tt>
+return the type of the first operand.  For example:
+<tt class="docutils literal"><span class="pre">frozenset('ab')</span> <span class="pre">|</span> <span class="pre">set('bc')</span></tt> returns an instance of
+<tt class="docutils literal"><span class="pre">frozenset</span></tt>.</p>
+<p>The following table lists operations available for <tt class="docutils literal"><span class="pre">set</span></tt> that do
+not apply to immutable instances of <tt class="docutils literal"><span class="pre">frozenset</span></tt>:</p>
+<p>update(other, ...)
+set <a href="#id7"><span class="problematic" id="id8">|</span></a>= other | ...</p>
+<blockquote>
+<p>Update the set, adding elements from <em>other</em>.</p>
+<p>Changed in version 2.6: Accepts multiple input iterables.</p>
+</blockquote>
+<p>intersection_update(other, ...)
+set &amp;= other &amp; ...</p>
+<blockquote>
+<p>Update the set, keeping only elements found in it and <em>other</em>.</p>
+<p>Changed in version 2.6: Accepts multiple input iterables.</p>
+</blockquote>
+<p>difference_update(other, ...)
+set -= other | ...</p>
+<blockquote>
+<p>Update the set, removing elements found in others.</p>
+<p>Changed in version 2.6: Accepts multiple input iterables.</p>
+</blockquote>
+<p>symmetric_difference_update(other)
+set ^= other</p>
+<blockquote>
+Update the set, keeping only elements found in either set, but
+not in both.</blockquote>
+<p>add(elem)</p>
+<blockquote>
+Add element <em>elem</em> to the set.</blockquote>
+<p>remove(elem)</p>
+<blockquote>
+Remove element <em>elem</em> from the set.  Raises <tt class="docutils literal"><span class="pre">KeyError</span></tt> if
+<em>elem</em> is not contained in the set.</blockquote>
+<p>discard(elem)</p>
+<blockquote>
+Remove element <em>elem</em> from the set if it is present.</blockquote>
+<p>pop()</p>
+<blockquote>
+Remove and return an arbitrary element from the set.  Raises
+<tt class="docutils literal"><span class="pre">KeyError</span></tt> if the set is empty.</blockquote>
+<p>clear()</p>
+<blockquote>
+Remove all elements from the set.</blockquote>
+<p>Note, the non-operator versions of the <tt class="docutils literal"><span class="pre">update()</span></tt>,
+<tt class="docutils literal"><span class="pre">intersection_update()</span></tt>, <tt class="docutils literal"><span class="pre">difference_update()</span></tt>, and
+<tt class="docutils literal"><span class="pre">symmetric_difference_update()</span></tt> methods will accept any iterable
+as an argument.</p>
+<p>Note, the <em>elem</em> argument to the <tt class="docutils literal"><span class="pre">__contains__()</span></tt>, <tt class="docutils literal"><span class="pre">remove()</span></tt>,
+and <tt class="docutils literal"><span class="pre">discard()</span></tt> methods may be a set.  To support searching for
+an equivalent frozenset, the <em>elem</em> set is temporarily mutated
+during the search and then restored.  During the search, the <em>elem</em>
+set should not be read or mutated since it does not have a
+meaningful value.</p>
+</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt><em>Comparison to the built-in set types</em></dt>
+<dd>Differences between the <tt class="docutils literal"><span class="pre">sets</span></tt> module and the built-in set
+types.</dd>
+</dl>
+</blockquote>
+</div>
+<div class="section" id="mapping-types-dict">
+<h2>5.8. Mapping Types &#8212; <tt class="docutils literal"><span class="pre">dict</span></tt><a class="headerlink" href="#mapping-types-dict" title="Permalink to this headline">¶</a></h2>
+<p>A <em>mapping</em> object maps <em>hashable</em> values to arbitrary objects.
+Mappings are mutable objects.  There is currently only one standard
+mapping type, the <em>dictionary</em>.  (For other containers see the built
+in <tt class="docutils literal"><span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">set</span></tt>, and <tt class="docutils literal"><span class="pre">tuple</span></tt> classes, and the <tt class="docutils literal"><span class="pre">collections</span></tt>
+module.)</p>
+<p>A dictionary&#8217;s keys are <em>almost</em> arbitrary values.  Values that are
+not <em>hashable</em>, that is, values containing lists, dictionaries or
+other mutable types (that are compared by value rather than by object
+identity) may not be used as keys.  Numeric types used for keys obey
+the normal rules for numeric comparison: if two numbers compare equal
+(such as <tt class="docutils literal"><span class="pre">1</span></tt> and <tt class="docutils literal"><span class="pre">1.0</span></tt>) then they can be used interchangeably to
+index the same dictionary entry.  (Note however, that since computers
+store floating-point numbers as approximations it is usually unwise to
+use them as dictionary keys.)</p>
+<p>Dictionaries can be created by placing a comma-separated list of
+<tt class="docutils literal"><span class="pre">key:</span> <span class="pre">value</span></tt> pairs within braces, for example: <tt class="docutils literal"><span class="pre">{'jack':</span> <span class="pre">4098,</span>
+<span class="pre">'sjoerd':</span> <span class="pre">4127}</span></tt> or <tt class="docutils literal"><span class="pre">{4098:</span> <span class="pre">'jack',</span> <span class="pre">4127:</span> <span class="pre">'sjoerd'}</span></tt>, or by the
+<tt class="docutils literal"><span class="pre">dict</span></tt> constructor.</p>
+<p>class class dict([arg])</p>
+<blockquote>
+<p>Return a new dictionary initialized from an optional positional
+argument or from a set of keyword arguments. If no arguments are
+given, return a new empty dictionary. If the positional argument
+<em>arg</em> is a mapping object, return a dictionary mapping the same
+keys to the same values as does the mapping object. Otherwise the
+positional argument must be a sequence, a container that supports
+iteration, or an iterator object.  The elements of the argument
+must each also be of one of those kinds, and each must in turn
+contain exactly two objects. The first is used as a key in the new
+dictionary, and the second as the key&#8217;s value.  If a given key is
+seen more than once, the last value associated with it is retained
+in the new dictionary.</p>
+<p>If keyword arguments are given, the keywords themselves with their
+associated values are added as items to the dictionary. If a key is
+specified both in the positional argument and as a keyword
+argument, the value associated with the keyword is retained in the
+dictionary. For example, these all return a dictionary equal to
+<tt class="docutils literal"><span class="pre">{&quot;one&quot;:</span> <span class="pre">2,</span> <span class="pre">&quot;two&quot;:</span> <span class="pre">3}</span></tt>:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">dict(one=2,</span> <span class="pre">two=3)</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">dict({'one':</span> <span class="pre">2,</span> <span class="pre">'two':</span> <span class="pre">3})</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">dict(zip(('one',</span> <span class="pre">'two'),</span> <span class="pre">(2,</span> <span class="pre">3)))</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">dict([['two',</span> <span class="pre">3],</span> <span class="pre">['one',</span> <span class="pre">2]])</span></tt></li>
+</ul>
+<p>The first example only works for keys that are valid Python
+identifiers; the others work with any valid keys.</p>
+<p>New in version 2.2.</p>
+<p>Changed in version 2.3: Support for building a dictionary from
+keyword arguments added.</p>
+<p>These are the operations that dictionaries support (and therefore,
+custom mapping types should support too):</p>
+<p>len(d)</p>
+<blockquote>
+Return the number of items in the dictionary <em>d</em>.</blockquote>
+<p>d[key]</p>
+<blockquote>
+<p>Return the item of <em>d</em> with key <em>key</em>.  Raises a <tt class="docutils literal"><span class="pre">KeyError</span></tt> if
+<em>key</em> is not in the map.</p>
+<p>New in version 2.5: If a subclass of dict defines a method
+<tt class="docutils literal"><span class="pre">__missing__()</span></tt>, if the key <em>key</em> is not present, the
+<tt class="docutils literal"><span class="pre">d[key]</span></tt> operation calls that method with the key <em>key</em> as
+argument.  The <tt class="docutils literal"><span class="pre">d[key]</span></tt> operation then returns or raises
+whatever is returned or raised by the <tt class="docutils literal"><span class="pre">__missing__(key)</span></tt> call
+if the key is not present. No other operations or methods invoke
+<tt class="docutils literal"><span class="pre">__missing__()</span></tt>. If <tt class="docutils literal"><span class="pre">__missing__()</span></tt> is not defined,
+<tt class="docutils literal"><span class="pre">KeyError</span></tt> is raised.  <tt class="docutils literal"><span class="pre">__missing__()</span></tt> must be a method; it
+cannot be an instance variable. For an example, see
+<tt class="docutils literal"><span class="pre">collections.defaultdict</span></tt>.</p>
+</blockquote>
+<p>d[key] = value</p>
+<blockquote>
+Set <tt class="docutils literal"><span class="pre">d[key]</span></tt> to <em>value</em>.</blockquote>
+<p>del d[key]</p>
+<blockquote>
+Remove <tt class="docutils literal"><span class="pre">d[key]</span></tt> from <em>d</em>.  Raises a <tt class="docutils literal"><span class="pre">KeyError</span></tt> if <em>key</em> is
+not in the map.</blockquote>
+<p>key in d</p>
+<blockquote>
+<p>Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>d</em> has a key <em>key</em>, else <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>key not in d</p>
+<blockquote>
+<p>Equivalent to <tt class="docutils literal"><span class="pre">not</span> <span class="pre">key</span> <span class="pre">in</span> <span class="pre">d</span></tt>.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>iter(d)</p>
+<blockquote>
+Return an iterator over the keys of the dictionary.  This is a
+shortcut for <tt class="docutils literal"><span class="pre">iterkeys()</span></tt>.</blockquote>
+<p>clear()</p>
+<blockquote>
+Remove all items from the dictionary.</blockquote>
+<p>copy()</p>
+<blockquote>
+Return a shallow copy of the dictionary.</blockquote>
+<p>fromkeys(seq[, value])</p>
+<blockquote>
+<p>Create a new dictionary with keys from <em>seq</em> and values set to
+<em>value</em>.</p>
+<p><tt class="docutils literal"><span class="pre">fromkeys()</span></tt> is a class method that returns a new dictionary.
+<em>value</em> defaults to <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>get(key[, default])</p>
+<blockquote>
+Return the value for <em>key</em> if <em>key</em> is in the dictionary, else
+<em>default</em>. If <em>default</em> is not given, it defaults to <tt class="xref docutils literal"><span class="pre">None</span></tt>,
+so that this method never raises a <tt class="docutils literal"><span class="pre">KeyError</span></tt>.</blockquote>
+<p>has_key(key)</p>
+<blockquote>
+Test for the presence of <em>key</em> in the dictionary.  <tt class="docutils literal"><span class="pre">has_key()</span></tt>
+is deprecated in favor of <tt class="docutils literal"><span class="pre">key</span> <span class="pre">in</span> <span class="pre">d</span></tt>.</blockquote>
+<p>items()</p>
+<blockquote>
+<p>Return a copy of the dictionary&#8217;s list of <tt class="docutils literal"><span class="pre">(key,</span> <span class="pre">value)</span></tt>
+pairs.</p>
+<dl class="docutils">
+<dt>Note: Keys and values are listed in an arbitrary order which is non-</dt>
+<dd>random, varies across Python implementations, and depends on
+the dictionary&#8217;s history of insertions and deletions. If
+<tt class="docutils literal"><span class="pre">items()</span></tt>, <tt class="docutils literal"><span class="pre">keys()</span></tt>, <tt class="docutils literal"><span class="pre">values()</span></tt>, <tt class="docutils literal"><span class="pre">iteritems()</span></tt>,
+<tt class="docutils literal"><span class="pre">iterkeys()</span></tt>, and <tt class="docutils literal"><span class="pre">itervalues()</span></tt> are called with no
+intervening modifications to the dictionary, the lists will
+directly correspond.  This allows the creation of <tt class="docutils literal"><span class="pre">(value,</span>
+<span class="pre">key)</span></tt> pairs using <tt class="docutils literal"><span class="pre">zip()</span></tt>: <tt class="docutils literal"><span class="pre">pairs</span> <span class="pre">=</span> <span class="pre">zip(d.values(),</span>
+<span class="pre">d.keys())</span></tt>.  The same relationship holds for the
+<tt class="docutils literal"><span class="pre">iterkeys()</span></tt> and <tt class="docutils literal"><span class="pre">itervalues()</span></tt> methods: <tt class="docutils literal"><span class="pre">pairs</span> <span class="pre">=</span>
+<span class="pre">zip(d.itervalues(),</span> <span class="pre">d.iterkeys())</span></tt> provides the same value
+for <tt class="docutils literal"><span class="pre">pairs</span></tt>. Another way to create the same list is <tt class="docutils literal"><span class="pre">pairs</span>
+<span class="pre">=</span> <span class="pre">[(v,</span> <span class="pre">k)</span> <span class="pre">for</span> <span class="pre">(k,</span> <span class="pre">v)</span> <span class="pre">in</span> <span class="pre">d.iteritems()]</span></tt>.</dd>
+</dl>
+</blockquote>
+<p>iteritems()</p>
+<blockquote>
+<p>Return an iterator over the dictionary&#8217;s <tt class="docutils literal"><span class="pre">(key,</span> <span class="pre">value)</span></tt> pairs.
+See the note for <tt class="docutils literal"><span class="pre">dict.items()</span></tt>.</p>
+<p>Using <tt class="docutils literal"><span class="pre">iteritems()</span></tt> while adding or deleting entries in the
+dictionary may raise a <tt class="docutils literal"><span class="pre">RuntimeError</span></tt> or fail to iterate over
+all entries.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>iterkeys()</p>
+<blockquote>
+<p>Return an iterator over the dictionary&#8217;s keys.  See the note for
+<tt class="docutils literal"><span class="pre">dict.items()</span></tt>.</p>
+<p>Using <tt class="docutils literal"><span class="pre">iterkeys()</span></tt> while adding or deleting entries in the
+dictionary may raise a <tt class="docutils literal"><span class="pre">RuntimeError</span></tt> or fail to iterate over
+all entries.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>itervalues()</p>
+<blockquote>
+<p>Return an iterator over the dictionary&#8217;s values.  See the note
+for <tt class="docutils literal"><span class="pre">dict.items()</span></tt>.</p>
+<p>Using <tt class="docutils literal"><span class="pre">itervalues()</span></tt> while adding or deleting entries in the
+dictionary may raise a <tt class="docutils literal"><span class="pre">RuntimeError</span></tt> or fail to iterate over
+all entries.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>keys()</p>
+<blockquote>
+Return a copy of the dictionary&#8217;s list of keys.  See the note
+for <tt class="docutils literal"><span class="pre">dict.items()</span></tt>.</blockquote>
+<p>pop(key[, default])</p>
+<blockquote>
+<p>If <em>key</em> is in the dictionary, remove it and return its value,
+else return <em>default</em>.  If <em>default</em> is not given and <em>key</em> is
+not in the dictionary, a <tt class="docutils literal"><span class="pre">KeyError</span></tt> is raised.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>popitem()</p>
+<blockquote>
+<p>Remove and return an arbitrary <tt class="docutils literal"><span class="pre">(key,</span> <span class="pre">value)</span></tt> pair from the
+dictionary.</p>
+<p><tt class="docutils literal"><span class="pre">popitem()</span></tt> is useful to destructively iterate over a
+dictionary, as often used in set algorithms.  If the dictionary
+is empty, calling <tt class="docutils literal"><span class="pre">popitem()</span></tt> raises a <tt class="docutils literal"><span class="pre">KeyError</span></tt>.</p>
+</blockquote>
+<p>setdefault(key[, default])</p>
+<blockquote>
+If <em>key</em> is in the dictionary, return its value.  If not, insert
+<em>key</em> with a value of <em>default</em> and return <em>default</em>.  <em>default</em>
+defaults to <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>update([other])</p>
+<blockquote>
+<p>Update the dictionary with the key/value pairs from <em>other</em>,
+overwriting existing keys.  Return <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">update()</span></tt> accepts either another dictionary object or an
+iterable of key/value pairs (as a tuple or other iterable of
+length two).  If keyword arguments are specified, the dictionary
+is then is updated with those key/value pairs: <tt class="docutils literal"><span class="pre">d.update(red=1,</span>
+<span class="pre">blue=2)</span></tt>.</p>
+<p>Changed in version 2.4: Allowed the argument to be an iterable
+of key/value pairs and allowed keyword arguments.</p>
+</blockquote>
+<p>values()</p>
+<blockquote>
+Return a copy of the dictionary&#8217;s list of values.  See the note
+for <tt class="docutils literal"><span class="pre">dict.items()</span></tt>.</blockquote>
+</blockquote>
+</div>
+<div class="section" id="file-objects">
+<h2>5.9. File Objects<a class="headerlink" href="#file-objects" title="Permalink to this headline">¶</a></h2>
+<p>File objects are implemented using C&#8217;s <tt class="docutils literal"><span class="pre">stdio</span></tt> package and can be
+created with the built-in <tt class="docutils literal"><span class="pre">open()</span></tt> function.  File objects are also
+returned by some other built-in functions and methods, such as
+<tt class="docutils literal"><span class="pre">os.popen()</span></tt> and <tt class="docutils literal"><span class="pre">os.fdopen()</span></tt> and the <tt class="docutils literal"><span class="pre">makefile()</span></tt> method of
+socket objects. Temporary files can be created using the <tt class="docutils literal"><span class="pre">tempfile</span></tt>
+module, and high-level file operations such as copying, moving, and
+deleting files and directories can be achieved with the <tt class="docutils literal"><span class="pre">shutil</span></tt>
+module.</p>
+<p>When a file operation fails for an I/O-related reason, the exception
+<tt class="docutils literal"><span class="pre">IOError</span></tt> is raised.  This includes situations where the operation
+is not defined for some reason, like <tt class="docutils literal"><span class="pre">seek()</span></tt> on a tty device or
+writing a file opened for reading.</p>
+<p>Files have the following methods:</p>
+<p>file.close()</p>
+<blockquote>
+<p>Close the file.  A closed file cannot be read or written any more.
+Any operation which requires that the file be open will raise a
+<tt class="docutils literal"><span class="pre">ValueError</span></tt> after the file has been closed.  Calling <tt class="docutils literal"><span class="pre">close()</span></tt>
+more than once is allowed.</p>
+<p>As of Python 2.5, you can avoid having to call this method
+explicitly if you use the <tt class="docutils literal"><span class="pre">with</span></tt> statement.  For example, the
+following code will automatically close <em>f</em> when the <tt class="docutils literal"><span class="pre">with</span></tt> block
+is exited:</p>
+<blockquote>
+<p>from __future__ import with_statement # This isn&#8217;t required in Python 2.6</p>
+<dl class="docutils">
+<dt>with open(&#8220;hello.txt&#8221;) as f:</dt>
+<dd><dl class="first last docutils">
+<dt>for line in f:</dt>
+<dd>print line</dd>
+</dl>
+</dd>
+</dl>
+</blockquote>
+<p>In older versions of Python, you would have needed to do this to
+get the same effect:</p>
+<blockquote>
+<p>f = open(&#8220;hello.txt&#8221;)
+try:</p>
+<blockquote>
+<dl class="docutils">
+<dt>for line in f:</dt>
+<dd>print line</dd>
+</dl>
+</blockquote>
+<dl class="docutils">
+<dt>finally:</dt>
+<dd>f.close()</dd>
+</dl>
+</blockquote>
+<dl class="docutils">
+<dt>Note: Not all &#8220;file-like&#8221; types in Python support use as a context</dt>
+<dd>manager for the <tt class="docutils literal"><span class="pre">with</span></tt> statement.  If your code is intended to
+work with any file-like object, you can use the function
+<tt class="docutils literal"><span class="pre">contextlib.closing()</span></tt> instead of using the object directly.</dd>
+</dl>
+</blockquote>
+<p>file.flush()</p>
+<blockquote>
+Flush the internal buffer, like <tt class="docutils literal"><span class="pre">stdio</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">fflush()</span></tt>.  This may
+be a no-op on some file-like objects.</blockquote>
+<p>file.fileno()</p>
+<blockquote>
+<p>Return the integer &#8220;file descriptor&#8221; that is used by the underlying
+implementation to request I/O operations from the operating system.
+This can be useful for other, lower level interfaces that use file
+descriptors, such as the <tt class="docutils literal"><span class="pre">fcntl</span></tt> module or <tt class="docutils literal"><span class="pre">os.read()</span></tt> and
+friends.</p>
+<dl class="docutils">
+<dt>Note: File-like objects which do not have a real file descriptor should</dt>
+<dd><em>not</em> provide this method!</dd>
+</dl>
+</blockquote>
+<p>file.isatty()</p>
+<blockquote>
+<p>Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the file is connected to a tty(-like) device,
+else <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dl class="docutils">
+<dt>Note: If a file-like object is not associated with a real file, this</dt>
+<dd>method should <em>not</em> be implemented.</dd>
+</dl>
+</blockquote>
+<p>file.next()</p>
+<blockquote>
+<p>A file object is its own iterator, for example <tt class="docutils literal"><span class="pre">iter(f)</span></tt> returns
+<em>f</em> (unless <em>f</em> is closed).  When a file is used as an iterator,
+typically in a <tt class="docutils literal"><span class="pre">for</span></tt> loop (for example, <tt class="docutils literal"><span class="pre">for</span> <span class="pre">line</span> <span class="pre">in</span> <span class="pre">f:</span> <span class="pre">print</span>
+<span class="pre">line</span></tt>), the <tt class="docutils literal"><span class="pre">next()</span></tt> method is called repeatedly.  This method
+returns the next input line, or raises <tt class="docutils literal"><span class="pre">StopIteration</span></tt> when EOF
+is hit when the file is open for reading (behavior is undefined
+when the file is open for writing).  In order to make a <tt class="docutils literal"><span class="pre">for</span></tt>
+loop the most efficient way of looping over the lines of a file (a
+very common operation), the <tt class="docutils literal"><span class="pre">next()</span></tt> method uses a hidden read-
+ahead buffer.  As a consequence of using a read-ahead buffer,
+combining <tt class="docutils literal"><span class="pre">next()</span></tt> with other file methods (like <tt class="docutils literal"><span class="pre">readline()</span></tt>)
+does not work right.  However, using <tt class="docutils literal"><span class="pre">seek()</span></tt> to reposition the
+file to an absolute position will flush the read-ahead buffer.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>file.read([size])</p>
+<blockquote>
+<p>Read at most <em>size</em> bytes from the file (less if the read hits EOF
+before obtaining <em>size</em> bytes).  If the <em>size</em> argument is negative
+or omitted, read all data until EOF is reached.  The bytes are
+returned as a string object.  An empty string is returned when EOF
+is encountered immediately.  (For certain files, like ttys, it
+makes sense to continue reading after an EOF is hit.)  Note that
+this method may call the underlying C function <tt class="docutils literal"><span class="pre">fread()</span></tt> more
+than once in an effort to acquire as close to <em>size</em> bytes as
+possible. Also note that when in non-blocking mode, less data than
+was requested may be returned, even if no <em>size</em> parameter was
+given.</p>
+<dl class="docutils">
+<dt>Note: This function is simply a wrapper for the underlying <tt class="docutils literal"><span class="pre">fread()</span></tt></dt>
+<dd>C function, and will behave the same in corner cases, such as
+whether the EOF value is cached.</dd>
+</dl>
+</blockquote>
+<p>file.readline([size])</p>
+<blockquote>
+<p>Read one entire line from the file.  A trailing newline character
+is kept in the string (but may be absent when a file ends with an
+incomplete line). [6]  If the <em>size</em> argument is present and non-
+negative, it is a maximum byte count (including the trailing
+newline) and an incomplete line may be returned. An empty string is
+returned <em>only</em> when EOF is encountered immediately.</p>
+<dl class="docutils">
+<dt>Note: Unlike <tt class="docutils literal"><span class="pre">stdio</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">fgets()</span></tt>, the returned string contains null</dt>
+<dd>characters (<tt class="docutils literal"><span class="pre">'\0'</span></tt>) if they occurred in the input.</dd>
+</dl>
+</blockquote>
+<p>file.readlines([sizehint])</p>
+<blockquote>
+Read until EOF using <tt class="docutils literal"><span class="pre">readline()</span></tt> and return a list containing
+the lines thus read.  If the optional <em>sizehint</em> argument is
+present, instead of reading up to EOF, whole lines totalling
+approximately <em>sizehint</em> bytes (possibly after rounding up to an
+internal buffer size) are read.  Objects implementing a file-like
+interface may choose to ignore <em>sizehint</em> if it cannot be
+implemented, or cannot be implemented efficiently.</blockquote>
+<p>file.xreadlines()</p>
+<blockquote>
+<p>This method returns the same thing as <tt class="docutils literal"><span class="pre">iter(f)</span></tt>.</p>
+<p>New in version 2.1.</p>
+<p>Deprecated since version 2.3: Use <tt class="docutils literal"><span class="pre">for</span> <span class="pre">line</span> <span class="pre">in</span> <span class="pre">file</span></tt> instead.</p>
+</blockquote>
+<p>file.seek(offset[, whence])</p>
+<blockquote>
+<p>Set the file&#8217;s current position, like <tt class="docutils literal"><span class="pre">stdio</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">fseek()</span></tt>. The
+<em>whence</em> argument is optional and defaults to  <tt class="docutils literal"><span class="pre">os.SEEK_SET</span></tt> or
+<tt class="docutils literal"><span class="pre">0</span></tt> (absolute file positioning); other values are <tt class="docutils literal"><span class="pre">os.SEEK_CUR</span></tt>
+or <tt class="docutils literal"><span class="pre">1</span></tt> (seek relative to the current position) and
+<tt class="docutils literal"><span class="pre">os.SEEK_END</span></tt> or <tt class="docutils literal"><span class="pre">2</span></tt>  (seek relative to the file&#8217;s end).  There
+is no return value.</p>
+<p>For example, <tt class="docutils literal"><span class="pre">f.seek(2,</span> <span class="pre">os.SEEK_CUR)</span></tt> advances the position by
+two and <tt class="docutils literal"><span class="pre">f.seek(-3,</span> <span class="pre">os.SEEK_END)</span></tt> sets the position to the third
+to last.</p>
+<p>Note that if the file is opened for appending (mode <tt class="docutils literal"><span class="pre">'a'</span></tt> or
+<tt class="docutils literal"><span class="pre">'a+'</span></tt>), any <tt class="docutils literal"><span class="pre">seek()</span></tt> operations will be undone at the next
+write.  If the file is only opened for writing in append mode (mode
+<tt class="docutils literal"><span class="pre">'a'</span></tt>), this method is essentially a no-op, but it remains useful
+for files opened in append mode with reading enabled (mode
+<tt class="docutils literal"><span class="pre">'a+'</span></tt>).  If the file is opened in text mode (without <tt class="docutils literal"><span class="pre">'b'</span></tt>),
+only offsets returned by <tt class="docutils literal"><span class="pre">tell()</span></tt> are legal.  Use of other
+offsets causes undefined behavior.</p>
+<p>Note that not all file objects are seekable.</p>
+<p>Changed in version 2.6: Passing float values as offset has been
+deprecated.</p>
+</blockquote>
+<p>file.tell()</p>
+<blockquote>
+<p>Return the file&#8217;s current position, like <tt class="docutils literal"><span class="pre">stdio</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">ftell()</span></tt>.</p>
+<dl class="docutils">
+<dt>Note: On Windows, <tt class="docutils literal"><span class="pre">tell()</span></tt> can return illegal values (after an</dt>
+<dd><tt class="docutils literal"><span class="pre">fgets()</span></tt>) when reading files with Unix-style line-endings. Use
+binary mode (<tt class="docutils literal"><span class="pre">'rb'</span></tt>) to circumvent this problem.</dd>
+</dl>
+</blockquote>
+<p>file.truncate([size])</p>
+<blockquote>
+Truncate the file&#8217;s size.  If the optional <em>size</em> argument is
+present, the file is truncated to (at most) that size.  The size
+defaults to the current position. The current file position is not
+changed.  Note that if a specified size exceeds the file&#8217;s current
+size, the result is platform-dependent:  possibilities include that
+the file may remain unchanged, increase to the specified size as if
+zero-filled, or increase to the specified size with undefined new
+content. Availability:  Windows, many Unix variants.</blockquote>
+<p>file.write(str)</p>
+<blockquote>
+Write a string to the file.  There is no return value.  Due to
+buffering, the string may not actually show up in the file until
+the <tt class="docutils literal"><span class="pre">flush()</span></tt> or <tt class="docutils literal"><span class="pre">close()</span></tt> method is called.</blockquote>
+<p>file.writelines(sequence)</p>
+<blockquote>
+Write a sequence of strings to the file.  The sequence can be any
+iterable object producing strings, typically a list of strings.
+There is no return value. (The name is intended to match
+<tt class="docutils literal"><span class="pre">readlines()</span></tt>; <tt class="docutils literal"><span class="pre">writelines()</span></tt> does not add line separators.)</blockquote>
+<p>Files support the iterator protocol.  Each iteration returns the same
+result as <tt class="docutils literal"><span class="pre">file.readline()</span></tt>, and iteration ends when the
+<tt class="docutils literal"><span class="pre">readline()</span></tt> method returns an empty string.</p>
+<p>File objects also offer a number of other interesting attributes.
+These are not required for file-like objects, but should be
+implemented if they make sense for the particular object.</p>
+<p>file.closed</p>
+<blockquote>
+bool indicating the current state of the file object.  This is a
+read-only attribute; the <tt class="docutils literal"><span class="pre">close()</span></tt> method changes the value. It
+may not be available on all file-like objects.</blockquote>
+<p>file.encoding</p>
+<blockquote>
+<p>The encoding that this file uses. When Unicode strings are written
+to a file, they will be converted to byte strings using this
+encoding. In addition, when the file is connected to a terminal,
+the attribute gives the encoding that the terminal is likely to use
+(that  information might be incorrect if the user has misconfigured
+the  terminal). The attribute is read-only and may not be present
+on all file-like objects. It may also be <tt class="xref docutils literal"><span class="pre">None</span></tt>, in which case
+the file uses the system default encoding for converting Unicode
+strings.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>file.errors</p>
+<blockquote>
+<p>The Unicode error handler used along with the encoding.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>file.mode</p>
+<blockquote>
+The I/O mode for the file.  If the file was created using the
+<tt class="docutils literal"><span class="pre">open()</span></tt> built-in function, this will be the value of the <em>mode</em>
+parameter.  This is a read-only attribute and may not be present on
+all file-like objects.</blockquote>
+<p>file.name</p>
+<blockquote>
+If the file object was created using <tt class="docutils literal"><span class="pre">open()</span></tt>, the name of the
+file. Otherwise, some string that indicates the source of the file
+object, of the form <tt class="docutils literal"><span class="pre">&lt;...&gt;</span></tt>.  This is a read-only attribute and
+may not be present on all file-like objects.</blockquote>
+<p>file.newlines</p>
+<blockquote>
+If Python was built with the <em>&#8211;with-universal-newlines</em> option to
+<strong>configure</strong> (the default) this read-only attribute exists, and
+for files opened in universal newline read mode it keeps track of
+the types of newlines encountered while reading the file. The
+values it can take are <tt class="docutils literal"><span class="pre">'\r'</span></tt>, <tt class="docutils literal"><span class="pre">'\n'</span></tt>, <tt class="docutils literal"><span class="pre">'\r\n'</span></tt>, <tt class="xref docutils literal"><span class="pre">None</span></tt>
+(unknown, no newlines read yet) or a tuple containing all the
+newline types seen, to indicate that multiple newline conventions
+were encountered. For files not opened in universal newline read
+mode the value of this attribute will be <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>file.softspace</p>
+<blockquote>
+<p>Boolean that indicates whether a space character needs to be
+printed before another value when using the <tt class="docutils literal"><span class="pre">print</span></tt> statement.
+Classes that are trying to simulate a file object should also have
+a writable <tt class="docutils literal"><span class="pre">softspace</span></tt> attribute, which should be initialized to
+zero.  This will be automatic for most classes implemented in
+Python (care may be needed for objects that override attribute
+access); types implemented in C will have to provide a writable
+<tt class="docutils literal"><span class="pre">softspace</span></tt> attribute.</p>
+<dl class="docutils">
+<dt>Note: This attribute is not used to control the <tt class="docutils literal"><span class="pre">print</span></tt> statement,</dt>
+<dd>but to allow the implementation of <tt class="docutils literal"><span class="pre">print</span></tt> to keep track of its
+internal state.</dd>
+</dl>
+</blockquote>
+</div>
+<div class="section" id="context-manager-types">
+<h2>5.10. Context Manager Types<a class="headerlink" href="#context-manager-types" title="Permalink to this headline">¶</a></h2>
+<p>New in version 2.5.</p>
+<p>Python&#8217;s <tt class="docutils literal"><span class="pre">with</span></tt> statement supports the concept of a runtime context
+defined by a context manager.  This is implemented using two separate
+methods that allow user-defined classes to define a runtime context
+that is entered before the statement body is executed and exited when
+the statement ends.</p>
+<p>The <em>context management protocol</em> consists of a pair of methods that
+need to be provided for a context manager object to define a runtime
+context:</p>
+<p>contextmanager.__enter__()</p>
+<blockquote>
+<p>Enter the runtime context and return either this object or another
+object related to the runtime context. The value returned by this
+method is bound to the identifier in the <tt class="docutils literal"><span class="pre">as</span></tt> clause of <tt class="docutils literal"><span class="pre">with</span></tt>
+statements using this context manager.</p>
+<p>An example of a context manager that returns itself is a file
+object. File objects return themselves from __enter__() to allow
+<tt class="docutils literal"><span class="pre">open()</span></tt> to be used as the context expression in a <tt class="docutils literal"><span class="pre">with</span></tt>
+statement.</p>
+<p>An example of a context manager that returns a related object is
+the one returned by <tt class="docutils literal"><span class="pre">decimal.localcontext()</span></tt>. These managers set
+the active decimal context to a copy of the original decimal
+context and then return the copy. This allows changes to be made to
+the current decimal context in the body of the <tt class="docutils literal"><span class="pre">with</span></tt> statement
+without affecting code outside the <tt class="docutils literal"><span class="pre">with</span></tt> statement.</p>
+</blockquote>
+<p>contextmanager.__exit__(exc_type, exc_val, exc_tb)</p>
+<blockquote>
+<p>Exit the runtime context and return a Boolean flag indicating if
+any exception that occurred should be suppressed. If an exception
+occurred while executing the body of the <tt class="docutils literal"><span class="pre">with</span></tt> statement, the
+arguments contain the exception type, value and traceback
+information. Otherwise, all three arguments are <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<p>Returning a true value from this method will cause the <tt class="docutils literal"><span class="pre">with</span></tt>
+statement to suppress the exception and continue execution with the
+statement immediately following the <tt class="docutils literal"><span class="pre">with</span></tt> statement. Otherwise
+the exception continues propagating after this method has finished
+executing. Exceptions that occur during execution of this method
+will replace any exception that occurred in the body of the
+<tt class="docutils literal"><span class="pre">with</span></tt> statement.</p>
+<p>The exception passed in should never be reraised explicitly -
+instead, this method should return a false value to indicate that
+the method completed successfully and does not want to suppress the
+raised exception. This allows context management code (such as
+<tt class="docutils literal"><span class="pre">contextlib.nested</span></tt>) to easily detect whether or not an
+<tt class="docutils literal"><span class="pre">__exit__()</span></tt> method has actually failed.</p>
+</blockquote>
+<p>Python defines several context managers to support easy thread
+synchronisation, prompt closure of files or other objects, and simpler
+manipulation of the active decimal arithmetic context. The specific
+types are not treated specially beyond their implementation of the
+context management protocol. See the <tt class="docutils literal"><span class="pre">contextlib</span></tt> module for some
+examples.</p>
+<p>Python&#8217;s <em>generator*s and the ``contextlib.contextfactory``
+*decorator</em> provide a convenient way to implement these protocols.  If
+a generator function is decorated with the
+<tt class="docutils literal"><span class="pre">contextlib.contextfactory</span></tt> decorator, it will return a context
+manager implementing the necessary <tt class="docutils literal"><span class="pre">__enter__()</span></tt> and <tt class="docutils literal"><span class="pre">__exit__()</span></tt>
+methods, rather than the iterator produced by an undecorated generator
+function.</p>
+<p>Note that there is no specific slot for any of these methods in the
+type structure for Python objects in the Python/C API. Extension types
+wanting to define these methods must provide them as a normal Python
+accessible method. Compared to the overhead of setting up the runtime
+context, the overhead of a single class dictionary lookup is
+negligible.</p>
+</div>
+<div class="section" id="other-built-in-types">
+<h2>5.11. Other Built-in Types<a class="headerlink" href="#other-built-in-types" title="Permalink to this headline">¶</a></h2>
+<p>The interpreter supports several other kinds of objects. Most of these
+support only one or two operations.</p>
+<div class="section" id="modules">
+<h3>5.11.1. Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h3>
+<p>The only special operation on a module is attribute access:
+<tt class="docutils literal"><span class="pre">m.name</span></tt>, where <em>m</em> is a module and <em>name</em> accesses a name defined
+in <em>m</em>&#8216;s symbol table. Module attributes can be assigned to.  (Note
+that the <tt class="docutils literal"><span class="pre">import</span></tt> statement is not, strictly speaking, an operation
+on a module object; <tt class="docutils literal"><span class="pre">import</span> <span class="pre">foo</span></tt> does not require a module object
+named <em>foo</em> to exist, rather it requires an (external) <em>definition</em>
+for a module named <em>foo</em> somewhere.)</p>
+<p>A special member of every module is <tt class="docutils literal"><span class="pre">__dict__</span></tt>. This is the
+dictionary containing the module&#8217;s symbol table. Modifying this
+dictionary will actually change the module&#8217;s symbol table, but direct
+assignment to the <tt class="docutils literal"><span class="pre">__dict__</span></tt> attribute is not possible (you can
+write <tt class="docutils literal"><span class="pre">m.__dict__['a']</span> <span class="pre">=</span> <span class="pre">1</span></tt>, which defines <tt class="docutils literal"><span class="pre">m.a</span></tt> to be <tt class="docutils literal"><span class="pre">1</span></tt>, but
+you can&#8217;t write <tt class="docutils literal"><span class="pre">m.__dict__</span> <span class="pre">=</span> <span class="pre">{}</span></tt>).  Modifying <tt class="docutils literal"><span class="pre">__dict__</span></tt> directly
+is not recommended.</p>
+<p>Modules built into the interpreter are written like this: <tt class="docutils literal"><span class="pre">&lt;module</span>
+<span class="pre">'sys'</span> <span class="pre">(built-in)&gt;</span></tt>.  If loaded from a file, they are written as
+<tt class="docutils literal"><span class="pre">&lt;module</span> <span class="pre">'os'</span> <span class="pre">from</span> <span class="pre">'/usr/local/lib/pythonX.Y/os.pyc'&gt;</span></tt>.</p>
+</div>
+<div class="section" id="classes-and-class-instances">
+<h3>5.11.2. Classes and Class Instances<a class="headerlink" href="#classes-and-class-instances" title="Permalink to this headline">¶</a></h3>
+<p>See <em>Objects, values and types</em> and <em>Class definitions</em> for these.</p>
+</div>
+<div class="section" id="functions">
+<h3>5.11.3. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<p>Function objects are created by function definitions.  The only
+operation on a function object is to call it: <tt class="docutils literal"><span class="pre">func(argument-list)</span></tt>.</p>
+<p>There are really two flavors of function objects: built-in functions
+and user-defined functions.  Both support the same operation (to call
+the function), but the implementation is different, hence the
+different object types.</p>
+<p>See <em>Function definitions</em> for more information.</p>
+</div>
+<div class="section" id="methods">
+<h3>5.11.4. Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h3>
+<p>Methods are functions that are called using the attribute notation.
+There are two flavors: built-in methods (such as <tt class="docutils literal"><span class="pre">append()</span></tt> on
+lists) and class instance methods.  Built-in methods are described
+with the types that support them.</p>
+<p>The implementation adds two special read-only attributes to class
+instance methods: <tt class="docutils literal"><span class="pre">m.im_self</span></tt> is the object on which the method
+operates, and <tt class="docutils literal"><span class="pre">m.im_func</span></tt> is the function implementing the method.
+Calling <tt class="docutils literal"><span class="pre">m(arg-1,</span> <span class="pre">arg-2,</span> <span class="pre">...,</span> <span class="pre">arg-n)</span></tt> is completely equivalent to
+calling <tt class="docutils literal"><span class="pre">m.im_func(m.im_self,</span> <span class="pre">arg-1,</span> <span class="pre">arg-2,</span> <span class="pre">...,</span> <span class="pre">arg-n)</span></tt>.</p>
+<p>Class instance methods are either <em>bound</em> or <em>unbound</em>, referring to
+whether the method was accessed through an instance or a class,
+respectively.  When a method is unbound, its <tt class="docutils literal"><span class="pre">im_self</span></tt> attribute
+will be <tt class="xref docutils literal"><span class="pre">None</span></tt> and if called, an explicit <tt class="docutils literal"><span class="pre">self</span></tt> object must be
+passed as the first argument.  In this case, <tt class="docutils literal"><span class="pre">self</span></tt> must be an
+instance of the unbound method&#8217;s class (or a subclass of that class),
+otherwise a <tt class="docutils literal"><span class="pre">TypeError</span></tt> is raised.</p>
+<p>Like function objects, methods objects support getting arbitrary
+attributes. However, since method attributes are actually stored on
+the underlying function object (<tt class="docutils literal"><span class="pre">meth.im_func</span></tt>), setting method
+attributes on either bound or unbound methods is disallowed.
+Attempting to set a method attribute results in a <tt class="docutils literal"><span class="pre">TypeError</span></tt> being
+raised.  In order to set a method attribute, you need to explicitly
+set it on the underlying function object:</p>
+<blockquote>
+<dl class="docutils">
+<dt>class C:</dt>
+<dd><dl class="first last docutils">
+<dt>def method(self):</dt>
+<dd>pass</dd>
+</dl>
+</dd>
+</dl>
+<p>c = C()
+c.method.im_func.whoami = &#8216;my name is c&#8217;</p>
+</blockquote>
+<p>See <em>The standard type hierarchy</em> for more information.</p>
+</div>
+<div class="section" id="code-objects">
+<h3>5.11.5. Code Objects<a class="headerlink" href="#code-objects" title="Permalink to this headline">¶</a></h3>
+<p>Code objects are used by the implementation to represent &#8220;pseudo-
+compiled&#8221; executable Python code such as a function body. They differ
+from function objects because they don&#8217;t contain a reference to their
+global execution environment.  Code objects are returned by the built-
+in <tt class="docutils literal"><span class="pre">compile()</span></tt> function and can be extracted from function objects
+through their <tt class="docutils literal"><span class="pre">func_code</span></tt> attribute. See also the <tt class="docutils literal"><span class="pre">code</span></tt> module.</p>
+<p>A code object can be executed or evaluated by passing it (instead of a
+source string) to the <tt class="docutils literal"><span class="pre">exec</span></tt> statement or the built-in <tt class="docutils literal"><span class="pre">eval()</span></tt>
+function.</p>
+<p>See <em>The standard type hierarchy</em> for more information.</p>
+</div>
+<div class="section" id="type-objects">
+<h3>5.11.6. Type Objects<a class="headerlink" href="#type-objects" title="Permalink to this headline">¶</a></h3>
+<p>Type objects represent the various object types.  An object&#8217;s type is
+accessed by the built-in function <tt class="docutils literal"><span class="pre">type()</span></tt>.  There are no special
+operations on types.  The standard module <tt class="docutils literal"><span class="pre">types</span></tt> defines names for
+all standard built-in types.</p>
+<p>Types are written like this: <tt class="docutils literal"><span class="pre">&lt;type</span> <span class="pre">'int'&gt;</span></tt>.</p>
+</div>
+<div class="section" id="the-null-object">
+<h3>5.11.7. The Null Object<a class="headerlink" href="#the-null-object" title="Permalink to this headline">¶</a></h3>
+<p>This object is returned by functions that don&#8217;t explicitly return a
+value.  It supports no special operations.  There is exactly one null
+object, named <tt class="xref docutils literal"><span class="pre">None</span></tt> (a built-in name).</p>
+<p>It is written as <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+</div>
+<div class="section" id="the-ellipsis-object">
+<h3>5.11.8. The Ellipsis Object<a class="headerlink" href="#the-ellipsis-object" title="Permalink to this headline">¶</a></h3>
+<p>This object is used by extended slice notation (see <em>Slicings</em>).  It
+supports no special operations.  There is exactly one ellipsis object,
+named <tt class="docutils literal"><span class="pre">Ellipsis</span></tt> (a built-in name).</p>
+<p>It is written as <tt class="docutils literal"><span class="pre">Ellipsis</span></tt>.</p>
+</div>
+<div class="section" id="boolean-values">
+<h3>5.11.9. Boolean Values<a class="headerlink" href="#boolean-values" title="Permalink to this headline">¶</a></h3>
+<p>Boolean values are the two constant objects <tt class="xref docutils literal"><span class="pre">False</span></tt> and <tt class="xref docutils literal"><span class="pre">True</span></tt>.
+They are used to represent truth values (although other values can
+also be considered false or true).  In numeric contexts (for example
+when used as the argument to an arithmetic operator), they behave like
+the integers 0 and 1, respectively. The built-in function <tt class="docutils literal"><span class="pre">bool()</span></tt>
+can be used to cast any value to a Boolean, if the value can be
+interpreted as a truth value (see section Truth Value Testing above).</p>
+<p>They are written as <tt class="xref docutils literal"><span class="pre">False</span></tt> and <tt class="xref docutils literal"><span class="pre">True</span></tt>, respectively.</p>
+</div>
+<div class="section" id="internal-objects">
+<h3>5.11.10. Internal Objects<a class="headerlink" href="#internal-objects" title="Permalink to this headline">¶</a></h3>
+<p>See <em>The standard type hierarchy</em> for this information.  It describes
+stack frame objects, traceback objects, and slice objects.</p>
+</div>
+</div>
+<div class="section" id="special-attributes">
+<h2>5.12. Special Attributes<a class="headerlink" href="#special-attributes" title="Permalink to this headline">¶</a></h2>
+<p>The implementation adds a few special read-only attributes to several
+object types, where they are relevant.  Some of these are not reported
+by the <tt class="docutils literal"><span class="pre">dir()</span></tt> built-in function.</p>
+<p>object.__dict__</p>
+<blockquote>
+A dictionary or other mapping object used to store an object&#8217;s
+(writable) attributes.</blockquote>
+<p>object.__methods__</p>
+<blockquote>
+Deprecated since version 2.2: Use the built-in function <tt class="docutils literal"><span class="pre">dir()</span></tt>
+to get a list of an object&#8217;s attributes. This attribute is no
+longer available.</blockquote>
+<p>object.__members__</p>
+<blockquote>
+Deprecated since version 2.2: Use the built-in function <tt class="docutils literal"><span class="pre">dir()</span></tt>
+to get a list of an object&#8217;s attributes. This attribute is no
+longer available.</blockquote>
+<p>instance.__class__</p>
+<blockquote>
+The class to which a class instance belongs.</blockquote>
+<p>class.__bases__</p>
+<blockquote>
+The tuple of base classes of a class object.  If there are no base
+classes, this will be an empty tuple.</blockquote>
+<p>class.__name__</p>
+<blockquote>
+The name of the class or type.</blockquote>
+<p>The following attributes are only supported by <a href="#id9"><span class="problematic" id="id10">*</span></a>new-style class*es.</p>
+<p>class.__mro__</p>
+<blockquote>
+This attribute is a tuple of classes that are considered when
+looking for base classes during method resolution.</blockquote>
+<p>class.mro()</p>
+<blockquote>
+This method can be overridden by a metaclass to customize the
+method resolution order for its instances.  It is called at class
+instantiation, and its result is stored in <tt class="docutils literal"><span class="pre">__mro__</span></tt>.</blockquote>
+<p>class.__subclasses__()</p>
+<blockquote>
+<p>Each new-style class keeps a list of weak references to its
+immediate subclasses.  This method returns a list of all those
+references still alive. Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">int</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()</span>
+<span class="go">[&lt;type &#39;bool&#39;&gt;]</span>
+</pre></div>
+</div>
+</blockquote>
+<p>-[ Footnotes ]-</p>
+<dl class="docutils">
+<dt>[1] Additional information on these special methods may be found in</dt>
+<dd>the Python Reference Manual (<em>Basic customization</em>).</dd>
+<dt>[2] As a consequence, the list <tt class="docutils literal"><span class="pre">[1,</span> <span class="pre">2]</span></tt> is considered equal to</dt>
+<dd><tt class="docutils literal"><span class="pre">[1.0,</span> <span class="pre">2.0]</span></tt>, and similarly for tuples.</dd>
+<dt>[3] They must have since the parser can&#8217;t tell the type of the</dt>
+<dd>operands.</dd>
+<dt>[4] To format only a tuple you should therefore provide a singleton</dt>
+<dd>tuple whose only element is the tuple to be formatted.</dd>
+<dt>[5] These numbers are fairly arbitrary.  They are intended to avoid</dt>
+<dd>printing endless strings of meaningless digits without hampering
+correct use and without having to know the exact precision of
+floating point values on a particular machine.</dd>
+<dt>[6] The advantage of leaving the newline on is that returning an empty</dt>
+<dd>string is then an unambiguous EOF indication.  It is also possible
+(in cases where it might matter, for example, if you want to make
+an exact copy of a file while scanning its lines) to tell whether
+the last line of a file ended in a newline or not (yes this
+happens!).</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="exceptions.html" title="6. Built-in Exceptions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="objects.html" title="4. Built-in Objects"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

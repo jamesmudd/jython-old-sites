@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>28.4. modulefinder — Find modules used by a script &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="28. Importing Modules" href="modules.html" />
+    <link rel="next" title="28.5. runpy — Locating and executing Python modules" href="runpy.html" />
+    <link rel="prev" title="28.3. pkgutil — Package extension utility" href="pkgutil.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="runpy.html" title="28.5. runpy — Locating and executing Python modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pkgutil.html" title="28.3. pkgutil — Package extension utility"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">28. Importing Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">28.4. <tt class="docutils literal"><span class="pre">modulefinder</span></tt> &#8212; Find modules used by a script</a><ul>
+<li><a class="reference external" href="#example-usage-of-modulefinder">28.4.1. Example usage of <tt class="docutils literal"><span class="pre">ModuleFinder</span></tt></a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="pkgutil.html"
+                                  title="previous chapter">28.3. <tt class="docutils literal"><span class="pre">pkgutil</span></tt> &#8212; Package extension utility</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="runpy.html"
+                                  title="next chapter">28.5. <tt class="docutils literal docutils literal"><span class="pre">runpy</span></tt> &#8212; Locating and executing Python modules</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/modulefinder.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="modulefinder-find-modules-used-by-a-script">
+<h1>28.4. <tt class="docutils literal"><span class="pre">modulefinder</span></tt> &#8212; Find modules used by a script<a class="headerlink" href="#modulefinder-find-modules-used-by-a-script" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.3.</p>
+<p>This module provides a <tt class="docutils literal"><span class="pre">ModuleFinder</span></tt> class that can be used to
+determine the set of modules imported by a script. <tt class="docutils literal"><span class="pre">modulefinder.py</span></tt>
+can also be run as a script, giving the filename of a Python script as
+its argument, after which a report of the imported modules will be
+printed.</p>
+<p>modulefinder.AddPackagePath(pkg_name, path)</p>
+<blockquote>
+Record that the package named <em>pkg_name</em> can be found in the
+specified <em>path</em>.</blockquote>
+<p>modulefinder.ReplacePackage(oldname, newname)</p>
+<blockquote>
+Allows specifying that the module named <em>oldname</em> is in fact the
+package named <em>newname</em>.  The most common usage would be  to handle
+how the <tt class="docutils literal"><span class="pre">_xmlplus</span></tt> package replaces the <tt class="docutils literal"><span class="pre">xml</span></tt> package.</blockquote>
+<p>class class modulefinder.ModuleFinder([path=None, debug=0, excludes=[], replace_paths=[]])</p>
+<blockquote>
+<p>This class provides <tt class="docutils literal"><span class="pre">run_script()</span></tt> and <tt class="docutils literal"><span class="pre">report()</span></tt> methods to
+determine the set of modules imported by a script. <em>path</em> can be a
+list of directories to search for modules; if not specified,
+<tt class="docutils literal"><span class="pre">sys.path</span></tt> is used.  <em>debug</em> sets the debugging level; higher
+values make the class print  debugging messages about what it&#8217;s
+doing. <em>excludes</em> is a list of module names to exclude from the
+analysis. <em>replace_paths</em> is a list of <tt class="docutils literal"><span class="pre">(oldpath,</span> <span class="pre">newpath)</span></tt>
+tuples that will be replaced in module paths.</p>
+<p>report()</p>
+<blockquote>
+Print a report to standard output that lists the modules
+imported by the script and their paths, as well as modules that
+are missing or seem to be missing.</blockquote>
+<p>run_script(pathname)</p>
+<blockquote>
+Analyze the contents of the <em>pathname</em> file, which must contain
+Python code.</blockquote>
+<p>modules</p>
+<blockquote>
+A dictionary mapping module names to modules. See <em>Example usage
+of ModuleFinder</em></blockquote>
+</blockquote>
+<div class="section" id="example-usage-of-modulefinder">
+<h2>28.4.1. Example usage of <tt class="docutils literal"><span class="pre">ModuleFinder</span></tt><a class="headerlink" href="#example-usage-of-modulefinder" title="Permalink to this headline">¶</a></h2>
+<p>The script that is going to get analyzed later on (bacon.py):</p>
+<blockquote>
+<p>import re, itertools</p>
+<dl class="docutils">
+<dt>try:</dt>
+<dd>import baconhameggs</dd>
+<dt>except ImportError:</dt>
+<dd>pass</dd>
+<dt>try:</dt>
+<dd>import guido.python.ham</dd>
+<dt>except ImportError:</dt>
+<dd>pass</dd>
+</dl>
+</blockquote>
+<p>The script that will output the report of bacon.py:</p>
+<blockquote>
+<p>from modulefinder import ModuleFinder</p>
+<p>finder = ModuleFinder()
+finder.run_script(&#8216;bacon.py&#8217;)</p>
+<p>print &#8216;Loaded modules:&#8217;
+for name, mod in finder.modules.iteritems():</p>
+<blockquote>
+print &#8216;%s: &#8216; % name,
+print &#8216;,&#8217;.join(mod.globalnames.keys()[:3])</blockquote>
+<p>print &#8216;-&#8216;<a href="#id1"><span class="problematic" id="id2">*</span></a>50
+print &#8216;Modules not imported:&#8217;
+print &#8216;n&#8217;.join(finder.badmodules.iterkeys())</p>
+</blockquote>
+<p>Sample output (may vary depending on the architecture):</p>
+<blockquote>
+Loaded modules:
+_types:
+copy_reg:  _inverted_registry,_slotnames,__all__
+sre_compile:  isstring,_sre,_optimize_unicode
+_sre:
+sre_constants:  REPEAT_ONE,makedict,AT_END_LINE
+sys:
+re:  __module__,finditer,_expand
+itertools:
+__main__:  re,itertools,baconhameggs
+sre_parse:  __getslice__,_PATTERNENDERS,SRE_FLAG_UNICODE
+array:
+types:  __module__,IntType,TypeType
+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;
+Modules not imported:
+guido.python.ham
+baconhameggs</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="runpy.html" title="28.5. runpy — Locating and executing Python modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pkgutil.html" title="28.3. pkgutil — Package extension utility"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="modules.html" >28. Importing Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

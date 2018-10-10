@@ -1,0 +1,744 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>20.4. wsgiref — WSGI Utilities and Reference Implementation &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="20. Internet Protocols and Support" href="internet.html" />
+    <link rel="next" title="20.5. urllib — Open arbitrary resources by URL" href="urllib.html" />
+    <link rel="prev" title="20.3. cgitb — Traceback manager for CGI scripts" href="cgitb.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="urllib.html" title="20.5. urllib — Open arbitrary resources by URL"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cgitb.html" title="20.3. cgitb — Traceback manager for CGI scripts"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" accesskey="U">20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">20.4. <tt class="docutils literal"><span class="pre">wsgiref</span></tt> &#8212; WSGI Utilities and Reference Implementation</a><ul>
+<li><a class="reference external" href="#wsgiref-util-wsgi-environment-utilities">20.4.1. <tt class="docutils literal"><span class="pre">wsgiref.util</span></tt> &#8211; WSGI environment utilities</a></li>
+<li><a class="reference external" href="#wsgiref-headers-wsgi-response-header-tools">20.4.2. <tt class="docutils literal"><span class="pre">wsgiref.headers</span></tt> &#8211; WSGI response header tools</a></li>
+<li><a class="reference external" href="#wsgiref-simple-server-a-simple-wsgi-http-server">20.4.3. <tt class="docutils literal"><span class="pre">wsgiref.simple_server</span></tt> &#8211; a simple WSGI HTTP server</a></li>
+<li><a class="reference external" href="#wsgiref-validate-wsgi-conformance-checker">20.4.4. <tt class="docutils literal"><span class="pre">wsgiref.validate</span></tt> &#8212; WSGI conformance checker</a></li>
+<li><a class="reference external" href="#wsgiref-handlers-server-gateway-base-classes">20.4.5. <tt class="docutils literal"><span class="pre">wsgiref.handlers</span></tt> &#8211; server/gateway base classes</a></li>
+<li><a class="reference external" href="#examples">20.4.6. Examples</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="cgitb.html"
+                                  title="previous chapter">20.3. <tt class="docutils literal docutils literal docutils literal"><span class="pre">cgitb</span></tt> &#8212; Traceback manager for CGI scripts</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="urllib.html"
+                                  title="next chapter">20.5. <tt class="docutils literal docutils literal docutils literal"><span class="pre">urllib</span></tt> &#8212; Open arbitrary resources by URL</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/wsgiref.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="wsgiref-wsgi-utilities-and-reference-implementation">
+<h1>20.4. <tt class="docutils literal"><span class="pre">wsgiref</span></tt> &#8212; WSGI Utilities and Reference Implementation<a class="headerlink" href="#wsgiref-wsgi-utilities-and-reference-implementation" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.5.</p>
+<p>The Web Server Gateway Interface (WSGI) is a standard interface
+between web server software and web applications written in Python.
+Having a standard interface makes it easy to use an application that
+supports WSGI with a number of different web servers.</p>
+<p>Only authors of web servers and programming frameworks need to know
+every detail and corner case of the WSGI design.  You don&#8217;t need to
+understand every detail of WSGI just to install a WSGI application or
+to write a web application using an existing framework.</p>
+<p><tt class="docutils literal"><span class="pre">wsgiref</span></tt> is a reference implementation of the WSGI specification
+that can be used to add WSGI support to a web server or framework.  It
+provides utilities for manipulating WSGI environment variables and
+response headers, base classes for implementing WSGI servers, a demo
+HTTP server that serves WSGI applications, and a validation tool that
+checks WSGI servers and applications for conformance to the WSGI
+specification (<strong>PEP 333</strong>).</p>
+<p>See <a class="reference external" href="http://www.wsgi.org">http://www.wsgi.org</a> for more information about WSGI, and links to
+tutorials and other resources.</p>
+<div class="section" id="wsgiref-util-wsgi-environment-utilities">
+<h2>20.4.1. <tt class="docutils literal"><span class="pre">wsgiref.util</span></tt> &#8211; WSGI environment utilities<a class="headerlink" href="#wsgiref-util-wsgi-environment-utilities" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a variety of utility functions for working with
+WSGI environments.  A WSGI environment is a dictionary containing HTTP
+request variables as described in <strong>PEP 333</strong>.  All of the functions
+taking an <em>environ</em> parameter expect a WSGI-compliant dictionary to be
+supplied; please see <strong>PEP 333</strong> for a detailed specification.</p>
+<p>wsgiref.util.guess_scheme(environ)</p>
+<blockquote>
+<p>Return a guess for whether <tt class="docutils literal"><span class="pre">wsgi.url_scheme</span></tt> should be &#8220;http&#8221; or
+&#8220;https&#8221;, by checking for a <tt class="docutils literal"><span class="pre">HTTPS</span></tt> environment variable in the
+<em>environ</em> dictionary.  The return value is a string.</p>
+<p>This function is useful when creating a gateway that wraps CGI or a
+CGI-like protocol such as FastCGI.  Typically, servers providing
+such protocols will include a <tt class="docutils literal"><span class="pre">HTTPS</span></tt> variable with a value of
+&#8220;1&#8221; &#8220;yes&#8221;, or &#8220;on&#8221; when a request is received via SSL.  So, this
+function returns &#8220;https&#8221; if such a value is found, and &#8220;http&#8221;
+otherwise.</p>
+</blockquote>
+<p>wsgiref.util.request_uri(environ[, include_query=1])</p>
+<blockquote>
+Return the full request URI, optionally including the query string,
+using the algorithm found in the &#8220;URL Reconstruction&#8221; section of
+<strong>PEP 333</strong>.  If <em>include_query</em> is false, the query string is not
+included in the resulting URI.</blockquote>
+<p>wsgiref.util.application_uri(environ)</p>
+<blockquote>
+Similar to <tt class="docutils literal"><span class="pre">request_uri()</span></tt>, except that the <tt class="docutils literal"><span class="pre">PATH_INFO</span></tt> and
+<tt class="docutils literal"><span class="pre">QUERY_STRING</span></tt> variables are ignored.  The result is the base URI
+of the application object addressed by the request.</blockquote>
+<p>wsgiref.util.shift_path_info(environ)</p>
+<blockquote>
+<p>Shift a single name from <tt class="docutils literal"><span class="pre">PATH_INFO</span></tt> to <tt class="docutils literal"><span class="pre">SCRIPT_NAME</span></tt> and
+return the name. The <em>environ</em> dictionary is <em>modified</em> in-place;
+use a copy if you need to keep the original <tt class="docutils literal"><span class="pre">PATH_INFO</span></tt> or
+<tt class="docutils literal"><span class="pre">SCRIPT_NAME</span></tt> intact.</p>
+<p>If there are no remaining path segments in <tt class="docutils literal"><span class="pre">PATH_INFO</span></tt>, <tt class="xref docutils literal"><span class="pre">None</span></tt>
+is returned.</p>
+<p>Typically, this routine is used to process each portion of a
+request URI path, for example to treat the path as a series of
+dictionary keys. This routine modifies the passed-in environment to
+make it suitable for invoking another WSGI application that is
+located at the target URI. For example, if there is a WSGI
+application at <tt class="docutils literal"><span class="pre">/foo</span></tt>, and the request URI path is
+<tt class="docutils literal"><span class="pre">/foo/bar/baz</span></tt>, and the WSGI application at <tt class="docutils literal"><span class="pre">/foo</span></tt> calls
+<tt class="docutils literal"><span class="pre">shift_path_info()</span></tt>, it will receive the string &#8220;bar&#8221;, and the
+environment will be updated to be suitable for passing to a WSGI
+application at <tt class="docutils literal"><span class="pre">/foo/bar</span></tt>.  That is, <tt class="docutils literal"><span class="pre">SCRIPT_NAME</span></tt> will change
+from <tt class="docutils literal"><span class="pre">/foo</span></tt> to <tt class="docutils literal"><span class="pre">/foo/bar</span></tt>, and <tt class="docutils literal"><span class="pre">PATH_INFO</span></tt> will change from
+<tt class="docutils literal"><span class="pre">/bar/baz</span></tt> to <tt class="docutils literal"><span class="pre">/baz</span></tt>.</p>
+<p>When <tt class="docutils literal"><span class="pre">PATH_INFO</span></tt> is just a &#8220;/&#8221;, this routine returns an empty
+string and appends a trailing slash to <tt class="docutils literal"><span class="pre">SCRIPT_NAME</span></tt>, even though
+empty path segments are normally ignored, and <tt class="docutils literal"><span class="pre">SCRIPT_NAME</span></tt>
+doesn&#8217;t normally end in a slash.  This is intentional behavior, to
+ensure that an application can tell the difference between URIs
+ending in <tt class="docutils literal"><span class="pre">/x</span></tt> from ones ending in <tt class="docutils literal"><span class="pre">/x/</span></tt> when using this
+routine to do object traversal.</p>
+</blockquote>
+<p>wsgiref.util.setup_testing_defaults(environ)</p>
+<blockquote>
+<p>Update <em>environ</em> with trivial defaults for testing purposes.</p>
+<p>This routine adds various parameters required for WSGI, including
+<tt class="docutils literal"><span class="pre">HTTP_HOST</span></tt>, <tt class="docutils literal"><span class="pre">SERVER_NAME</span></tt>, <tt class="docutils literal"><span class="pre">SERVER_PORT</span></tt>,
+<tt class="docutils literal"><span class="pre">REQUEST_METHOD</span></tt>, <tt class="docutils literal"><span class="pre">SCRIPT_NAME</span></tt>, <tt class="docutils literal"><span class="pre">PATH_INFO</span></tt>, and all of the
+<strong>PEP 333</strong>-defined <tt class="docutils literal"><span class="pre">wsgi.*</span></tt> variables.  It only supplies default
+values, and does not replace any existing settings for these
+variables.</p>
+<p>This routine is intended to make it easier for unit tests of WSGI
+servers and applications to set up dummy environments.  It should
+NOT be used by actual WSGI servers or applications, since the data
+is fake!</p>
+<p>Example usage:</p>
+<blockquote>
+<p>from wsgiref.util import setup_testing_defaults
+from wsgiref.simple_server import make_server</p>
+<p># A relatively simple WSGI application. It&#8217;s going to print out the
+# environment dictionary after being updated by setup_testing_defaults
+def simple_app(environ, start_response):</p>
+<blockquote>
+<p>setup_testing_defaults(environ)</p>
+<p>status = &#8216;200 OK&#8217;
+headers = [(&#8216;Content-type&#8217;, &#8216;text/plain&#8217;)]</p>
+<p>start_response(status, headers)</p>
+<dl class="docutils">
+<dt>ret = [&#8220;%s: %sn&#8221; % (key, value)</dt>
+<dd>for key, value in environ.iteritems()]</dd>
+</dl>
+<p>return ret</p>
+</blockquote>
+<p>httpd = make_server(&#8216;&#8217;, 8000, simple_app)
+print &#8220;Serving on port 8000...&#8221;
+httpd.serve_forever()</p>
+</blockquote>
+</blockquote>
+<p>In addition to the environment functions above, the <tt class="docutils literal"><span class="pre">wsgiref.util</span></tt>
+module also provides these miscellaneous utilities:</p>
+<p>wsgiref.util.is_hop_by_hop(header_name)</p>
+<blockquote>
+Return true if &#8216;header_name&#8217; is an HTTP/1.1 &#8220;Hop-by-Hop&#8221; header, as
+defined by <strong>RFC 2616</strong>.</blockquote>
+<p>class class wsgiref.util.FileWrapper(filelike[, blksize=8192])</p>
+<blockquote>
+<p>A wrapper to convert a file-like object to an <em>iterator</em>.  The
+resulting objects support both <tt class="docutils literal"><span class="pre">__getitem__()</span></tt> and <tt class="docutils literal"><span class="pre">__iter__()</span></tt>
+iteration styles, for compatibility with Python 2.1 and Jython. As
+the object is iterated over, the optional <em>blksize</em> parameter will
+be repeatedly passed to the <em>filelike</em> object&#8217;s <tt class="docutils literal"><span class="pre">read()</span></tt> method
+to obtain strings to yield.  When <tt class="docutils literal"><span class="pre">read()</span></tt> returns an empty
+string, iteration is ended and is not resumable.</p>
+<p>If <em>filelike</em> has a <tt class="docutils literal"><span class="pre">close()</span></tt> method, the returned object will
+also have a <tt class="docutils literal"><span class="pre">close()</span></tt> method, and it will invoke the <em>filelike</em>
+object&#8217;s <tt class="docutils literal"><span class="pre">close()</span></tt> method when called.</p>
+<p>Example usage:</p>
+<blockquote>
+<p>from StringIO import StringIO
+from wsgiref.util import FileWrapper</p>
+<p># We&#8217;re using a StringIO-buffer for as the file-like object
+filelike = StringIO(&#8220;This is an example file-like object&#8221;<a href="#id1"><span class="problematic" id="id2">*</span></a>10)
+wrapper = FileWrapper(filelike, blksize=5)</p>
+<dl class="docutils">
+<dt>for chunk in wrapper:</dt>
+<dd>print chunk</dd>
+</dl>
+</blockquote>
+</blockquote>
+</div>
+<div class="section" id="wsgiref-headers-wsgi-response-header-tools">
+<h2>20.4.2. <tt class="docutils literal"><span class="pre">wsgiref.headers</span></tt> &#8211; WSGI response header tools<a class="headerlink" href="#wsgiref-headers-wsgi-response-header-tools" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a single class, <tt class="docutils literal"><span class="pre">Headers</span></tt>, for convenient
+manipulation of WSGI response headers using a mapping-like interface.</p>
+<p>class class wsgiref.headers.Headers(headers)</p>
+<blockquote>
+<p>Create a mapping-like object wrapping <em>headers</em>, which must be a
+list of header name/value tuples as described in <strong>PEP 333</strong>.  Any
+changes made to the new <tt class="docutils literal"><span class="pre">Headers</span></tt> object will directly update the
+<em>headers</em> list it was created with.</p>
+<p><tt class="docutils literal"><span class="pre">Headers</span></tt> objects support typical mapping operations including
+<tt class="docutils literal"><span class="pre">__getitem__()</span></tt>, <tt class="docutils literal"><span class="pre">get()</span></tt>, <tt class="docutils literal"><span class="pre">__setitem__()</span></tt>, <tt class="docutils literal"><span class="pre">setdefault()</span></tt>,
+<tt class="docutils literal"><span class="pre">__delitem__()</span></tt>, <tt class="docutils literal"><span class="pre">__contains__()</span></tt> and <tt class="docutils literal"><span class="pre">has_key()</span></tt>.  For each
+of these methods, the key is the header name (treated case-
+insensitively), and the value is the first value associated with
+that header name.  Setting a header deletes any existing values for
+that header, then adds a new value at the end of the wrapped header
+list.  Headers&#8217; existing order is generally maintained, with new
+headers added to the end of the wrapped list.</p>
+<p>Unlike a dictionary, <tt class="docutils literal"><span class="pre">Headers</span></tt> objects do not raise an error when
+you try to get or delete a key that isn&#8217;t in the wrapped header
+list. Getting a nonexistent header just returns <tt class="xref docutils literal"><span class="pre">None</span></tt>, and
+deleting a nonexistent header does nothing.</p>
+<p><tt class="docutils literal"><span class="pre">Headers</span></tt> objects also support <tt class="docutils literal"><span class="pre">keys()</span></tt>, <tt class="docutils literal"><span class="pre">values()</span></tt>, and
+<tt class="docutils literal"><span class="pre">items()</span></tt> methods.  The lists returned by <tt class="docutils literal"><span class="pre">keys()</span></tt> and
+<tt class="docutils literal"><span class="pre">items()</span></tt> can include the same key more than once if there is a
+multi-valued header.  The <tt class="docutils literal"><span class="pre">len()</span></tt> of a <tt class="docutils literal"><span class="pre">Headers</span></tt> object is the
+same as the length of its <tt class="docutils literal"><span class="pre">items()</span></tt>, which is the same as the
+length of the wrapped header list.  In fact, the <tt class="docutils literal"><span class="pre">items()</span></tt> method
+just returns a copy of the wrapped header list.</p>
+<p>Calling <tt class="docutils literal"><span class="pre">str()</span></tt> on a <tt class="docutils literal"><span class="pre">Headers</span></tt> object returns a formatted
+string suitable for transmission as HTTP response headers.  Each
+header is placed on a line with its value, separated by a colon and
+a space. Each line is terminated by a carriage return and line
+feed, and the string is terminated with a blank line.</p>
+<p>In addition to their mapping interface and formatting features,
+<tt class="docutils literal"><span class="pre">Headers</span></tt> objects also have the following methods for querying
+and adding multi-valued headers, and for adding headers with MIME
+parameters:</p>
+<p>get_all(name)</p>
+<blockquote>
+<p>Return a list of all the values for the named header.</p>
+<p>The returned list will be sorted in the order they appeared in
+the original header list or were added to this instance, and may
+contain duplicates.  Any fields deleted and re-inserted are
+always appended to the header list.  If no fields exist with the
+given name, returns an empty list.</p>
+</blockquote>
+<p>add_header(name, value, <a href="#id3"><span class="problematic" id="id4">**</span></a>_params)</p>
+<blockquote>
+<p>Add a (possibly multi-valued) header, with optional MIME
+parameters specified via keyword arguments.</p>
+<p><em>name</em> is the header field to add.  Keyword arguments can be
+used to set MIME parameters for the header field.  Each
+parameter must be a string or <tt class="xref docutils literal"><span class="pre">None</span></tt>. Underscores in parameter
+names are converted to dashes, since dashes are illegal in
+Python identifiers, but many MIME parameter names include
+dashes.  If the parameter value is a string, it is added to the
+header value parameters in the form <tt class="docutils literal"><span class="pre">name=&quot;value&quot;</span></tt>. If it is
+<tt class="xref docutils literal"><span class="pre">None</span></tt>, only the parameter name is added. (This is used for
+MIME parameters without a value.)  Example usage:</p>
+<blockquote>
+h.add_header(&#8216;content-disposition&#8217;, &#8216;attachment&#8217;, filename=&#8217;bud.gif&#8217;)</blockquote>
+<p>The above will add a header that looks like this:</p>
+<blockquote>
+Content-Disposition: attachment; filename=&#8221;bud.gif&#8221;</blockquote>
+</blockquote>
+</blockquote>
+</div>
+<div class="section" id="wsgiref-simple-server-a-simple-wsgi-http-server">
+<h2>20.4.3. <tt class="docutils literal"><span class="pre">wsgiref.simple_server</span></tt> &#8211; a simple WSGI HTTP server<a class="headerlink" href="#wsgiref-simple-server-a-simple-wsgi-http-server" title="Permalink to this headline">¶</a></h2>
+<p>This module implements a simple HTTP server (based on
+<tt class="docutils literal"><span class="pre">BaseHTTPServer</span></tt>) that serves WSGI applications.  Each server
+instance serves a single WSGI application on a given host and port.
+If you want to serve multiple applications on a single host and port,
+you should create a WSGI application that parses <tt class="docutils literal"><span class="pre">PATH_INFO</span></tt> to
+select which application to invoke for each request.  (E.g., using the
+<tt class="docutils literal"><span class="pre">shift_path_info()</span></tt> function from <tt class="docutils literal"><span class="pre">wsgiref.util</span></tt>.)</p>
+<p>wsgiref.simple_server.make_server(host, port, app[, server_class=WSGIServer[, handler_class=WSGIRequestHandler]])</p>
+<blockquote>
+<p>Create a new WSGI server listening on <em>host</em> and <em>port</em>, accepting
+connections for <em>app</em>.  The return value is an instance of the
+supplied <em>server_class</em>, and will process requests using the
+specified <em>handler_class</em>.  <em>app</em> must be a WSGI application
+object, as defined by <strong>PEP 333</strong>.</p>
+<p>Example usage:</p>
+<blockquote>
+<p>from wsgiref.simple_server import make_server, demo_app</p>
+<p>httpd = make_server(&#8216;&#8217;, 8000, demo_app)
+print &#8220;Serving HTTP on port 8000...&#8221;</p>
+<p># Respond to requests until process is killed
+httpd.serve_forever()</p>
+<p># Alternative: serve one request, then exit
+httpd.handle_request()</p>
+</blockquote>
+</blockquote>
+<p>wsgiref.simple_server.demo_app(environ, start_response)</p>
+<blockquote>
+This function is a small but complete WSGI application that returns
+a text page containing the message &#8220;Hello world!&#8221; and a list of the
+key/value pairs provided in the <em>environ</em> parameter.  It&#8217;s useful
+for verifying that a WSGI server (such as
+<tt class="docutils literal"><span class="pre">wsgiref.simple_server</span></tt>) is able to run a simple WSGI application
+correctly.</blockquote>
+<p>class class wsgiref.simple_server.WSGIServer(server_address, RequestHandlerClass)</p>
+<blockquote>
+<p>Create a <tt class="docutils literal"><span class="pre">WSGIServer</span></tt> instance.  <em>server_address</em> should be a
+<tt class="docutils literal"><span class="pre">(host,port)</span></tt> tuple, and <em>RequestHandlerClass</em> should be the
+subclass of <tt class="docutils literal"><span class="pre">BaseHTTPServer.BaseHTTPRequestHandler</span></tt> that will be
+used to process requests.</p>
+<p>You do not normally need to call this constructor, as the
+<tt class="docutils literal"><span class="pre">make_server()</span></tt> function can handle all the details for you.</p>
+<p><tt class="docutils literal"><span class="pre">WSGIServer</span></tt> is a subclass of <tt class="docutils literal"><span class="pre">BaseHTTPServer.HTTPServer</span></tt>, so
+all of its methods (such as <tt class="docutils literal"><span class="pre">serve_forever()</span></tt> and
+<tt class="docutils literal"><span class="pre">handle_request()</span></tt>) are available. <tt class="docutils literal"><span class="pre">WSGIServer</span></tt> also provides
+these WSGI-specific methods:</p>
+<p>set_app(application)</p>
+<blockquote>
+Sets the callable <em>application</em> as the WSGI application that
+will receive requests.</blockquote>
+<p>get_app()</p>
+<blockquote>
+Returns the currently-set application callable.</blockquote>
+<p>Normally, however, you do not need to use these additional methods,
+as <tt class="docutils literal"><span class="pre">set_app()</span></tt> is normally called by <tt class="docutils literal"><span class="pre">make_server()</span></tt>, and the
+<tt class="docutils literal"><span class="pre">get_app()</span></tt> exists mainly for the benefit of request handler
+instances.</p>
+</blockquote>
+<p>class class wsgiref.simple_server.WSGIRequestHandler(request, client_address, server)</p>
+<blockquote>
+<p>Create an HTTP handler for the given <em>request</em> (i.e. a socket),
+<em>client_address</em> (a <tt class="docutils literal"><span class="pre">(host,port)</span></tt> tuple), and <em>server</em>
+(<tt class="docutils literal"><span class="pre">WSGIServer</span></tt> instance).</p>
+<p>You do not need to create instances of this class directly; they
+are automatically created as needed by <tt class="docutils literal"><span class="pre">WSGIServer</span></tt> objects.  You
+can, however, subclass this class and supply it as a
+<em>handler_class</em> to the <tt class="docutils literal"><span class="pre">make_server()</span></tt> function.  Some possibly
+relevant methods for overriding in subclasses:</p>
+<p>get_environ()</p>
+<blockquote>
+Returns a dictionary containing the WSGI environment for a
+request.  The default implementation copies the contents of the
+<tt class="docutils literal"><span class="pre">WSGIServer</span></tt> object&#8217;s <tt class="docutils literal"><span class="pre">base_environ</span></tt> dictionary attribute
+and then adds various headers derived from the HTTP request.
+Each call to this method should return a new dictionary
+containing all of the relevant CGI environment variables as
+specified in <strong>PEP 333</strong>.</blockquote>
+<p>get_stderr()</p>
+<blockquote>
+Return the object that should be used as the <tt class="docutils literal"><span class="pre">wsgi.errors</span></tt>
+stream. The default implementation just returns <tt class="docutils literal"><span class="pre">sys.stderr</span></tt>.</blockquote>
+<p>handle()</p>
+<blockquote>
+Process the HTTP request.  The default implementation creates a
+handler instance using a <tt class="docutils literal"><span class="pre">wsgiref.handlers</span></tt> class to implement
+the actual WSGI application interface.</blockquote>
+</blockquote>
+</div>
+<div class="section" id="wsgiref-validate-wsgi-conformance-checker">
+<h2>20.4.4. <tt class="docutils literal"><span class="pre">wsgiref.validate</span></tt> &#8212; WSGI conformance checker<a class="headerlink" href="#wsgiref-validate-wsgi-conformance-checker" title="Permalink to this headline">¶</a></h2>
+<p>When creating new WSGI application objects, frameworks, servers, or
+middleware, it can be useful to validate the new code&#8217;s conformance
+using <tt class="docutils literal"><span class="pre">wsgiref.validate</span></tt>.  This module provides a function that
+creates WSGI application objects that validate communications between
+a WSGI server or gateway and a WSGI application object, to check both
+sides for protocol conformance.</p>
+<p>Note that this utility does not guarantee complete <strong>PEP 333</strong>
+compliance; an absence of errors from this module does not necessarily
+mean that errors do not exist.  However, if this module does produce
+an error, then it is virtually certain that either the server or
+application is not 100% compliant.</p>
+<p>This module is based on the <tt class="docutils literal"><span class="pre">paste.lint</span></tt> module from Ian Bicking&#8217;s
+&#8220;Python Paste&#8221; library.</p>
+<p>wsgiref.validate.validator(application)</p>
+<blockquote>
+<p>Wrap <em>application</em> and return a new WSGI application object.  The
+returned application will forward all requests to the original
+<em>application</em>, and will check that both the <em>application</em> and the
+server invoking it are conforming to the WSGI specification and to
+RFC 2616.</p>
+<p>Any detected nonconformance results in an <tt class="docutils literal"><span class="pre">AssertionError</span></tt> being
+raised; note, however, that how these errors are handled is server-
+dependent.  For example, <tt class="docutils literal"><span class="pre">wsgiref.simple_server</span></tt> and other
+servers based on <tt class="docutils literal"><span class="pre">wsgiref.handlers</span></tt> (that don&#8217;t override the
+error handling methods to do something else) will simply output a
+message that an error has occurred, and dump the traceback to
+<tt class="docutils literal"><span class="pre">sys.stderr</span></tt> or some other error stream.</p>
+<p>This wrapper may also generate output using the <tt class="docutils literal"><span class="pre">warnings</span></tt> module
+to indicate behaviors that are questionable but which may not
+actually be prohibited by <strong>PEP 333</strong>.  Unless they are suppressed
+using Python command-line options or the <tt class="docutils literal"><span class="pre">warnings</span></tt> API, any such
+warnings will be written to <tt class="docutils literal"><span class="pre">sys.stderr</span></tt> (<em>not</em> <tt class="docutils literal"><span class="pre">wsgi.errors</span></tt>,
+unless they happen to be the same object).</p>
+<p>Example usage:</p>
+<blockquote>
+<p>from wsgiref.validate import validator
+from wsgiref.simple_server import make_server</p>
+<p># Our callable object which is intentionally not compliant to the
+# standard, so the validator is going to break
+def simple_app(environ, start_response):</p>
+<blockquote>
+<p>status = &#8216;200 OK&#8217; # HTTP Status
+headers = [(&#8216;Content-type&#8217;, &#8216;text/plain&#8217;)] # HTTP Headers
+start_response(status, headers)</p>
+<p># This is going to break because we need to return a list, and
+# the validator is going to inform us
+return &#8220;Hello World&#8221;</p>
+</blockquote>
+<p># This is the application wrapped in a validator
+validator_app = validator(simple_app)</p>
+<p>httpd = make_server(&#8216;&#8217;, 8000, validator_app)
+print &#8220;Listening on port 8000....&#8221;
+httpd.serve_forever()</p>
+</blockquote>
+</blockquote>
+</div>
+<div class="section" id="wsgiref-handlers-server-gateway-base-classes">
+<h2>20.4.5. <tt class="docutils literal"><span class="pre">wsgiref.handlers</span></tt> &#8211; server/gateway base classes<a class="headerlink" href="#wsgiref-handlers-server-gateway-base-classes" title="Permalink to this headline">¶</a></h2>
+<p>This module provides base handler classes for implementing WSGI
+servers and gateways.  These base classes handle most of the work of
+communicating with a WSGI application, as long as they are given a
+CGI-like environment, along with input, output, and error streams.</p>
+<p>class class wsgiref.handlers.CGIHandler</p>
+<blockquote>
+<p>CGI-based invocation via <tt class="docutils literal"><span class="pre">sys.stdin</span></tt>, <tt class="docutils literal"><span class="pre">sys.stdout</span></tt>,
+<tt class="docutils literal"><span class="pre">sys.stderr</span></tt> and <tt class="docutils literal"><span class="pre">os.environ</span></tt>.  This is useful when you have a
+WSGI application and want to run it as a CGI script.  Simply invoke
+<tt class="docutils literal"><span class="pre">CGIHandler().run(app)</span></tt>, where <tt class="docutils literal"><span class="pre">app</span></tt> is the WSGI application
+object you wish to invoke.</p>
+<p>This class is a subclass of <tt class="docutils literal"><span class="pre">BaseCGIHandler</span></tt> that sets
+<tt class="docutils literal"><span class="pre">wsgi.run_once</span></tt> to true, <tt class="docutils literal"><span class="pre">wsgi.multithread</span></tt> to false, and
+<tt class="docutils literal"><span class="pre">wsgi.multiprocess</span></tt> to true, and always uses <tt class="docutils literal"><span class="pre">sys</span></tt> and <tt class="docutils literal"><span class="pre">os</span></tt>
+to obtain the necessary CGI streams and environment.</p>
+</blockquote>
+<p>class class wsgiref.handlers.BaseCGIHandler(stdin, stdout, stderr, environ[, multithread=True[, multiprocess=False]])</p>
+<blockquote>
+<p>Similar to <tt class="docutils literal"><span class="pre">CGIHandler</span></tt>, but instead of using the <tt class="docutils literal"><span class="pre">sys</span></tt> and
+<tt class="docutils literal"><span class="pre">os</span></tt> modules, the CGI environment and I/O streams are specified
+explicitly. The <em>multithread</em> and <em>multiprocess</em> values are used to
+set the <tt class="docutils literal"><span class="pre">wsgi.multithread</span></tt> and <tt class="docutils literal"><span class="pre">wsgi.multiprocess</span></tt> flags for
+any applications run by the handler instance.</p>
+<p>This class is a subclass of <tt class="docutils literal"><span class="pre">SimpleHandler</span></tt> intended for use with
+software other than HTTP &#8220;origin servers&#8221;.  If you are writing a
+gateway protocol implementation (such as CGI, FastCGI, SCGI, etc.)
+that uses a <tt class="docutils literal"><span class="pre">Status:</span></tt> header to send an HTTP status, you probably
+want to subclass this instead of <tt class="docutils literal"><span class="pre">SimpleHandler</span></tt>.</p>
+</blockquote>
+<p>class class wsgiref.handlers.SimpleHandler(stdin, stdout, stderr, environ[, multithread=True[, multiprocess=False]])</p>
+<blockquote>
+<p>Similar to <tt class="docutils literal"><span class="pre">BaseCGIHandler</span></tt>, but designed for use with HTTP
+origin servers.  If you are writing an HTTP server implementation,
+you will probably want to subclass this instead of
+<tt class="docutils literal"><span class="pre">BaseCGIHandler</span></tt></p>
+<p>This class is a subclass of <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>.  It overrides the
+<tt class="docutils literal"><span class="pre">__init__()</span></tt>, <tt class="docutils literal"><span class="pre">get_stdin()</span></tt>, <tt class="docutils literal"><span class="pre">get_stderr()</span></tt>,
+<tt class="docutils literal"><span class="pre">add_cgi_vars()</span></tt>, <tt class="docutils literal"><span class="pre">_write()</span></tt>, and <tt class="docutils literal"><span class="pre">_flush()</span></tt> methods to
+support explicitly setting the environment and streams via the
+constructor.  The supplied environment and streams are stored in
+the <tt class="docutils literal"><span class="pre">stdin</span></tt>, <tt class="docutils literal"><span class="pre">stdout</span></tt>, <tt class="docutils literal"><span class="pre">stderr</span></tt>, and <tt class="docutils literal"><span class="pre">environ</span></tt> attributes.</p>
+</blockquote>
+<p>class class wsgiref.handlers.BaseHandler</p>
+<blockquote>
+<p>This is an abstract base class for running WSGI applications.  Each
+instance will handle a single HTTP request, although in principle
+you could create a subclass that was reusable for multiple
+requests.</p>
+<p><tt class="docutils literal"><span class="pre">BaseHandler</span></tt> instances have only one method intended for
+external use:</p>
+<p>run(app)</p>
+<blockquote>
+Run the specified WSGI application, <em>app</em>.</blockquote>
+<p>All of the other <tt class="docutils literal"><span class="pre">BaseHandler</span></tt> methods are invoked by this method
+in the process of running the application, and thus exist primarily
+to allow customizing the process.</p>
+<p>The following methods MUST be overridden in a subclass:</p>
+<p>_write(data)</p>
+<blockquote>
+Buffer the string <em>data</em> for transmission to the client.  It&#8217;s
+okay if this method actually transmits the data; <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>
+just separates write and flush operations for greater efficiency
+when the underlying system actually has such a distinction.</blockquote>
+<p>_flush()</p>
+<blockquote>
+Force buffered data to be transmitted to the client.  It&#8217;s okay
+if this method is a no-op (i.e., if <tt class="docutils literal"><span class="pre">_write()</span></tt> actually sends
+the data).</blockquote>
+<p>get_stdin()</p>
+<blockquote>
+Return an input stream object suitable for use as the
+<tt class="docutils literal"><span class="pre">wsgi.input</span></tt> of the request currently being processed.</blockquote>
+<p>get_stderr()</p>
+<blockquote>
+Return an output stream object suitable for use as the
+<tt class="docutils literal"><span class="pre">wsgi.errors</span></tt> of the request currently being processed.</blockquote>
+<p>add_cgi_vars()</p>
+<blockquote>
+Insert CGI variables for the current request into the
+<tt class="docutils literal"><span class="pre">environ</span></tt> attribute.</blockquote>
+<p>Here are some other methods and attributes you may wish to
+override. This list is only a summary, however, and does not
+include every method that can be overridden.  You should consult
+the docstrings and source code for additional information before
+attempting to create a customized <tt class="docutils literal"><span class="pre">BaseHandler</span></tt> subclass.</p>
+<p>Attributes and methods for customizing the WSGI environment:</p>
+<p>wsgi_multithread</p>
+<blockquote>
+The value to be used for the <tt class="docutils literal"><span class="pre">wsgi.multithread</span></tt> environment
+variable.  It defaults to true in <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>, but may have
+a different default (or be set by the constructor) in the other
+subclasses.</blockquote>
+<p>wsgi_multiprocess</p>
+<blockquote>
+The value to be used for the <tt class="docutils literal"><span class="pre">wsgi.multiprocess</span></tt> environment
+variable.  It defaults to true in <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>, but may have
+a different default (or be set by the constructor) in the other
+subclasses.</blockquote>
+<p>wsgi_run_once</p>
+<blockquote>
+The value to be used for the <tt class="docutils literal"><span class="pre">wsgi.run_once</span></tt> environment
+variable.  It defaults to false in <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>, but
+<tt class="docutils literal"><span class="pre">CGIHandler</span></tt> sets it to true by default.</blockquote>
+<p>os_environ</p>
+<blockquote>
+The default environment variables to be included in every
+request&#8217;s WSGI environment.  By default, this is a copy of
+<tt class="docutils literal"><span class="pre">os.environ</span></tt> at the time that <tt class="docutils literal"><span class="pre">wsgiref.handlers</span></tt> was
+imported, but subclasses can either create their own at the
+class or instance level.  Note that the dictionary should be
+considered read-only, since the default value is shared between
+multiple classes and instances.</blockquote>
+<p>server_software</p>
+<blockquote>
+If the <tt class="docutils literal"><span class="pre">origin_server</span></tt> attribute is set, this attribute&#8217;s
+value is used to set the default <tt class="docutils literal"><span class="pre">SERVER_SOFTWARE</span></tt> WSGI
+environment variable, and also to set a default <tt class="docutils literal"><span class="pre">Server:</span></tt>
+header in HTTP responses.  It is ignored for handlers (such as
+<tt class="docutils literal"><span class="pre">BaseCGIHandler</span></tt> and <tt class="docutils literal"><span class="pre">CGIHandler</span></tt>) that are not HTTP origin
+servers.</blockquote>
+<p>get_scheme()</p>
+<blockquote>
+Return the URL scheme being used for the current request.  The
+default implementation uses the <tt class="docutils literal"><span class="pre">guess_scheme()</span></tt> function from
+<tt class="docutils literal"><span class="pre">wsgiref.util</span></tt> to guess whether the scheme should be &#8220;http&#8221; or
+&#8220;https&#8221;, based on the current request&#8217;s <tt class="docutils literal"><span class="pre">environ</span></tt> variables.</blockquote>
+<p>setup_environ()</p>
+<blockquote>
+Set the <tt class="docutils literal"><span class="pre">environ</span></tt> attribute to a fully-populated WSGI
+environment.  The default implementation uses all of the above
+methods and attributes, plus the <tt class="docutils literal"><span class="pre">get_stdin()</span></tt>,
+<tt class="docutils literal"><span class="pre">get_stderr()</span></tt>, and <tt class="docutils literal"><span class="pre">add_cgi_vars()</span></tt> methods and the
+<tt class="docutils literal"><span class="pre">wsgi_file_wrapper</span></tt> attribute.  It also inserts a
+<tt class="docutils literal"><span class="pre">SERVER_SOFTWARE</span></tt> key if not present, as long as the
+<tt class="docutils literal"><span class="pre">origin_server</span></tt> attribute is a true value and the
+<tt class="docutils literal"><span class="pre">server_software</span></tt> attribute is set.</blockquote>
+<p>Methods and attributes for customizing exception handling:</p>
+<p>log_exception(exc_info)</p>
+<blockquote>
+Log the <em>exc_info</em> tuple in the server log.  <em>exc_info</em> is a
+<tt class="docutils literal"><span class="pre">(type,</span> <span class="pre">value,</span> <span class="pre">traceback)</span></tt> tuple.  The default implementation
+simply writes the traceback to the request&#8217;s <tt class="docutils literal"><span class="pre">wsgi.errors</span></tt>
+stream and flushes it.  Subclasses can override this method to
+change the format or retarget the output, mail the traceback to
+an administrator, or whatever other action may be deemed
+suitable.</blockquote>
+<p>traceback_limit</p>
+<blockquote>
+The maximum number of frames to include in tracebacks output by
+the default <tt class="docutils literal"><span class="pre">log_exception()</span></tt> method.  If <tt class="xref docutils literal"><span class="pre">None</span></tt>, all frames
+are included.</blockquote>
+<p>error_output(environ, start_response)</p>
+<blockquote>
+<p>This method is a WSGI application to generate an error page for
+the user.  It is only invoked if an error occurs before headers
+are sent to the client.</p>
+<p>This method can access the current error information using
+<tt class="docutils literal"><span class="pre">sys.exc_info()</span></tt>, and should pass that information to
+<em>start_response</em> when calling it (as described in the &#8220;Error
+Handling&#8221; section of <strong>PEP 333</strong>).</p>
+<p>The default implementation just uses the <tt class="docutils literal"><span class="pre">error_status</span></tt>,
+<tt class="docutils literal"><span class="pre">error_headers</span></tt>, and <tt class="docutils literal"><span class="pre">error_body</span></tt> attributes to generate an
+output page.  Subclasses can override this to produce more
+dynamic error output.</p>
+<p>Note, however, that it&#8217;s not recommended from a security
+perspective to spit out diagnostics to any old user; ideally,
+you should have to do something special to enable diagnostic
+output, which is why the default implementation doesn&#8217;t include
+any.</p>
+</blockquote>
+<p>error_status</p>
+<blockquote>
+The HTTP status used for error responses.  This should be a
+status string as defined in <strong>PEP 333</strong>; it defaults to a 500
+code and message.</blockquote>
+<p>error_headers</p>
+<blockquote>
+The HTTP headers used for error responses.  This should be a
+list of WSGI response headers (<tt class="docutils literal"><span class="pre">(name,</span> <span class="pre">value)</span></tt> tuples), as
+described in <strong>PEP 333</strong>.  The default list just sets the
+content type to <tt class="docutils literal"><span class="pre">text/plain</span></tt>.</blockquote>
+<p>error_body</p>
+<blockquote>
+The error response body.  This should be an HTTP response body
+string. It defaults to the plain text, &#8220;A server error occurred.
+Please contact the administrator.&#8221;</blockquote>
+<p>Methods and attributes for <strong>PEP 333</strong>&#8216;s &#8220;Optional Platform-
+Specific File Handling&#8221; feature:</p>
+<p>wsgi_file_wrapper</p>
+<blockquote>
+A <tt class="docutils literal"><span class="pre">wsgi.file_wrapper</span></tt> factory, or <tt class="xref docutils literal"><span class="pre">None</span></tt>.  The default value
+of this attribute is the <tt class="docutils literal"><span class="pre">FileWrapper</span></tt> class from
+<tt class="docutils literal"><span class="pre">wsgiref.util</span></tt>.</blockquote>
+<p>sendfile()</p>
+<blockquote>
+Override to implement platform-specific file transmission.  This
+method is called only if the application&#8217;s return value is an
+instance of the class specified by the <tt class="docutils literal"><span class="pre">wsgi_file_wrapper</span></tt>
+attribute.  It should return a true value if it was able to
+successfully transmit the file, so that the default transmission
+code will not be executed. The default implementation of this
+method just returns a false value.</blockquote>
+<p>Miscellaneous methods and attributes:</p>
+<p>origin_server</p>
+<blockquote>
+<p>This attribute should be set to a true value if the handler&#8217;s
+<tt class="docutils literal"><span class="pre">_write()</span></tt> and <tt class="docutils literal"><span class="pre">_flush()</span></tt> are being used to communicate
+directly to the client, rather than via a CGI-like gateway
+protocol that wants the HTTP status in a special <tt class="docutils literal"><span class="pre">Status:</span></tt>
+header.</p>
+<p>This attribute&#8217;s default value is true in <tt class="docutils literal"><span class="pre">BaseHandler</span></tt>, but
+false in <tt class="docutils literal"><span class="pre">BaseCGIHandler</span></tt> and <tt class="docutils literal"><span class="pre">CGIHandler</span></tt>.</p>
+</blockquote>
+<p>http_version</p>
+<blockquote>
+If <tt class="docutils literal"><span class="pre">origin_server</span></tt> is true, this string attribute is used to
+set the HTTP version of the response set to the client.  It
+defaults to <tt class="docutils literal"><span class="pre">&quot;1.0&quot;</span></tt>.</blockquote>
+</blockquote>
+</div>
+<div class="section" id="examples">
+<h2>20.4.6. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>This is a working &#8220;Hello World&#8221; WSGI application:</p>
+<blockquote>
+<p>from wsgiref.simple_server import make_server</p>
+<p># Every WSGI application must have an application object - a callable
+# object that accepts two arguments. For that purpose, we&#8217;re going to
+# use a function (note that you&#8217;re not limited to a function, you can
+# use a class for example). The first argument passed to the function
+# is a dictionary containing CGI-style envrironment variables and the
+# second variable is the callable object (see PEP333)
+def hello_world_app(environ, start_response):</p>
+<blockquote>
+<p>status = &#8216;200 OK&#8217; # HTTP Status
+headers = [(&#8216;Content-type&#8217;, &#8216;text/plain&#8217;)] # HTTP Headers
+start_response(status, headers)</p>
+<p># The returned object is going to be printed
+return [&#8220;Hello World&#8221;]</p>
+</blockquote>
+<p>httpd = make_server(&#8216;&#8217;, 8000, hello_world_app)
+print &#8220;Serving on port 8000...&#8221;</p>
+<p># Serve until process is killed
+httpd.serve_forever()</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="urllib.html" title="20.5. urllib — Open arbitrary resources by URL"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cgitb.html" title="20.3. cgitb — Traceback manager for CGI scripts"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" >20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

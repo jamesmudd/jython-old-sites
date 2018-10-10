@@ -1,0 +1,375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.2. calendar — General calendar-related functions &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="8. Data Types" href="datatypes.html" />
+    <link rel="next" title="8.3. collections — High-performance container datatypes" href="collections.html" />
+    <link rel="prev" title="8.1. datetime — Basic date and time types" href="datetime.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="collections.html" title="8.3. collections — High-performance container datatypes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="datetime.html" title="8.1. datetime — Basic date and time types"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" accesskey="U">8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="datetime.html"
+                                  title="previous chapter">8.1. <tt class="docutils literal"><span class="pre">datetime</span></tt> &#8212; Basic date and time types</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="collections.html"
+                                  title="next chapter">8.3. <tt class="docutils literal"><span class="pre">collections</span></tt> &#8212; High-performance container datatypes</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/calendar.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="calendar-general-calendar-related-functions">
+<h1>8.2. <tt class="docutils literal"><span class="pre">calendar</span></tt> &#8212; General calendar-related functions<a class="headerlink" href="#calendar-general-calendar-related-functions" title="Permalink to this headline">¶</a></h1>
+<p>This module allows you to output calendars like the Unix <strong>cal</strong>
+program, and provides additional useful functions related to the
+calendar. By default, these calendars have Monday as the first day of
+the week, and Sunday as the last (the European convention). Use
+<tt class="docutils literal"><span class="pre">setfirstweekday()</span></tt> to set the first day of the week to Sunday (6)
+or to any other weekday.  Parameters that specify dates are given as
+integers. For related functionality, see also the <tt class="docutils literal"><span class="pre">datetime</span></tt> and
+<tt class="docutils literal"><span class="pre">time</span></tt> modules.</p>
+<p>Most of these functions and classses rely on the <tt class="docutils literal"><span class="pre">datetime</span></tt> module
+which uses an idealized calendar, the current Gregorian calendar
+indefinitely extended in both directions.  This matches the definition
+of the &#8220;proleptic Gregorian&#8221; calendar in Dershowitz and Reingold&#8217;s
+book &#8220;Calendrical Calculations&#8221;, where it&#8217;s the base calendar for all
+computations.</p>
+<p>class class calendar.Calendar([firstweekday])</p>
+<blockquote>
+<p>Creates a <tt class="docutils literal"><span class="pre">Calendar</span></tt> object. <em>firstweekday</em> is an integer
+specifying the first day of the week. <tt class="docutils literal"><span class="pre">0</span></tt> is Monday (the
+default), <tt class="docutils literal"><span class="pre">6</span></tt> is Sunday.</p>
+<p>A <tt class="docutils literal"><span class="pre">Calendar</span></tt> object provides several methods that can be used for
+preparing the calendar data for formatting. This class doesn&#8217;t do
+any formatting itself. This is the job of subclasses.</p>
+<p>New in version 2.5.</p>
+<p><tt class="docutils literal"><span class="pre">Calendar</span></tt> instances have the following methods:</p>
+<p>iterweekdays()</p>
+<blockquote>
+Return an iterator for the week day numbers that will be used
+for one week.  The first value from the iterator will be the
+same as the value of the <tt class="docutils literal"><span class="pre">firstweekday</span></tt> property.</blockquote>
+<p>itermonthdates(year, month)</p>
+<blockquote>
+Return an iterator for the month <em>month</em> (1-12) in the year
+<em>year</em>. This iterator will return all days (as <tt class="docutils literal"><span class="pre">datetime.date</span></tt>
+objects) for the month and all days before the start of the
+month or after the end of the month that are required to get a
+complete week.</blockquote>
+<p>itermonthdays2(year, month)</p>
+<blockquote>
+Return an iterator for the month <em>month</em> in the year <em>year</em>
+similar to <tt class="docutils literal"><span class="pre">itermonthdates()</span></tt>. Days returned will be tuples
+consisting of a day number and a week day number.</blockquote>
+<p>itermonthdays(year, month)</p>
+<blockquote>
+Return an iterator for the month <em>month</em> in the year <em>year</em>
+similar to <tt class="docutils literal"><span class="pre">itermonthdates()</span></tt>. Days returned will simply be
+day numbers.</blockquote>
+<p>monthdatescalendar(year, month)</p>
+<blockquote>
+Return a list of the weeks in the month <em>month</em> of the <em>year</em> as
+full weeks.  Weeks are lists of seven <tt class="docutils literal"><span class="pre">datetime.date</span></tt> objects.</blockquote>
+<p>monthdays2calendar(year, month)</p>
+<blockquote>
+Return a list of the weeks in the month <em>month</em> of the <em>year</em> as
+full weeks.  Weeks are lists of seven tuples of day numbers and
+weekday numbers.</blockquote>
+<p>monthdayscalendar(year, month)</p>
+<blockquote>
+Return a list of the weeks in the month <em>month</em> of the <em>year</em> as
+full weeks.  Weeks are lists of seven day numbers.</blockquote>
+<p>yeardatescalendar(year[, width])</p>
+<blockquote>
+Return the data for the specified year ready for formatting. The
+return value is a list of month rows. Each month row contains up
+to <em>width</em> months (defaulting to 3). Each month contains between
+4 and 6 weeks and each week contains 1&#8211;7 days. Days are
+<tt class="docutils literal"><span class="pre">datetime.date</span></tt> objects.</blockquote>
+<p>yeardays2calendar(year[, width])</p>
+<blockquote>
+Return the data for the specified year ready for formatting
+(similar to <tt class="docutils literal"><span class="pre">yeardatescalendar()</span></tt>). Entries in the week lists
+are tuples of day numbers and weekday numbers. Day numbers
+outside this month are zero.</blockquote>
+<p>yeardayscalendar(year[, width])</p>
+<blockquote>
+Return the data for the specified year ready for formatting
+(similar to <tt class="docutils literal"><span class="pre">yeardatescalendar()</span></tt>). Entries in the week lists
+are day numbers. Day numbers outside this month are zero.</blockquote>
+</blockquote>
+<p>class class calendar.TextCalendar([firstweekday])</p>
+<blockquote>
+<p>This class can be used to generate plain text calendars.</p>
+<p>New in version 2.5.</p>
+<p><tt class="docutils literal"><span class="pre">TextCalendar</span></tt> instances have the following methods:</p>
+<p>formatmonth(theyear, themonth[, w[, l]])</p>
+<blockquote>
+Return a month&#8217;s calendar in a multi-line string. If <em>w</em> is
+provided, it specifies the width of the date columns, which are
+centered. If <em>l</em> is given, it specifies the number of lines that
+each week will use. Depends on the first weekday as specified in
+the constructor or set by the <tt class="docutils literal"><span class="pre">setfirstweekday()</span></tt> method.</blockquote>
+<p>prmonth(theyear, themonth[, w[, l]])</p>
+<blockquote>
+Print a month&#8217;s calendar as returned by <tt class="docutils literal"><span class="pre">formatmonth()</span></tt>.</blockquote>
+<p>formatyear(theyear, themonth[, w[, l[, c[, m]]]])</p>
+<blockquote>
+Return a <em>m</em>-column calendar for an entire year as a multi-line
+string. Optional parameters <em>w</em>, <em>l</em>, and <em>c</em> are for date
+column width, lines per week, and number of spaces between month
+columns, respectively. Depends on the first weekday as specified
+in the constructor or set by the <tt class="docutils literal"><span class="pre">setfirstweekday()</span></tt> method.
+The earliest year for which a calendar can be generated is
+platform-dependent.</blockquote>
+<p>pryear(theyear[, w[, l[, c[, m]]]])</p>
+<blockquote>
+Print the calendar for an entire year as returned by
+<tt class="docutils literal"><span class="pre">formatyear()</span></tt>.</blockquote>
+</blockquote>
+<p>class class calendar.HTMLCalendar([firstweekday])</p>
+<blockquote>
+<p>This class can be used to generate HTML calendars.</p>
+<p>New in version 2.5.</p>
+<p><tt class="docutils literal"><span class="pre">HTMLCalendar</span></tt> instances have the following methods:</p>
+<p>formatmonth(theyear, themonth[, withyear])</p>
+<blockquote>
+Return a month&#8217;s calendar as an HTML table. If <em>withyear</em> is
+true the year will be included in the header, otherwise just the
+month name will be used.</blockquote>
+<p>formatyear(theyear, themonth[, width])</p>
+<blockquote>
+Return a year&#8217;s calendar as an HTML table. <em>width</em> (defaulting
+to 3) specifies the number of months per row.</blockquote>
+<p>formatyearpage(theyear[, width[, css[, encoding]]])</p>
+<blockquote>
+Return a year&#8217;s calendar as a complete HTML page. <em>width</em>
+(defaulting to 3) specifies the number of months per row. <em>css</em>
+is the name for the cascading style sheet to be used. <tt class="xref docutils literal"><span class="pre">None</span></tt>
+can be passed if no style sheet should be used. <em>encoding</em>
+specifies the encoding to be used for the output (defaulting to
+the system default encoding).</blockquote>
+</blockquote>
+<p>class class calendar.LocaleTextCalendar([firstweekday[, locale]])</p>
+<blockquote>
+<p>This subclass of <tt class="docutils literal"><span class="pre">TextCalendar</span></tt> can be passed a locale name in
+the constructor and will return month and weekday names in the
+specified locale. If this locale includes an encoding all strings
+containing month and weekday names will be returned as unicode.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>class class calendar.LocaleHTMLCalendar([firstweekday[, locale]])</p>
+<blockquote>
+<p>This subclass of <tt class="docutils literal"><span class="pre">HTMLCalendar</span></tt> can be passed a locale name in
+the constructor and will return month and weekday names in the
+specified locale. If this locale includes an encoding all strings
+containing month and weekday names will be returned as unicode.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>For simple text calendars this module provides the following
+functions.</p>
+<p>calendar.setfirstweekday(weekday)</p>
+<blockquote>
+<p>Sets the weekday (<tt class="docutils literal"><span class="pre">0</span></tt> is Monday, <tt class="docutils literal"><span class="pre">6</span></tt> is Sunday) to start each
+week. The values <tt class="docutils literal"><span class="pre">MONDAY</span></tt>, <tt class="docutils literal"><span class="pre">TUESDAY</span></tt>, <tt class="docutils literal"><span class="pre">WEDNESDAY</span></tt>,
+<tt class="docutils literal"><span class="pre">THURSDAY</span></tt>, <tt class="docutils literal"><span class="pre">FRIDAY</span></tt>, <tt class="docutils literal"><span class="pre">SATURDAY</span></tt>, and <tt class="docutils literal"><span class="pre">SUNDAY</span></tt> are provided
+for convenience. For example, to set the first weekday to Sunday:</p>
+<blockquote>
+import calendar
+calendar.setfirstweekday(calendar.SUNDAY)</blockquote>
+<p>New in version 2.0.</p>
+</blockquote>
+<p>calendar.firstweekday()</p>
+<blockquote>
+<p>Returns the current setting for the weekday to start each week.</p>
+<p>New in version 2.0.</p>
+</blockquote>
+<p>calendar.isleap(year)</p>
+<blockquote>
+Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>year</em> is a leap year, otherwise <tt class="xref docutils literal"><span class="pre">False</span></tt>.</blockquote>
+<p>calendar.leapdays(y1, y2)</p>
+<blockquote>
+<p>Returns the number of leap years in the range from <em>y1</em> to <em>y2</em>
+(exclusive), where <em>y1</em> and <em>y2</em> are years.</p>
+<p>Changed in version 2.0: This function didn&#8217;t work for ranges
+spanning a century change in Python 1.5.2.</p>
+</blockquote>
+<p>calendar.weekday(year, month, day)</p>
+<blockquote>
+Returns the day of the week (<tt class="docutils literal"><span class="pre">0</span></tt> is Monday) for <em>year</em>
+(<tt class="docutils literal"><span class="pre">1970</span></tt>&#8211;...), <em>month</em> (<tt class="docutils literal"><span class="pre">1</span></tt>&#8211;<tt class="docutils literal"><span class="pre">12</span></tt>), <em>day</em> (<tt class="docutils literal"><span class="pre">1</span></tt>&#8211;<tt class="docutils literal"><span class="pre">31</span></tt>).</blockquote>
+<p>calendar.weekheader(n)</p>
+<blockquote>
+Return a header containing abbreviated weekday names. <em>n</em> specifies
+the width in characters for one weekday.</blockquote>
+<p>calendar.monthrange(year, month)</p>
+<blockquote>
+Returns weekday of first day of the month and number of days in
+month,  for the specified <em>year</em> and <em>month</em>.</blockquote>
+<p>calendar.monthcalendar(year, month)</p>
+<blockquote>
+Returns a matrix representing a month&#8217;s calendar.  Each row
+represents a week; days outside of the month a represented by
+zeros. Each week begins with Monday unless set by
+<tt class="docutils literal"><span class="pre">setfirstweekday()</span></tt>.</blockquote>
+<p>calendar.prmonth(theyear, themonth[, w[, l]])</p>
+<blockquote>
+Prints a month&#8217;s calendar as returned by <tt class="docutils literal"><span class="pre">month()</span></tt>.</blockquote>
+<p>calendar.month(theyear, themonth[, w[, l]])</p>
+<blockquote>
+<p>Returns a month&#8217;s calendar in a multi-line string using the
+<tt class="docutils literal"><span class="pre">formatmonth()</span></tt> of the <tt class="docutils literal"><span class="pre">TextCalendar</span></tt> class.</p>
+<p>New in version 2.0.</p>
+</blockquote>
+<p>calendar.prcal(year[, w[, l[, c]]])</p>
+<blockquote>
+Prints the calendar for an entire year as returned by
+<tt class="docutils literal"><span class="pre">calendar()</span></tt>.</blockquote>
+<p>calendar.calendar(year[, w[, l[, c]]])</p>
+<blockquote>
+<p>Returns a 3-column calendar for an entire year as a multi-line
+string using the <tt class="docutils literal"><span class="pre">formatyear()</span></tt> of the <tt class="docutils literal"><span class="pre">TextCalendar</span></tt> class.</p>
+<p>New in version 2.0.</p>
+</blockquote>
+<p>calendar.timegm(tuple)</p>
+<blockquote>
+<p>An unrelated but handy function that takes a time tuple such as
+returned by the <tt class="docutils literal"><span class="pre">gmtime()</span></tt> function in the <tt class="docutils literal"><span class="pre">time</span></tt> module, and
+returns the corresponding Unix timestamp value, assuming an epoch
+of 1970, and the POSIX encoding.  In fact, <tt class="docutils literal"><span class="pre">time.gmtime()</span></tt> and
+<tt class="docutils literal"><span class="pre">timegm()</span></tt> are each others&#8217; inverse.</p>
+<p>New in version 2.0.</p>
+</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">calendar</span></tt> module exports the following data attributes:</p>
+<p>calendar.day_name</p>
+<blockquote>
+An array that represents the days of the week in the current
+locale.</blockquote>
+<p>calendar.day_abbr</p>
+<blockquote>
+An array that represents the abbreviated days of the week in the
+current locale.</blockquote>
+<p>calendar.month_name</p>
+<blockquote>
+An array that represents the months of the year in the current
+locale.  This follows normal convention of January being month
+number 1, so it has a length of 13 and  <tt class="docutils literal"><span class="pre">month_name[0]</span></tt> is the
+empty string.</blockquote>
+<p>calendar.month_abbr</p>
+<blockquote>
+An array that represents the abbreviated months of the year in the
+current locale.  This follows normal convention of January being
+month number 1, so it has a length of 13 and  <tt class="docutils literal"><span class="pre">month_abbr[0]</span></tt> is
+the empty string.</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">datetime</span></tt></dt>
+<dd>Object-oriented interface to dates and times with similar
+functionality to the <tt class="docutils literal"><span class="pre">time</span></tt> module.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">time</span></tt></dt>
+<dd>Low-level time related functions.</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="collections.html" title="8.3. collections — High-performance container datatypes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="datetime.html" title="8.1. datetime — Basic date and time types"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" >8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

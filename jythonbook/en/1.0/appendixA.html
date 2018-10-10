@@ -1,0 +1,409 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Appendix A: Using Other Tools with Jython &mdash; Jython Book v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '1.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Book v1.0 documentation" href="index.html" />
+    <link rel="next" title="Appendix B: Jython Cookbook" href="appendixB.html" />
+    <link rel="prev" title="Chapter 19: Concurrency" href="Concurrency.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="appendixB.html" title="Appendix B: Jython Cookbook"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Concurrency.html" title="Chapter 19: Concurrency"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="appendix-a-using-other-tools-with-jython">
+<h1>Appendix A: Using Other Tools with Jython<a class="headerlink" href="#appendix-a-using-other-tools-with-jython" title="Permalink to this headline">¶</a></h1>
+<p>The primary focus of this appendix is to provide information on using some external Python packages with Jython, as well as providing information regarding the Jython registry.
+In some circumstances, the tools must be used or installed a bit differently on Jython than on CPython, and those differences will be noted.
+Because there is a good deal of documentation on the usage of these tools available on the web, this appendix will focus on using the tool specifically with Jython.
+However, relevant URLs will be cited for finding more documentation on each of the topics.</p>
+<div class="section" id="the-jython-registry">
+<h2>The Jython Registry<a class="headerlink" href="#the-jython-registry" title="Permalink to this headline">¶</a></h2>
+<p>Because there is no good platform-independent equivalent of the Windows Registry or Unix environment variables, Java has its own environment variable namespace.
+Jython acquires its namespace from the following sources (later sources override defaults found in earlier places):</p>
+<ul class="simple">
+<li>The Java system properties, typically passed in on the command line as options to the java interpreter.</li>
+<li>The Jython “registry” file, containing prop=value pairs.
+Read on for the algorithm Jython uses to find the registry file.</li>
+<li>The user’s personal registry file, containing similarly formatted prop/value pairs.
+The user’s registry file can be found at &#8220;user.home&#8221;+&#8221;/.jython&#8221;</li>
+<li>Jython properties specified on the command line as options to the Jython class.
+See the -D option to the interpreter.</li>
+</ul>
+<div class="section" id="registry-properties">
+<h3>Registry Properties<a class="headerlink" href="#registry-properties" title="Permalink to this headline">¶</a></h3>
+<p>The following properties are recognized by Jython.
+There may be others that aren’t documented here; consult the comments in registry file for details.</p>
+<div class="section" id="python-cachedir">
+<h4>python.cachedir<a class="headerlink" href="#python-cachedir" title="Permalink to this headline">¶</a></h4>
+<p>The directory to use for caches—currently just package information.
+This directory must be writable by the user.
+If the directory is an absolute path, it is used as given; otherwise, it is interpreted as relative to sys.prefix.</p>
+</div>
+<div class="section" id="python-verbose">
+<h4>python.verbose<a class="headerlink" href="#python-verbose" title="Permalink to this headline">¶</a></h4>
+<p>Sets the verbosity level for informative messages.
+Valid values in order of increasing verbosity are “error,” “warning,” “message,” “comment,” and “debug.”</p>
+</div>
+<div class="section" id="python-security-respectjavaaccessibility">
+<h4>python.security.respectJavaAccessibility<a class="headerlink" href="#python-security-respectjavaaccessibility" title="Permalink to this headline">¶</a></h4>
+<p>Normally, Jython can only provide access to public members of classes.
+However if this property is set to false and you are using Java 1.2, then Jython can access nonpublic fields, methods, and constructors.</p>
+</div>
+<div class="section" id="python-jythonc-compiler">
+<h4>python.jythonc.compiler<a class="headerlink" href="#python-jythonc-compiler" title="Permalink to this headline">¶</a></h4>
+<p>The Java compiler to use with the JythonC tool, which now generates Java source code.
+This should be the absolute path to a Java compiler, or the name of a compiler on your standard PATH.</p>
+</div>
+<div class="section" id="python-jythonc-classpath">
+<h4>python.jythonc.classpath<a class="headerlink" href="#python-jythonc-classpath" title="Permalink to this headline">¶</a></h4>
+<p>Extensions to the standard java.class.path property for use with JythonC.
+This is useful if you use Jikes as your compiler.</p>
+</div>
+<div class="section" id="python-jythonc-compileropts">
+<h4>python.jythonc.compileropts<a class="headerlink" href="#python-jythonc-compileropts" title="Permalink to this headline">¶</a></h4>
+<p>Options to pass to the Java compiler when using JythonC.</p>
+</div>
+<div class="section" id="python-console">
+<h4>python.console<a class="headerlink" href="#python-console" title="Permalink to this headline">¶</a></h4>
+<p>The name of a console class.
+An alternative console class that supports GNU readline can be installed with this property.
+Jython already includes such a console class, and it can be enabled by setting this property to org.python.util.ReadlineConsole.</p>
+</div>
+<div class="section" id="python-console-readlinelib">
+<h4>python.console.readlinelib<a class="headerlink" href="#python-console-readlinelib" title="Permalink to this headline">¶</a></h4>
+<p>Allow a choice of backing implementation for GNU readline support.
+Can be either GnuReadline or Editline.
+This property is only used when python.console is set to org.python.util.ReadlineConsole.</p>
+</div>
+</div>
+<div class="section" id="finding-the-registry-file">
+<h3>Finding the Registry File<a class="headerlink" href="#finding-the-registry-file" title="Permalink to this headline">¶</a></h3>
+<p>To find the Jython registry file and set the Python values for sys.prefix, you must first locate a root directory.</p>
+<p>If a “*python.home*” exists, it is used as the root directory by default.</p>
+<p>If “*python.home*” does not exist, “install.root” is used.</p>
+<p>If neither of these exists, then Jython searches for the file “jython.jar” on the Java classpath, as defined in the system property java.class.path.
+(The actual file system isn’t searched, only the paths defined on the classpath and one of them must literally include “jython.jar”).</p>
+<p>Once the root directory is found, sys.prefix and sys.exec_prefix are set to it, and sys.path has rootdir/Lib appended to it.
+The registry file used is then rootdir/registry.</p>
+</div>
+</div>
+<div class="section" id="setuptools">
+<h2>Setuptools<a class="headerlink" href="#setuptools" title="Permalink to this headline">¶</a></h2>
+<p>Setuptools is a library that builds upon distutils, the standard Python distribution facility.
+It offers some advanced tools like <em>easy_install</em>, a command to automatically download and install a given Python package and its dependencies.</p>
+<p>To get setuptools, download ez_setup.py from <a class="reference external" href="http://peak.telecommunity.com/dist/ez_setup.py">http://peak.telecommunity.com/dist/ez_setup.py</a>.
+Then, go to the directory where you left the downloaded file and execute:</p>
+<div class="highlight-python"><pre>$ jython ez_setup.py</pre>
+</div>
+<p>The output will be similar to the following:</p>
+<div class="highlight-python"><pre>Downloading http://pypi.python.org/packages/2.5/s/setuptools/setuptools-0.6c9-py2.5.egg
+Processing setuptools-0.6c9-py2.5.egg
+Copying setuptools-0.6c9-py2.5.egg to /home/lsoto/jython2.5.0/Lib/site-packages
+Adding setuptools 0.6c9 to easy-install.pth file
+Installing easy_install script to /home/lsoto/jython2.5.0/bin
+Installing easy_install-2.5 script to /home/lsoto/jython2.5.0/bin
+
+Installed /home/lsoto/jython2.5.0/Lib/site-packages/setuptools-0.6c9-py2.5.egg
+Processing dependencies for setuptools==0.6c9
+Finished processing dependencies for setuptools==0.6c9</pre>
+</div>
+<p>As you can read on the output, the easy_install script has been installed to the bin directory of the Jython installation (/home/lsoto/jython2.5.0/bin in the example above). If you work frequently with Jython, it’s a good idea to prepend this directory to the PATH environment variable, so you don’t have to type the whole path each time you want to use easy_install or other scripts installed to this directory. From now on, we’ll assume that this is the case. If you don’t want to prepend Jython’s bin directory to your PATH for any reason, remember to type the complete path on each example (i.e., type /path/to/jython/bin/easy_install when I say easy_install).</p>
+<p>Okay, so now you have easy_install. What’s next? Let’s grab a Python library with it! For example, let’s say that we need to access Twitter from a program written in Jython, and we want to use python-twitter project, located at <a class="reference external" href="http://code.google.com/p/python-twitter/">http://code.google.com/p/python-twitter/</a>.</p>
+<p>Without easy_install, you would go to that URL, read the building instructions and, after downloading the latest version and executing a few commands, you should be ready to go. Except that libraries often depend on other libraries (as the case with python-twitter which depends on simplejson) so you would have to repeat this boring process a few times.</p>
+<p>With easy_install you simply run:</p>
+<div class="highlight-python"><pre>$ easy_install python-twitter</pre>
+</div>
+<p>And you get the following output:</p>
+<div class="highlight-python"><pre>Searching for python-twitter
+Reading http://pypi.python.org/simple/python-twitter/
+Reading http://code.google.com/p/python-twitter/
+Best match: python-twitter 0.6
+Downloading http://python-twitter.googlecode.com/files/python-twitter-0.6.tar.gz
+Processing python-twitter-0.6.tar.gz
+Running python-twitter-0.6/setup.py -q bdist_egg --dist-dir /var/folders/mQ/mQkMNKiaE583pWpee85FFk+++TI/-Tmp-/easy_install-FU5COZ/python-twitter-0.6/egg-dist-tmp-EeR4RD
+zip_safe flag not set; analyzing archive contents...
+Unable to analyze compiled code on this platform.
+Please ask the author to include a 'zip_safe' setting (either True or False) in the package's setup.py
+Adding python-twitter 0.6 to easy-install.pth file
+
+Installed /home/lsoto/jython2.5.0/Lib/site-packages/python_twitter-0.6-py2.5.egg
+Processing dependencies for python-twitter
+Searching for simplejson
+Reading http://pypi.python.org/simple/simplejson/
+Reading http://undefined.org/python/#simplejson
+Best match: simplejson 2.0.9
+Downloading http://pypi.python.org/packages/source/s/simplejson/simplejson-2.0.9.tar.gz#md5=af5e67a39ca3408563411d357e6d5e47
+Processing simplejson-2.0.9.tar.gz
+Running simplejson-2.0.9/setup.py -q bdist_egg --dist-dir /var/folders/mQ/mQkMNKiaE583pWpee85FFk+++TI/-Tmp-/easy_install-VgAKxa/simplejson-2.0.9/egg-dist-tmp-jcntqu
+***************************************************************************
+WARNING: The C extension could not be compiled, speedups are not enabled.
+Failure information, if any, is above.
+I'm retrying the build without the C extension now.
+***************************************************************************
+***************************************************************************
+WARNING: The C extension could not be compiled, speedups are not enabled.
+Plain-Python installation succeeded.
+***************************************************************************
+Adding simplejson 2.0.9 to easy-install.pth file
+
+Installed /home/lsoto/jython2.5.0/Lib/site-packages/simplejson-2.0.9-py2.5.egg
+Finished processing dependencies for python-twitter</pre>
+</div>
+<p>The output is a bit verbose, but it gives you a detailed idea of the steps automated by <em>easy_install</em>. Let’s review it piece by piece:</p>
+<div class="highlight-python"><pre>Searching for python-twitter
+Reading http://pypi.python.org/simple/python-twitter/
+Reading http://code.google.com/p/python-twitter/
+Best match: python-twitter 0.6
+Downloading http://python-twitter.googlecode.com/files/python-twitter-0.6.tar.gz</pre>
+</div>
+<p>We asked for “python-twitter,” which is looked up on PyPI, the Python Package Index, which lists all the Python packages produced by the community (as long as they have been registered by the author, which is usually the case).
+The version 0.6 was selected since it was the most recent version at the time we ran the command.</p>
+<p>Let’s see what&#8217;s next on the <em>easy_install</em> output:</p>
+<div class="highlight-python"><pre>Running python-twitter-0.6/setup.py -q bdist_egg --dist-dir /var/folders/mQ/mQkMNKiaE583pWpee85FFk+++TI/-Tmp-/easy_install-FU5COZ/python-twitter-0.6/egg-dist-tmp-EeR4RD
+zip_safe flag not set; analyzing archive contents...
+Unable to analyze compiled code on this platform.
+Please ask the author to include a 'zip_safe' setting (either True or False) in the package's setup.py
+Adding python-twitter 0.6 to easy-install.pth file
+
+Installed /home/lsoto/jython2.5.0/Lib/site-packages/python_twitter-0.6-py2.5.egg</pre>
+</div>
+<p>Nothing special here: it ran the needed commands to install the library.
+The next bits are more interesting:</p>
+<div class="highlight-python"><pre>Processing dependencies for python-twitter
+Searching for simplejson
+Reading http://pypi.python.org/simple/simplejson/
+Reading http://undefined.org/python/#simplejson
+Best match: simplejson 2.0.9
+Downloading http://pypi.python.org/packages/source/s/simplejson/simplejson-2.0.9.tar.gz#md5=af5e67a39ca3408563411d357e6d5e47</pre>
+</div>
+<p>As you can see, the dependency on simplejson was discovered and, since it is not already installed it is being downloaded.
+Next we see:</p>
+<div class="highlight-python"><pre>Processing simplejson-2.0.9.tar.gz
+Running simplejson-2.0.9/setup.py -q bdist_egg --dist-dir /var/folders/mQ/mQkMNKiaE583pWpee85FFk+++TI/-Tmp-/easy_install-VgAKxa/simplejson-2.0.9/egg-dist-tmp-jcntqu
+***************************************************************************
+WARNING: The C extension could not be compiled, speedups are not enabled.
+Failure information, if any, is above.
+I'm retrying the build without the C extension now.
+***************************************************************************
+***************************************************************************
+WARNING: The C extension could not be compiled, speedups are not enabled.
+Plain-Python installation succeeded.
+***************************************************************************
+Adding simplejson 2.0.9 to easy-install.pth file
+
+Installed /home/lsoto/jython2.5.0/Lib/site-packages/simplejson-2.0.9-py2.5.egg</pre>
+</div>
+<p>The warnings are produced because the <em>simplejson</em> installation tries to compile a C extension which for obvious reasons only works with CPython and not with Jython.</p>
+<p>Finally, we see:</p>
+<div class="highlight-python"><pre>Finished processing dependencies for python-twitter</pre>
+</div>
+<p>Which signals the end of the automated installation process for python-twitter.
+You can test that it was successfully installed by running Jython and doing an <em>import twitter</em> on the interactive interpreter.</p>
+<p>As noted above, <em>easy_install</em> will try to get the latest version for the library you specify.
+If you want a particular version, for example the 0.5 release of python-twitter then you can specify it in this way:</p>
+<div class="highlight-python"><pre>$ easy_install python-twitter==0.5</pre>
+</div>
+<p>If new versions of python-twitter are released later, you can tell <em>easy_install</em> to upgrade it to the latest available version, by using the  flag:</p>
+<div class="highlight-python"><pre>$ easy_install -U python-twitter</pre>
+</div>
+<p>For debugging purposes, it is always useful to know where the bits installed using easy_install go. As you can stop of the install output, they are installed into &lt;path-to-jython&gt;/Lib/site-packages/&lt;name_of_library&gt;-&lt;version&gt;.egg which may be a directory or a compressed zip file. Also, easy_install adds an entry to the file &lt;path-to-jython&gt;/Lib/site-packages/easy-install.pth, which ends up adding the directory or zip file to sys.path by default.</p>
+<p>Unfortunately, setuptools don’t provide any automated way to uninstall packages. You will have to manually delete the package egg directory or zip file and remove the associated line on easy-install.pth.</p>
+</div>
+<div class="section" id="virtualenv">
+<h2>Virtualenv<a class="headerlink" href="#virtualenv" title="Permalink to this headline">¶</a></h2>
+<p>Often, it is nice to have separate versions of tools running on the same machine.
+The virtualenv tool provides a way to create a virtual Python environment that can be used for various purposes including installation of different package versions.
+Virtual environments can also be nice for those who do not have administrative access for a particular Python installation but still need to have the ability to install packages to it; such is often the case when working with domain hosts.
+Whatever the case may be, the virtualenv tool provides a means for creating one or more virtual environments for a particular Python installation so that the libraries can be installed into controlled environments other than the global site-packages area for your Python or Jython installation.
+The release of Jython 2.5.0 opened new doors for the possibility of using such tools as virtualenv.</p>
+<p>To use virtualenv with Jython, we first need to obtain it.
+The easiest way to do so is via the Python Package Index.
+As you had learned in the previous section, easy_install is the way to install packages from the PyPI.
+The following example shows how to install virtualenv using easy_install with Jython.</p>
+<div class="highlight-python"><pre>jython easy_install.py virtualenv</pre>
+</div>
+<p>Once installed, it is quite easy to use the tool for creation of a virtual environment.
+The virtual environment will include a Jython executable along with an installation of setuptools and its own site-packages directory.
+This was done so that you have the ability to install different packages from the PyPI to your virtual environment.
+Let’s create an environment named JY2.5.1Env using the virtualenv.py module that exists within our Jython environment.</p>
+<div class="highlight-python"><pre>jython &lt;&lt;path to Jython&gt;&gt;/jython2.5.1/Lib/site-packages/virtualenv-1.3.3-py2.5.egg/virtualenv.py JY2.5.1Env
+New jython executable in JY2.5.1Env/bin/jython
+Installing setuptools............done.</pre>
+</div>
+<p>Now a new directory named JY2.5.1Env should have been created within your current working directory.
+You can run Jython from this virtual environment by simply invoking the executable that was created.
+The virtualenv tool allows us the ability to open a terminal and designate it to be used for our virtual Jython environment exclusively via the use of the <em>None</em> command.
+To do so, open up a terminal and type the following:</p>
+<div class="highlight-python"><pre>source &lt;&lt;path-to-virtual-environment&gt;&gt;/JY2.5.1Env/bin/activate</pre>
+</div>
+<p>Once this is done, you should notice that the command line is preceded by the name of the virtual environment that you have activated.
+Any Jython shell or tool used in this terminal will now be using the virtual environment.
+This is an excellent way to run a tool using two different versions of a particular library or for running a production and development environment side-by-side.
+If you run the easy_install.py tool within the activated virtual environment terminal then the tool(s) will be installed into the virtual environment.
+There can be an unlimited number of virtual environments installed on a particular machine.
+To stop using the virtual environment within the terminal, simply type:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">deactivate</span>
+</pre></div>
+</div>
+<p>Now your terminal should go back to normal use and default to the global Jython installation.
+Once deactivated any of the Jython references made will call the global installation or libraries within the global site-packages area.
+It should be noted that when you create a virtual environment, it automatically inherits all packages used by the global installation.
+Therefore if you have a library installed in your global site-packages area then it can be used from the virtual environment right away.
+A good practice is to install only essential libraries into your global Jython environment and then install one-offs or test libraries into virtual environments.</p>
+<p>It is useful to have the ability to list installations that are in use within a particular environment.
+One way to do this is to install the <em>None</em> utility and make use of its <em>None</em> command.
+Such information may also be useful for purposes such as documentation of the dependencies contained in your <em>setup.py</em>.</p>
+<p>In order to install <em>None</em>, you must grab a copy of the latest version of Jython beyond 2.5.1 as there has been a patch submitted that corrects some functionality which is used by <em>None</em>.
+You must also be running with JDK 1.6 or above as the patched version of Jython makes use of the <em>None</em> module.
+The <em>None</em> module makes use of some java.awt.Desktop features that are only available in JDK 1.6 and beyond.
+To install <em>None</em>, use the ez_install.py script as we’ve shown previously.</p>
+<div class="highlight-python"><pre>jython ez_install.py yolk</pre>
+</div>
+<p>Once installed, you can list the package installations for your Jython installations by issuing the <em>None</em> command as follows:</p>
+<div class="highlight-python"><pre>yolk -l
+Django          - 1.0.2-final  - non-active development (/jython2.5.1/Lib/site-packages)
+Django          - 1.0.3        - active development (/jython2.5.1/Lib/site-packages/Django-1.0.3-py2.5.egg)
+Django          - 1.1          - non-active development (/jython2.5.1/Lib/site-packages)
+SQLAlchemy      - 0.5.4p2      - active development (/jython2.5.1/Lib/site-packages)
+SQLAlchemy      - 0.6beta1     - non-active development (/jython2.5.1/Lib/site-packages)
+django-jython   - 0.9          - active development (/jython2.5.1/Lib/site-packages/django_jython-0.9-py2.5.egg)
+django-jython   - 1.0b1        - non-active development (/jython2.5.1/Lib/site-packages)
+nose            - 0.11.1       - active development (/jython2.5.1/Lib/site-packages/nose-0.11.1-py2.5.egg)
+setuptools      - 0.6c9        - active
+setuptools      - 0.6c9        - active
+snakefight      - 0.4          - active development (/jython2.5.1/Lib/site-packages/snakefight-0.4-py2.5.egg)
+virtualenv      - 1.3.3        - active development (/jython2.5.1/Lib/site-packages/virtualenv-1.3.3-py2.5.egg)
+wsgiref         - 0.1.2        - active development (/jython2.5.1/Lib)
+yolk            - 0.4.1        - active</pre>
+</div>
+<p>As you can see, all installed packages will be listed.
+If you are using yolk from within a virtual environment then you will see all packages installed in that virtual environment as well as those installed into the global environment.</p>
+<p>Similarly to setuptools, there is no way to automatically uninstall virtualenv.
+You must also manually delete the package egg directory or zip file as well as remove references within <em>easy-install.pth</em>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Appendix A: Using Other Tools with Jython</a><ul>
+<li><a class="reference external" href="#the-jython-registry">The Jython Registry</a><ul>
+<li><a class="reference external" href="#registry-properties">Registry Properties</a><ul>
+<li><a class="reference external" href="#python-cachedir">python.cachedir</a></li>
+<li><a class="reference external" href="#python-verbose">python.verbose</a></li>
+<li><a class="reference external" href="#python-security-respectjavaaccessibility">python.security.respectJavaAccessibility</a></li>
+<li><a class="reference external" href="#python-jythonc-compiler">python.jythonc.compiler</a></li>
+<li><a class="reference external" href="#python-jythonc-classpath">python.jythonc.classpath</a></li>
+<li><a class="reference external" href="#python-jythonc-compileropts">python.jythonc.compileropts</a></li>
+<li><a class="reference external" href="#python-console">python.console</a></li>
+<li><a class="reference external" href="#python-console-readlinelib">python.console.readlinelib</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#finding-the-registry-file">Finding the Registry File</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#setuptools">Setuptools</a></li>
+<li><a class="reference external" href="#virtualenv">Virtualenv</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="Concurrency.html"
+                                  title="previous chapter">Chapter 19: Concurrency</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="appendixB.html"
+                                  title="next chapter">Appendix B: Jython Cookbook</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/appendixA.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="appendixB.html" title="Appendix B: Jython Cookbook"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Concurrency.html" title="Chapter 19: Concurrency"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+    <div class="footer">
+      &copy; Copyright 2009,2010, Josh Juneau, Frank Wierzbicki, Jim Baker, Leo Soto, Victor Ng.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-13131153-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  </body>
+</html>

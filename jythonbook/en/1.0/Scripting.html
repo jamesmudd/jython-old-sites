@@ -1,0 +1,570 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Chapter 9: Scripting With Jython &mdash; Jython Book v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '1.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Book v1.0 documentation" href="index.html" />
+    <link rel="next" title="Chapter 10: Jython and Java Integration" href="JythonAndJavaIntegration.html" />
+    <link rel="prev" title="Chapter 8: Modules and Packages for Code Reuse" href="ModulesPackages.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="JythonAndJavaIntegration.html" title="Chapter 10: Jython and Java Integration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ModulesPackages.html" title="Chapter 8: Modules and Packages for Code Reuse"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="chapter-9-scripting-with-jython">
+<h1>Chapter 9:  Scripting With Jython<a class="headerlink" href="#chapter-9-scripting-with-jython" title="Permalink to this headline">¶</a></h1>
+<p>In this chapter, we will look at scripting with Jython. For our
+purposes, we will define &#8216;scripting&#8217; as the writing of small
+programs to help out with daily tasks. These tasks are things like
+deleting and creating directories, managing files and programs, and
+anything else that feels repetitive that you might be able to
+express as a small program. In practice, however, scripts can
+become so large that the line between a script and a full sized
+program can blur.</p>
+<p>We&#8217;ll start with some very small examples to give you a feel for
+the sorts of tasks you might script from Jython. Then we&#8217;ll cover a
+medium-sized task to show the use of a few of these techniques
+together.</p>
+<div class="section" id="getting-the-arguments-passed-to-a-script">
+<h2>Getting the Arguments Passed to a Script<a class="headerlink" href="#getting-the-arguments-passed-to-a-script" title="Permalink to this headline">¶</a></h2>
+<p>All but the simplest of scripts will take some arguments from the
+command line. We&#8217;ll start our look at scripting by printing out any
+args passed to our script.</p>
+<p><em>Listing 9-1.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">arg</span>
+</pre></div>
+</div>
+<p>Let&#8217;s try running our script with some random arguments:</p>
+<p><em>Listing 9-2.</em></p>
+<div class="highlight-python"><pre>$ jython args.py a b c 1 2 3
+args.py
+a
+b
+c
+1
+2
+3</pre>
+</div>
+<p>The first value in sys.argv is the name of the script itself
+(args.py), the rest is the items passed in on the command line.</p>
+</div>
+<div class="section" id="searching-for-a-file">
+<h2>Searching for a File<a class="headerlink" href="#searching-for-a-file" title="Permalink to this headline">¶</a></h2>
+<p>Many scripting tasks take the form of &#8216;find a bunch of files and do
+something with them.&#8217; So let&#8217;s take a look at how you might find
+some files from a Jython program. We&#8217;ll start with a simple script
+that finds any files in your current directory that match a passed
+in string:</p>
+<p><em>Listing 9-3.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mf">1</span><span class="p">]):</span>
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mf">2</span><span class="p">])</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">f</span>
+</pre></div>
+</div>
+<p>At the top of the script, we import the sys and os modules. Then we
+run a for loop over the results of os.listdir(sys.argv[1]). The os
+module is a good place to look if you are trying to accomplish the
+sorts of tasks you might do on a command prompt, such as listing
+the files in a directory, deleting a file, renaming a file, and the
+like. The listdir function of the os module takes one argument: a
+string that will be used as the path. The entries of the directory
+on that path are returned as a list. In this case, if we run this
+in its own directory (by passing in &#8216;.&#8217; for the current directory),
+we see:</p>
+<p><em>Listing 9-4.</em></p>
+<div class="highlight-python"><pre>$ ls
+args.py
+search.py
+$ jython list.py . py
+args.py
+search.py
+$ jython list.py . se
+search.py</pre>
+</div>
+<p>In the first call to list.py, we list all files that contain &#8216;py&#8217;,
+listing &#8216;args.py&#8217; and &#8216;search.py.&#8217; In the second call, we list all
+files that contain the string &#8216;se&#8217;, so only &#8216;search.py&#8217; is listed.</p>
+<p>The os module contains many useful functions and attributes that
+can be used to get information about your operating environment.
+Next we can open up a Jython prompt and try out a few os features:</p>
+<p><em>Listing 9-5.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+<span class="go">&#39;/Users/frank/Desktop/frank/hg/jythonbook~jython-book/src/chapter8&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s">&quot;/Users/frank&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+<span class="go">&#39;/Users/frank&#39;</span>
+</pre></div>
+</div>
+<p>We just printed out our current working directory with os.getcwd(),
+changed our current working directory to &#8216;/Users/frank,&#8217; and then
+printed out the new directory with another call to os.getcwd(). It
+is important to note that the JVM does not expose the ability to
+actually change the current working directory of the process
+running Jython. For this reason, Jython keeps track of its own
+current working directory. As long as you stay within Jython&#8217;s
+standard library, the current working directory will behave as you
+expect (it will be changed with os.chdir()). However, if you import
+Java library functions that depend on a current working directory,
+it will always reflect the directory that Jython was started in.</p>
+<p><em>Listing 9-6.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+<span class="go">&#39;/Users/frank/Desktop/frank/hg/jythonbook~jython-book/src/chapter8&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">File</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">list</span><span class="p">():</span>
+<span class="gp">... </span><span class="k">print</span> <span class="n">x</span>
+<span class="gp">...</span>
+<span class="go">args.py</span>
+<span class="go">search.py</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s">&quot;/Users/frank&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+<span class="go">&#39;/Users/frank&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)</span>
+<span class="go">[&#39;Desktop&#39;, &#39;Documents&#39;, &#39;Downloads&#39;, &#39;Dropbox&#39;, &#39;Library&#39;, &#39;Movies&#39;, &#39;Music&#39;, &#39;Pictures&#39;, &#39;Public&#39;, &#39;Sites&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">list</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">x</span>
+<span class="gp">...</span>
+<span class="go">args.py</span>
+<span class="go">search.py</span>
+</pre></div>
+</div>
+<p>Quite a bit went on in that last example, we&#8217;ll take it step by
+step. We imported os and printed the current working directory,
+which is chapter8. We imported the File class from java.io. We then
+printed the contents of &#8216;.&#8217; from the Java side of the world. We
+then changed directories with os.chdir() to the home directory, and
+listed the contents of &#8216;.&#8217; from Jython&#8217;s perspective, and listed
+&#8216;.&#8217; from the Java perspective. The important thing to note is that
+&#8216;.&#8217; from Java will always see the chapter8 directory because we
+cannot change the real working directory of the Java process—we can
+only keep track of a working directory so that Jython&#8217;s working
+directory behaves the way Python programmers expect. Too many
+Python tools (like distutils and setuptools) depend on the ability
+to change working directories to ignore.</p>
+</div>
+<div class="section" id="manipulating-files">
+<h2>Manipulating Files<a class="headerlink" href="#manipulating-files" title="Permalink to this headline">¶</a></h2>
+<p>Listing files is great, but a more interesting scripting problem is
+actually doing something to the files you are working with. One of
+these problems that comes up for me from time to time is that of
+changing the extensions of a bunch of files. If you need to change
+one or two extensions, it isn&#8217;t a big deal to do it manually. If
+you want to change hundreds of extensions, things get very tedious.
+Splitting extensions can be handled with the splitext function from
+the os.path module. The splitext function takes a file name and
+returns a tuple of the base name of the file and the extension.</p>
+<p><em>Listing 9-7.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">):</span>
+<span class="gp">... </span><span class="k">print</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">(&#39;args&#39;, &#39;.py&#39;)</span>
+<span class="go">(&#39;builder&#39;, &#39;.py&#39;)</span>
+
+<span class="go">(&#39;HelloWorld&#39;, &#39;.java&#39;)</span>
+<span class="go">(&#39;search&#39;, &#39;.py&#39;)</span>
+</pre></div>
+</div>
+<p>Now that we can get the extensions, we just need to be able to
+rename the files. Luckily, the os module has exactly the function
+we need, rename:</p>
+<p><em>Listing 9-8.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s">&#39;HelloWorld.java&#39;</span><span class="p">,</span> <span class="s">&#39;HelloWorld.foo&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
+<span class="go">[&#39;args.py&#39;, &#39;builder.py&#39;, &#39;HelloWorld.foo&#39;, &#39;search.py&#39;]</span>
+</pre></div>
+</div>
+<p>If you are manipulating any important files, be sure to put the
+names back!</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s">&#39;HelloWorld.foo&#39;</span><span class="p">,</span> <span class="s">&#39;HelloWorld.java&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
+<span class="go">[&#39;args.py&#39;, &#39;builder.py&#39;, &#39;HelloWorld.java&#39;, &#39;search.py&#39;]</span>
+</pre></div>
+</div>
+<p>Now that you know how to get extensions and how to rename files, we
+can put them together into a script (chext.py) that changes
+extensions:</p>
+<p><em>Listing 9-9.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mf">1</span><span class="p">]):</span>
+    <span class="n">base</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ext</span><span class="p">[</span><span class="mf">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mf">2</span><span class="p">]:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mf">3</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="making-a-script-a-module">
+<h2>Making a Script a Module<a class="headerlink" href="#making-a-script-a-module" title="Permalink to this headline">¶</a></h2>
+<p>If you wanted to turn chext.py into a module that could also be
+used from other modules, you could put this code into a function
+and separate its use as a script like this:</p>
+<p><em>Listing-9-10.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">def</span> <span class="nf">change_ext</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">old_ext</span><span class="p">,</span> <span class="n">new_ext</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mf">1</span><span class="p">]):</span>
+        <span class="n">base</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ext</span><span class="p">[</span><span class="mf">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mf">2</span><span class="p">]:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mf">3</span><span class="p">]))</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">4</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;usage: </span><span class="si">%s</span><span class="s"> directory old_ext new_ext&quot;</span> <span class="o">%</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span>
+    <span class="n">change_ext</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mf">1</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mf">2</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mf">3</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This new version can be used from an external module like this:</p>
+<p><em>Listing 9-11.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">chext</span>
+
+<span class="n">chext</span><span class="o">.</span><span class="n">change_ext</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">,</span> <span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="s">&quot;java&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We have also used this change to introduce a little error checking,
+if we haven&#8217;t supplied enough arguments, the script prints out a
+usage message.</p>
+</div>
+<div class="section" id="parsing-commandline-options">
+<h2>Parsing Commandline Options<a class="headerlink" href="#parsing-commandline-options" title="Permalink to this headline">¶</a></h2>
+<p>Many scripts are simple one-offs that you write once, use, and
+forget. Others become part of your weekly or even daily use over
+time. When you find that you are using a script over and over
+again, you often find it helpful to pass in command line options.
+There are three main ways that this is done in Jython. The first
+way is to hand parse the arguments that can be found from sys.argv
+as we did above in chext.py, the second is the getopt module, and
+the third is the newer, more flexible optparse module.</p>
+<p>If you are going to do more than just feed the arguments to your
+script directly, then parsing these arguments by hand can get
+pretty tedious, and you&#8217;ll be much better off using getopt or
+optparse. The optparse module is the newer, more flexible option,
+so we&#8217;ll cover that one. The getopt module is still useful since it
+requires a little less code for simpler expected arguments. Here is
+a basic optparse script:</p>
+<p><em>Listing 9-12.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># script foo3.py</span>
+<span class="kn">from</span> <span class="nn">optparse</span> <span class="kn">import</span> <span class="n">optionparser</span>
+<span class="n">parser</span> <span class="o">=</span> <span class="n">optionparser</span><span class="p">()</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-f&quot;</span><span class="p">,</span> <span class="s">&quot;--foo&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;set foo option&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-b&quot;</span><span class="p">,</span> <span class="s">&quot;--bar&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;set bar option&quot;</span><span class="p">)</span>
+<span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;options: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">options</span>
+<span class="k">print</span> <span class="s">&quot;args: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">args</span>
+</pre></div>
+</div>
+<p>running the above:</p>
+<p><em>Listing 9-13.</em></p>
+<div class="highlight-python"><pre>$ jython foo3.py -b a --foo b c d
+$ options: {'foo': 'b', 'bar': 'a'}
+$ args: ['c', 'd']</pre>
+</div>
+<p>In this example, we have created an optionparser and added two
+options with the add_option method. The add_option method takes
+at least one string as an option argument (&#8216;-f&#8217; in the first case)
+and an optional long version (&#8216;&#8211;foo&#8217; in the previous case). You
+can then pass in optional keyword options like the &#8216;help&#8217; option
+that sets the help string that will be associated with the script.
+We&#8217;ll come back to the optparse module with a more concrete example
+later in this chapter.</p>
+</div>
+<div class="section" id="compiling-java-source">
+<h2>Compiling Java Source<a class="headerlink" href="#compiling-java-source" title="Permalink to this headline">¶</a></h2>
+<p>While compiling Java source is not strictly a typical scripting
+task, it is a task that we&#8217;d like to show off in a bigger example
+starting in the next section. The API we are about to cover was
+introduced in jdk 6, and is optional for jvm vendors to implement.
+We know that it works on the jdk 6 from Sun (the most common JDK in
+use) and on the jdk 6 that ships with mac os x. For more details of
+the javacompiler api, a good starting point is here:
+<a class="reference external" href="http://java.sun.com/javase/6/docs/api/javax/tools/javacompiler.html">http://java.sun.com/javase/6/docs/api/javax/tools/javacompiler.html</a>.</p>
+<p>The following is a simple example of the use of this API from
+Jython:</p>
+<p><em>Listing 9-14.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">javax.tools</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ForwardingJavaFileManager</span><span class="p">,</span> <span class="n">ToolProvider</span><span class="p">,</span> <span class="n">DiagnosticCollector</span><span class="p">,)</span>
+<span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;HelloWorld.java&quot;</span><span class="p">]</span>
+<span class="n">compiler</span> <span class="o">=</span> <span class="n">ToolProvider</span><span class="o">.</span><span class="n">getSystemJavaCompiler</span><span class="p">()</span>
+<span class="n">diagnostics</span> <span class="o">=</span> <span class="n">DiagnosticCollector</span><span class="p">()</span>
+<span class="n">manager</span> <span class="o">=</span> <span class="n">compiler</span><span class="o">.</span><span class="n">getStandardFileManager</span><span class="p">(</span><span class="n">diagnostics</span><span class="p">,</span> <span class="n">none</span><span class="p">,</span> <span class="n">none</span><span class="p">)</span>
+<span class="n">units</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">getJavaFileObjectsFromStrings</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+<span class="n">comp_task</span> <span class="o">=</span> <span class="n">compiler</span><span class="o">.</span><span class="n">getTask</span><span class="p">(</span><span class="n">none</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">diagnostics</span><span class="p">,</span> <span class="n">none</span><span class="p">,</span> <span class="n">none</span><span class="p">,</span> <span class="n">units</span><span class="p">)</span>
+<span class="n">success</span> <span class="o">=</span> <span class="n">comp_task</span><span class="o">.</span><span class="n">call</span><span class="p">()</span>
+<span class="n">manager</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>First we import some Java classes from the javax.tools package.
+Then we create a list containing just one string,
+&#8216;HelloWorld.java.&#8217; Then we get a handle on the system Java compiler
+and call it &#8216;compiler.&#8217; A couple of objects that need to get passed
+to our compiler task, &#8216;diagnostics&#8217; and &#8216;manager&#8217; are created. We
+turn our list of strings into &#8216;units&#8217; and finally we create a
+compiler task and execute its call method. If we wanted to do this
+often, we&#8217;d probably want to roll up all of this into a simple
+method.</p>
+</div>
+<div class="section" id="example-script-builder-py">
+<h2>Example Script: Builder.py<a class="headerlink" href="#example-script-builder-py" title="Permalink to this headline">¶</a></h2>
+<p>So we&#8217;ve discussed a few of the modules that tend to come in handy
+when writing scripts for Jython. Now we&#8217;ll put together a simple
+script to show off what can be done. We&#8217;ve chosen to write a script
+that will help handle the compilation of java files to .class files
+in a directory, and clean the directory of .class files as a
+separate task. We will want to be able to create a directory
+structure, delete the directory structure for a clean build, and of
+course compile our java source files.</p>
+<p><em>Listing 9-15.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+
+<span class="kn">from</span> <span class="nn">javax.tools</span> <span class="kn">import</span> <span class="p">(</span><span class="n">forwardingjavafilemanager</span><span class="p">,</span> <span class="n">toolprovider</span><span class="p">,</span>
+         <span class="n">diagnosticcollector</span><span class="p">,)</span>
+
+<span class="n">tasks</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="n">tasks</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="n">func_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">clean</span><span class="p">():</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&quot;\*.class&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">compile</span><span class="p">():</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&quot;\*.java&quot;</span><span class="p">)</span>
+    <span class="n">_log</span><span class="p">(</span><span class="s">&quot;compiling </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">files</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_compile</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="n">_log</span><span class="p">(</span><span class="s">&quot;compiled&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_log</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">message</span>
+
+<span class="k">def</span> <span class="nf">_compile</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+    <span class="n">compiler</span> <span class="o">=</span> <span class="n">toolprovider</span><span class="o">.</span><span class="n">getsystemjavacompiler</span><span class="p">()</span>
+    <span class="n">diagnostics</span> <span class="o">=</span> <span class="n">diagnosticcollector</span><span class="p">()</span>
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">compiler</span><span class="o">.</span><span class="n">getstandardfilemanager</span><span class="p">(</span><span class="n">diagnostics</span><span class="p">,</span> <span class="n">none</span><span class="p">,</span> <span class="n">none</span><span class="p">)</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">getjavafileobjectsfromstrings</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+    <span class="n">comp_task</span> <span class="o">=</span> <span class="n">compiler</span><span class="o">.</span><span class="n">gettask</span><span class="p">(</span><span class="n">none</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">diagnostics</span><span class="p">,</span> <span class="n">none</span><span class="p">,</span> <span class="n">none</span><span class="p">,</span> <span class="n">units</span><span class="p">)</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="n">comp_task</span><span class="o">.</span><span class="n">call</span><span class="p">()</span>
+    <span class="n">manager</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">success</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">optparse</span> <span class="kn">import</span> <span class="n">optionparser</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">optionparser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-q&quot;</span><span class="p">,</span> <span class="s">&quot;--quiet&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_false&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;verbose&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">true</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&quot;don&#39;t print out task messages.&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-p&quot;</span><span class="p">,</span> <span class="s">&quot;--projecthelp&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;projecthelp&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&quot;print out list of tasks.&quot;</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">projecthelp</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">task</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mf">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;usage: jython builder.py [options] task&quot;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">tasks</span><span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mf">0</span><span class="p">]]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;task </span><span class="si">%s</span><span class="s"> not defined.&quot;</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span>
+    <span class="n">current</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The script defines a &#8216;task&#8217; decorator that gathers the names of the
+functions and puts them in a dictionary. We have an optionparser
+class that defines two options &#8211;projecthelp and &#8211;quiet. By
+default the script logs its actions to standard out. The option
+&#8211;quiet turns this logging off, and &#8211;projecthelp lists the
+available tasks. We have defined two tasks, &#8216;compile&#8217; and &#8216;clean.&#8217;
+The &#8216;compile&#8217; task globs for all of the .java files in your
+directory and compiles them. The &#8216;clean&#8217; task globs for all of the
+.class files in your directory and deletes them. Do be careful! The
+.class files are deleted without prompting!</p>
+<p>So let&#8217;s give it a try. If you create a Java class in the same
+directory as builder.py, say the classic &#8216;Hello World&#8217; program:</p>
+</div>
+<div class="section" id="helloworld-java">
+<h2>HelloWorld.java<a class="headerlink" href="#helloworld-java" title="Permalink to this headline">¶</a></h2>
+<p><em>Listing 9-16.</em></p>
+<div class="highlight-python"><pre>public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World");
+    }
+}</pre>
+</div>
+<p>You could then issue these commands to builder.py with these
+results:</p>
+<p><em>Listing 9-17.</em></p>
+<div class="highlight-python"><pre>[frank@pacman chapter8]$ jython builder.py --help
+Usage: builder.py [options]
+
+Options:
+    -h, --help show this help message and exit
+    -q, --quiet Don't print out task messages.
+    -p, --projecthelp Print out list of tasks.
+[frank@pacman chapter8]$ jython builder.py --projecthelp
+compile
+clean
+[frank@pacman chapter8]$ jython builder.py compile
+compiling ['HelloWorld.java']
+compiled
+[frank@pacman chapter8]$ ls
+HelloWorld.java HelloWorld.class builder.py
+[frank@pacman chapter8]$ jython builder.py clean
+[frank@pacman chapter8]$ ls
+HelloWorld.java builder.py
+[frank@pacman chapter8]$ jython builder.py --quiet compile
+[frank@pacman chapter8]$ ls
+HelloWorld.class HelloWorld.java builder.py
+[frank@pacman chapter8]$</pre>
+</div>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>This chapter has shown how to create scripts with Jython. We have
+gone from the most simple one- and two-line scripts to large
+scripts with lots of optional inputs. We hope this will help you
+create your own tools to help automate some of the repetition out
+of your days.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Chapter 9:  Scripting With Jython</a><ul>
+<li><a class="reference external" href="#getting-the-arguments-passed-to-a-script">Getting the Arguments Passed to a Script</a></li>
+<li><a class="reference external" href="#searching-for-a-file">Searching for a File</a></li>
+<li><a class="reference external" href="#manipulating-files">Manipulating Files</a></li>
+<li><a class="reference external" href="#making-a-script-a-module">Making a Script a Module</a></li>
+<li><a class="reference external" href="#parsing-commandline-options">Parsing Commandline Options</a></li>
+<li><a class="reference external" href="#compiling-java-source">Compiling Java Source</a></li>
+<li><a class="reference external" href="#example-script-builder-py">Example Script: Builder.py</a></li>
+<li><a class="reference external" href="#helloworld-java">HelloWorld.java</a></li>
+<li><a class="reference external" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="ModulesPackages.html"
+                                  title="previous chapter">Chapter 8:  Modules and Packages for Code Reuse</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="JythonAndJavaIntegration.html"
+                                  title="next chapter">Chapter 10: Jython and Java Integration</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/Scripting.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="JythonAndJavaIntegration.html" title="Chapter 10: Jython and Java Integration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ModulesPackages.html" title="Chapter 8: Modules and Packages for Code Reuse"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+    <div class="footer">
+      &copy; Copyright 2009,2010, Josh Juneau, Frank Wierzbicki, Jim Baker, Leo Soto, Victor Ng.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-13131153-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  </body>
+</html>

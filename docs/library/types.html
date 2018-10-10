@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.15. types — Names for built-in types &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="8. Data Types" href="datatypes.html" />
+    <link rel="next" title="8.16. new — Creation of runtime internal objects" href="new.html" />
+    <link rel="prev" title="8.12. UserDict — Class wrapper for dictionary objects" href="userdict.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="new.html" title="8.16. new — Creation of runtime internal objects"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="userdict.html" title="8.12. UserDict — Class wrapper for dictionary objects"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" accesskey="U">8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="userdict.html"
+                                  title="previous chapter">8.12. <tt class="docutils literal"><span class="pre">UserDict</span></tt> &#8212; Class wrapper for dictionary objects</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="new.html"
+                                  title="next chapter">8.16. <tt class="docutils literal docutils literal docutils literal"><span class="pre">new</span></tt> &#8212; Creation of runtime internal objects</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/types.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="types-names-for-built-in-types">
+<h1>8.15. <tt class="docutils literal"><span class="pre">types</span></tt> &#8212; Names for built-in types<a class="headerlink" href="#types-names-for-built-in-types" title="Permalink to this headline">¶</a></h1>
+<p>This module defines names for some object types that are used by the
+standard Python interpreter, but not for the types defined by various
+extension modules. Also, it does not include some of the types that
+arise during processing such as the <tt class="docutils literal"><span class="pre">listiterator</span></tt> type. It is safe
+to use <tt class="docutils literal"><span class="pre">from</span> <span class="pre">types</span> <span class="pre">import</span> <span class="pre">*</span></tt> &#8212; the module does not export any
+names besides the ones listed here. New names exported by future
+versions of this module will all end in <tt class="docutils literal"><span class="pre">Type</span></tt>.</p>
+<p>Typical use is for functions that do different things depending on
+their argument types, like the following:</p>
+<blockquote>
+<p>from types import *
+def delete(mylist, item):</p>
+<blockquote>
+<dl class="docutils">
+<dt>if type(item) is IntType:</dt>
+<dd>del mylist[item]</dd>
+<dt>else:</dt>
+<dd>mylist.remove(item)</dd>
+</dl>
+</blockquote>
+</blockquote>
+<p>Starting in Python 2.2, built-in factory functions such as <tt class="docutils literal"><span class="pre">int()</span></tt>
+and <tt class="docutils literal"><span class="pre">str()</span></tt> are also names for the corresponding types.  This is now
+the preferred way to access the type instead of using the <tt class="docutils literal"><span class="pre">types</span></tt>
+module. Accordingly, the example above should be written as follows:</p>
+<blockquote>
+<dl class="docutils">
+<dt>def delete(mylist, item):</dt>
+<dd><dl class="first last docutils">
+<dt>if isinstance(item, int):</dt>
+<dd>del mylist[item]</dd>
+<dt>else:</dt>
+<dd>mylist.remove(item)</dd>
+</dl>
+</dd>
+</dl>
+</blockquote>
+<p>The module defines the following names:</p>
+<p>types.NoneType</p>
+<blockquote>
+The type of <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>types.TypeType</p>
+<blockquote>
+The type of type objects (such as returned by <tt class="docutils literal"><span class="pre">type()</span></tt>); alias of
+the built-in <tt class="docutils literal"><span class="pre">type</span></tt>.</blockquote>
+<p>types.BooleanType</p>
+<blockquote>
+<p>The type of the <tt class="docutils literal"><span class="pre">bool</span></tt> values <tt class="xref docutils literal"><span class="pre">True</span></tt> and <tt class="xref docutils literal"><span class="pre">False</span></tt>; alias of
+the built-in <tt class="docutils literal"><span class="pre">bool</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>types.IntType</p>
+<blockquote>
+The type of integers (e.g. <tt class="docutils literal"><span class="pre">1</span></tt>); alias of the built-in <tt class="docutils literal"><span class="pre">int</span></tt>.</blockquote>
+<p>types.LongType</p>
+<blockquote>
+The type of long integers (e.g. <tt class="docutils literal"><span class="pre">1L</span></tt>); alias of the built-in
+<tt class="docutils literal"><span class="pre">long</span></tt>.</blockquote>
+<p>types.FloatType</p>
+<blockquote>
+The type of floating point numbers (e.g. <tt class="docutils literal"><span class="pre">1.0</span></tt>); alias of the
+built-in <tt class="docutils literal"><span class="pre">float</span></tt>.</blockquote>
+<p>types.ComplexType</p>
+<blockquote>
+The type of complex numbers (e.g. <tt class="docutils literal"><span class="pre">1.0j</span></tt>).  This is not defined
+if Python was built without complex number support.</blockquote>
+<p>types.StringType</p>
+<blockquote>
+The type of character strings (e.g. <tt class="docutils literal"><span class="pre">'Spam'</span></tt>); alias of the
+built-in <tt class="docutils literal"><span class="pre">str</span></tt>.</blockquote>
+<p>types.UnicodeType</p>
+<blockquote>
+The type of Unicode character strings (e.g. <tt class="docutils literal"><span class="pre">u'Spam'</span></tt>).  This is
+not defined if Python was built without Unicode support.  It&#8217;s an
+alias of the built-in <tt class="docutils literal"><span class="pre">unicode</span></tt>.</blockquote>
+<p>types.TupleType</p>
+<blockquote>
+The type of tuples (e.g. <tt class="docutils literal"><span class="pre">(1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">'Spam')</span></tt>); alias of the
+built-in <tt class="docutils literal"><span class="pre">tuple</span></tt>.</blockquote>
+<p>types.ListType</p>
+<blockquote>
+The type of lists (e.g. <tt class="docutils literal"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">3]</span></tt>); alias of the built-in
+<tt class="docutils literal"><span class="pre">list</span></tt>.</blockquote>
+<p>types.DictType</p>
+<blockquote>
+The type of dictionaries (e.g. <tt class="docutils literal"><span class="pre">{'Bacon':</span> <span class="pre">1,</span> <span class="pre">'Ham':</span> <span class="pre">0}</span></tt>); alias
+of the built-in <tt class="docutils literal"><span class="pre">dict</span></tt>.</blockquote>
+<p>types.DictionaryType</p>
+<blockquote>
+An alternate name for <tt class="docutils literal"><span class="pre">DictType</span></tt>.</blockquote>
+<p>types.FunctionType
+types.LambdaType</p>
+<blockquote>
+The type of user-defined functions and functions created by
+<tt class="docutils literal"><span class="pre">lambda</span></tt> expressions.</blockquote>
+<p>types.GeneratorType</p>
+<blockquote>
+<p>The type of <em>generator</em>-iterator objects, produced by calling a
+generator function.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>types.CodeType</p>
+<blockquote>
+The type for code objects such as returned by <tt class="docutils literal"><span class="pre">compile()</span></tt>.</blockquote>
+<p>types.ClassType</p>
+<blockquote>
+The type of user-defined old-style classes.</blockquote>
+<p>types.InstanceType</p>
+<blockquote>
+The type of instances of user-defined classes.</blockquote>
+<p>types.MethodType</p>
+<blockquote>
+The type of methods of user-defined class instances.</blockquote>
+<p>types.UnboundMethodType</p>
+<blockquote>
+An alternate name for <tt class="docutils literal"><span class="pre">MethodType</span></tt>.</blockquote>
+<p>types.BuiltinFunctionType
+types.BuiltinMethodType</p>
+<blockquote>
+The type of built-in functions like <tt class="docutils literal"><span class="pre">len()</span></tt> or <tt class="docutils literal"><span class="pre">sys.exit()</span></tt>,
+and methods of built-in classes.  (Here, the term &#8220;built-in&#8221; means
+&#8220;written in C&#8221;.)</blockquote>
+<p>types.ModuleType</p>
+<blockquote>
+The type of modules.</blockquote>
+<p>types.FileType</p>
+<blockquote>
+The type of open file objects such as <tt class="docutils literal"><span class="pre">sys.stdout</span></tt>; alias of the
+built-in <tt class="docutils literal"><span class="pre">file</span></tt>.</blockquote>
+<p>types.XRangeType</p>
+<blockquote>
+The type of range objects returned by <tt class="docutils literal"><span class="pre">xrange()</span></tt>; alias of the
+built-in <tt class="docutils literal"><span class="pre">xrange</span></tt>.</blockquote>
+<p>types.SliceType</p>
+<blockquote>
+The type of objects returned by <tt class="docutils literal"><span class="pre">slice()</span></tt>; alias of the built-in
+<tt class="docutils literal"><span class="pre">slice</span></tt>.</blockquote>
+<p>types.EllipsisType</p>
+<blockquote>
+The type of <tt class="docutils literal"><span class="pre">Ellipsis</span></tt>.</blockquote>
+<p>types.TracebackType</p>
+<blockquote>
+The type of traceback objects such as found in
+<tt class="docutils literal"><span class="pre">sys.exc_traceback</span></tt>.</blockquote>
+<p>types.FrameType</p>
+<blockquote>
+The type of frame objects such as found in <tt class="docutils literal"><span class="pre">tb.tb_frame</span></tt> if
+<tt class="docutils literal"><span class="pre">tb</span></tt> is a traceback object.</blockquote>
+<p>types.BufferType</p>
+<blockquote>
+The type of buffer objects created by the <tt class="docutils literal"><span class="pre">buffer()</span></tt> function.</blockquote>
+<p>types.DictProxyType</p>
+<blockquote>
+The type of dict proxies, such as <tt class="docutils literal"><span class="pre">TypeType.__dict__</span></tt>.</blockquote>
+<p>types.NotImplementedType</p>
+<blockquote>
+The type of <tt class="docutils literal"><span class="pre">NotImplemented</span></tt></blockquote>
+<p>types.GetSetDescriptorType</p>
+<blockquote>
+<p>The type of objects defined in extension modules with
+<tt class="docutils literal"><span class="pre">PyGetSetDef</span></tt>, such as <tt class="docutils literal"><span class="pre">FrameType.f_locals</span></tt> or
+<tt class="docutils literal"><span class="pre">array.array.typecode</span></tt>.  This type is used as descriptor for
+object attributes; it has the same purpose as the <tt class="docutils literal"><span class="pre">property</span></tt>
+type, but for classes defined in extension modules.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>types.MemberDescriptorType</p>
+<blockquote>
+<p>The type of objects defined in extension modules with
+<tt class="docutils literal"><span class="pre">PyMemberDef</span></tt>, such as <tt class="docutils literal"><span class="pre">datetime.timedelta.days</span></tt>.  This type is
+used as descriptor for simple C data members which use standard
+conversion functions; it has the same purpose as the <tt class="docutils literal"><span class="pre">property</span></tt>
+type, but for classes defined in extension modules. In other
+implementations of Python, this type may be identical to
+<tt class="docutils literal"><span class="pre">GetSetDescriptorType</span></tt>.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>types.StringTypes</p>
+<blockquote>
+<p>A sequence containing <tt class="docutils literal"><span class="pre">StringType</span></tt> and <tt class="docutils literal"><span class="pre">UnicodeType</span></tt> used to
+facilitate easier checking for any string object.  Using this is
+more portable than using a sequence of the two string types
+constructed elsewhere since it only contains <tt class="docutils literal"><span class="pre">UnicodeType</span></tt> if it
+has been built in the running version of Python.  For example:
+<tt class="docutils literal"><span class="pre">isinstance(s,</span> <span class="pre">types.StringTypes)</span></tt>.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="new.html" title="8.16. new — Creation of runtime internal objects"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="userdict.html" title="8.12. UserDict — Class wrapper for dictionary objects"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" >8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

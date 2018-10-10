@@ -1,0 +1,28 @@
+
+.. _netdata:
+
+**********************
+Internet Data Handling
+**********************
+
+This chapter describes modules which support handling data formats commonly used
+on the Internet.
+
+
+.. toctree::
+
+   email.txt
+   mailcap.txt
+   mailbox.txt
+   mhlib.txt
+   mimetools.txt
+   mimetypes.txt
+   mimewriter.txt
+   mimify.txt
+   multifile.txt
+   rfc822.txt
+   base64.txt
+   binhex.txt
+   binascii.txt
+   quopri.txt
+   uu.txt

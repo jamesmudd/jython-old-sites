@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1. Getting Started &mdash; Jython Developer&#39;s Guide </title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Developer&#39;s Guide " href="index.html" />
+    <link rel="next" title="2. Where to Get Help" href="help.html" />
+    <link rel="prev" title="Jython Developer’s Guide" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="help.html" title="2. Where to Get Help"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Jython Developer’s Guide"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Developer&#39;s Guide </a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These instrctions are a modified version of the
+<a class="reference external" href="http://docs.python.org/devguide/">CPython devguide</a></p>
+</div>
+<div class="section" id="getting-started">
+<h1>1. Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>These instructions cover how to get a working copy of the source code and a
+compiled version of the Jython interpreter (Jython is the version of Python
+available from <a class="reference external" href="http://www.jython.org/">http://www.jython.org/</a>). It also gives an overview of the
+directory structure of the Jython source code.</p>
+<p>OpenHatch also has a great <a class="reference external" href="https://openhatch.org/wiki/Contributing_to_Python">setup guide</a> for Python for people who are
+completely new to contributing to open source.</p>
+<div class="section" id="getting-set-up">
+<span id="setup"></span><h2>1.1. Getting Set Up<a class="headerlink" href="#getting-set-up" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="version-control-setup">
+<h3>1.1.1. Version Control Setup<a class="headerlink" href="#version-control-setup" title="Permalink to this headline">¶</a></h3>
+<p>Jython is developed using <a class="reference external" href="http://hg-scm.org/">Mercurial</a>. The Mercurial
+command line program is named <tt class="docutils literal"><span class="pre">hg</span></tt>; this is also used to refer to Mercurial
+itself. Mercurial is easily available for common Unix systems by way of the
+standard package manager; under Windows, you might want to use the
+<a class="reference external" href="http://tortoisehg.org/">TortoiseHg</a> graphical client.</p>
+</div>
+<div class="section" id="getting-the-source-code">
+<span id="checkout"></span><h3>1.1.2. Getting the Source Code<a class="headerlink" href="#getting-the-source-code" title="Permalink to this headline">¶</a></h3>
+<p>One should always work from a working copy of the Jython source code.
+While it may
+be tempting to work from the copy of Jython you already have installed on your
+machine, it is very likely that you will be working from out-of-date code as
+the Jython core developers are constantly updating and fixing things in their
+<abbr title="version control system">VCS</abbr>. It also means you will have better tool
+support through the VCS as it will provide a diff tool, etc.</p>
+<p>To get a working copy of the <a class="reference internal" href="devcycle.html#indevbranch"><em>in-development</em></a> branch of
+Jython (core developers use a different URL as outlined in <a class="reference internal" href="coredev.html#coredev"><em>How to Become a Core Developer</em></a>),
+run:</p>
+<div class="highlight-python"><div class="highlight"><pre>hg clone http://hg.python.org/jython
+</pre></div>
+</div>
+<p>If you want a working copy of an already-released version of Jython,
+i.e., a version in <a class="reference internal" href="devcycle.html#maintbranch"><em>maintenance mode</em></a>, you can update your</p>
+<p>working copy. For instance, to update your working copy to Jython 2.5, do:</p>
+<div class="highlight-python"><div class="highlight"><pre>hg update 2.5
+</pre></div>
+</div>
+<p>You will need to re-compile Jython when you do such an update.</p>
+<p>Do note that Jython will notice that it is being run from a working copy.
+This means that if you edit Jython&#8217;s source code in your working copy,
+changes to Python code will be picked up by the interpreter for immediate
+use and testing.  (If you change Java code, you will need to recompile the
+affected files as described below.)</p>
+<p>Patches for the documentation can be made from the same repository; see
+<a class="reference internal" href="documenting.html#documenting"><em>Documenting Jython</em></a>.</p>
+</div>
+<div class="section" id="compiling">
+<span id="id1"></span><h3>1.1.3. Compiling<a class="headerlink" href="#compiling" title="Permalink to this headline">¶</a></h3>
+<p>Compiling Jython is fairly simple, from the top level of a source checkout do:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ant</span>
+</pre></div>
+</div>
+<div class="section" id="build-dependencies">
+<h4>1.1.3.1. Build dependencies<a class="headerlink" href="#build-dependencies" title="Permalink to this headline">¶</a></h4>
+<p>The core Jython interpreter depends on a number of jars.
+TODO: jars
+TODO: jython dev build</p>
+<p>Once Jython is done building you will then have a working build
+that can be run in-place; <tt class="docutils literal"><span class="pre">./dist/bin/jython</span></tt>
+There is normally no need to install your built copy
+of Jython! The interpreter will realize where it is being run from
+and thus use the files found in the working copy.</p>
+</div>
+</div>
+</div>
+<div class="section" id="editors-and-tools">
+<h2>1.2. Editors and Tools<a class="headerlink" href="#editors-and-tools" title="Permalink to this headline">¶</a></h2>
+<p>Python is used widely enough that practically all code editors have some form
+of support for writing Python code. Various coding tools also include Python
+support.</p>
+<p>Jython specific support is less common but supported in several IDEs. Many of
+the core developers do pretty well with Emacs or Vim :)</p>
+<p>TODO: Eclipse</p>
+<p>TODO: Netbeans</p>
+<p>For editors and tools which the core developers have felt some special comment
+is needed for coding <em>in</em> Python, see <a class="reference internal" href="index.html#resources"><em>Additional Resources</em></a>.</p>
+</div>
+<div class="section" id="directory-structure">
+<h2>1.3. Directory Structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h2>
+<p>There are several top-level directories in the Jython source tree. Knowing what
+each one is meant to hold will help you find where a certain piece of
+functionality is implemented. Do realize, though, there are always exceptions to
+every rule.</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">Demo</span></tt></dt>
+<dd>Outdated Jython demo code.
+TODO: fix this to make it current.</dd>
+<dt><tt class="docutils literal"><span class="pre">Doc</span></tt></dt>
+<dd><p class="first">Outdated Jython website docs.</p>
+<p class="last">TODO: Jython should put our fork of the CPython directory (the official
+documentation) in an official hg repo in the python.org infrastructure.
+The official documentation. This is what <a class="reference external" href="http://jython.org/docs">http://jython.org/docs</a> uses.
+To build the docs, see TODO.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">Lib</span></tt></dt>
+<dd>The part of the standard library implemented in pure Python. A future goal
+is to do a way with this and exclusively use the CPython Lib with Jython
+versions checked in there.</dd>
+<dt><tt class="docutils literal"><span class="pre">Misc</span></tt></dt>
+<dd>Things that do not belong elsewhere. Typically this is varying kinds of
+developer-specific tools and documentation.</dd>
+<dt><tt class="docutils literal"><span class="pre">ast</span></tt></dt>
+<dd><p class="first">Code related to the parser. The definition of the AST nodes is also kept</p>
+<p class="last">TODO: It may be a good idea to rename this directory &#8220;Parser&#8221; to match
+CPython.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">bugtests</span></tt></dt>
+<dd><p class="first">Outdated framework for testing Jython.</p>
+<p class="last">Todo: tests that remain here should be ported to Lib/tests/</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">extlibs</span></tt></dt>
+<dd>External Java dependencies for Jython.</dd>
+<dt><tt class="docutils literal"><span class="pre">grammar</span></tt></dt>
+<dd>ANTLR source for building Jython&#8217;s grammar.</dd>
+<dt><tt class="docutils literal"><span class="pre">maven</span></tt></dt>
+<dd>Source for including Jython in Maven.</dd>
+<dt><tt class="docutils literal"><span class="pre">src</span></tt></dt>
+<dd>The part of the Jython interpreter that is implemented in Java.</dd>
+<dt><tt class="docutils literal"><span class="pre">tests</span></tt></dt>
+<dd>Tests for Jython implemented in Java.</dd>
+<dt><tt class="docutils literal"><span class="pre">Tools</span></tt></dt>
+<dd>Various tools that are (or have been) used to maintain Jython.</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">1. Getting Started</a><ul>
+<li><a class="reference internal" href="#getting-set-up">1.1. Getting Set Up</a><ul>
+<li><a class="reference internal" href="#version-control-setup">1.1.1. Version Control Setup</a></li>
+<li><a class="reference internal" href="#getting-the-source-code">1.1.2. Getting the Source Code</a></li>
+<li><a class="reference internal" href="#compiling">1.1.3. Compiling</a><ul>
+<li><a class="reference internal" href="#build-dependencies">1.1.3.1. Build dependencies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#editors-and-tools">1.2. Editors and Tools</a></li>
+<li><a class="reference internal" href="#directory-structure">1.3. Directory Structure</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Jython Developer&#8217;s Guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="help.html"
+                        title="next chapter">2. Where to Get Help</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/setup.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="help.html" title="2. Where to Get Help"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Jython Developer’s Guide"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Developer&#39;s Guide </a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Python Software Foundation.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

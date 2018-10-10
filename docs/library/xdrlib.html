@@ -1,0 +1,333 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>13.5. xdrlib — Encode and decode XDR data &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="13. File Formats" href="fileformats.html" />
+    <link rel="next" title="14. Cryptographic Services" href="crypto.html" />
+    <link rel="prev" title="13.4. netrc — netrc file processing" href="netrc.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="crypto.html" title="14. Cryptographic Services"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="netrc.html" title="13.4. netrc — netrc file processing"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="fileformats.html" accesskey="U">13. File Formats</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">13.5. <tt class="docutils literal"><span class="pre">xdrlib</span></tt> &#8212; Encode and decode XDR data</a><ul>
+<li><a class="reference external" href="#packer-objects">13.5.1. Packer Objects</a></li>
+<li><a class="reference external" href="#unpacker-objects">13.5.2. Unpacker Objects</a></li>
+<li><a class="reference external" href="#exceptions">13.5.3. Exceptions</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="netrc.html"
+                                  title="previous chapter">13.4. <tt class="docutils literal docutils literal docutils literal"><span class="pre">netrc</span></tt> &#8212; netrc file processing</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="crypto.html"
+                                  title="next chapter">14. Cryptographic Services</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/xdrlib.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="xdrlib-encode-and-decode-xdr-data">
+<h1>13.5. <tt class="docutils literal"><span class="pre">xdrlib</span></tt> &#8212; Encode and decode XDR data<a class="headerlink" href="#xdrlib-encode-and-decode-xdr-data" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">xdrlib</span></tt> module supports the External Data Representation
+Standard as described in <strong>RFC 1014</strong>, written by Sun Microsystems,
+Inc. June 1987.  It supports most of the data types described in the
+RFC.</p>
+<p>The <tt class="docutils literal"><span class="pre">xdrlib</span></tt> module defines two classes, one for packing variables
+into XDR representation, and another for unpacking from XDR
+representation.  There are also two exception classes.</p>
+<p>class class xdrlib.Packer</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">Packer</span></tt> is the class for packing data into XDR representation.
+The <tt class="docutils literal"><span class="pre">Packer</span></tt> class is instantiated with no arguments.</blockquote>
+<p>class class xdrlib.Unpacker(data)</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">Unpacker</span></tt> is the complementary class which unpacks XDR data
+values from a string buffer.  The input buffer is given as <em>data</em>.</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt><strong>RFC 1014</strong> - XDR: External Data Representation Standard</dt>
+<dd>This RFC defined the encoding of data which was XDR at the time
+this module was originally written.  It has apparently been
+obsoleted by <strong>RFC 1832</strong>.</dd>
+<dt><strong>RFC 1832</strong> - XDR: External Data Representation Standard</dt>
+<dd>Newer RFC that provides a revised definition of XDR.</dd>
+</dl>
+</blockquote>
+<div class="section" id="packer-objects">
+<h2>13.5.1. Packer Objects<a class="headerlink" href="#packer-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">Packer</span></tt> instances have the following methods:</p>
+<p>Packer.get_buffer()</p>
+<blockquote>
+Returns the current pack buffer as a string.</blockquote>
+<p>Packer.reset()</p>
+<blockquote>
+Resets the pack buffer to the empty string.</blockquote>
+<p>In general, you can pack any of the most common XDR data types by
+calling the appropriate <tt class="docutils literal"><span class="pre">pack_type()</span></tt> method.  Each method takes a
+single argument, the value to pack.  The following simple data type
+packing methods are supported: <tt class="docutils literal"><span class="pre">pack_uint()</span></tt>, <tt class="docutils literal"><span class="pre">pack_int()</span></tt>,
+<tt class="docutils literal"><span class="pre">pack_enum()</span></tt>, <tt class="docutils literal"><span class="pre">pack_bool()</span></tt>, <tt class="docutils literal"><span class="pre">pack_uhyper()</span></tt>, and
+<tt class="docutils literal"><span class="pre">pack_hyper()</span></tt>.</p>
+<p>Packer.pack_float(value)</p>
+<blockquote>
+Packs the single-precision floating point number <em>value</em>.</blockquote>
+<p>Packer.pack_double(value)</p>
+<blockquote>
+Packs the double-precision floating point number <em>value</em>.</blockquote>
+<p>The following methods support packing strings, bytes, and opaque data:</p>
+<p>Packer.pack_fstring(n, s)</p>
+<blockquote>
+Packs a fixed length string, <em>s</em>.  <em>n</em> is the length of the string
+but it is <em>not</em> packed into the data buffer.  The string is padded
+with null bytes if necessary to guaranteed 4 byte alignment.</blockquote>
+<p>Packer.pack_fopaque(n, data)</p>
+<blockquote>
+Packs a fixed length opaque data stream, similarly to
+<tt class="docutils literal"><span class="pre">pack_fstring()</span></tt>.</blockquote>
+<p>Packer.pack_string(s)</p>
+<blockquote>
+Packs a variable length string, <em>s</em>.  The length of the string is
+first packed as an unsigned integer, then the string data is packed
+with <tt class="docutils literal"><span class="pre">pack_fstring()</span></tt>.</blockquote>
+<p>Packer.pack_opaque(data)</p>
+<blockquote>
+Packs a variable length opaque data string, similarly to
+<tt class="docutils literal"><span class="pre">pack_string()</span></tt>.</blockquote>
+<p>Packer.pack_bytes(bytes)</p>
+<blockquote>
+Packs a variable length byte stream, similarly to
+<tt class="docutils literal"><span class="pre">pack_string()</span></tt>.</blockquote>
+<p>The following methods support packing arrays and lists:</p>
+<p>Packer.pack_list(list, pack_item)</p>
+<blockquote>
+<p>Packs a <em>list</em> of homogeneous items.  This method is useful for
+lists with an indeterminate size; i.e. the size is not available
+until the entire list has been walked.  For each item in the list,
+an unsigned integer <tt class="docutils literal"><span class="pre">1</span></tt> is packed first, followed by the data
+value from the list.  <em>pack_item</em> is the function that is called to
+pack the individual item.  At the end of the list, an unsigned
+integer <tt class="docutils literal"><span class="pre">0</span></tt> is packed.</p>
+<p>For example, to pack a list of integers, the code might appear like
+this:</p>
+<blockquote>
+import xdrlib
+p = xdrlib.Packer()
+p.pack_list([1, 2, 3], p.pack_int)</blockquote>
+</blockquote>
+<p>Packer.pack_farray(n, array, pack_item)</p>
+<blockquote>
+Packs a fixed length list (<em>array</em>) of homogeneous items.  <em>n</em> is
+the length of the list; it is <em>not</em> packed into the buffer, but a
+<tt class="docutils literal"><span class="pre">ValueError</span></tt> exception is raised if <tt class="docutils literal"><span class="pre">len(array)</span></tt> is not equal
+to <em>n</em>.  As above, <em>pack_item</em> is the function used to pack each
+element.</blockquote>
+<p>Packer.pack_array(list, pack_item)</p>
+<blockquote>
+Packs a variable length <em>list</em> of homogeneous items.  First, the
+length of the list is packed as an unsigned integer, then each
+element is packed as in <tt class="docutils literal"><span class="pre">pack_farray()</span></tt> above.</blockquote>
+</div>
+<div class="section" id="unpacker-objects">
+<h2>13.5.2. Unpacker Objects<a class="headerlink" href="#unpacker-objects" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">Unpacker</span></tt> class offers the following methods:</p>
+<p>Unpacker.reset(data)</p>
+<blockquote>
+Resets the string buffer with the given <em>data</em>.</blockquote>
+<p>Unpacker.get_position()</p>
+<blockquote>
+Returns the current unpack position in the data buffer.</blockquote>
+<p>Unpacker.set_position(position)</p>
+<blockquote>
+Sets the data buffer unpack position to <em>position</em>.  You should be
+careful about using <tt class="docutils literal"><span class="pre">get_position()</span></tt> and <tt class="docutils literal"><span class="pre">set_position()</span></tt>.</blockquote>
+<p>Unpacker.get_buffer()</p>
+<blockquote>
+Returns the current unpack data buffer as a string.</blockquote>
+<p>Unpacker.done()</p>
+<blockquote>
+Indicates unpack completion.  Raises an <tt class="docutils literal"><span class="pre">Error</span></tt> exception if all
+of the data has not been unpacked.</blockquote>
+<p>In addition, every data type that can be packed with a <tt class="docutils literal"><span class="pre">Packer</span></tt>, can
+be unpacked with an <tt class="docutils literal"><span class="pre">Unpacker</span></tt>.  Unpacking methods are of the form
+<tt class="docutils literal"><span class="pre">unpack_type()</span></tt>, and take no arguments.  They return the unpacked
+object.</p>
+<p>Unpacker.unpack_float()</p>
+<blockquote>
+Unpacks a single-precision floating point number.</blockquote>
+<p>Unpacker.unpack_double()</p>
+<blockquote>
+Unpacks a double-precision floating point number, similarly to
+<tt class="docutils literal"><span class="pre">unpack_float()</span></tt>.</blockquote>
+<p>In addition, the following methods unpack strings, bytes, and opaque
+data:</p>
+<p>Unpacker.unpack_fstring(n)</p>
+<blockquote>
+Unpacks and returns a fixed length string.  <em>n</em> is the number of
+characters expected.  Padding with null bytes to guaranteed 4 byte
+alignment is assumed.</blockquote>
+<p>Unpacker.unpack_fopaque(n)</p>
+<blockquote>
+Unpacks and returns a fixed length opaque data stream, similarly to
+<tt class="docutils literal"><span class="pre">unpack_fstring()</span></tt>.</blockquote>
+<p>Unpacker.unpack_string()</p>
+<blockquote>
+Unpacks and returns a variable length string.  The length of the
+string is first unpacked as an unsigned integer, then the string
+data is unpacked with <tt class="docutils literal"><span class="pre">unpack_fstring()</span></tt>.</blockquote>
+<p>Unpacker.unpack_opaque()</p>
+<blockquote>
+Unpacks and returns a variable length opaque data string, similarly
+to <tt class="docutils literal"><span class="pre">unpack_string()</span></tt>.</blockquote>
+<p>Unpacker.unpack_bytes()</p>
+<blockquote>
+Unpacks and returns a variable length byte stream, similarly to
+<tt class="docutils literal"><span class="pre">unpack_string()</span></tt>.</blockquote>
+<p>The following methods support unpacking arrays and lists:</p>
+<p>Unpacker.unpack_list(unpack_item)</p>
+<blockquote>
+Unpacks and returns a list of homogeneous items.  The list is
+unpacked one element at a time by first unpacking an unsigned
+integer flag.  If the flag is <tt class="docutils literal"><span class="pre">1</span></tt>, then the item is unpacked and
+appended to the list.  A flag of <tt class="docutils literal"><span class="pre">0</span></tt> indicates the end of the
+list.  <em>unpack_item</em> is the function that is called to unpack the
+items.</blockquote>
+<p>Unpacker.unpack_farray(n, unpack_item)</p>
+<blockquote>
+Unpacks and returns (as a list) a fixed length array of homogeneous
+items.  <em>n</em> is number of list elements to expect in the buffer. As
+above, <em>unpack_item</em> is the function used to unpack each element.</blockquote>
+<p>Unpacker.unpack_array(unpack_item)</p>
+<blockquote>
+Unpacks and returns a variable length <em>list</em> of homogeneous items.
+First, the length of the list is unpacked as an unsigned integer,
+then each element is unpacked as in <tt class="docutils literal"><span class="pre">unpack_farray()</span></tt> above.</blockquote>
+</div>
+<div class="section" id="exceptions">
+<h2>13.5.3. Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Exceptions in this module are coded as class instances:</p>
+<p>exception exception xdrlib.Error</p>
+<blockquote>
+The base exception class.  <tt class="docutils literal"><span class="pre">Error</span></tt> has a single public data
+member <tt class="docutils literal"><span class="pre">msg</span></tt> containing the description of the error.</blockquote>
+<p>exception exception xdrlib.ConversionError</p>
+<blockquote>
+Class derived from <tt class="docutils literal"><span class="pre">Error</span></tt>.  Contains no additional instance
+variables.</blockquote>
+<p>Here is an example of how you would catch one of these exceptions:</p>
+<blockquote>
+<p>import xdrlib
+p = xdrlib.Packer()
+try:</p>
+<blockquote>
+p.pack_double(8.01)</blockquote>
+<dl class="docutils">
+<dt>except xdrlib.ConversionError, instance:</dt>
+<dd>print &#8216;packing the double failed:&#8217;, instance.msg</dd>
+</dl>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="crypto.html" title="14. Cryptographic Services"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="netrc.html" title="13.4. netrc — netrc file processing"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="fileformats.html" >13. File Formats</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

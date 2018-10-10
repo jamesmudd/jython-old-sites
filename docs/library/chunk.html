@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>21.2. chunk — Read IFF chunked data &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="21. Multimedia Services" href="mm.html" />
+    <link rel="next" title="21.3. colorsys — Conversions between color systems" href="colorsys.html" />
+    <link rel="prev" title="21.1. aifc — Read and write AIFF and AIFC files" href="aifc.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="colorsys.html" title="21.3. colorsys — Conversions between color systems"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="aifc.html" title="21.1. aifc — Read and write AIFF and AIFC files"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="mm.html" accesskey="U">21. Multimedia Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="aifc.html"
+                                  title="previous chapter">21.1. <tt class="docutils literal docutils literal"><span class="pre">aifc</span></tt> &#8212; Read and write AIFF and AIFC files</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="colorsys.html"
+                                  title="next chapter">21.3. <tt class="docutils literal"><span class="pre">colorsys</span></tt> &#8212; Conversions between color systems</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/chunk.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="chunk-read-iff-chunked-data">
+<h1>21.2. <tt class="docutils literal"><span class="pre">chunk</span></tt> &#8212; Read IFF chunked data<a class="headerlink" href="#chunk-read-iff-chunked-data" title="Permalink to this headline">¶</a></h1>
+<p>This module provides an interface for reading files that use EA IFF 85
+chunks. [1]  This format is used in at least the Audio Interchange
+File Format (AIFF/AIFF-C) and the Real Media File Format (RMFF).  The
+WAVE audio file format is closely related and can also be read using
+this module.</p>
+<p>A chunk has the following structure:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="19%" />
+<col width="61%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Offset</th>
+<th class="head">Length</th>
+<th class="head">Contents</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>0</td>
+<td>4</td>
+<td>Chunk ID</td>
+</tr>
+<tr><td>4</td>
+<td>4</td>
+<td>Size of chunk in big-endian
+byte order, not including the
+header</td>
+</tr>
+<tr><td>8</td>
+<td><em>n</em></td>
+<td>Data bytes, where <em>n</em> is the
+size given in the preceding
+field</td>
+</tr>
+<tr><td>8 + <em>n</em></td>
+<td>0 or 1</td>
+<td>Pad byte needed if <em>n</em> is odd
+and chunk alignment is used</td>
+</tr>
+</tbody>
+</table>
+<p>The ID is a 4-byte string which identifies the type of chunk.</p>
+<p>The size field (a 32-bit value, encoded using big-endian byte order)
+gives the size of the chunk data, not including the 8-byte header.</p>
+<p>Usually an IFF-type file consists of one or more chunks.  The proposed
+usage of the <tt class="docutils literal"><span class="pre">Chunk</span></tt> class defined here is to instantiate an
+instance at the start of each chunk and read from the instance until
+it reaches the end, after which a new instance can be instantiated. At
+the end of the file, creating a new instance will fail with a
+<tt class="docutils literal"><span class="pre">EOFError</span></tt> exception.</p>
+<p>class class chunk.Chunk(file[, align, bigendian, inclheader])</p>
+<blockquote>
+<p>Class which represents a chunk.  The <em>file</em> argument is expected to
+be a file-like object.  An instance of this class is specifically
+allowed.  The only method that is needed is <tt class="docutils literal"><span class="pre">read()</span></tt>.  If the
+methods <tt class="docutils literal"><span class="pre">seek()</span></tt> and <tt class="docutils literal"><span class="pre">tell()</span></tt> are present and don&#8217;t raise an
+exception, they are also used. If these methods are present and
+raise an exception, they are expected to not have altered the
+object.  If the optional argument <em>align</em> is true, chunks are
+assumed to be aligned on 2-byte boundaries.  If <em>align</em> is false,
+no alignment is assumed.  The default value is true.  If the
+optional argument <em>bigendian</em> is false, the chunk size is assumed
+to be in little-endian order. This is needed for WAVE audio files.
+The default value is true.  If the optional argument <em>inclheader</em>
+is true, the size given in the chunk header includes the size of
+the header.  The default value is false.</p>
+<p>A <tt class="docutils literal"><span class="pre">Chunk</span></tt> object supports the following methods:</p>
+<p>getname()</p>
+<blockquote>
+Returns the name (ID) of the chunk.  This is the first 4 bytes
+of the chunk.</blockquote>
+<p>getsize()</p>
+<blockquote>
+Returns the size of the chunk.</blockquote>
+<p>close()</p>
+<blockquote>
+Close and skip to the end of the chunk.  This does not close the
+underlying file.</blockquote>
+<p>The remaining methods will raise <tt class="docutils literal"><span class="pre">IOError</span></tt> if called after the
+<tt class="docutils literal"><span class="pre">close()</span></tt> method has been called.</p>
+<p>isatty()</p>
+<blockquote>
+Returns <tt class="xref docutils literal"><span class="pre">False</span></tt>.</blockquote>
+<p>seek(pos[, whence])</p>
+<blockquote>
+Set the chunk&#8217;s current position.  The <em>whence</em> argument is
+optional and defaults to <tt class="docutils literal"><span class="pre">0</span></tt> (absolute file positioning);
+other values are <tt class="docutils literal"><span class="pre">1</span></tt> (seek relative to the current position)
+and <tt class="docutils literal"><span class="pre">2</span></tt> (seek relative to the file&#8217;s end).  There is no return
+value. If the underlying file does not allow seek, only forward
+seeks are allowed.</blockquote>
+<p>tell()</p>
+<blockquote>
+Return the current position into the chunk.</blockquote>
+<p>read([size])</p>
+<blockquote>
+Read at most <em>size</em> bytes from the chunk (less if the read hits
+the end of the chunk before obtaining <em>size</em> bytes).  If the
+<em>size</em> argument is negative or omitted, read all data until the
+end of the chunk.  The bytes are returned as a string object.
+An empty string is returned when the end of the chunk is
+encountered immediately.</blockquote>
+<p>skip()</p>
+<blockquote>
+Skip to the end of the chunk.  All further calls to <tt class="docutils literal"><span class="pre">read()</span></tt>
+for the chunk will return <tt class="docutils literal"><span class="pre">''</span></tt>.  If you are not interested in
+the contents of the chunk, this method should be called so that
+the file points to the start of the next chunk.</blockquote>
+</blockquote>
+<p>-[ Footnotes ]-</p>
+<dl class="docutils">
+<dt>[1] &#8220;EA IFF 85&#8221; Standard for Interchange Format Files, Jerry Morrison,</dt>
+<dd>Electronic Arts, January 1985.</dd>
+</dl>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="colorsys.html" title="21.3. colorsys — Conversions between color systems"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="aifc.html" title="21.1. aifc — Read and write AIFF and AIFC files"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="mm.html" >21. Multimedia Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

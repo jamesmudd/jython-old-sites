@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>18.9. multifile — Support for files containing distinct parts &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="18. Internet Data Handling" href="netdata.html" />
+    <link rel="next" title="18.10. rfc822 — Parse RFC 2822 mail headers" href="rfc822.html" />
+    <link rel="prev" title="18.8. mimify — MIME processing of mail messages" href="mimify.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="rfc822.html" title="18.10. rfc822 — Parse RFC 2822 mail headers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mimify.html" title="18.8. mimify — MIME processing of mail messages"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" accesskey="U">18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">18.9. <tt class="docutils literal"><span class="pre">multifile</span></tt> &#8212; Support for files containing distinct parts</a><ul>
+<li><a class="reference external" href="#multifile-objects">18.9.1. MultiFile Objects</a></li>
+<li><a class="reference external" href="#multifile-example">18.9.2. <tt class="docutils literal"><span class="pre">MultiFile</span></tt> Example</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="mimify.html"
+                                  title="previous chapter">18.8. <tt class="docutils literal docutils literal docutils literal"><span class="pre">mimify</span></tt> &#8212; MIME processing of mail messages</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="rfc822.html"
+                                  title="next chapter">18.10. <tt class="docutils literal docutils literal"><span class="pre">rfc822</span></tt> &#8212; Parse RFC 2822 mail headers</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/multifile.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="multifile-support-for-files-containing-distinct-parts">
+<h1>18.9. <tt class="docutils literal"><span class="pre">multifile</span></tt> &#8212; Support for files containing distinct parts<a class="headerlink" href="#multifile-support-for-files-containing-distinct-parts" title="Permalink to this headline">¶</a></h1>
+<p>Deprecated since version 2.5: The <tt class="docutils literal"><span class="pre">email</span></tt> package should be used in
+preference to the <tt class="docutils literal"><span class="pre">multifile</span></tt> module. This module is present only to
+maintain backward compatibility.</p>
+<p>The <tt class="docutils literal"><span class="pre">MultiFile</span></tt> object enables you to treat sections of a text file
+as file-like input objects, with <tt class="docutils literal"><span class="pre">''</span></tt> being returned by
+<tt class="docutils literal"><span class="pre">readline()</span></tt> when a given delimiter pattern is encountered.  The
+defaults of this class are designed to make it useful for parsing MIME
+multipart messages, but by subclassing it and overriding methods  it
+can be easily adapted for more general use.</p>
+<p>class class multifile.MultiFile(fp[, seekable])</p>
+<blockquote>
+<p>Create a multi-file.  You must instantiate this class with an input
+object argument for the <tt class="docutils literal"><span class="pre">MultiFile</span></tt> instance to get lines from,
+such as a file object returned by <tt class="docutils literal"><span class="pre">open()</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">MultiFile</span></tt> only ever looks at the input object&#8217;s <tt class="docutils literal"><span class="pre">readline()</span></tt>,
+<tt class="docutils literal"><span class="pre">seek()</span></tt> and <tt class="docutils literal"><span class="pre">tell()</span></tt> methods, and the latter two are only
+needed if you want random access to the individual MIME parts. To
+use <tt class="docutils literal"><span class="pre">MultiFile</span></tt> on a non-seekable stream object, set the optional
+<em>seekable</em> argument to false; this will prevent using the input
+object&#8217;s <tt class="docutils literal"><span class="pre">seek()</span></tt> and <tt class="docutils literal"><span class="pre">tell()</span></tt> methods.</p>
+</blockquote>
+<p>It will be useful to know that in <tt class="docutils literal"><span class="pre">MultiFile</span></tt>&#8216;s view of the world,
+text is composed of three kinds of lines: data, section-dividers, and
+end-markers. MultiFile is designed to support parsing of messages that
+may have multiple nested message parts, each with its own pattern for
+section-divider and end-marker lines.</p>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">email</span></tt></dt>
+<dd>Comprehensive email handling package; supersedes the
+<tt class="docutils literal"><span class="pre">multifile</span></tt> module.</dd>
+</dl>
+</blockquote>
+<div class="section" id="multifile-objects">
+<h2>18.9.1. MultiFile Objects<a class="headerlink" href="#multifile-objects" title="Permalink to this headline">¶</a></h2>
+<p>A <tt class="docutils literal"><span class="pre">MultiFile</span></tt> instance has the following methods:</p>
+<p>MultiFile.readline(str)</p>
+<blockquote>
+Read a line.  If the line is data (not a section-divider or end-
+marker or real EOF) return it.  If the line matches the most-
+recently-stacked boundary, return <tt class="docutils literal"><span class="pre">''</span></tt> and set <tt class="docutils literal"><span class="pre">self.last</span></tt> to 1
+or 0 according as the match is or is not an end-marker.  If the
+line matches any other stacked boundary, raise an error.  On
+encountering end-of-file on the underlying stream object, the
+method raises <tt class="docutils literal"><span class="pre">Error</span></tt> unless all boundaries have been popped.</blockquote>
+<p>MultiFile.readlines(str)</p>
+<blockquote>
+Return all lines remaining in this part as a list of strings.</blockquote>
+<p>MultiFile.read()</p>
+<blockquote>
+Read all lines, up to the next section.  Return them as a single
+(multiline) string.  Note that this doesn&#8217;t take a size argument!</blockquote>
+<p>MultiFile.seek(pos[, whence])</p>
+<blockquote>
+Seek.  Seek indices are relative to the start of the current
+section. The <em>pos</em> and <em>whence</em> arguments are interpreted as for a
+file seek.</blockquote>
+<p>MultiFile.tell()</p>
+<blockquote>
+Return the file position relative to the start of the current
+section.</blockquote>
+<p>MultiFile.next()</p>
+<blockquote>
+Skip lines to the next section (that is, read lines until a
+section-divider or end-marker has been consumed).  Return true if
+there is such a section, false if an end-marker is seen.  Re-enable
+the most-recently-pushed boundary.</blockquote>
+<p>MultiFile.is_data(str)</p>
+<blockquote>
+<p>Return true if <em>str</em> is data and false if it might be a section
+boundary.  As written, it tests for a prefix other than
+<tt class="docutils literal"><span class="pre">'-``</span></tt>-&#8216;`` at start of line (which all MIME boundaries have) but
+it is declared so it can be overridden in derived classes.</p>
+<p>Note that this test is used intended as a fast guard for the real
+boundary tests; if it always returns false it will merely slow
+processing, not cause it to fail.</p>
+</blockquote>
+<p>MultiFile.push(str)</p>
+<blockquote>
+<p>Push a boundary string.  When a decorated version of this boundary
+is found as an input line, it will be interpreted as a section-
+divider  or end-marker (depending on the decoration, see <strong>RFC
+2045</strong>).  All subsequent reads will return the empty string to
+indicate end-of-file, until a call to <tt class="docutils literal"><span class="pre">pop()</span></tt> removes the
+boundary a or <tt class="docutils literal"><span class="pre">next()</span></tt> call reenables it.</p>
+<p>It is possible to push more than one boundary.  Encountering the
+most-recently-pushed boundary will return EOF; encountering any
+other boundary will raise an error.</p>
+</blockquote>
+<p>MultiFile.pop()</p>
+<blockquote>
+Pop a section boundary.  This boundary will no longer be
+interpreted as EOF.</blockquote>
+<p>MultiFile.section_divider(str)</p>
+<blockquote>
+Turn a boundary into a section-divider line.  By default, this
+method prepends <tt class="docutils literal"><span class="pre">'--'</span></tt> (which MIME section boundaries have) but
+it is declared so it can be overridden in derived classes.  This
+method need not append LF or CR-LF, as comparison with the result
+ignores trailing whitespace.</blockquote>
+<p>MultiFile.end_marker(str)</p>
+<blockquote>
+Turn a boundary string into an end-marker line.  By default, this
+method prepends <tt class="docutils literal"><span class="pre">'--'</span></tt> and appends <tt class="docutils literal"><span class="pre">'--'</span></tt> (like a MIME-
+multipart end-of-message marker) but it is declared so it can be
+overridden in derived classes.  This method need not append LF or
+CR-LF, as comparison with the result ignores trailing whitespace.</blockquote>
+<p>Finally, <tt class="docutils literal"><span class="pre">MultiFile</span></tt> instances have two public instance variables:</p>
+<p>MultiFile.level</p>
+<blockquote>
+Nesting depth of the current part.</blockquote>
+<p>MultiFile.last</p>
+<blockquote>
+True if the last end-of-file was for an end-of-message marker.</blockquote>
+</div>
+<div class="section" id="multifile-example">
+<h2>18.9.2. <tt class="docutils literal"><span class="pre">MultiFile</span></tt> Example<a class="headerlink" href="#multifile-example" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<p>import mimetools
+import multifile
+import StringIO</p>
+<dl class="docutils">
+<dt>def extract_mime_part_matching(stream, mimetype):</dt>
+<dd><p class="first">&#8220;&#8221;&#8220;Return the first element in a multipart MIME message on stream
+matching mimetype.&#8221;&#8220;&#8221;</p>
+<p>msg = mimetools.Message(stream)
+msgtype = msg.gettype()
+params = msg.getplist()</p>
+<p>data = StringIO.StringIO()
+if msgtype[:10] == &#8220;multipart/&#8221;:</p>
+<blockquote>
+<p>file = multifile.MultiFile(stream)
+file.push(msg.getparam(&#8220;boundary&#8221;))
+while file.next():</p>
+<blockquote>
+<p>submsg = mimetools.Message(file)
+try:</p>
+<blockquote>
+data = StringIO.StringIO()
+mimetools.decode(file, data, submsg.getencoding())</blockquote>
+<dl class="docutils">
+<dt>except ValueError:</dt>
+<dd>continue</dd>
+<dt>if submsg.gettype() == mimetype:</dt>
+<dd>break</dd>
+</dl>
+</blockquote>
+<p>file.pop()</p>
+</blockquote>
+<p class="last">return data.getvalue()</p>
+</dd>
+</dl>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="rfc822.html" title="18.10. rfc822 — Parse RFC 2822 mail headers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mimify.html" title="18.8. mimify — MIME processing of mail messages"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" >18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

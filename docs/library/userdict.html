@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.12. UserDict — Class wrapper for dictionary objects &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="8. Data Types" href="datatypes.html" />
+    <link rel="next" title="8.15. types — Names for built-in types" href="types.html" />
+    <link rel="prev" title="8.11. weakref — Weak references" href="weakref.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="types.html" title="8.15. types — Names for built-in types"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="weakref.html" title="8.11. weakref — Weak references"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" accesskey="U">8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">8.12. <tt class="docutils literal"><span class="pre">UserDict</span></tt> &#8212; Class wrapper for dictionary objects</a></li>
+<li><a class="reference external" href="#userlist-class-wrapper-for-list-objects">8.13. <tt class="docutils literal"><span class="pre">UserList</span></tt> &#8212; Class wrapper for list objects</a></li>
+<li><a class="reference external" href="#userstring-class-wrapper-for-string-objects">8.14. <tt class="docutils literal"><span class="pre">UserString</span></tt> &#8212; Class wrapper for string objects</a></li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="weakref.html"
+                                  title="previous chapter">8.11. <tt class="docutils literal docutils literal"><span class="pre">weakref</span></tt> &#8212; Weak references</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="types.html"
+                                  title="next chapter">8.15. <tt class="docutils literal docutils literal docutils literal"><span class="pre">types</span></tt> &#8212; Names for built-in types</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/userdict.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="userdict-class-wrapper-for-dictionary-objects">
+<h1>8.12. <tt class="docutils literal"><span class="pre">UserDict</span></tt> &#8212; Class wrapper for dictionary objects<a class="headerlink" href="#userdict-class-wrapper-for-dictionary-objects" title="Permalink to this headline">¶</a></h1>
+<p>The module defines a mixin,  <tt class="docutils literal"><span class="pre">DictMixin</span></tt>, defining all dictionary
+methods for classes that already have a minimum mapping interface.
+This greatly simplifies writing classes that need to be substitutable
+for dictionaries (such as the shelve module).</p>
+<p>This module also defines a class, <tt class="docutils literal"><span class="pre">UserDict</span></tt>, that acts as a wrapper
+around dictionary objects.  The need for this class has been largely
+supplanted by the ability to subclass directly from <tt class="docutils literal"><span class="pre">dict</span></tt> (a
+feature that became available starting with Python version 2.2).
+Prior to the introduction of <tt class="docutils literal"><span class="pre">dict</span></tt>, the <tt class="docutils literal"><span class="pre">UserDict</span></tt> class was used
+to create dictionary-like sub-classes that obtained new behaviors by
+overriding existing methods or adding new ones.</p>
+<p>The <tt class="docutils literal"><span class="pre">UserDict</span></tt> module defines the <tt class="docutils literal"><span class="pre">UserDict</span></tt> class and
+<tt class="docutils literal"><span class="pre">DictMixin</span></tt>:</p>
+<p>class class UserDict.UserDict([initialdata])</p>
+<blockquote>
+<p>Class that simulates a dictionary.  The instance&#8217;s contents are
+kept in a regular dictionary, which is accessible via the <tt class="docutils literal"><span class="pre">data</span></tt>
+attribute of <tt class="docutils literal"><span class="pre">UserDict</span></tt> instances.  If <em>initialdata</em> is provided,
+<tt class="docutils literal"><span class="pre">data</span></tt> is initialized with its contents; note that a reference to
+<em>initialdata</em> will not be kept, allowing it be used for other
+purposes.</p>
+<dl class="docutils">
+<dt>Note: For backward compatibility, instances of <tt class="docutils literal"><span class="pre">UserDict</span></tt> are not</dt>
+<dd>iterable.</dd>
+</dl>
+</blockquote>
+<p>class class UserDict.IterableUserDict([initialdata])</p>
+<blockquote>
+Subclass of <tt class="docutils literal"><span class="pre">UserDict</span></tt> that supports direct iteration (e.g.
+<tt class="docutils literal"><span class="pre">for</span> <span class="pre">key</span> <span class="pre">in</span> <span class="pre">myDict</span></tt>).</blockquote>
+<p>In addition to supporting the methods and operations of mappings (see
+section <em>Mapping Types &#8212; dict</em>), <tt class="docutils literal"><span class="pre">UserDict</span></tt> and
+<tt class="docutils literal"><span class="pre">IterableUserDict</span></tt> instances provide the following attribute:</p>
+<p>IterableUserDict.data</p>
+<blockquote>
+A real dictionary used to store the contents of the <tt class="docutils literal"><span class="pre">UserDict</span></tt>
+class.</blockquote>
+<p>class class UserDict.DictMixin</p>
+<blockquote>
+<p>Mixin defining all dictionary methods for classes that already have
+a minimum dictionary interface including <tt class="docutils literal"><span class="pre">__getitem__()</span></tt>,
+<tt class="docutils literal"><span class="pre">__setitem__()</span></tt>, <tt class="docutils literal"><span class="pre">__delitem__()</span></tt>, and <tt class="docutils literal"><span class="pre">keys()</span></tt>.</p>
+<p>This mixin should be used as a superclass.  Adding each of the
+above methods adds progressively more functionality.  For instance,
+defining all but <tt class="docutils literal"><span class="pre">__delitem__()</span></tt> will preclude only <tt class="docutils literal"><span class="pre">pop()</span></tt> and
+<tt class="docutils literal"><span class="pre">popitem()</span></tt> from the full interface.</p>
+<p>In addition to the four base methods, progressively more efficiency
+comes with defining <tt class="docutils literal"><span class="pre">__contains__()</span></tt>, <tt class="docutils literal"><span class="pre">__iter__()</span></tt>, and
+<tt class="docutils literal"><span class="pre">iteritems()</span></tt>.</p>
+<p>Since the mixin has no knowledge of the subclass constructor, it
+does not define <tt class="docutils literal"><span class="pre">__init__()</span></tt> or <tt class="docutils literal"><span class="pre">copy()</span></tt>.</p>
+<p>Starting with Python version 2.6, it is recommended to use
+<tt class="docutils literal"><span class="pre">collections.MutableMapping</span></tt> instead of <tt class="docutils literal"><span class="pre">DictMixin</span></tt>.</p>
+</blockquote>
+</div>
+<div class="section" id="userlist-class-wrapper-for-list-objects">
+<h1>8.13. <tt class="docutils literal"><span class="pre">UserList</span></tt> &#8212; Class wrapper for list objects<a class="headerlink" href="#userlist-class-wrapper-for-list-objects" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Note: This module is available for backward compatibility only.  If you</dt>
+<dd>are writing code that does not need to work with versions of Python
+earlier than Python 2.2, please consider subclassing directly from
+the built-in <tt class="docutils literal"><span class="pre">list</span></tt> type.</dd>
+</dl>
+<p>This module defines a class that acts as a wrapper around list
+objects.  It is a useful base class for your own list-like classes,
+which can inherit from them and override existing methods or add new
+ones.  In this way one can add new behaviors to lists.</p>
+<p>The <tt class="docutils literal"><span class="pre">UserList</span></tt> module defines the <tt class="docutils literal"><span class="pre">UserList</span></tt> class:</p>
+<p>class class UserList.UserList([list])</p>
+<blockquote>
+<p>Class that simulates a list.  The instance&#8217;s contents are kept in a
+regular list, which is accessible via the <tt class="docutils literal"><span class="pre">data</span></tt> attribute of
+<tt class="docutils literal"><span class="pre">UserList</span></tt> instances.  The instance&#8217;s contents are initially set
+to a copy of <em>list</em>, defaulting to the empty list <tt class="docutils literal"><span class="pre">[]</span></tt>.  <em>list</em>
+can be any iterable, e.g. a real Python list or a <tt class="docutils literal"><span class="pre">UserList</span></tt>
+object.</p>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">UserList</span></tt> class has been moved to the <tt class="docutils literal"><span class="pre">collections</span></tt></dt>
+<dd>module in Python 3.0. The <em>2to3</em> tool will automatically adapt
+imports when converting your sources to 3.0.</dd>
+</dl>
+</blockquote>
+<p>In addition to supporting the methods and operations of mutable
+sequences (see section <em>Sequence Types &#8212; str, unicode, list, tuple,
+buffer, xrange</em>), <tt class="docutils literal"><span class="pre">UserList</span></tt> instances provide the following
+attribute:</p>
+<p>UserList.data</p>
+<blockquote>
+A real Python list object used to store the contents of the
+<tt class="docutils literal"><span class="pre">UserList</span></tt> class.</blockquote>
+<p><strong>Subclassing requirements:</strong> Subclasses of <tt class="docutils literal"><span class="pre">UserList</span></tt> are expect to
+offer a constructor which can be called with either no arguments or
+one argument.  List operations which return a new sequence attempt to
+create an instance of the actual implementation class.  To do so, it
+assumes that the constructor can be called with a single parameter,
+which is a sequence object used as a data source.</p>
+<p>If a derived class does not wish to comply with this requirement, all
+of the special methods supported by this class will need to be
+overridden; please consult the sources for information about the
+methods which need to be provided in that case.</p>
+<p>Changed in version 2.0: Python versions 1.5.2 and 1.6 also required
+that the constructor be callable with no parameters, and offer a
+mutable <tt class="docutils literal"><span class="pre">data</span></tt> attribute.  Earlier versions of Python did not
+attempt to create instances of the derived class.</p>
+</div>
+<div class="section" id="userstring-class-wrapper-for-string-objects">
+<h1>8.14. <tt class="docutils literal"><span class="pre">UserString</span></tt> &#8212; Class wrapper for string objects<a class="headerlink" href="#userstring-class-wrapper-for-string-objects" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Note: This <tt class="docutils literal"><span class="pre">UserString</span></tt> class from this module is available for backward</dt>
+<dd>compatibility only.  If you are writing code that does not need to
+work with versions of Python earlier than Python 2.2, please
+consider subclassing directly from the built-in <tt class="docutils literal"><span class="pre">str</span></tt> type instead
+of using <tt class="docutils literal"><span class="pre">UserString</span></tt> (there is no built-in equivalent to
+<tt class="docutils literal"><span class="pre">MutableString</span></tt>).</dd>
+</dl>
+<p>This module defines a class that acts as a wrapper around string
+objects.  It is a useful base class for your own string-like classes,
+which can inherit from them and override existing methods or add new
+ones.  In this way one can add new behaviors to strings.</p>
+<p>It should be noted that these classes are highly inefficient compared
+to real string or Unicode objects; this is especially the case for
+<tt class="docutils literal"><span class="pre">MutableString</span></tt>.</p>
+<p>The <tt class="docutils literal"><span class="pre">UserString</span></tt> module defines the following classes:</p>
+<p>class class UserString.UserString([sequence])</p>
+<blockquote>
+<p>Class that simulates a string or a Unicode string object.  The
+instance&#8217;s content is kept in a regular string or Unicode string
+object, which is accessible via the <tt class="docutils literal"><span class="pre">data</span></tt> attribute of
+<tt class="docutils literal"><span class="pre">UserString</span></tt> instances.  The instance&#8217;s contents are initially
+set to a copy of <em>sequence</em>.  <em>sequence</em> can be either a regular
+Python string or Unicode string, an instance of <tt class="docutils literal"><span class="pre">UserString</span></tt> (or
+a subclass) or an arbitrary sequence which can be converted into a
+string using the built-in <tt class="docutils literal"><span class="pre">str()</span></tt> function.</p>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">UserString</span></tt> class has been moved to the <tt class="docutils literal"><span class="pre">collections</span></tt></dt>
+<dd>module in Python 3.0. The <em>2to3</em> tool will automatically adapt
+imports when converting your sources to 3.0.</dd>
+</dl>
+</blockquote>
+<p>class class UserString.MutableString([sequence])</p>
+<blockquote>
+<p>This class is derived from the <tt class="docutils literal"><span class="pre">UserString</span></tt> above and redefines
+strings to be <em>mutable</em>.  Mutable strings can&#8217;t be used as
+dictionary keys, because dictionaries require <em>immutable</em> objects
+as keys.  The main intention of this class is to serve as an
+educational example for inheritance and necessity to remove
+(override) the <tt class="docutils literal"><span class="pre">__hash__()</span></tt> method in order to trap attempts to
+use a mutable object as dictionary key, which would be otherwise
+very error prone and hard to track down.</p>
+<p>Deprecated since version 2.6: The <tt class="docutils literal"><span class="pre">MutableString</span></tt> class has been
+removed in Python 3.0.</p>
+</blockquote>
+<p>In addition to supporting the methods and operations of string and
+Unicode objects (see section <em>String Methods</em>), <tt class="docutils literal"><span class="pre">UserString</span></tt>
+instances provide the following attribute:</p>
+<p>MutableString.data</p>
+<blockquote>
+A real Python string or Unicode object used to store the content of
+the <tt class="docutils literal"><span class="pre">UserString</span></tt> class.</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="types.html" title="8.15. types — Names for built-in types"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="weakref.html" title="8.11. weakref — Weak references"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" >8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

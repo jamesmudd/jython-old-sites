@@ -1,0 +1,505 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.8. errno — Standard errno system symbols &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="15. Generic Operating System Services" href="allos.html" />
+    <link rel="next" title="16. Optional Operating System Services" href="someos.html" />
+    <link rel="prev" title="15.7. platform — Access to underlying platform’s identifying data." href="platform.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="someos.html" title="16. Optional Operating System Services"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="platform.html" title="15.7. platform — Access to underlying platform’s identifying data."
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="allos.html" accesskey="U">15. Generic Operating System Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="platform.html"
+                                  title="previous chapter">15.7. <tt class="docutils literal"><span class="pre">platform</span></tt> &#8212;  Access to underlying platform&#8217;s identifying data.</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="someos.html"
+                                  title="next chapter">16. Optional Operating System Services</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/errno.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="errno-standard-errno-system-symbols">
+<h1>15.8. <tt class="docutils literal"><span class="pre">errno</span></tt> &#8212; Standard errno system symbols<a class="headerlink" href="#errno-standard-errno-system-symbols" title="Permalink to this headline">¶</a></h1>
+<p>This module makes available standard <tt class="docutils literal"><span class="pre">errno</span></tt> system symbols. The
+value of each symbol is the corresponding integer value. The names and
+descriptions are borrowed from <tt class="docutils literal"><span class="pre">linux/include/errno.h</span></tt>, which should
+be pretty all-inclusive.</p>
+<p>errno.errorcode</p>
+<blockquote>
+Dictionary providing a mapping from the errno value to the string
+name in the underlying system.  For instance,
+<tt class="docutils literal"><span class="pre">errno.errorcode[errno.EPERM]</span></tt> maps to <tt class="docutils literal"><span class="pre">'EPERM'</span></tt>.</blockquote>
+<p>To translate a numeric error code to an error message, use
+<tt class="docutils literal"><span class="pre">os.strerror()</span></tt>.</p>
+<p>Of the following list, symbols that are not used on the current
+platform are not defined by the module.  The specific list of defined
+symbols is available as <tt class="docutils literal"><span class="pre">errno.errorcode.keys()</span></tt>.  Symbols available
+can include:</p>
+<p>errno.EPERM</p>
+<blockquote>
+Operation not permitted</blockquote>
+<p>errno.ENOENT</p>
+<blockquote>
+No such file or directory</blockquote>
+<p>errno.ESRCH</p>
+<blockquote>
+No such process</blockquote>
+<p>errno.EINTR</p>
+<blockquote>
+Interrupted system call</blockquote>
+<p>errno.EIO</p>
+<blockquote>
+I/O error</blockquote>
+<p>errno.ENXIO</p>
+<blockquote>
+No such device or address</blockquote>
+<p>errno.E2BIG</p>
+<blockquote>
+Arg list too long</blockquote>
+<p>errno.ENOEXEC</p>
+<blockquote>
+Exec format error</blockquote>
+<p>errno.EBADF</p>
+<blockquote>
+Bad file number</blockquote>
+<p>errno.ECHILD</p>
+<blockquote>
+No child processes</blockquote>
+<p>errno.EAGAIN</p>
+<blockquote>
+Try again</blockquote>
+<p>errno.ENOMEM</p>
+<blockquote>
+Out of memory</blockquote>
+<p>errno.EACCES</p>
+<blockquote>
+Permission denied</blockquote>
+<p>errno.EFAULT</p>
+<blockquote>
+Bad address</blockquote>
+<p>errno.ENOTBLK</p>
+<blockquote>
+Block device required</blockquote>
+<p>errno.EBUSY</p>
+<blockquote>
+Device or resource busy</blockquote>
+<p>errno.EEXIST</p>
+<blockquote>
+File exists</blockquote>
+<p>errno.EXDEV</p>
+<blockquote>
+Cross-device link</blockquote>
+<p>errno.ENODEV</p>
+<blockquote>
+No such device</blockquote>
+<p>errno.ENOTDIR</p>
+<blockquote>
+Not a directory</blockquote>
+<p>errno.EISDIR</p>
+<blockquote>
+Is a directory</blockquote>
+<p>errno.EINVAL</p>
+<blockquote>
+Invalid argument</blockquote>
+<p>errno.ENFILE</p>
+<blockquote>
+File table overflow</blockquote>
+<p>errno.EMFILE</p>
+<blockquote>
+Too many open files</blockquote>
+<p>errno.ENOTTY</p>
+<blockquote>
+Not a typewriter</blockquote>
+<p>errno.ETXTBSY</p>
+<blockquote>
+Text file busy</blockquote>
+<p>errno.EFBIG</p>
+<blockquote>
+File too large</blockquote>
+<p>errno.ENOSPC</p>
+<blockquote>
+No space left on device</blockquote>
+<p>errno.ESPIPE</p>
+<blockquote>
+Illegal seek</blockquote>
+<p>errno.EROFS</p>
+<blockquote>
+Read-only file system</blockquote>
+<p>errno.EMLINK</p>
+<blockquote>
+Too many links</blockquote>
+<p>errno.EPIPE</p>
+<blockquote>
+Broken pipe</blockquote>
+<p>errno.EDOM</p>
+<blockquote>
+Math argument out of domain of func</blockquote>
+<p>errno.ERANGE</p>
+<blockquote>
+Math result not representable</blockquote>
+<p>errno.EDEADLK</p>
+<blockquote>
+Resource deadlock would occur</blockquote>
+<p>errno.ENAMETOOLONG</p>
+<blockquote>
+File name too long</blockquote>
+<p>errno.ENOLCK</p>
+<blockquote>
+No record locks available</blockquote>
+<p>errno.ENOSYS</p>
+<blockquote>
+Function not implemented</blockquote>
+<p>errno.ENOTEMPTY</p>
+<blockquote>
+Directory not empty</blockquote>
+<p>errno.ELOOP</p>
+<blockquote>
+Too many symbolic links encountered</blockquote>
+<p>errno.EWOULDBLOCK</p>
+<blockquote>
+Operation would block</blockquote>
+<p>errno.ENOMSG</p>
+<blockquote>
+No message of desired type</blockquote>
+<p>errno.EIDRM</p>
+<blockquote>
+Identifier removed</blockquote>
+<p>errno.ECHRNG</p>
+<blockquote>
+Channel number out of range</blockquote>
+<p>errno.EL2NSYNC</p>
+<blockquote>
+Level 2 not synchronized</blockquote>
+<p>errno.EL3HLT</p>
+<blockquote>
+Level 3 halted</blockquote>
+<p>errno.EL3RST</p>
+<blockquote>
+Level 3 reset</blockquote>
+<p>errno.ELNRNG</p>
+<blockquote>
+Link number out of range</blockquote>
+<p>errno.EUNATCH</p>
+<blockquote>
+Protocol driver not attached</blockquote>
+<p>errno.ENOCSI</p>
+<blockquote>
+No CSI structure available</blockquote>
+<p>errno.EL2HLT</p>
+<blockquote>
+Level 2 halted</blockquote>
+<p>errno.EBADE</p>
+<blockquote>
+Invalid exchange</blockquote>
+<p>errno.EBADR</p>
+<blockquote>
+Invalid request descriptor</blockquote>
+<p>errno.EXFULL</p>
+<blockquote>
+Exchange full</blockquote>
+<p>errno.ENOANO</p>
+<blockquote>
+No anode</blockquote>
+<p>errno.EBADRQC</p>
+<blockquote>
+Invalid request code</blockquote>
+<p>errno.EBADSLT</p>
+<blockquote>
+Invalid slot</blockquote>
+<p>errno.EDEADLOCK</p>
+<blockquote>
+File locking deadlock error</blockquote>
+<p>errno.EBFONT</p>
+<blockquote>
+Bad font file format</blockquote>
+<p>errno.ENOSTR</p>
+<blockquote>
+Device not a stream</blockquote>
+<p>errno.ENODATA</p>
+<blockquote>
+No data available</blockquote>
+<p>errno.ETIME</p>
+<blockquote>
+Timer expired</blockquote>
+<p>errno.ENOSR</p>
+<blockquote>
+Out of streams resources</blockquote>
+<p>errno.ENONET</p>
+<blockquote>
+Machine is not on the network</blockquote>
+<p>errno.ENOPKG</p>
+<blockquote>
+Package not installed</blockquote>
+<p>errno.EREMOTE</p>
+<blockquote>
+Object is remote</blockquote>
+<p>errno.ENOLINK</p>
+<blockquote>
+Link has been severed</blockquote>
+<p>errno.EADV</p>
+<blockquote>
+Advertise error</blockquote>
+<p>errno.ESRMNT</p>
+<blockquote>
+Srmount error</blockquote>
+<p>errno.ECOMM</p>
+<blockquote>
+Communication error on send</blockquote>
+<p>errno.EPROTO</p>
+<blockquote>
+Protocol error</blockquote>
+<p>errno.EMULTIHOP</p>
+<blockquote>
+Multihop attempted</blockquote>
+<p>errno.EDOTDOT</p>
+<blockquote>
+RFS specific error</blockquote>
+<p>errno.EBADMSG</p>
+<blockquote>
+Not a data message</blockquote>
+<p>errno.EOVERFLOW</p>
+<blockquote>
+Value too large for defined data type</blockquote>
+<p>errno.ENOTUNIQ</p>
+<blockquote>
+Name not unique on network</blockquote>
+<p>errno.EBADFD</p>
+<blockquote>
+File descriptor in bad state</blockquote>
+<p>errno.EREMCHG</p>
+<blockquote>
+Remote address changed</blockquote>
+<p>errno.ELIBACC</p>
+<blockquote>
+Can not access a needed shared library</blockquote>
+<p>errno.ELIBBAD</p>
+<blockquote>
+Accessing a corrupted shared library</blockquote>
+<p>errno.ELIBSCN</p>
+<blockquote>
+.lib section in a.out corrupted</blockquote>
+<p>errno.ELIBMAX</p>
+<blockquote>
+Attempting to link in too many shared libraries</blockquote>
+<p>errno.ELIBEXEC</p>
+<blockquote>
+Cannot exec a shared library directly</blockquote>
+<p>errno.EILSEQ</p>
+<blockquote>
+Illegal byte sequence</blockquote>
+<p>errno.ERESTART</p>
+<blockquote>
+Interrupted system call should be restarted</blockquote>
+<p>errno.ESTRPIPE</p>
+<blockquote>
+Streams pipe error</blockquote>
+<p>errno.EUSERS</p>
+<blockquote>
+Too many users</blockquote>
+<p>errno.ENOTSOCK</p>
+<blockquote>
+Socket operation on non-socket</blockquote>
+<p>errno.EDESTADDRREQ</p>
+<blockquote>
+Destination address required</blockquote>
+<p>errno.EMSGSIZE</p>
+<blockquote>
+Message too long</blockquote>
+<p>errno.EPROTOTYPE</p>
+<blockquote>
+Protocol wrong type for socket</blockquote>
+<p>errno.ENOPROTOOPT</p>
+<blockquote>
+Protocol not available</blockquote>
+<p>errno.EPROTONOSUPPORT</p>
+<blockquote>
+Protocol not supported</blockquote>
+<p>errno.ESOCKTNOSUPPORT</p>
+<blockquote>
+Socket type not supported</blockquote>
+<p>errno.EOPNOTSUPP</p>
+<blockquote>
+Operation not supported on transport endpoint</blockquote>
+<p>errno.EPFNOSUPPORT</p>
+<blockquote>
+Protocol family not supported</blockquote>
+<p>errno.EAFNOSUPPORT</p>
+<blockquote>
+Address family not supported by protocol</blockquote>
+<p>errno.EADDRINUSE</p>
+<blockquote>
+Address already in use</blockquote>
+<p>errno.EADDRNOTAVAIL</p>
+<blockquote>
+Cannot assign requested address</blockquote>
+<p>errno.ENETDOWN</p>
+<blockquote>
+Network is down</blockquote>
+<p>errno.ENETUNREACH</p>
+<blockquote>
+Network is unreachable</blockquote>
+<p>errno.ENETRESET</p>
+<blockquote>
+Network dropped connection because of reset</blockquote>
+<p>errno.ECONNABORTED</p>
+<blockquote>
+Software caused connection abort</blockquote>
+<p>errno.ECONNRESET</p>
+<blockquote>
+Connection reset by peer</blockquote>
+<p>errno.ENOBUFS</p>
+<blockquote>
+No buffer space available</blockquote>
+<p>errno.EISCONN</p>
+<blockquote>
+Transport endpoint is already connected</blockquote>
+<p>errno.ENOTCONN</p>
+<blockquote>
+Transport endpoint is not connected</blockquote>
+<p>errno.ESHUTDOWN</p>
+<blockquote>
+Cannot send after transport endpoint shutdown</blockquote>
+<p>errno.ETOOMANYREFS</p>
+<blockquote>
+Too many references: cannot splice</blockquote>
+<p>errno.ETIMEDOUT</p>
+<blockquote>
+Connection timed out</blockquote>
+<p>errno.ECONNREFUSED</p>
+<blockquote>
+Connection refused</blockquote>
+<p>errno.EHOSTDOWN</p>
+<blockquote>
+Host is down</blockquote>
+<p>errno.EHOSTUNREACH</p>
+<blockquote>
+No route to host</blockquote>
+<p>errno.EALREADY</p>
+<blockquote>
+Operation already in progress</blockquote>
+<p>errno.EINPROGRESS</p>
+<blockquote>
+Operation now in progress</blockquote>
+<p>errno.ESTALE</p>
+<blockquote>
+Stale NFS file handle</blockquote>
+<p>errno.EUCLEAN</p>
+<blockquote>
+Structure needs cleaning</blockquote>
+<p>errno.ENOTNAM</p>
+<blockquote>
+Not a XENIX named type file</blockquote>
+<p>errno.ENAVAIL</p>
+<blockquote>
+No XENIX semaphores available</blockquote>
+<p>errno.EISNAM</p>
+<blockquote>
+Is a named type file</blockquote>
+<p>errno.EREMOTEIO</p>
+<blockquote>
+Remote I/O error</blockquote>
+<p>errno.EDQUOT</p>
+<blockquote>
+Quota exceeded</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="someos.html" title="16. Optional Operating System Services"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="platform.html" title="15.7. platform — Access to underlying platform’s identifying data."
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="allos.html" >15. Generic Operating System Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

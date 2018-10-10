@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>18.8. mimify — MIME processing of mail messages &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="18. Internet Data Handling" href="netdata.html" />
+    <link rel="next" title="18.9. multifile — Support for files containing distinct parts" href="multifile.html" />
+    <link rel="prev" title="18.7. MimeWriter — Generic MIME file writer" href="mimewriter.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="multifile.html" title="18.9. multifile — Support for files containing distinct parts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mimewriter.html" title="18.7. MimeWriter — Generic MIME file writer"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" accesskey="U">18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="mimewriter.html"
+                                  title="previous chapter">18.7. <tt class="docutils literal docutils literal docutils literal"><span class="pre">MimeWriter</span></tt> &#8212; Generic MIME file writer</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="multifile.html"
+                                  title="next chapter">18.9. <tt class="docutils literal"><span class="pre">multifile</span></tt> &#8212; Support for files containing distinct parts</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/mimify.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="mimify-mime-processing-of-mail-messages">
+<h1>18.8. <tt class="docutils literal"><span class="pre">mimify</span></tt> &#8212; MIME processing of mail messages<a class="headerlink" href="#mimify-mime-processing-of-mail-messages" title="Permalink to this headline">¶</a></h1>
+<p>Deprecated since version 2.3: The <tt class="docutils literal"><span class="pre">email</span></tt> package should be used in
+preference to the <tt class="docutils literal"><span class="pre">mimify</span></tt> module.  This module is present only to
+maintain backward compatibility.</p>
+<p>The <tt class="docutils literal"><span class="pre">mimify</span></tt> module defines two functions to convert mail messages
+to and from MIME format.  The mail message can be either a simple
+message or a so-called multipart message.  Each part is treated
+separately. Mimifying (a part of) a message entails encoding the
+message as quoted-printable if it contains any characters that cannot
+be represented using 7-bit ASCII.  Unmimifying (a part of) a message
+entails undoing the quoted-printable encoding.  Mimify and unmimify
+are especially useful when a message has to be edited before being
+sent.  Typical use would be:</p>
+<blockquote>
+unmimify message
+edit message
+mimify message
+send message</blockquote>
+<p>The modules defines the following user-callable functions and user-
+settable variables:</p>
+<p>mimify.mimify(infile, outfile)</p>
+<blockquote>
+Copy the message in <em>infile</em> to <em>outfile</em>, converting parts to
+quoted-printable and adding MIME mail headers when necessary.
+<em>infile</em> and <em>outfile</em> can be file objects (actually, any object
+that has a <tt class="docutils literal"><span class="pre">readline()</span></tt> method (for <em>infile</em>) or a <tt class="docutils literal"><span class="pre">write()</span></tt>
+method (for <em>outfile</em>)) or strings naming the files. If <em>infile</em>
+and <em>outfile</em> are both strings, they may have the same value.</blockquote>
+<p>mimify.unmimify(infile, outfile[, decode_base64])</p>
+<blockquote>
+Copy the message in <em>infile</em> to <em>outfile</em>, decoding all quoted-
+printable parts. <em>infile</em> and <em>outfile</em> can be file objects
+(actually, any object that has a <tt class="docutils literal"><span class="pre">readline()</span></tt> method (for
+<em>infile</em>) or a <tt class="docutils literal"><span class="pre">write()</span></tt> method (for <em>outfile</em>)) or strings
+naming the files.  If <em>infile</em> and <em>outfile</em> are both strings, they
+may have the same value. If the <em>decode_base64</em> argument is
+provided and tests true, any parts that are coded in the base64
+encoding are decoded as well.</blockquote>
+<p>mimify.mime_decode_header(line)</p>
+<blockquote>
+Return a decoded version of the encoded header line in <em>line</em>. This
+only supports the ISO 8859-1 charset (Latin-1).</blockquote>
+<p>mimify.mime_encode_header(line)</p>
+<blockquote>
+Return a MIME-encoded version of the header line in <em>line</em>.</blockquote>
+<p>mimify.MAXLEN</p>
+<blockquote>
+By default, a part will be encoded as quoted-printable when it
+contains any non-ASCII characters (characters with the 8th bit
+set), or if there are any lines longer than <tt class="docutils literal"><span class="pre">MAXLEN</span></tt> characters
+(default value 200).</blockquote>
+<p>mimify.CHARSET</p>
+<blockquote>
+When not specified in the mail headers, a character set must be
+filled in.  The string used is stored in <tt class="docutils literal"><span class="pre">CHARSET</span></tt>, and the
+default value is ISO-8859-1 (also known as Latin1 (latin-one)).</blockquote>
+<p>This module can also be used from the command line.  Usage is as
+follows:</p>
+<blockquote>
+mimify.py -e [-l length] [infile [outfile]]
+mimify.py -d [-b] [infile [outfile]]</blockquote>
+<p>to encode (mimify) and decode (unmimify) respectively.  <em>infile</em>
+defaults to standard input, <em>outfile</em> defaults to standard output. The
+same file can be specified for input and output.</p>
+<p>If the <strong>-l</strong> option is given when encoding, if there are any lines
+longer than the specified <em>length</em>, the containing part will be
+encoded.</p>
+<p>If the <strong>-b</strong> option is given when decoding, any base64 parts will be
+decoded as well.</p>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">quopri</span></tt></dt>
+<dd>Encode and decode MIME quoted-printable files.</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="multifile.html" title="18.9. multifile — Support for files containing distinct parts"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mimewriter.html" title="18.7. MimeWriter — Generic MIME file writer"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" >18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

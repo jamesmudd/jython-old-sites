@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9. Silence Warnings From the Test Suite &mdash; Jython Developer&#39;s Guide </title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Developer&#39;s Guide " href="index.html" />
+    <link rel="next" title="10. Fixing “easy” Issues (and Beyond)" href="fixingissues.html" />
+    <link rel="prev" title="8. Documenting Jython" href="documenting.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="fixingissues.html" title="10. Fixing “easy” Issues (and Beyond)"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="documenting.html" title="8. Documenting Jython"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Developer&#39;s Guide </a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="admonition warning" id="silencewarnings">
+<p class="first admonition-title">Warning</p>
+<p class="last">These instrctions may not apply to Jython and are just a copy from
+<a class="reference external" href="http://docs.python.org/devguide/">CPython devguide</a> that needs to
+be evaluated.</p>
+</div>
+<div class="section" id="silence-warnings-from-the-test-suite">
+<h1>9. Silence Warnings From the Test Suite<a class="headerlink" href="#silence-warnings-from-the-test-suite" title="Permalink to this headline">¶</a></h1>
+<p>When running Python&#8217;s test suite, no warnings should result when you run it
+under <em class="xref std std-ref">strenuous testing conditions</em> (you can ignore
+the extra flags passed to <tt class="docutils literal"><span class="pre">test</span></tt> that cause randomness and parallel execution
+if you want). Unfortunately new warnings are added to Python on occasion which
+take some time to eliminate (e.g., <tt class="docutils literal"><span class="pre">ResourceWarning</span></tt>). Typically the easy
+warnings are dealt with quickly, but the more difficult ones that require some
+thought and work do not get fixed immediately.</p>
+<p>If you decide to tackle a warning you have found, open an issue on the <a class="reference external" href="http://bugs.python.org">issue
+tracker</a> (if one has not already been opened) and say you are going to try and
+tackle the issue, and then proceed to fix the issue.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="documenting.html"
+                        title="previous chapter">8. Documenting Jython</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fixingissues.html"
+                        title="next chapter">10. Fixing &#8220;easy&#8221; Issues (and Beyond)</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/silencewarnings.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="fixingissues.html" title="10. Fixing “easy” Issues (and Beyond)"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="documenting.html" title="8. Documenting Jython"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Developer&#39;s Guide </a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Python Software Foundation.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

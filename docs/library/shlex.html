@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>23.2. shlex — Simple lexical analysis &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="23. Program Frameworks" href="frameworks.html" />
+    <link rel="next" title="24. Development Tools" href="development.html" />
+    <link rel="prev" title="23.1. cmd — Support for line-oriented command interpreters" href="cmd.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="development.html" title="24. Development Tools"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cmd.html" title="23.1. cmd — Support for line-oriented command interpreters"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="frameworks.html" accesskey="U">23. Program Frameworks</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">23.2. <tt class="docutils literal"><span class="pre">shlex</span></tt> &#8212; Simple lexical analysis</a><ul>
+<li><a class="reference external" href="#shlex-objects">23.2.1. shlex Objects</a></li>
+<li><a class="reference external" href="#parsing-rules">23.2.2. Parsing Rules</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="cmd.html"
+                                  title="previous chapter">23.1. <tt class="docutils literal docutils literal docutils literal"><span class="pre">cmd</span></tt> &#8212; Support for line-oriented command interpreters</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="development.html"
+                                  title="next chapter">24. Development Tools</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/shlex.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="shlex-simple-lexical-analysis">
+<h1>23.2. <tt class="docutils literal"><span class="pre">shlex</span></tt> &#8212; Simple lexical analysis<a class="headerlink" href="#shlex-simple-lexical-analysis" title="Permalink to this headline">¶</a></h1>
+<p>New in version 1.5.2.</p>
+<p>The <tt class="docutils literal"><span class="pre">shlex</span></tt> class makes it easy to write lexical analyzers for
+simple syntaxes resembling that of the Unix shell.  This will often be
+useful for writing minilanguages, (for example, in run control files
+for Python applications) or for parsing quoted strings.</p>
+<p>Note: The <tt class="docutils literal"><span class="pre">shlex</span></tt> module currently does not support Unicode input.</p>
+<p>The <tt class="docutils literal"><span class="pre">shlex</span></tt> module defines the following functions:</p>
+<p>shlex.split(s[, comments[, posix]])</p>
+<blockquote>
+<p>Split the string <em>s</em> using shell-like syntax. If <em>comments</em> is
+<tt class="xref docutils literal"><span class="pre">False</span></tt> (the default), the parsing of comments in the given
+string will be disabled (setting the <tt class="docutils literal"><span class="pre">commenters</span></tt> member of the
+<tt class="docutils literal"><span class="pre">shlex</span></tt> instance to the empty string).  This function operates in
+POSIX mode by default, but uses non-POSIX mode if the <em>posix</em>
+argument is false.</p>
+<p>New in version 2.3.</p>
+<p>Changed in version 2.6: Added the <em>posix</em> parameter.</p>
+<dl class="docutils">
+<dt>Note: Since the <tt class="docutils literal"><span class="pre">split()</span></tt> function instantiates a <tt class="docutils literal"><span class="pre">shlex</span></tt> instance,</dt>
+<dd>passing <tt class="xref docutils literal"><span class="pre">None</span></tt> for <em>s</em> will read the string to split from
+standard input.</dd>
+</dl>
+</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">shlex</span></tt> module defines the following class:</p>
+<p>class class shlex.shlex([instream[, infile[, posix]]])</p>
+<blockquote>
+A <tt class="docutils literal"><span class="pre">shlex</span></tt> instance or subclass instance is a lexical analyzer
+object. The initialization argument, if present, specifies where to
+read characters from. It must be a file-/stream-like object with
+<tt class="docutils literal"><span class="pre">read()</span></tt> and <tt class="docutils literal"><span class="pre">readline()</span></tt> methods, or a string (strings are
+accepted since Python 2.3). If no argument is given, input will be
+taken from <tt class="docutils literal"><span class="pre">sys.stdin</span></tt>.  The second optional argument is a
+filename string, which sets the initial value of the <tt class="docutils literal"><span class="pre">infile</span></tt>
+member.  If the <em>instream</em> argument is omitted or equal to
+<tt class="docutils literal"><span class="pre">sys.stdin</span></tt>, this second argument defaults to &#8220;stdin&#8221;.  The
+<em>posix</em> argument was introduced in Python 2.3, and defines the
+operational mode.  When <em>posix</em> is not true (default), the
+<tt class="docutils literal"><span class="pre">shlex</span></tt> instance will operate in compatibility mode.  When
+operating in POSIX mode, <tt class="docutils literal"><span class="pre">shlex</span></tt> will try to be as close as
+possible to the POSIX shell parsing rules.</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">ConfigParser</span></tt></dt>
+<dd>Parser for configuration files similar to the Windows <tt class="docutils literal"><span class="pre">.ini</span></tt>
+files.</dd>
+</dl>
+</blockquote>
+<div class="section" id="shlex-objects">
+<h2>23.2.1. shlex Objects<a class="headerlink" href="#shlex-objects" title="Permalink to this headline">¶</a></h2>
+<p>A <tt class="docutils literal"><span class="pre">shlex</span></tt> instance has the following methods:</p>
+<p>shlex.get_token()</p>
+<blockquote>
+Return a token.  If tokens have been stacked using
+<tt class="docutils literal"><span class="pre">push_token()</span></tt>, pop a token off the stack.  Otherwise, read one
+from the input stream.  If reading encounters an immediate end-of-
+file, <tt class="docutils literal"><span class="pre">self.eof</span></tt> is returned (the empty string (<tt class="docutils literal"><span class="pre">''</span></tt>) in non-
+POSIX mode, and <tt class="xref docutils literal"><span class="pre">None</span></tt> in POSIX mode).</blockquote>
+<p>shlex.push_token(str)</p>
+<blockquote>
+Push the argument onto the token stack.</blockquote>
+<p>shlex.read_token()</p>
+<blockquote>
+Read a raw token.  Ignore the pushback stack, and do not interpret
+source requests.  (This is not ordinarily a useful entry point, and
+is documented here only for the sake of completeness.)</blockquote>
+<p>shlex.sourcehook(filename)</p>
+<blockquote>
+<p>When <tt class="docutils literal"><span class="pre">shlex</span></tt> detects a source request (see <tt class="docutils literal"><span class="pre">source</span></tt> below) this
+method is given the following token as argument, and expected to
+return a tuple consisting of a filename and an open file-like
+object.</p>
+<p>Normally, this method first strips any quotes off the argument.  If
+the result is an absolute pathname, or there was no previous source
+request in effect, or the previous source was a stream (such as
+<tt class="docutils literal"><span class="pre">sys.stdin</span></tt>), the result is left alone.  Otherwise, if the result
+is a relative pathname, the directory part of the name of the file
+immediately before it on the source inclusion stack is prepended
+(this behavior is like the way the C preprocessor handles
+<tt class="docutils literal"><span class="pre">#include</span> <span class="pre">&quot;file.h&quot;</span></tt>).</p>
+<p>The result of the manipulations is treated as a filename, and
+returned as the first component of the tuple, with <tt class="docutils literal"><span class="pre">open()</span></tt>
+called on it to yield the second component. (Note: this is the
+reverse of the order of arguments in instance initialization!)</p>
+<p>This hook is exposed so that you can use it to implement directory
+search paths, addition of file extensions, and other namespace
+hacks. There is no corresponding &#8216;close&#8217; hook, but a shlex instance
+will call the <tt class="docutils literal"><span class="pre">close()</span></tt> method of the sourced input stream when
+it returns EOF.</p>
+<p>For more explicit control of source stacking, use the
+<tt class="docutils literal"><span class="pre">push_source()</span></tt> and <tt class="docutils literal"><span class="pre">pop_source()</span></tt> methods.</p>
+</blockquote>
+<p>shlex.push_source(stream[, filename])</p>
+<blockquote>
+<p>Push an input source stream onto the input stack.  If the filename
+argument is specified it will later be available for use in error
+messages.  This is the same method used internally by the
+<tt class="docutils literal"><span class="pre">sourcehook()</span></tt> method.</p>
+<p>New in version 2.1.</p>
+</blockquote>
+<p>shlex.pop_source()</p>
+<blockquote>
+<p>Pop the last-pushed input source from the input stack. This is the
+same method used internally when the lexer reaches EOF on a stacked
+input stream.</p>
+<p>New in version 2.1.</p>
+</blockquote>
+<p>shlex.error_leader([file[, line]])</p>
+<blockquote>
+<p>This method generates an error message leader in the format of a
+Unix C compiler error label; the format is <tt class="docutils literal"><span class="pre">'&quot;%s&quot;,</span> <span class="pre">line</span> <span class="pre">%d:</span> <span class="pre">'</span></tt>,
+where the <tt class="docutils literal"><span class="pre">%s</span></tt> is replaced with the name of the current source
+file and the <tt class="docutils literal"><span class="pre">%d</span></tt> with the current input line number (the
+optional arguments can be used to override these).</p>
+<p>This convenience is provided to encourage <tt class="docutils literal"><span class="pre">shlex</span></tt> users to
+generate error messages in the standard, parseable format
+understood by Emacs and other Unix tools.</p>
+</blockquote>
+<p>Instances of <tt class="docutils literal"><span class="pre">shlex</span></tt> subclasses have some public instance variables
+which either control lexical analysis or can be used for debugging:</p>
+<p>shlex.commenters</p>
+<blockquote>
+The string of characters that are recognized as comment beginners.
+All characters from the comment beginner to end of line are
+ignored. Includes just <tt class="docutils literal"><span class="pre">'#'</span></tt> by default.</blockquote>
+<p>shlex.wordchars</p>
+<blockquote>
+The string of characters that will accumulate into multi-character
+tokens.  By default, includes all ASCII alphanumerics and
+underscore.</blockquote>
+<p>shlex.whitespace</p>
+<blockquote>
+Characters that will be considered whitespace and skipped.
+Whitespace bounds tokens.  By default, includes space, tab,
+linefeed and carriage-return.</blockquote>
+<p>shlex.escape</p>
+<blockquote>
+<p>Characters that will be considered as escape. This will be only
+used in POSIX mode, and includes just <tt class="docutils literal"><span class="pre">'\'</span></tt> by default.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>shlex.quotes</p>
+<blockquote>
+Characters that will be considered string quotes.  The token
+accumulates until the same quote is encountered again (thus,
+different quote types protect each other as in the shell.)  By
+default, includes ASCII single and double quotes.</blockquote>
+<p>shlex.escapedquotes</p>
+<blockquote>
+<p>Characters in <tt class="docutils literal"><span class="pre">quotes</span></tt> that will interpret escape characters
+defined in <tt class="docutils literal"><span class="pre">escape</span></tt>.  This is only used in POSIX mode, and
+includes just <tt class="docutils literal"><span class="pre">'&quot;'</span></tt> by default.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>shlex.whitespace_split</p>
+<blockquote>
+<p>If <tt class="xref docutils literal"><span class="pre">True</span></tt>, tokens will only be split in whitespaces. This is
+useful, for example, for parsing command lines with <tt class="docutils literal"><span class="pre">shlex</span></tt>,
+getting tokens in a similar way to shell arguments.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>shlex.infile</p>
+<blockquote>
+The name of the current input file, as initially set at class
+instantiation time or stacked by later source requests.  It may be
+useful to examine this when constructing error messages.</blockquote>
+<p>shlex.instream</p>
+<blockquote>
+The input stream from which this <tt class="docutils literal"><span class="pre">shlex</span></tt> instance is reading
+characters.</blockquote>
+<p>shlex.source</p>
+<blockquote>
+This member is <tt class="xref docutils literal"><span class="pre">None</span></tt> by default.  If you assign a string to it,
+that string will be recognized as a lexical-level inclusion request
+similar to the <tt class="docutils literal"><span class="pre">source</span></tt> keyword in various shells.  That is, the
+immediately following token will opened as a filename and input
+taken from that stream until EOF, at which point the <tt class="docutils literal"><span class="pre">close()</span></tt>
+method of that stream will be called and the input source will
+again become the original input stream. Source requests may be
+stacked any number of levels deep.</blockquote>
+<p>shlex.debug</p>
+<blockquote>
+If this member is numeric and <tt class="docutils literal"><span class="pre">1</span></tt> or more, a <tt class="docutils literal"><span class="pre">shlex</span></tt> instance
+will print verbose progress output on its behavior.  If you need to
+use this, you can read the module source code to learn the details.</blockquote>
+<p>shlex.lineno</p>
+<blockquote>
+Source line number (count of newlines seen so far plus one).</blockquote>
+<p>shlex.token</p>
+<blockquote>
+The token buffer.  It may be useful to examine this when catching
+exceptions.</blockquote>
+<p>shlex.eof</p>
+<blockquote>
+<p>Token used to determine end of file. This will be set to the empty
+string (<tt class="docutils literal"><span class="pre">''</span></tt>), in non-POSIX mode, and to <tt class="xref docutils literal"><span class="pre">None</span></tt> in POSIX mode.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+</div>
+<div class="section" id="parsing-rules">
+<h2>23.2.2. Parsing Rules<a class="headerlink" href="#parsing-rules" title="Permalink to this headline">¶</a></h2>
+<p>When operating in non-POSIX mode, <tt class="docutils literal"><span class="pre">shlex</span></tt> will try to obey to the
+following rules.</p>
+<ul class="simple">
+<li>Quote characters are not recognized within words
+(<tt class="docutils literal"><span class="pre">Do&quot;Not&quot;Separate</span></tt> is parsed as the single word
+<tt class="docutils literal"><span class="pre">Do&quot;Not&quot;Separate</span></tt>);</li>
+<li>Escape characters are not recognized;</li>
+<li>Enclosing characters in quotes preserve the literal value of all
+characters within the quotes;</li>
+<li>Closing quotes separate words (<tt class="docutils literal"><span class="pre">&quot;Do&quot;Separate</span></tt> is parsed as
+<tt class="docutils literal"><span class="pre">&quot;Do&quot;</span></tt> and <tt class="docutils literal"><span class="pre">Separate</span></tt>);</li>
+<li>If <tt class="docutils literal"><span class="pre">whitespace_split</span></tt> is <tt class="xref docutils literal"><span class="pre">False</span></tt>, any character not declared to
+be a word character, whitespace, or a quote will be returned as a
+single-character token. If it is <tt class="xref docutils literal"><span class="pre">True</span></tt>, <tt class="docutils literal"><span class="pre">shlex</span></tt> will only split
+words in whitespaces;</li>
+<li>EOF is signaled with an empty string (<tt class="docutils literal"><span class="pre">''</span></tt>);</li>
+<li>It&#8217;s not possible to parse empty strings, even if quoted.</li>
+</ul>
+<p>When operating in POSIX mode, <tt class="docutils literal"><span class="pre">shlex</span></tt> will try to obey to the
+following parsing rules.</p>
+<ul class="simple">
+<li>Quotes are stripped out, and do not separate words
+(<tt class="docutils literal"><span class="pre">&quot;Do&quot;Not&quot;Separate&quot;</span></tt> is parsed as the single word
+<tt class="docutils literal"><span class="pre">DoNotSeparate</span></tt>);</li>
+<li>Non-quoted escape characters (e.g. <tt class="docutils literal"><span class="pre">'\'</span></tt>) preserve the literal
+value of the next character that follows;</li>
+<li>Enclosing characters in quotes which are not part of
+<tt class="docutils literal"><span class="pre">escapedquotes</span></tt> (e.g. <tt class="docutils literal"><span class="pre">&quot;'&quot;</span></tt>) preserve the literal value of all
+characters within the quotes;</li>
+<li>Enclosing characters in quotes which are part of <tt class="docutils literal"><span class="pre">escapedquotes</span></tt>
+(e.g. <tt class="docutils literal"><span class="pre">'&quot;'</span></tt>) preserves the literal value of all characters within
+the quotes, with the exception of the characters mentioned in
+<tt class="docutils literal"><span class="pre">escape</span></tt>. The escape characters retain its special meaning only
+when followed by the quote in use, or the escape character itself.
+Otherwise the escape character will be considered a normal
+character.</li>
+<li>EOF is signaled with a <tt class="xref docutils literal"><span class="pre">None</span></tt> value;</li>
+<li>Quoted empty strings (<tt class="docutils literal"><span class="pre">''</span></tt>) are allowed;</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="development.html" title="24. Development Tools"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cmd.html" title="23.1. cmd — Support for line-oriented command interpreters"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="frameworks.html" >23. Program Frameworks</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

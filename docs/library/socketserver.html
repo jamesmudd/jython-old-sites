@@ -1,0 +1,616 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>20.17. SocketServer — A framework for network servers &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="20. Internet Protocols and Support" href="internet.html" />
+    <link rel="next" title="20.18. BaseHTTPServer — Basic HTTP server" href="basehttpserver.html" />
+    <link rel="prev" title="20.16. urlparse — Parse URLs into components" href="urlparse.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="basehttpserver.html" title="20.18. BaseHTTPServer — Basic HTTP server"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="urlparse.html" title="20.16. urlparse — Parse URLs into components"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" accesskey="U">20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">20.17. <tt class="docutils literal"><span class="pre">SocketServer</span></tt> &#8212; A framework for network servers</a><ul>
+<li><a class="reference external" href="#server-creation-notes">20.17.1. Server Creation Notes</a></li>
+<li><a class="reference external" href="#server-objects">20.17.2. Server Objects</a></li>
+<li><a class="reference external" href="#requesthandler-objects">20.17.3. RequestHandler Objects</a></li>
+<li><a class="reference external" href="#examples">20.17.4. Examples</a><ul>
+<li><a class="reference external" href="#socketserver-tcpserver-example">20.17.4.1. <tt class="docutils literal"><span class="pre">SocketServer.TCPServer</span></tt> Example</a></li>
+<li><a class="reference external" href="#socketserver-udpserver-example">20.17.4.2. <tt class="docutils literal"><span class="pre">SocketServer.UDPServer</span></tt> Example</a></li>
+<li><a class="reference external" href="#asynchronous-mixins">20.17.4.3. Asynchronous Mixins</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="urlparse.html"
+                                  title="previous chapter">20.16. <tt class="docutils literal"><span class="pre">urlparse</span></tt> &#8212; Parse URLs into components</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="basehttpserver.html"
+                                  title="next chapter">20.18. <tt class="docutils literal docutils literal docutils literal"><span class="pre">BaseHTTPServer</span></tt> &#8212; Basic HTTP server</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/socketserver.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="socketserver-a-framework-for-network-servers">
+<h1>20.17. <tt class="docutils literal"><span class="pre">SocketServer</span></tt> &#8212; A framework for network servers<a class="headerlink" href="#socketserver-a-framework-for-network-servers" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">SocketServer</span></tt> module has been renamed to <tt class="docutils literal"><span class="pre">socketserver</span></tt> in</dt>
+<dd>Python 3.0.  The <em>2to3</em> tool will automatically adapt imports when
+converting your sources to 3.0.</dd>
+</dl>
+<p>The <tt class="docutils literal"><span class="pre">SocketServer</span></tt> module simplifies the task of writing network
+servers.</p>
+<p>There are four basic server classes: <tt class="docutils literal"><span class="pre">TCPServer</span></tt> uses the Internet
+TCP protocol, which provides for continuous streams of data between
+the client and server.  <tt class="docutils literal"><span class="pre">UDPServer</span></tt> uses datagrams, which are
+discrete packets of information that may arrive out of order or be
+lost while in transit.  The more infrequently used
+<tt class="docutils literal"><span class="pre">UnixStreamServer</span></tt> and <tt class="docutils literal"><span class="pre">UnixDatagramServer</span></tt> classes are similar,
+but use Unix domain sockets; they&#8217;re not available on non-Unix
+platforms.  For more details on network programming, consult a book
+such as W. Richard Steven&#8217;s UNIX Network Programming or Ralph Davis&#8217;s
+Win32 Network Programming.</p>
+<p>These four classes process requests <em>synchronously</em>; each request must
+be completed before the next request can be started.  This isn&#8217;t
+suitable if each request takes a long time to complete, because it
+requires a lot of computation, or because it returns a lot of data
+which the client is slow to process.  The solution is to create a
+separate process or thread to handle each request; the
+<tt class="docutils literal"><span class="pre">ForkingMixIn</span></tt> and <tt class="docutils literal"><span class="pre">ThreadingMixIn</span></tt> mix-in classes can be used to
+support asynchronous behaviour.</p>
+<p>Creating a server requires several steps.  First, you must create a
+request handler class by subclassing the <tt class="docutils literal"><span class="pre">BaseRequestHandler</span></tt> class
+and overriding its <tt class="docutils literal"><span class="pre">handle()</span></tt> method; this method will process
+incoming requests.  Second, you must instantiate one of the server
+classes, passing it the server&#8217;s address and the request handler
+class.  Finally, call the <tt class="docutils literal"><span class="pre">handle_request()</span></tt> or <tt class="docutils literal"><span class="pre">serve_forever()</span></tt>
+method of the server object to process one or many requests.</p>
+<p>When inheriting from <tt class="docutils literal"><span class="pre">ThreadingMixIn</span></tt> for threaded connection
+behavior, you should explicitly declare how you want your threads to
+behave on an abrupt shutdown. The <tt class="docutils literal"><span class="pre">ThreadingMixIn</span></tt> class defines an
+attribute <em>daemon_threads</em>, which indicates whether or not the server
+should wait for thread termination. You should set the flag explicitly
+if you would like threads to behave autonomously; the default is
+<tt class="xref docutils literal"><span class="pre">False</span></tt>, meaning that Python will not exit until all threads created
+by <tt class="docutils literal"><span class="pre">ThreadingMixIn</span></tt> have exited.</p>
+<p>Server classes have the same external methods and attributes, no
+matter what network protocol they use.</p>
+<div class="section" id="server-creation-notes">
+<h2>20.17.1. Server Creation Notes<a class="headerlink" href="#server-creation-notes" title="Permalink to this headline">¶</a></h2>
+<p>There are five classes in an inheritance diagram, four of which
+represent synchronous servers of four types:</p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>BaseServer</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>v</p>
+</blockquote>
+<p>+&#8212;&#8212;&#8212;&#8211;+        +&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+
+| TCPServer <a href="#id3"><span class="problematic" id="id4">|&#8212;&#8212;-&gt;|</span></a> UnixStreamServer |
++&#8212;&#8212;&#8212;&#8211;+        +&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+</p>
+<blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>v</p>
+</blockquote>
+<p>+&#8212;&#8212;&#8212;&#8211;+        +&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+
+| UDPServer <a href="#id5"><span class="problematic" id="id6">|&#8212;&#8212;-&gt;|</span></a> UnixDatagramServer |
++&#8212;&#8212;&#8212;&#8211;+        +&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+</p>
+</blockquote>
+<p>Note that <tt class="docutils literal"><span class="pre">UnixDatagramServer</span></tt> derives from <tt class="docutils literal"><span class="pre">UDPServer</span></tt>, not from
+<tt class="docutils literal"><span class="pre">UnixStreamServer</span></tt> &#8212; the only difference between an IP and a Unix
+stream server is the address family, which is simply repeated in both
+Unix server classes.</p>
+<p>Forking and threading versions of each type of server can be created
+using the <tt class="docutils literal"><span class="pre">ForkingMixIn</span></tt> and <tt class="docutils literal"><span class="pre">ThreadingMixIn</span></tt> mix-in classes.  For
+instance, a threading UDP server class is created as follows:</p>
+<blockquote>
+class ThreadingUDPServer(ThreadingMixIn, UDPServer): pass</blockquote>
+<p>The mix-in class must come first, since it overrides a method defined
+in <tt class="docutils literal"><span class="pre">UDPServer</span></tt>.  Setting the various member variables also changes
+the behavior of the underlying server mechanism.</p>
+<p>To implement a service, you must derive a class from
+<tt class="docutils literal"><span class="pre">BaseRequestHandler</span></tt> and redefine its <tt class="docutils literal"><span class="pre">handle()</span></tt> method.  You can
+then run various versions of the service by combining one of the
+server classes with your request handler class.  The request handler
+class must be different for datagram or stream services.  This can be
+hidden by using the handler subclasses <tt class="docutils literal"><span class="pre">StreamRequestHandler</span></tt> or
+<tt class="docutils literal"><span class="pre">DatagramRequestHandler</span></tt>.</p>
+<p>Of course, you still have to use your head!  For instance, it makes no
+sense to use a forking server if the service contains state in memory
+that can be modified by different requests, since the modifications in
+the child process would never reach the initial state kept in the
+parent process and passed to each child.  In this case, you can use a
+threading server, but you will probably have to use locks to protect
+the integrity of the shared data.</p>
+<p>On the other hand, if you are building an HTTP server where all data
+is stored externally (for instance, in the file system), a synchronous
+class will essentially render the service &#8220;deaf&#8221; while one request is
+being handled &#8211; which may be for a very long time if a client is slow
+to receive all the data it has requested.  Here a threading or forking
+server is appropriate.</p>
+<p>In some cases, it may be appropriate to process part of a request
+synchronously, but to finish processing in a forked child depending on
+the request data.  This can be implemented by using a synchronous
+server and doing an explicit fork in the request handler class
+<tt class="docutils literal"><span class="pre">handle()</span></tt> method.</p>
+<p>Another approach to handling multiple simultaneous requests in an
+environment that supports neither threads nor <tt class="docutils literal"><span class="pre">fork()</span></tt> (or where
+these are too expensive or inappropriate for the service) is to
+maintain an explicit table of partially finished requests and to use
+<tt class="docutils literal"><span class="pre">select()</span></tt> to decide which request to work on next (or whether to
+handle a new incoming request).  This is particularly important for
+stream services where each client can potentially be connected for a
+long time (if threads or subprocesses cannot be used). See
+<tt class="docutils literal"><span class="pre">asyncore</span></tt> for another way to manage this.</p>
+</div>
+<div class="section" id="server-objects">
+<h2>20.17.2. Server Objects<a class="headerlink" href="#server-objects" title="Permalink to this headline">¶</a></h2>
+<p>class class SocketServer.BaseServer</p>
+<blockquote>
+This is the superclass of all Server objects in the module.  It
+defines the interface, given below, but does not implement most of
+the methods, which is done in subclasses.</blockquote>
+<p>BaseServer.fileno()</p>
+<blockquote>
+Return an integer file descriptor for the socket on which the
+server is listening.  This function is most commonly passed to
+<tt class="docutils literal"><span class="pre">select.select()</span></tt>, to allow monitoring multiple servers in the
+same process.</blockquote>
+<p>BaseServer.handle_request()</p>
+<blockquote>
+Process a single request.  This function calls the following
+methods in order: <tt class="docutils literal"><span class="pre">get_request()</span></tt>, <tt class="docutils literal"><span class="pre">verify_request()</span></tt>, and
+<tt class="docutils literal"><span class="pre">process_request()</span></tt>.  If the user-provided <tt class="docutils literal"><span class="pre">handle()</span></tt> method of
+the handler class raises an exception, the server&#8217;s
+<tt class="docutils literal"><span class="pre">handle_error()</span></tt> method will be called.  If no request is
+received within <tt class="docutils literal"><span class="pre">self.timeout</span></tt> seconds, <tt class="docutils literal"><span class="pre">handle_timeout()</span></tt> will
+be called and <tt class="docutils literal"><span class="pre">handle_request()</span></tt> will return.</blockquote>
+<p>BaseServer.serve_forever(poll_interval=0.5)</p>
+<blockquote>
+Handle requests until an explicit <tt class="docutils literal"><span class="pre">shutdown()</span></tt> request.  Polls
+for shutdown every <em>poll_interval</em> seconds.</blockquote>
+<p>BaseServer.shutdown()</p>
+<blockquote>
+<p>Tells the <tt class="docutils literal"><span class="pre">serve_forever()</span></tt> loop to stop and waits until it does.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>BaseServer.address_family</p>
+<blockquote>
+The family of protocols to which the server&#8217;s socket belongs.
+Common examples are <tt class="docutils literal"><span class="pre">socket.AF_INET</span></tt> and <tt class="docutils literal"><span class="pre">socket.AF_UNIX</span></tt>.</blockquote>
+<p>BaseServer.RequestHandlerClass</p>
+<blockquote>
+The user-provided request handler class; an instance of this class
+is created for each request.</blockquote>
+<p>BaseServer.server_address</p>
+<blockquote>
+The address on which the server is listening.  The format of
+addresses varies depending on the protocol family; see the
+documentation for the socket module for details.  For Internet
+protocols, this is a tuple containing a string giving the address,
+and an integer port number: <tt class="docutils literal"><span class="pre">('127.0.0.1',</span> <span class="pre">80)</span></tt>, for example.</blockquote>
+<p>BaseServer.socket</p>
+<blockquote>
+The socket object on which the server will listen for incoming
+requests.</blockquote>
+<p>The server classes support the following class variables:</p>
+<p>BaseServer.allow_reuse_address</p>
+<blockquote>
+Whether the server will allow the reuse of an address. This
+defaults to <tt class="xref docutils literal"><span class="pre">False</span></tt>, and can be set in subclasses to change the
+policy.</blockquote>
+<p>BaseServer.request_queue_size</p>
+<blockquote>
+The size of the request queue.  If it takes a long time to process
+a single request, any requests that arrive while the server is busy
+are placed into a queue, up to <tt class="docutils literal"><span class="pre">request_queue_size</span></tt> requests.
+Once the queue is full, further requests from clients will get a
+&#8220;Connection denied&#8221; error.  The default value is usually 5, but
+this can be overridden by subclasses.</blockquote>
+<p>BaseServer.socket_type</p>
+<blockquote>
+The type of socket used by the server; <tt class="docutils literal"><span class="pre">socket.SOCK_STREAM</span></tt> and
+<tt class="docutils literal"><span class="pre">socket.SOCK_DGRAM</span></tt> are two common values.</blockquote>
+<p>BaseServer.timeout</p>
+<blockquote>
+Timeout duration, measured in seconds, or <tt class="xref docutils literal"><span class="pre">None</span></tt> if no timeout is
+desired.  If <tt class="docutils literal"><span class="pre">handle_request()</span></tt> receives no incoming requests
+within the timeout period, the <tt class="docutils literal"><span class="pre">handle_timeout()</span></tt> method is
+called.</blockquote>
+<p>There are various server methods that can be overridden by subclasses
+of base server classes like <tt class="docutils literal"><span class="pre">TCPServer</span></tt>; these methods aren&#8217;t useful
+to external users of the server object.</p>
+<p>BaseServer.finish_request()</p>
+<blockquote>
+Actually processes the request by instantiating
+<tt class="docutils literal"><span class="pre">RequestHandlerClass</span></tt> and calling its <tt class="docutils literal"><span class="pre">handle()</span></tt> method.</blockquote>
+<p>BaseServer.get_request()</p>
+<blockquote>
+Must accept a request from the socket, and return a 2-tuple
+containing the <em>new</em> socket object to be used to communicate with
+the client, and the client&#8217;s address.</blockquote>
+<p>BaseServer.handle_error(request, client_address)</p>
+<blockquote>
+This function is called if the <tt class="docutils literal"><span class="pre">RequestHandlerClass</span></tt>&#8216;s
+<tt class="docutils literal"><span class="pre">handle()</span></tt> method raises an exception.  The default action is to
+print the traceback to standard output and continue handling
+further requests.</blockquote>
+<p>BaseServer.handle_timeout()</p>
+<blockquote>
+This function is called when the <tt class="docutils literal"><span class="pre">timeout</span></tt> attribute has been set
+to a value other than <tt class="xref docutils literal"><span class="pre">None</span></tt> and the timeout period has passed
+with no requests being received.  The default action for forking
+servers is to collect the status of any child processes that have
+exited, while in threading servers this method does nothing.</blockquote>
+<p>BaseServer.process_request(request, client_address)</p>
+<blockquote>
+Calls <tt class="docutils literal"><span class="pre">finish_request()</span></tt> to create an instance of the
+<tt class="docutils literal"><span class="pre">RequestHandlerClass</span></tt>.  If desired, this function can create a
+new process or thread to handle the request; the <tt class="docutils literal"><span class="pre">ForkingMixIn</span></tt>
+and <tt class="docutils literal"><span class="pre">ThreadingMixIn</span></tt> classes do this.</blockquote>
+<p>BaseServer.server_activate()</p>
+<blockquote>
+Called by the server&#8217;s constructor to activate the server.  The
+default behavior just <a href="#id1"><span class="problematic" id="id2">``</span></a>listen()``s to the server&#8217;s socket. May be
+overridden.</blockquote>
+<p>BaseServer.server_bind()</p>
+<blockquote>
+Called by the server&#8217;s constructor to bind the socket to the
+desired address. May be overridden.</blockquote>
+<p>BaseServer.verify_request(request, client_address)</p>
+<blockquote>
+Must return a Boolean value; if the value is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the request
+will be processed, and if it&#8217;s <tt class="xref docutils literal"><span class="pre">False</span></tt>, the request will be
+denied. This function can be overridden to implement access
+controls for a server. The default implementation always returns
+<tt class="xref docutils literal"><span class="pre">True</span></tt>.</blockquote>
+</div>
+<div class="section" id="requesthandler-objects">
+<h2>20.17.3. RequestHandler Objects<a class="headerlink" href="#requesthandler-objects" title="Permalink to this headline">¶</a></h2>
+<p>The request handler class must define a new <tt class="docutils literal"><span class="pre">handle()</span></tt> method, and
+can override any of the following methods.  A new instance is created
+for each request.</p>
+<p>RequestHandler.finish()</p>
+<blockquote>
+Called after the <tt class="docutils literal"><span class="pre">handle()</span></tt> method to perform any clean-up
+actions required.  The default implementation does nothing.  If
+<tt class="docutils literal"><span class="pre">setup()</span></tt> or <tt class="docutils literal"><span class="pre">handle()</span></tt> raise an exception, this function will
+not be called.</blockquote>
+<p>RequestHandler.handle()</p>
+<blockquote>
+<p>This function must do all the work required to service a request.
+The default implementation does nothing.  Several instance
+attributes are available to it; the request is available as
+<tt class="docutils literal"><span class="pre">self.request</span></tt>; the client address as <tt class="docutils literal"><span class="pre">self.client_address</span></tt>;
+and the server instance as <tt class="docutils literal"><span class="pre">self.server</span></tt>, in case it needs access
+to per-server information.</p>
+<p>The type of <tt class="docutils literal"><span class="pre">self.request</span></tt> is different for datagram or stream
+services.  For stream services, <tt class="docutils literal"><span class="pre">self.request</span></tt> is a socket
+object; for datagram services, <tt class="docutils literal"><span class="pre">self.request</span></tt> is a pair of string
+and socket. However, this can be hidden by using the request
+handler subclasses <tt class="docutils literal"><span class="pre">StreamRequestHandler</span></tt> or
+<tt class="docutils literal"><span class="pre">DatagramRequestHandler</span></tt>, which override the <tt class="docutils literal"><span class="pre">setup()</span></tt> and
+<tt class="docutils literal"><span class="pre">finish()</span></tt> methods, and provide <tt class="docutils literal"><span class="pre">self.rfile</span></tt> and <tt class="docutils literal"><span class="pre">self.wfile</span></tt>
+attributes.  <tt class="docutils literal"><span class="pre">self.rfile</span></tt> and <tt class="docutils literal"><span class="pre">self.wfile</span></tt> can be read or
+written, respectively, to get the request data or return data to
+the client.</p>
+</blockquote>
+<p>RequestHandler.setup()</p>
+<blockquote>
+Called before the <tt class="docutils literal"><span class="pre">handle()</span></tt> method to perform any initialization
+actions required.  The default implementation does nothing.</blockquote>
+</div>
+<div class="section" id="examples">
+<h2>20.17.4. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="socketserver-tcpserver-example">
+<h3>20.17.4.1. <tt class="docutils literal"><span class="pre">SocketServer.TCPServer</span></tt> Example<a class="headerlink" href="#socketserver-tcpserver-example" title="Permalink to this headline">¶</a></h3>
+<p>This is the server side:</p>
+<blockquote>
+<p>import SocketServer</p>
+<dl class="docutils">
+<dt>class MyTCPHandler(SocketServer.BaseRequestHandler):</dt>
+<dd><p class="first">&#8220;&#8221;&#8221;
+The RequestHandler class for our server.</p>
+<p>It is instantiated once per connection to the server, and must
+override the handle() method to implement communication to the
+client.
+&#8220;&#8221;&#8220;</p>
+<dl class="last docutils">
+<dt>def handle(self):</dt>
+<dd># self.request is the TCP socket connected to the client
+self.data = self.request.recv(1024).strip()
+print &#8220;%s wrote:&#8221; % self.client_address[0]
+print self.data
+# just send back the same data, but upper-cased
+self.request.send(self.data.upper())</dd>
+</dl>
+</dd>
+<dt>if __name__ == &#8220;__main__&#8221;:</dt>
+<dd><p class="first">HOST, PORT = &#8220;localhost&#8221;, 9999</p>
+<p># Create the server, binding to localhost on port 9999
+server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)</p>
+<p class="last"># Activate the server; this will keep running until you
+# interrupt the program with Ctrl-C
+server.serve_forever()</p>
+</dd>
+</dl>
+</blockquote>
+<p>An alternative request handler class that makes use of streams (file-
+like objects that simplify communication by providing the standard
+file interface):</p>
+<blockquote>
+<p>class MyTCPHandler(SocketServer.StreamRequestHandler):</p>
+<blockquote>
+<dl class="docutils">
+<dt>def handle(self):</dt>
+<dd># self.rfile is a file-like object created by the handler;
+# we can now use e.g. readline() instead of raw recv() calls
+self.data = self.rfile.readline().strip()
+print &#8220;%s wrote:&#8221; % self.client_address[0]
+print self.data
+# Likewise, self.wfile is a file-like object used to write back
+# to the client
+self.wfile.write(self.data.upper())</dd>
+</dl>
+</blockquote>
+</blockquote>
+<p>The difference is that the <tt class="docutils literal"><span class="pre">readline()</span></tt> call in the second handler
+will call <tt class="docutils literal"><span class="pre">recv()</span></tt> multiple times until it encounters a newline
+character, while the single <tt class="docutils literal"><span class="pre">recv()</span></tt> call in the first handler will
+just return what has been sent from the client in one <tt class="docutils literal"><span class="pre">send()</span></tt> call.</p>
+<p>This is the client side:</p>
+<blockquote>
+<p>import socket
+import sys</p>
+<p>HOST, PORT = &#8220;localhost&#8221;, 9999
+data = &#8221; &#8220;.join(sys.argv[1:])</p>
+<p># Create a socket (SOCK_STREAM means a TCP socket)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</p>
+<p># Connect to server and send data
+sock.connect((HOST, PORT))
+sock.send(data + &#8220;n&#8221;)</p>
+<p># Receive data from the server and shut down
+received = sock.recv(1024)
+sock.close()</p>
+<p>print &#8220;Sent:     %s&#8221; % data
+print &#8220;Received: %s&#8221; % received</p>
+</blockquote>
+<p>The output of the example should look something like this:</p>
+<p>Server:</p>
+<blockquote>
+$ python TCPServer.py
+127.0.0.1 wrote:
+hello world with TCP
+127.0.0.1 wrote:
+python is nice</blockquote>
+<p>Client:</p>
+<blockquote>
+$ python TCPClient.py hello world with TCP
+Sent:     hello world with TCP
+Received: HELLO WORLD WITH TCP
+$ python TCPClient.py python is nice
+Sent:     python is nice
+Received: PYTHON IS NICE</blockquote>
+</div>
+<div class="section" id="socketserver-udpserver-example">
+<h3>20.17.4.2. <tt class="docutils literal"><span class="pre">SocketServer.UDPServer</span></tt> Example<a class="headerlink" href="#socketserver-udpserver-example" title="Permalink to this headline">¶</a></h3>
+<p>This is the server side:</p>
+<blockquote>
+<p>import SocketServer</p>
+<dl class="docutils">
+<dt>class MyUDPHandler(SocketServer.BaseRequestHandler):</dt>
+<dd><p class="first">&#8220;&#8221;&#8221;
+This class works similar to the TCP handler class, except that
+self.request consists of a pair of data and client socket, and since
+there is no connection the client address must be given explicitly
+when sending data back via sendto().
+&#8220;&#8221;&#8220;</p>
+<dl class="last docutils">
+<dt>def handle(self):</dt>
+<dd>data = self.request[0].strip()
+socket = self.request[1]
+print &#8220;%s wrote:&#8221; % self.client_address[0]
+print data
+socket.sendto(data.upper(), self.client_address)</dd>
+</dl>
+</dd>
+<dt>if __name__ == &#8220;__main__&#8221;:</dt>
+<dd>HOST, PORT = &#8220;localhost&#8221;, 9999
+server = SocketServer.UDPServer((HOST, PORT), MyUDPHandler)
+server.serve_forever()</dd>
+</dl>
+</blockquote>
+<p>This is the client side:</p>
+<blockquote>
+<p>import socket
+import sys</p>
+<p>HOST, PORT = &#8220;localhost&#8221;
+data = &#8221; &#8220;.join(sys.argv[1:])</p>
+<p># SOCK_DGRAM is the socket type to use for UDP sockets
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</p>
+<p># As you can see, there is no connect() call; UDP has no connections.
+# Instead, data is directly sent to the recipient via sendto().
+sock.sendto(data + &#8220;n&#8221;, (HOST, PORT))
+received = sock.recv(1024)</p>
+<p>print &#8220;Sent:     %s&#8221; % data
+print &#8220;Received: %s&#8221; % received</p>
+</blockquote>
+<p>The output of the example should look exactly like for the TCP server
+example.</p>
+</div>
+<div class="section" id="asynchronous-mixins">
+<h3>20.17.4.3. Asynchronous Mixins<a class="headerlink" href="#asynchronous-mixins" title="Permalink to this headline">¶</a></h3>
+<p>To build asynchronous handlers, use the <tt class="docutils literal"><span class="pre">ThreadingMixIn</span></tt> and
+<tt class="docutils literal"><span class="pre">ForkingMixIn</span></tt> classes.</p>
+<p>An example for the <tt class="docutils literal"><span class="pre">ThreadingMixIn</span></tt> class:</p>
+<blockquote>
+<p>import socket
+import threading
+import SocketServer</p>
+<p>class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):</p>
+<blockquote>
+<dl class="docutils">
+<dt>def handle(self):</dt>
+<dd>data = self.request.recv(1024)
+cur_thread = threading.currentThread()
+response = &#8220;%s: %s&#8221; % (cur_thread.getName(), data)
+self.request.send(response)</dd>
+</dl>
+</blockquote>
+<dl class="docutils">
+<dt>class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):</dt>
+<dd>pass</dd>
+<dt>def client(ip, port, message):</dt>
+<dd>sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((ip, port))
+sock.send(message)
+response = sock.recv(1024)
+print &#8220;Received: %s&#8221; % response
+sock.close()</dd>
+<dt>if __name__ == &#8220;__main__&#8221;:</dt>
+<dd><p class="first"># Port 0 means to select an arbitrary unused port
+HOST, PORT = &#8220;localhost&#8221;, 0</p>
+<p>server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
+ip, port = server.server_address</p>
+<p># Start a thread with the server &#8211; that thread will then start one
+# more thread for each request
+server_thread = threading.Thread(target=server.serve_forever)
+# Exit the server thread when the main thread terminates
+server_thread.setDaemon(True)
+server_thread.start()
+print &#8220;Server loop running in thread:&#8221;, server_thread.getName()</p>
+<p>client(ip, port, &#8220;Hello World 1&#8221;)
+client(ip, port, &#8220;Hello World 2&#8221;)
+client(ip, port, &#8220;Hello World 3&#8221;)</p>
+<p class="last">server.shutdown()</p>
+</dd>
+</dl>
+</blockquote>
+<p>The output of the example should look something like this:</p>
+<blockquote>
+$ python ThreadedTCPServer.py
+Server loop running in thread: Thread-1
+Received: Thread-2: Hello World 1
+Received: Thread-3: Hello World 2
+Received: Thread-4: Hello World 3</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">ForkingMixIn</span></tt> class is used in the same way, except that the
+server will spawn a new process for each request.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="basehttpserver.html" title="20.18. BaseHTTPServer — Basic HTTP server"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="urlparse.html" title="20.16. urlparse — Parse URLs into components"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" >20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

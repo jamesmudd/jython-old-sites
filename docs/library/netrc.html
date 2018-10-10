@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>13.4. netrc — netrc file processing &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="13. File Formats" href="fileformats.html" />
+    <link rel="next" title="13.5. xdrlib — Encode and decode XDR data" href="xdrlib.html" />
+    <link rel="prev" title="13.3. robotparser — Parser for robots.txt" href="robotparser.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="xdrlib.html" title="13.5. xdrlib — Encode and decode XDR data"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="robotparser.html" title="13.3. robotparser — Parser for robots.txt"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="fileformats.html" accesskey="U">13. File Formats</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">13.4. <tt class="docutils literal"><span class="pre">netrc</span></tt> &#8212; netrc file processing</a><ul>
+<li><a class="reference external" href="#netrc-objects">13.4.1. netrc Objects</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="robotparser.html"
+                                  title="previous chapter">13.3. <tt class="docutils literal docutils literal"><span class="pre">robotparser</span></tt> &#8212;  Parser for robots.txt</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="xdrlib.html"
+                                  title="next chapter">13.5. <tt class="docutils literal docutils literal"><span class="pre">xdrlib</span></tt> &#8212; Encode and decode XDR data</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/netrc.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="netrc-netrc-file-processing">
+<h1>13.4. <tt class="docutils literal"><span class="pre">netrc</span></tt> &#8212; netrc file processing<a class="headerlink" href="#netrc-netrc-file-processing" title="Permalink to this headline">¶</a></h1>
+<p>New in version 1.5.2.</p>
+<p>The <tt class="docutils literal"><span class="pre">netrc</span></tt> class parses and encapsulates the netrc file format used
+by the Unix <strong>ftp</strong> program and other FTP clients.</p>
+<p>class class netrc.netrc([file])</p>
+<blockquote>
+A <tt class="docutils literal"><span class="pre">netrc</span></tt> instance or subclass instance encapsulates data from  a
+netrc file.  The initialization argument, if present, specifies the
+file to parse.  If no argument is given, the file <tt class="docutils literal"><span class="pre">.netrc</span></tt> in the
+user&#8217;s home directory will be read.  Parse errors will raise
+<tt class="docutils literal"><span class="pre">NetrcParseError</span></tt> with diagnostic information including the file
+name, line number, and terminating token.</blockquote>
+<p>exception exception netrc.NetrcParseError</p>
+<blockquote>
+Exception raised by the <tt class="docutils literal"><span class="pre">netrc</span></tt> class when syntactical errors are
+encountered in source text.  Instances of this exception provide
+three interesting attributes:  <tt class="docutils literal"><span class="pre">msg</span></tt> is a textual explanation of
+the error, <tt class="docutils literal"><span class="pre">filename</span></tt> is the name of the source file, and
+<tt class="docutils literal"><span class="pre">lineno</span></tt> gives the line number on which the error was found.</blockquote>
+<div class="section" id="netrc-objects">
+<h2>13.4.1. netrc Objects<a class="headerlink" href="#netrc-objects" title="Permalink to this headline">¶</a></h2>
+<p>A <tt class="docutils literal"><span class="pre">netrc</span></tt> instance has the following methods:</p>
+<p>netrc.authenticators(host)</p>
+<blockquote>
+Return a 3-tuple <tt class="docutils literal"><span class="pre">(login,</span> <span class="pre">account,</span> <span class="pre">password)</span></tt> of authenticators
+for <em>host</em>. If the netrc file did not contain an entry for the
+given host, return the tuple associated with the &#8216;default&#8217; entry.
+If neither matching host nor default entry is available, return
+<tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>netrc.__repr__()</p>
+<blockquote>
+Dump the class data as a string in the format of a netrc file.
+(This discards comments and may reorder the entries.)</blockquote>
+<p>Instances of <tt class="docutils literal"><span class="pre">netrc</span></tt> have public instance variables:</p>
+<p>netrc.hosts</p>
+<blockquote>
+Dictionary mapping host names to <tt class="docutils literal"><span class="pre">(login,</span> <span class="pre">account,</span> <span class="pre">password)</span></tt>
+tuples.  The &#8216;default&#8217; entry, if any, is represented as a pseudo-
+host by that name.</blockquote>
+<p>netrc.macros</p>
+<blockquote>
+Dictionary mapping macro names to string lists.</blockquote>
+<dl class="docutils">
+<dt>Note: Passwords are limited to a subset of the ASCII character set.</dt>
+<dd>Versions of this module prior to 2.3 were extremely limited.
+Starting with 2.3, all ASCII punctuation is allowed in passwords.
+However, note that whitespace and non-printable characters are not
+allowed in passwords.  This is a limitation of the way the .netrc
+file is parsed and may be removed in the future.</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xdrlib.html" title="13.5. xdrlib — Encode and decode XDR data"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="robotparser.html" title="13.3. robotparser — Parser for robots.txt"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="fileformats.html" >13. File Formats</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

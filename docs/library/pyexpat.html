@@ -1,0 +1,764 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>19.5. xml.parsers.expat — Fast XML parsing using Expat &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="19. Structured Markup Processing Tools" href="markup.html" />
+    <link rel="next" title="19.6. xml.dom — The Document Object Model API" href="xml.dom.html" />
+    <link rel="prev" title="19.3. htmllib — A parser for HTML documents" href="htmllib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="xml.dom.html" title="19.6. xml.dom — The Document Object Model API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="htmllib.html" title="19.3. htmllib — A parser for HTML documents"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="markup.html" accesskey="U">19. Structured Markup Processing Tools</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">19.5. <tt class="docutils literal"><span class="pre">xml.parsers.expat</span></tt> &#8212; Fast XML parsing using Expat</a><ul>
+<li><a class="reference external" href="#xmlparser-objects">19.5.1. XMLParser Objects</a></li>
+<li><a class="reference external" href="#expaterror-exceptions">19.5.2. ExpatError Exceptions</a></li>
+<li><a class="reference external" href="#example">19.5.3. Example</a></li>
+<li><a class="reference external" href="#content-model-descriptions">19.5.4. Content Model Descriptions</a></li>
+<li><a class="reference external" href="#expat-error-constants">19.5.5. Expat error constants</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="htmllib.html"
+                                  title="previous chapter">19.3. <tt class="docutils literal docutils literal"><span class="pre">htmllib</span></tt> &#8212; A parser for HTML documents</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="xml.dom.html"
+                                  title="next chapter">19.6. <tt class="docutils literal"><span class="pre">xml.dom</span></tt> &#8212; The Document Object Model API</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/pyexpat.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="xml-parsers-expat-fast-xml-parsing-using-expat">
+<h1>19.5. <tt class="docutils literal"><span class="pre">xml.parsers.expat</span></tt> &#8212; Fast XML parsing using Expat<a class="headerlink" href="#xml-parsers-expat-fast-xml-parsing-using-expat" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.0.</p>
+<p>The <tt class="docutils literal"><span class="pre">xml.parsers.expat</span></tt> module is a Python interface to the Expat
+non-validating XML parser. The module provides a single extension
+type, <tt class="docutils literal"><span class="pre">xmlparser</span></tt>, that represents the current state of an XML
+parser.  After an <tt class="docutils literal"><span class="pre">xmlparser</span></tt> object has been created, various
+attributes of the object can be set to handler functions.  When an XML
+document is then fed to the parser, the handler functions are called
+for the character data and markup in the XML document.</p>
+<p>This module uses the <tt class="docutils literal"><span class="pre">pyexpat</span></tt> module to provide access to the Expat
+parser.  Direct use of the <tt class="docutils literal"><span class="pre">pyexpat</span></tt> module is deprecated.</p>
+<p>This module provides one exception and one type object:</p>
+<p>exception exception xml.parsers.expat.ExpatError</p>
+<blockquote>
+The exception raised when Expat reports an error.  See section
+<em>ExpatError Exceptions</em> for more information on interpreting Expat
+errors.</blockquote>
+<p>exception exception xml.parsers.expat.error</p>
+<blockquote>
+Alias for <tt class="docutils literal"><span class="pre">ExpatError</span></tt>.</blockquote>
+<p>xml.parsers.expat.XMLParserType</p>
+<blockquote>
+The type of the return values from the <tt class="docutils literal"><span class="pre">ParserCreate()</span></tt> function.</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">xml.parsers.expat</span></tt> module contains two functions:</p>
+<p>xml.parsers.expat.ErrorString(errno)</p>
+<blockquote>
+Returns an explanatory string for a given error number <em>errno</em>.</blockquote>
+<p>xml.parsers.expat.ParserCreate([encoding[, namespace_separator]])</p>
+<blockquote>
+<p>Creates and returns a new <tt class="docutils literal"><span class="pre">xmlparser</span></tt> object.   <em>encoding</em>, if
+specified, must be a string naming the encoding  used by the XML
+data.  Expat doesn&#8217;t support as many encodings as Python does, and
+its repertoire of encodings can&#8217;t be extended; it supports UTF-8,
+UTF-16, ISO-8859-1 (Latin1), and ASCII.  If <em>encoding</em> [1] is given
+it will override the implicit or explicit encoding of the document.</p>
+<p>Expat can optionally do XML namespace processing for you, enabled
+by providing a value for <em>namespace_separator</em>.  The value must be
+a one-character string; a <tt class="docutils literal"><span class="pre">ValueError</span></tt> will be raised if the
+string has an illegal length (<tt class="xref docutils literal"><span class="pre">None</span></tt> is considered the same as
+omission).  When namespace processing is enabled, element type
+names and attribute names that belong to a namespace will be
+expanded.  The element name passed to the element handlers
+<tt class="docutils literal"><span class="pre">StartElementHandler</span></tt> and <tt class="docutils literal"><span class="pre">EndElementHandler</span></tt> will be the
+concatenation of the namespace URI, the namespace separator
+character, and the local part of the name.  If the namespace
+separator is a zero byte (<tt class="docutils literal"><span class="pre">chr(0)</span></tt>) then the namespace URI and
+the local part will be concatenated without any separator.</p>
+<p>For example, if <em>namespace_separator</em> is set to a space character
+(<tt class="docutils literal"><span class="pre">'</span> <span class="pre">'</span></tt>) and the following document is parsed:</p>
+<blockquote>
+<p>&lt;?xml version=&#8221;1.0&#8221;?&gt;
+&lt;root xmlns    = &#8220;<a class="reference external" href="http://default-namespace.org/">http://default-namespace.org/</a>&#8220;</p>
+<blockquote>
+<blockquote>
+xmlns:py = &#8220;http://www.python.org/ns/&#8221;&gt;</blockquote>
+<p>&lt;py:elem1 /&gt;
+&lt;elem2 xmlns=&#8221;&#8221; /&gt;</p>
+</blockquote>
+<p>&lt;/root&gt;</p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">StartElementHandler</span></tt> will receive the following strings for each
+element:</p>
+<blockquote>
+<a class="reference external" href="http://default-namespace.org/">http://default-namespace.org/</a> root
+<a class="reference external" href="http://www.python.org/ns/">http://www.python.org/ns/</a> elem1
+elem2</blockquote>
+</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>The Expat XML Parser</dt>
+<dd>Home page of the Expat project.</dd>
+</dl>
+</blockquote>
+<div class="section" id="xmlparser-objects">
+<h2>19.5.1. XMLParser Objects<a class="headerlink" href="#xmlparser-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">xmlparser</span></tt> objects have the following methods:</p>
+<p>xmlparser.Parse(data[, isfinal])</p>
+<blockquote>
+Parses the contents of the string <em>data</em>, calling the appropriate
+handler functions to process the parsed data.  <em>isfinal</em> must be
+true on the final call to this method.  <em>data</em> can be the empty
+string at any time.</blockquote>
+<p>xmlparser.ParseFile(file)</p>
+<blockquote>
+Parse XML data reading from the object <em>file</em>.  <em>file</em> only needs
+to provide the <tt class="docutils literal"><span class="pre">read(nbytes)</span></tt> method, returning the empty string
+when there&#8217;s no more data.</blockquote>
+<p>xmlparser.SetBase(base)</p>
+<blockquote>
+Sets the base to be used for resolving relative URIs in system
+identifiers in declarations.  Resolving relative identifiers is
+left to the application: this value will be passed through as the
+<em>base</em> argument to the <tt class="docutils literal"><span class="pre">ExternalEntityRefHandler()</span></tt>,
+<tt class="docutils literal"><span class="pre">NotationDeclHandler()</span></tt>, and <tt class="docutils literal"><span class="pre">UnparsedEntityDeclHandler()</span></tt>
+functions.</blockquote>
+<p>xmlparser.GetBase()</p>
+<blockquote>
+Returns a string containing the base set by a previous call to
+<tt class="docutils literal"><span class="pre">SetBase()</span></tt>, or <tt class="xref docutils literal"><span class="pre">None</span></tt> if  <tt class="docutils literal"><span class="pre">SetBase()</span></tt> hasn&#8217;t been called.</blockquote>
+<p>xmlparser.GetInputContext()</p>
+<blockquote>
+<p>Returns the input data that generated the current event as a
+string. The data is in the encoding of the entity which contains
+the text. When called while an event handler is not active, the
+return value is <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<p>New in version 2.1.</p>
+</blockquote>
+<p>xmlparser.ExternalEntityParserCreate(context[, encoding])</p>
+<blockquote>
+Create a &#8220;child&#8221; parser which can be used to parse an external
+parsed entity referred to by content parsed by the parent parser.
+The <em>context</em> parameter should be the string passed to the
+<tt class="docutils literal"><span class="pre">ExternalEntityRefHandler()</span></tt> handler function, described below.
+The child parser is created with the <tt class="docutils literal"><span class="pre">ordered_attributes</span></tt>,
+<tt class="docutils literal"><span class="pre">returns_unicode</span></tt> and <tt class="docutils literal"><span class="pre">specified_attributes</span></tt> set to the values
+of this parser.</blockquote>
+<p>xmlparser.UseForeignDTD([flag])</p>
+<blockquote>
+<p>Calling this with a true value for <em>flag</em> (the default) will cause
+Expat to call the <tt class="docutils literal"><span class="pre">ExternalEntityRefHandler</span></tt> with <tt class="xref docutils literal"><span class="pre">None</span></tt> for
+all arguments to allow an alternate DTD to be loaded.  If the
+document does not contain a document type declaration, the
+<tt class="docutils literal"><span class="pre">ExternalEntityRefHandler</span></tt> will still be called, but the
+<tt class="docutils literal"><span class="pre">StartDoctypeDeclHandler</span></tt> and <tt class="docutils literal"><span class="pre">EndDoctypeDeclHandler</span></tt> will not
+be called.</p>
+<p>Passing a false value for <em>flag</em> will cancel a previous call that
+passed a true value, but otherwise has no effect.</p>
+<p>This method can only be called before the <tt class="docutils literal"><span class="pre">Parse()</span></tt> or
+<tt class="docutils literal"><span class="pre">ParseFile()</span></tt> methods are called; calling it after either of
+those have been called causes <tt class="docutils literal"><span class="pre">ExpatError</span></tt> to be raised with the
+<tt class="docutils literal"><span class="pre">code</span></tt> attribute set to
+<tt class="docutils literal"><span class="pre">errors.XML_ERROR_CANT_CHANGE_FEATURE_ONCE_PARSING</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">xmlparser</span></tt> objects have the following attributes:</p>
+<p>xmlparser.buffer_size</p>
+<blockquote>
+<p>The size of the buffer used when <tt class="docutils literal"><span class="pre">buffer_text</span></tt> is true. A new
+buffer size can be set by assigning a new integer value to this
+attribute. When the size is changed, the buffer will be flushed.</p>
+<p>New in version 2.3.</p>
+<p>Changed in version 2.6: The buffer size can now be changed.</p>
+</blockquote>
+<p>xmlparser.buffer_text</p>
+<blockquote>
+<p>Setting this to true causes the <tt class="docutils literal"><span class="pre">xmlparser</span></tt> object to buffer
+textual content returned by Expat to avoid multiple calls to the
+<tt class="docutils literal"><span class="pre">CharacterDataHandler()</span></tt> callback whenever possible.  This can
+improve performance substantially since Expat normally breaks
+character data into chunks at every line ending.  This attribute is
+false by default, and may be changed at any time.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>xmlparser.buffer_used</p>
+<blockquote>
+<p>If <tt class="docutils literal"><span class="pre">buffer_text</span></tt> is enabled, the number of bytes stored in the
+buffer. These bytes represent UTF-8 encoded text.  This attribute
+has no meaningful interpretation when <tt class="docutils literal"><span class="pre">buffer_text</span></tt> is false.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>xmlparser.ordered_attributes</p>
+<blockquote>
+<p>Setting this attribute to a non-zero integer causes the attributes
+to be reported as a list rather than a dictionary.  The attributes
+are presented in the order found in the document text.  For each
+attribute, two list entries are presented: the attribute name and
+the attribute value.  (Older versions of this module also used this
+format.)  By default, this attribute is false; it may be changed at
+any time.</p>
+<p>New in version 2.1.</p>
+</blockquote>
+<p>xmlparser.returns_unicode</p>
+<blockquote>
+<p>If this attribute is set to a non-zero integer, the handler
+functions will be passed Unicode strings.  If <tt class="docutils literal"><span class="pre">returns_unicode</span></tt>
+is <tt class="xref docutils literal"><span class="pre">False</span></tt>, 8-bit strings containing UTF-8 encoded data will be
+passed to the handlers.  This is <tt class="xref docutils literal"><span class="pre">True</span></tt> by default when Python is
+built with Unicode support.</p>
+<p>Changed in version 1.6: Can be changed at any time to affect the
+result type.</p>
+</blockquote>
+<p>xmlparser.specified_attributes</p>
+<blockquote>
+<p>If set to a non-zero integer, the parser will report only those
+attributes which were specified in the document instance and not
+those which were derived from attribute declarations.  Applications
+which set this need to be especially careful to use what additional
+information is available from the declarations as needed to comply
+with the standards for the behavior of XML processors.  By default,
+this attribute is false; it may be changed at any time.</p>
+<p>New in version 2.1.</p>
+</blockquote>
+<p>The following attributes contain values relating to the most recent
+error encountered by an <tt class="docutils literal"><span class="pre">xmlparser</span></tt> object, and will only have
+correct values once a call to <tt class="docutils literal"><span class="pre">Parse()</span></tt> or <tt class="docutils literal"><span class="pre">ParseFile()</span></tt> has
+raised a <tt class="docutils literal"><span class="pre">xml.parsers.expat.ExpatError</span></tt> exception.</p>
+<p>xmlparser.ErrorByteIndex</p>
+<blockquote>
+Byte index at which an error occurred.</blockquote>
+<p>xmlparser.ErrorCode</p>
+<blockquote>
+Numeric code specifying the problem.  This value can be passed to
+the <tt class="docutils literal"><span class="pre">ErrorString()</span></tt> function, or compared to one of the constants
+defined in the <tt class="docutils literal"><span class="pre">errors</span></tt> object.</blockquote>
+<p>xmlparser.ErrorColumnNumber</p>
+<blockquote>
+Column number at which an error occurred.</blockquote>
+<p>xmlparser.ErrorLineNumber</p>
+<blockquote>
+Line number at which an error occurred.</blockquote>
+<p>The following attributes contain values relating to the current parse
+location in an <tt class="docutils literal"><span class="pre">xmlparser</span></tt> object.  During a callback reporting a
+parse event they indicate the location of the first of the sequence of
+characters that generated the event.  When called outside of a
+callback, the position indicated will be just past the last parse
+event (regardless of whether there was an associated callback).</p>
+<p>New in version 2.4.</p>
+<p>xmlparser.CurrentByteIndex</p>
+<blockquote>
+Current byte index in the parser input.</blockquote>
+<p>xmlparser.CurrentColumnNumber</p>
+<blockquote>
+Current column number in the parser input.</blockquote>
+<p>xmlparser.CurrentLineNumber</p>
+<blockquote>
+Current line number in the parser input.</blockquote>
+<p>Here is the list of handlers that can be set.  To set a handler on an
+<tt class="docutils literal"><span class="pre">xmlparser</span></tt> object <em>o</em>, use <tt class="docutils literal"><span class="pre">o.handlername</span> <span class="pre">=</span> <span class="pre">func</span></tt>.  <em>handlername</em>
+must be taken from the following list, and <em>func</em> must be a callable
+object accepting the correct number of arguments.  The arguments are
+all strings, unless otherwise stated.</p>
+<p>xmlparser.XmlDeclHandler(version, encoding, standalone)</p>
+<blockquote>
+<p>Called when the XML declaration is parsed.  The XML declaration is
+the (optional) declaration of the applicable version of the XML
+recommendation, the encoding of the document text, and an optional
+&#8220;standalone&#8221; declaration. <em>version</em> and <em>encoding</em> will be strings
+of the type dictated by the <tt class="docutils literal"><span class="pre">returns_unicode</span></tt> attribute, and
+<em>standalone</em> will be <tt class="docutils literal"><span class="pre">1</span></tt> if the document is declared standalone,
+<tt class="docutils literal"><span class="pre">0</span></tt> if it is declared not to be standalone, or <tt class="docutils literal"><span class="pre">-1</span></tt> if the
+standalone clause was omitted. This is only available with Expat
+version 1.95.0 or newer.</p>
+<p>New in version 2.1.</p>
+</blockquote>
+<p>xmlparser.StartDoctypeDeclHandler(doctypeName, systemId, publicId, has_internal_subset)</p>
+<blockquote>
+Called when Expat begins parsing the document type declaration
+(<tt class="docutils literal"><span class="pre">&lt;!DOCTYPE</span> <span class="pre">...</span></tt>).  The <em>doctypeName</em> is provided exactly as
+presented.  The <em>systemId</em> and <em>publicId</em> parameters give the
+system and public identifiers if specified, or <tt class="xref docutils literal"><span class="pre">None</span></tt> if omitted.
+<em>has_internal_subset</em> will be true if the document contains and
+internal document declaration subset. This requires Expat version
+1.2 or newer.</blockquote>
+<p>xmlparser.EndDoctypeDeclHandler()</p>
+<blockquote>
+Called when Expat is done parsing the document type declaration.
+This requires Expat version 1.2 or newer.</blockquote>
+<p>xmlparser.ElementDeclHandler(name, model)</p>
+<blockquote>
+Called once for each element type declaration.  <em>name</em> is the name
+of the element type, and <em>model</em> is a representation of the content
+model.</blockquote>
+<p>xmlparser.AttlistDeclHandler(elname, attname, type, default, required)</p>
+<blockquote>
+Called for each declared attribute for an element type.  If an
+attribute list declaration declares three attributes, this handler
+is called three times, once for each attribute.  <em>elname</em> is the
+name of the element to which the declaration applies and <em>attname</em>
+is the name of the attribute declared.  The attribute type is a
+string passed as <em>type</em>; the possible values are <tt class="docutils literal"><span class="pre">'CDATA'</span></tt>,
+<tt class="docutils literal"><span class="pre">'ID'</span></tt>, <tt class="docutils literal"><span class="pre">'IDREF'</span></tt>, ... <em>default</em> gives the default value for
+the attribute used when the attribute is not specified by the
+document instance, or <tt class="xref docutils literal"><span class="pre">None</span></tt> if there is no default value
+(<tt class="docutils literal"><span class="pre">#IMPLIED</span></tt> values).  If the attribute is required to be given in
+the document instance, <em>required</em> will be true. This requires Expat
+version 1.95.0 or newer.</blockquote>
+<p>xmlparser.StartElementHandler(name, attributes)</p>
+<blockquote>
+Called for the start of every element.  <em>name</em> is a string
+containing the element name, and <em>attributes</em> is a dictionary
+mapping attribute names to their values.</blockquote>
+<p>xmlparser.EndElementHandler(name)</p>
+<blockquote>
+Called for the end of every element.</blockquote>
+<p>xmlparser.ProcessingInstructionHandler(target, data)</p>
+<blockquote>
+Called for every processing instruction.</blockquote>
+<p>xmlparser.CharacterDataHandler(data)</p>
+<blockquote>
+Called for character data.  This will be called for normal
+character data, CDATA marked content, and ignorable whitespace.
+Applications which must distinguish these cases can use the
+<tt class="docutils literal"><span class="pre">StartCdataSectionHandler</span></tt>, <tt class="docutils literal"><span class="pre">EndCdataSectionHandler</span></tt>, and
+<tt class="docutils literal"><span class="pre">ElementDeclHandler</span></tt> callbacks to collect the required
+information.</blockquote>
+<p>xmlparser.UnparsedEntityDeclHandler(entityName, base, systemId, publicId, notationName)</p>
+<blockquote>
+Called for unparsed (NDATA) entity declarations.  This is only
+present for version 1.2 of the Expat library; for more recent
+versions, use <tt class="docutils literal"><span class="pre">EntityDeclHandler</span></tt> instead.  (The underlying
+function in the Expat library has been declared obsolete.)</blockquote>
+<p>xmlparser.EntityDeclHandler(entityName, is_parameter_entity, value, base, systemId, publicId, notationName)</p>
+<blockquote>
+<p>Called for all entity declarations.  For parameter and internal
+entities, <em>value</em> will be a string giving the declared contents of
+the entity; this will be <tt class="xref docutils literal"><span class="pre">None</span></tt> for external entities.  The
+<em>notationName</em> parameter will be <tt class="xref docutils literal"><span class="pre">None</span></tt> for parsed entities, and
+the name of the notation for unparsed entities.
+<em>is_parameter_entity</em> will be true if the entity is a parameter
+entity or false for general entities (most applications only need
+to be concerned with general entities). This is only available
+starting with version 1.95.0 of the Expat library.</p>
+<p>New in version 2.1.</p>
+</blockquote>
+<p>xmlparser.NotationDeclHandler(notationName, base, systemId, publicId)</p>
+<blockquote>
+Called for notation declarations.  <em>notationName</em>, <em>base</em>, and
+<em>systemId</em>, and <em>publicId</em> are strings if given.  If the public
+identifier is omitted, <em>publicId</em> will be <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>xmlparser.StartNamespaceDeclHandler(prefix, uri)</p>
+<blockquote>
+Called when an element contains a namespace declaration.  Namespace
+declarations are processed before the <tt class="docutils literal"><span class="pre">StartElementHandler</span></tt> is
+called for the element on which declarations are placed.</blockquote>
+<p>xmlparser.EndNamespaceDeclHandler(prefix)</p>
+<blockquote>
+Called when the closing tag is reached for an element  that
+contained a namespace declaration.  This is called once for each
+namespace declaration on the element in the reverse of the order
+for which the <tt class="docutils literal"><span class="pre">StartNamespaceDeclHandler</span></tt> was called to indicate
+the start of each namespace declaration&#8217;s scope.  Calls to this
+handler are made after the corresponding <tt class="docutils literal"><span class="pre">EndElementHandler</span></tt> for
+the end of the element.</blockquote>
+<p>xmlparser.CommentHandler(data)</p>
+<blockquote>
+Called for comments.  <em>data</em> is the text of the comment, excluding
+the leading &#8216;<tt class="docutils literal"><span class="pre">&lt;!-``</span></tt>-<tt class="docutils literal"><span class="pre">'</span> <span class="pre">and</span> <span class="pre">trailing</span> <span class="pre">'</span></tt>-<a href="#id1"><span class="problematic" id="id2">``</span></a><tt class="docutils literal"><span class="pre">-&gt;</span></tt>&#8216;.</blockquote>
+<p>xmlparser.StartCdataSectionHandler()</p>
+<blockquote>
+Called at the start of a CDATA section.  This and
+<tt class="docutils literal"><span class="pre">EndCdataSectionHandler</span></tt> are needed to be able to identify the
+syntactical start and end for CDATA sections.</blockquote>
+<p>xmlparser.EndCdataSectionHandler()</p>
+<blockquote>
+Called at the end of a CDATA section.</blockquote>
+<p>xmlparser.DefaultHandler(data)</p>
+<blockquote>
+Called for any characters in the XML document for which no
+applicable handler has been specified.  This means characters that
+are part of a construct which could be reported, but for which no
+handler has been supplied.</blockquote>
+<p>xmlparser.DefaultHandlerExpand(data)</p>
+<blockquote>
+This is the same as the <tt class="docutils literal"><span class="pre">DefaultHandler()</span></tt>,  but doesn&#8217;t inhibit
+expansion of internal entities. The entity reference will not be
+passed to the default handler.</blockquote>
+<p>xmlparser.NotStandaloneHandler()</p>
+<blockquote>
+Called if the XML document hasn&#8217;t been declared as being a
+standalone document. This happens when there is an external subset
+or a reference to a parameter entity, but the XML declaration does
+not set standalone to <tt class="docutils literal"><span class="pre">yes</span></tt> in an XML declaration.  If this
+handler returns <tt class="docutils literal"><span class="pre">0</span></tt>, then the parser will throw an
+<tt class="docutils literal"><span class="pre">XML_ERROR_NOT_STANDALONE</span></tt> error.  If this handler is not set, no
+exception is raised by the parser for this condition.</blockquote>
+<p>xmlparser.ExternalEntityRefHandler(context, base, systemId, publicId)</p>
+<blockquote>
+<p>Called for references to external entities.  <em>base</em> is the current
+base, as set by a previous call to <tt class="docutils literal"><span class="pre">SetBase()</span></tt>.  The public and
+system identifiers, <em>systemId</em> and <em>publicId</em>, are strings if
+given; if the public identifier is not given, <em>publicId</em> will be
+<tt class="xref docutils literal"><span class="pre">None</span></tt>.  The <em>context</em> value is opaque and should only be used as
+described below.</p>
+<p>For external entities to be parsed, this handler must be
+implemented. It is responsible for creating the sub-parser using
+<tt class="docutils literal"><span class="pre">ExternalEntityParserCreate(context)</span></tt>, initializing it with the
+appropriate callbacks, and parsing the entity.  This handler should
+return an integer; if it returns <tt class="docutils literal"><span class="pre">0</span></tt>, the parser will throw an
+<tt class="docutils literal"><span class="pre">XML_ERROR_EXTERNAL_ENTITY_HANDLING</span></tt> error, otherwise parsing
+will continue.</p>
+<p>If this handler is not provided, external entities are reported by
+the <tt class="docutils literal"><span class="pre">DefaultHandler</span></tt> callback, if provided.</p>
+</blockquote>
+</div>
+<div class="section" id="expaterror-exceptions">
+<h2>19.5.2. ExpatError Exceptions<a class="headerlink" href="#expaterror-exceptions" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">ExpatError</span></tt> exceptions have a number of interesting attributes:</p>
+<p>ExpatError.code</p>
+<blockquote>
+<p>Expat&#8217;s internal error number for the specific error.  This will
+match one of the constants defined in the <tt class="docutils literal"><span class="pre">errors</span></tt> object from
+this module.</p>
+<p>New in version 2.1.</p>
+</blockquote>
+<p>ExpatError.lineno</p>
+<blockquote>
+<p>Line number on which the error was detected.  The first line is
+numbered <tt class="docutils literal"><span class="pre">1</span></tt>.</p>
+<p>New in version 2.1.</p>
+</blockquote>
+<p>ExpatError.offset</p>
+<blockquote>
+<p>Character offset into the line where the error occurred.  The first
+column is numbered <tt class="docutils literal"><span class="pre">0</span></tt>.</p>
+<p>New in version 2.1.</p>
+</blockquote>
+</div>
+<div class="section" id="example">
+<h2>19.5.3. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>The following program defines three handlers that just print out their
+arguments.</p>
+<blockquote>
+<p>import xml.parsers.expat</p>
+<p># 3 handler functions
+def start_element(name, attrs):</p>
+<blockquote>
+print &#8216;Start element:&#8217;, name, attrs</blockquote>
+<dl class="docutils">
+<dt>def end_element(name):</dt>
+<dd>print &#8216;End element:&#8217;, name</dd>
+<dt>def char_data(data):</dt>
+<dd>print &#8216;Character data:&#8217;, repr(data)</dd>
+</dl>
+<p>p = xml.parsers.expat.ParserCreate()</p>
+<p>p.StartElementHandler = start_element
+p.EndElementHandler = end_element
+p.CharacterDataHandler = char_data</p>
+<p>p.Parse(&#8220;&#8221;&#8220;&lt;?xml version=&#8221;1.0&#8221;?&gt;
+&lt;parent id=&#8221;top&#8221;&gt;&lt;child1 name=&#8221;paul&#8221;&gt;Text goes here&lt;/child1&gt;
+&lt;child2 name=&#8221;fred&#8221;&gt;More text&lt;/child2&gt;
+&lt;/parent&gt;&#8221;&#8220;&#8221;, 1)</p>
+</blockquote>
+<p>The output from this program is:</p>
+<blockquote>
+Start element: parent {&#8216;id&#8217;: &#8216;top&#8217;}
+Start element: child1 {&#8216;name&#8217;: &#8216;paul&#8217;}
+Character data: &#8216;Text goes here&#8217;
+End element: child1
+Character data: &#8216;n&#8217;
+Start element: child2 {&#8216;name&#8217;: &#8216;fred&#8217;}
+Character data: &#8216;More text&#8217;
+End element: child2
+Character data: &#8216;n&#8217;
+End element: parent</blockquote>
+</div>
+<div class="section" id="content-model-descriptions">
+<h2>19.5.4. Content Model Descriptions<a class="headerlink" href="#content-model-descriptions" title="Permalink to this headline">¶</a></h2>
+<p>Content modules are described using nested tuples.  Each tuple
+contains four values: the type, the quantifier, the name, and a tuple
+of children.  Children are simply additional content module
+descriptions.</p>
+<p>The values of the first two fields are constants defined in the
+<tt class="docutils literal"><span class="pre">model</span></tt> object of the <tt class="docutils literal"><span class="pre">xml.parsers.expat</span></tt> module.  These constants
+can be collected in two groups: the model type group and the
+quantifier group.</p>
+<p>The constants in the model type group are:</p>
+<p>xml.parsers.expat.XML_CTYPE_ANY</p>
+<blockquote>
+The element named by the model name was declared to have a content
+model of <tt class="docutils literal"><span class="pre">ANY</span></tt>.</blockquote>
+<p>xml.parsers.expat.XML_CTYPE_CHOICE</p>
+<blockquote>
+The named element allows a choice from a number of options; this is
+used for content models such as <tt class="docutils literal"><span class="pre">(A</span> <span class="pre">|</span> <span class="pre">B</span> <span class="pre">|</span> <span class="pre">C)</span></tt>.</blockquote>
+<p>xml.parsers.expat.XML_CTYPE_EMPTY</p>
+<blockquote>
+Elements which are declared to be <tt class="docutils literal"><span class="pre">EMPTY</span></tt> have this model type.</blockquote>
+<p>xml.parsers.expat.XML_CTYPE_MIXED</p>
+<p>xml.parsers.expat.XML_CTYPE_NAME</p>
+<p>xml.parsers.expat.XML_CTYPE_SEQ</p>
+<blockquote>
+Models which represent a series of models which follow one after
+the other are indicated with this model type.  This is used for
+models such as <tt class="docutils literal"><span class="pre">(A,</span> <span class="pre">B,</span> <span class="pre">C)</span></tt>.</blockquote>
+<p>The constants in the quantifier group are:</p>
+<p>xml.parsers.expat.XML_CQUANT_NONE</p>
+<blockquote>
+No modifier is given, so it can appear exactly once, as for <tt class="docutils literal"><span class="pre">A</span></tt>.</blockquote>
+<p>xml.parsers.expat.XML_CQUANT_OPT</p>
+<blockquote>
+The model is optional: it can appear once or not at all, as for
+<tt class="docutils literal"><span class="pre">A?</span></tt>.</blockquote>
+<p>xml.parsers.expat.XML_CQUANT_PLUS</p>
+<blockquote>
+The model must occur one or more times (like <tt class="docutils literal"><span class="pre">A+</span></tt>).</blockquote>
+<p>xml.parsers.expat.XML_CQUANT_REP</p>
+<blockquote>
+The model must occur zero or more times, as for <tt class="docutils literal"><span class="pre">A*</span></tt>.</blockquote>
+</div>
+<div class="section" id="expat-error-constants">
+<h2>19.5.5. Expat error constants<a class="headerlink" href="#expat-error-constants" title="Permalink to this headline">¶</a></h2>
+<p>The following constants are provided in the <tt class="docutils literal"><span class="pre">errors</span></tt> object of the
+<tt class="docutils literal"><span class="pre">xml.parsers.expat</span></tt> module.  These constants are useful in
+interpreting some of the attributes of the <tt class="docutils literal"><span class="pre">ExpatError</span></tt> exception
+objects raised when an error has occurred.</p>
+<p>The <tt class="docutils literal"><span class="pre">errors</span></tt> object has the following attributes:</p>
+<p>xml.parsers.expat.XML_ERROR_ASYNC_ENTITY</p>
+<p>xml.parsers.expat.XML_ERROR_ATTRIBUTE_EXTERNAL_ENTITY_REF</p>
+<blockquote>
+An entity reference in an attribute value referred to an external
+entity instead of an internal entity.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_BAD_CHAR_REF</p>
+<blockquote>
+A character reference referred to a character which is illegal in
+XML (for example, character <tt class="docutils literal"><span class="pre">0</span></tt>, or &#8216;<tt class="docutils literal"><span class="pre">&amp;#0;</span></tt>&#8216;).</blockquote>
+<p>xml.parsers.expat.XML_ERROR_BINARY_ENTITY_REF</p>
+<blockquote>
+An entity reference referred to an entity which was declared with a
+notation, so cannot be parsed.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_DUPLICATE_ATTRIBUTE</p>
+<blockquote>
+An attribute was used more than once in a start tag.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_INCORRECT_ENCODING</p>
+<p>xml.parsers.expat.XML_ERROR_INVALID_TOKEN</p>
+<blockquote>
+Raised when an input byte could not properly be assigned to a
+character; for example, a NUL byte (value <tt class="docutils literal"><span class="pre">0</span></tt>) in a UTF-8 input
+stream.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_JUNK_AFTER_DOC_ELEMENT</p>
+<blockquote>
+Something other than whitespace occurred after the document
+element.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_MISPLACED_XML_PI</p>
+<blockquote>
+An XML declaration was found somewhere other than the start of the
+input data.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_NO_ELEMENTS</p>
+<blockquote>
+The document contains no elements (XML requires all documents to
+contain exactly one top-level element)..</blockquote>
+<p>xml.parsers.expat.XML_ERROR_NO_MEMORY</p>
+<blockquote>
+Expat was not able to allocate memory internally.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_PARAM_ENTITY_REF</p>
+<blockquote>
+A parameter entity reference was found where it was not allowed.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_PARTIAL_CHAR</p>
+<blockquote>
+An incomplete character was found in the input.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_RECURSIVE_ENTITY_REF</p>
+<blockquote>
+An entity reference contained another reference to the same entity;
+possibly via a different name, and possibly indirectly.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_SYNTAX</p>
+<blockquote>
+Some unspecified syntax error was encountered.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_TAG_MISMATCH</p>
+<blockquote>
+An end tag did not match the innermost open start tag.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_UNCLOSED_TOKEN</p>
+<blockquote>
+Some token (such as a start tag) was not closed before the end of
+the stream or the next token was encountered.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_UNDEFINED_ENTITY</p>
+<blockquote>
+A reference was made to a entity which was not defined.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_UNKNOWN_ENCODING</p>
+<blockquote>
+The document encoding is not supported by Expat.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_UNCLOSED_CDATA_SECTION</p>
+<blockquote>
+A CDATA marked section was not closed.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_EXTERNAL_ENTITY_HANDLING</p>
+<p>xml.parsers.expat.XML_ERROR_NOT_STANDALONE</p>
+<blockquote>
+The parser determined that the document was not &#8220;standalone&#8221; though
+it declared itself to be in the XML declaration, and the
+<tt class="docutils literal"><span class="pre">NotStandaloneHandler</span></tt> was set and returned <tt class="docutils literal"><span class="pre">0</span></tt>.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_UNEXPECTED_STATE</p>
+<p>xml.parsers.expat.XML_ERROR_ENTITY_DECLARED_IN_PE</p>
+<p>xml.parsers.expat.XML_ERROR_FEATURE_REQUIRES_XML_DTD</p>
+<blockquote>
+An operation was requested that requires DTD support to be compiled
+in, but Expat was configured without DTD support.  This should
+never be reported by a standard build of the <tt class="docutils literal"><span class="pre">xml.parsers.expat</span></tt>
+module.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_CANT_CHANGE_FEATURE_ONCE_PARSING</p>
+<blockquote>
+A behavioral change was requested after parsing started that can
+only be changed before parsing has started.  This is (currently)
+only raised by <tt class="docutils literal"><span class="pre">UseForeignDTD()</span></tt>.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_UNBOUND_PREFIX</p>
+<blockquote>
+An undeclared prefix was found when namespace processing was
+enabled.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_UNDECLARING_PREFIX</p>
+<blockquote>
+The document attempted to remove the namespace declaration
+associated with a prefix.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_INCOMPLETE_PE</p>
+<blockquote>
+A parameter entity contained incomplete markup.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_XML_DECL</p>
+<blockquote>
+The document contained no document element at all.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_TEXT_DECL</p>
+<blockquote>
+There was an error parsing a text declaration in an external
+entity.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_PUBLICID</p>
+<blockquote>
+Characters were found in the public id that are not allowed.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_SUSPENDED</p>
+<blockquote>
+The requested operation was made on a suspended parser, but isn&#8217;t
+allowed.  This includes attempts to provide additional input or to
+stop the parser.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_NOT_SUSPENDED</p>
+<blockquote>
+An attempt to resume the parser was made when the parser had not
+been suspended.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_ABORTED</p>
+<blockquote>
+This should not be reported to Python applications.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_FINISHED</p>
+<blockquote>
+The requested operation was made on a parser which was finished
+parsing input, but isn&#8217;t allowed.  This includes attempts to
+provide additional input or to stop the parser.</blockquote>
+<p>xml.parsers.expat.XML_ERROR_SUSPEND_PE</p>
+<p>-[ Footnotes ]-</p>
+<dl class="docutils">
+<dt>[1] The encoding string included in XML output should conform to the</dt>
+<dd>appropriate standards. For example, &#8220;UTF-8&#8221; is valid, but &#8220;UTF8&#8221;
+is not. See <a class="reference external" href="http://www.w3.org/TR/2006/REC-xml11-20060816/#NT">http://www.w3.org/TR/2006/REC-xml11-20060816/#NT</a>-
+EncodingDecl and <a class="reference external" href="http://www.iana.org/assignments/character-sets">http://www.iana.org/assignments/character-sets</a> .</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xml.dom.html" title="19.6. xml.dom — The Document Object Model API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="htmllib.html" title="19.3. htmllib — A parser for HTML documents"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="markup.html" >19. Structured Markup Processing Tools</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.10. Queue — A synchronized queue class &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="8. Data Types" href="datatypes.html" />
+    <link rel="next" title="8.11. weakref — Weak references" href="weakref.html" />
+    <link rel="prev" title="8.9. mutex — Mutual exclusion support" href="mutex.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="weakref.html" title="8.11. weakref — Weak references"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mutex.html" title="8.9. mutex — Mutual exclusion support"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" accesskey="U">8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">8.10. <tt class="docutils literal"><span class="pre">Queue</span></tt> &#8212; A synchronized queue class</a><ul>
+<li><a class="reference external" href="#queue-objects">8.10.1. Queue Objects</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="mutex.html"
+                                  title="previous chapter">8.9. <tt class="docutils literal docutils literal"><span class="pre">mutex</span></tt> &#8212; Mutual exclusion support</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="weakref.html"
+                                  title="next chapter">8.11. <tt class="docutils literal"><span class="pre">weakref</span></tt> &#8212; Weak references</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/queue.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="queue-a-synchronized-queue-class">
+<h1>8.10. <tt class="docutils literal"><span class="pre">Queue</span></tt> &#8212; A synchronized queue class<a class="headerlink" href="#queue-a-synchronized-queue-class" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">Queue</span></tt> module implements multi-producer, multi-consumer queues.
+It is especially useful in threaded programming when information must
+be exchanged safely between multiple threads.  The <tt class="docutils literal"><span class="pre">Queue</span></tt> class in
+this module implements all the required locking semantics.  It depends
+on the availability of thread support in Python; see the <tt class="docutils literal"><span class="pre">threading</span></tt>
+module.</p>
+<p>Implements three types of queue whose only difference is the order
+that the entries are retrieved.  In a FIFO queue, the first tasks
+added are the first retrieved. In a LIFO queue, the most recently
+added entry is the first retrieved (operating like a stack).  With a
+priority queue, the entries are kept sorted (using the <tt class="docutils literal"><span class="pre">heapq</span></tt>
+module) and the lowest valued entry is retrieved first.</p>
+<p>The <tt class="docutils literal"><span class="pre">Queue</span></tt> module defines the following classes and exceptions:</p>
+<p>class class Queue.Queue(maxsize)</p>
+<blockquote>
+Constructor for a FIFO queue.  <em>maxsize</em> is an integer that sets
+the upperbound limit on the number of items that can be placed in
+the queue.  Insertion will block once this size has been reached,
+until queue items are consumed.  If <em>maxsize</em> is less than or equal
+to zero, the queue size is infinite.</blockquote>
+<p>class class Queue.LifoQueue(maxsize)</p>
+<blockquote>
+<p>Constructor for a LIFO queue.  <em>maxsize</em> is an integer that sets
+the upperbound limit on the number of items that can be placed in
+the queue.  Insertion will block once this size has been reached,
+until queue items are consumed.  If <em>maxsize</em> is less than or equal
+to zero, the queue size is infinite.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>class class Queue.PriorityQueue(maxsize)</p>
+<blockquote>
+<p>Constructor for a priority queue.  <em>maxsize</em> is an integer that
+sets the upperbound limit on the number of items that can be placed
+in the queue.  Insertion will block once this size has been
+reached, until queue items are consumed.  If <em>maxsize</em> is less than
+or equal to zero, the queue size is infinite.</p>
+<p>The lowest valued entries are retrieved first (the lowest valued
+entry is the one returned by <tt class="docutils literal"><span class="pre">sorted(list(entries))[0]</span></tt>).  A
+typical pattern for entries is a tuple in the form:
+<tt class="docutils literal"><span class="pre">(priority_number,</span> <span class="pre">data)</span></tt>.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>exception exception Queue.Empty</p>
+<blockquote>
+Exception raised when non-blocking <tt class="docutils literal"><span class="pre">get()</span></tt> (or <tt class="docutils literal"><span class="pre">get_nowait()</span></tt>)
+is called on a <tt class="docutils literal"><span class="pre">Queue</span></tt> object which is empty.</blockquote>
+<p>exception exception Queue.Full</p>
+<blockquote>
+Exception raised when non-blocking <tt class="docutils literal"><span class="pre">put()</span></tt> (or <tt class="docutils literal"><span class="pre">put_nowait()</span></tt>)
+is called on a <tt class="docutils literal"><span class="pre">Queue</span></tt> object which is full.</blockquote>
+<p>See also:</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">collections.deque</span></tt> is an alternative implementation of unbounded
+queues with fast atomic <tt class="docutils literal"><span class="pre">append()</span></tt> and <tt class="docutils literal"><span class="pre">popleft()</span></tt> operations
+that do not require locking.</blockquote>
+<div class="section" id="queue-objects">
+<h2>8.10.1. Queue Objects<a class="headerlink" href="#queue-objects" title="Permalink to this headline">¶</a></h2>
+<p>Queue objects (<tt class="docutils literal"><span class="pre">Queue</span></tt>, <tt class="docutils literal"><span class="pre">LifoQueue</span></tt>, or <tt class="docutils literal"><span class="pre">PriorityQueue</span></tt>) provide
+the public methods described below.</p>
+<p>Queue.qsize()</p>
+<blockquote>
+Return the approximate size of the queue.  Note, qsize() &gt; 0
+doesn&#8217;t guarantee that a subsequent get() will not block, nor will
+qsize() &lt; maxsize guarantee that put() will not block.</blockquote>
+<p>Queue.empty()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the queue is empty, <tt class="xref docutils literal"><span class="pre">False</span></tt> otherwise.  If
+empty() returns <tt class="xref docutils literal"><span class="pre">True</span></tt> it doesn&#8217;t guarantee that a subsequent
+call to put() will not block.  Similarly, if empty() returns
+<tt class="xref docutils literal"><span class="pre">False</span></tt> it doesn&#8217;t guarantee that a subsequent call to get() will
+not block.</blockquote>
+<p>Queue.full()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the queue is full, <tt class="xref docutils literal"><span class="pre">False</span></tt> otherwise.  If
+full() returns <tt class="xref docutils literal"><span class="pre">True</span></tt> it doesn&#8217;t guarantee that a subsequent call
+to get() will not block.  Similarly, if full() returns <tt class="xref docutils literal"><span class="pre">False</span></tt> it
+doesn&#8217;t guarantee that a subsequent call to put() will not block.</blockquote>
+<p>Queue.put(item[, block[, timeout]])</p>
+<blockquote>
+<p>Put <em>item</em> into the queue. If optional args <em>block</em> is true and
+<em>timeout</em> is None (the default), block if necessary until a free
+slot is available. If <em>timeout</em> is a positive number, it blocks at
+most <em>timeout</em> seconds and raises the <tt class="docutils literal"><span class="pre">Full</span></tt> exception if no free
+slot was available within that time. Otherwise (<em>block</em> is false),
+put an item on the queue if a free slot is immediately available,
+else raise the <tt class="docutils literal"><span class="pre">Full</span></tt> exception (<em>timeout</em> is ignored in that
+case).</p>
+<p>New in version 2.3: The <em>timeout</em> parameter.</p>
+</blockquote>
+<p>Queue.put_nowait(item)</p>
+<blockquote>
+Equivalent to <tt class="docutils literal"><span class="pre">put(item,</span> <span class="pre">False)</span></tt>.</blockquote>
+<p>Queue.get([block[, timeout]])</p>
+<blockquote>
+<p>Remove and return an item from the queue. If optional args <em>block</em>
+is true and <em>timeout</em> is None (the default), block if necessary
+until an item is available. If <em>timeout</em> is a positive number, it
+blocks at most <em>timeout</em> seconds and raises the <tt class="docutils literal"><span class="pre">Empty</span></tt> exception
+if no item was available within that time. Otherwise (<em>block</em> is
+false), return an item if one is immediately available, else raise
+the <tt class="docutils literal"><span class="pre">Empty</span></tt> exception (<em>timeout</em> is ignored in that case).</p>
+<p>New in version 2.3: The <em>timeout</em> parameter.</p>
+</blockquote>
+<p>Queue.get_nowait()</p>
+<blockquote>
+Equivalent to <tt class="docutils literal"><span class="pre">get(False)</span></tt>.</blockquote>
+<p>Two methods are offered to support tracking whether enqueued tasks
+have been fully processed by daemon consumer threads.</p>
+<p>Queue.task_done()</p>
+<blockquote>
+<p>Indicate that a formerly enqueued task is complete.  Used by queue
+consumer threads.  For each <tt class="docutils literal"><span class="pre">get()</span></tt> used to fetch a task, a
+subsequent call to <tt class="docutils literal"><span class="pre">task_done()</span></tt> tells the queue that the
+processing on the task is complete.</p>
+<p>If a <tt class="docutils literal"><span class="pre">join()</span></tt> is currently blocking, it will resume when all
+items have been processed (meaning that a <tt class="docutils literal"><span class="pre">task_done()</span></tt> call was
+received for every item that had been <tt class="docutils literal"><span class="pre">put()</span></tt> into the queue).</p>
+<p>Raises a <tt class="docutils literal"><span class="pre">ValueError</span></tt> if called more times than there were items
+placed in the queue.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>Queue.join()</p>
+<blockquote>
+<p>Blocks until all items in the queue have been gotten and processed.</p>
+<p>The count of unfinished tasks goes up whenever an item is added to
+the queue. The count goes down whenever a consumer thread calls
+<tt class="docutils literal"><span class="pre">task_done()</span></tt> to indicate that the item was retrieved and all
+work on it is complete. When the count of unfinished tasks drops to
+zero, <tt class="docutils literal"><span class="pre">join()</span></tt> unblocks.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>Example of how to wait for enqueued tasks to be completed:</p>
+<blockquote>
+<dl class="docutils">
+<dt>def worker():</dt>
+<dd><dl class="first last docutils">
+<dt>while True:</dt>
+<dd>item = q.get()
+do_work(item)
+q.task_done()</dd>
+</dl>
+</dd>
+</dl>
+<p>q = Queue()
+for i in range(num_worker_threads):</p>
+<blockquote>
+t = Thread(target=worker)
+t.setDaemon(True)
+t.start()</blockquote>
+<dl class="docutils">
+<dt>for item in source():</dt>
+<dd>q.put(item)</dd>
+</dl>
+<p>q.join()       # block until all tasks are done</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="weakref.html" title="8.11. weakref — Weak references"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mutex.html" title="8.9. mutex — Mutual exclusion support"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" >8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

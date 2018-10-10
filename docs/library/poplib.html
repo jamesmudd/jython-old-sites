@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>20.9. poplib — POP3 protocol client &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="20. Internet Protocols and Support" href="internet.html" />
+    <link rel="next" title="20.10. imaplib — IMAP4 protocol client" href="imaplib.html" />
+    <link rel="prev" title="20.8. ftplib — FTP protocol client" href="ftplib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="imaplib.html" title="20.10. imaplib — IMAP4 protocol client"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ftplib.html" title="20.8. ftplib — FTP protocol client"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" accesskey="U">20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">20.9. <tt class="docutils literal"><span class="pre">poplib</span></tt> &#8212; POP3 protocol client</a><ul>
+<li><a class="reference external" href="#pop3-objects">20.9.1. POP3 Objects</a></li>
+<li><a class="reference external" href="#pop3-example">20.9.2. POP3 Example</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="ftplib.html"
+                                  title="previous chapter">20.8. <tt class="docutils literal docutils literal docutils literal"><span class="pre">ftplib</span></tt> &#8212; FTP protocol client</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="imaplib.html"
+                                  title="next chapter">20.10. <tt class="docutils literal docutils literal docutils literal"><span class="pre">imaplib</span></tt> &#8212; IMAP4 protocol client</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/poplib.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="poplib-pop3-protocol-client">
+<h1>20.9. <tt class="docutils literal"><span class="pre">poplib</span></tt> &#8212; POP3 protocol client<a class="headerlink" href="#poplib-pop3-protocol-client" title="Permalink to this headline">¶</a></h1>
+<p>This module defines a class, <tt class="docutils literal"><span class="pre">POP3</span></tt>, which encapsulates a connection
+to a POP3 server and implements the protocol as defined in <strong>RFC
+1725</strong>.  The <tt class="docutils literal"><span class="pre">POP3</span></tt> class supports both the minimal and optional
+command sets. Additionally, this module provides a class <tt class="docutils literal"><span class="pre">POP3_SSL</span></tt>,
+which provides support for connecting to POP3 servers that use SSL as
+an underlying protocol layer.</p>
+<p>Note that POP3, though widely supported, is obsolescent.  The
+implementation quality of POP3 servers varies widely, and too many are
+quite poor. If your mailserver supports IMAP, you would be better off
+using the <tt class="docutils literal"><span class="pre">imaplib.IMAP4</span></tt> class, as IMAP servers tend to be better
+implemented.</p>
+<p>A single class is provided by the <tt class="docutils literal"><span class="pre">poplib</span></tt> module:</p>
+<p>class class poplib.POP3(host[, port[, timeout]])</p>
+<blockquote>
+<p>This class implements the actual POP3 protocol.  The connection is
+created when the instance is initialized. If <em>port</em> is omitted, the
+standard POP3 port (110) is used. The optional <em>timeout</em> parameter
+specifies a timeout in seconds for the connection attempt (if not
+specified, the global default timeout setting will be used).</p>
+<p>Changed in version 2.6: <em>timeout</em> was added.</p>
+</blockquote>
+<p>class class poplib.POP3_SSL(host[, port[, keyfile[, certfile]]])</p>
+<blockquote>
+<p>This is a subclass of <tt class="docutils literal"><span class="pre">POP3</span></tt> that connects to the server over an
+SSL encrypted socket.  If <em>port</em> is not specified, 995, the
+standard POP3-over-SSL port is used.  <em>keyfile</em> and <em>certfile</em> are
+also optional - they can contain a PEM formatted private key and
+certificate chain file for the SSL connection.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>One exception is defined as an attribute of the <tt class="docutils literal"><span class="pre">poplib</span></tt> module:</p>
+<p>exception exception poplib.error_proto</p>
+<blockquote>
+Exception raised on any errors from this module (errors from
+<tt class="docutils literal"><span class="pre">socket</span></tt> module are not caught). The reason for the exception is
+passed to the constructor as a string.</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">imaplib</span></tt></dt>
+<dd>The standard Python IMAP module.</dd>
+<dt>Frequently Asked Questions About Fetchmail</dt>
+<dd>The FAQ for the <strong>fetchmail</strong> POP/IMAP client collects
+information on POP3 server variations and RFC noncompliance that
+may be useful if you need to write an application based on the
+POP protocol.</dd>
+</dl>
+</blockquote>
+<div class="section" id="pop3-objects">
+<h2>20.9.1. POP3 Objects<a class="headerlink" href="#pop3-objects" title="Permalink to this headline">¶</a></h2>
+<p>All POP3 commands are represented by methods of the same name, in
+lower-case; most return the response text sent by the server.</p>
+<p>An <tt class="docutils literal"><span class="pre">POP3</span></tt> instance has the following methods:</p>
+<p>POP3.set_debuglevel(level)</p>
+<blockquote>
+Set the instance&#8217;s debugging level.  This controls the amount of
+debugging output printed.  The default, <tt class="docutils literal"><span class="pre">0</span></tt>, produces no
+debugging output.  A value of <tt class="docutils literal"><span class="pre">1</span></tt> produces a moderate amount of
+debugging output, generally a single line per request.  A value of
+<tt class="docutils literal"><span class="pre">2</span></tt> or higher produces the maximum amount of debugging output,
+logging each line sent and received on the control connection.</blockquote>
+<p>POP3.getwelcome()</p>
+<blockquote>
+Returns the greeting string sent by the POP3 server.</blockquote>
+<p>POP3.user(username)</p>
+<blockquote>
+Send user command, response should indicate that a password is
+required.</blockquote>
+<p>POP3.pass_(password)</p>
+<blockquote>
+Send password, response includes message count and mailbox size.
+Note: the mailbox on the server is locked until <tt class="docutils literal"><span class="pre">quit()</span></tt> is
+called.</blockquote>
+<p>POP3.apop(user, secret)</p>
+<blockquote>
+Use the more secure APOP authentication to log into the POP3
+server.</blockquote>
+<p>POP3.rpop(user)</p>
+<blockquote>
+Use RPOP authentication (similar to UNIX r-commands) to log into
+POP3 server.</blockquote>
+<p>POP3.stat()</p>
+<blockquote>
+Get mailbox status.  The result is a tuple of 2 integers:
+<tt class="docutils literal"><span class="pre">(message</span> <span class="pre">count,</span> <span class="pre">mailbox</span> <span class="pre">size)</span></tt>.</blockquote>
+<p>POP3.list([which])</p>
+<blockquote>
+Request message list, result is in the form <tt class="docutils literal"><span class="pre">(response,</span> <span class="pre">['mesg_num</span>
+<span class="pre">octets',</span> <span class="pre">...],</span> <span class="pre">octets)</span></tt>. If <em>which</em> is set, it is the message to
+list.</blockquote>
+<p>POP3.retr(which)</p>
+<blockquote>
+Retrieve whole message number <em>which</em>, and set its seen flag.
+Result is in form <tt class="docutils literal"><span class="pre">(response,</span> <span class="pre">['line',</span> <span class="pre">...],</span> <span class="pre">octets)</span></tt>.</blockquote>
+<p>POP3.dele(which)</p>
+<blockquote>
+Flag message number <em>which</em> for deletion.  On most servers
+deletions are not actually performed until QUIT (the major
+exception is Eudora QPOP, which deliberately violates the RFCs by
+doing pending deletes on any disconnect).</blockquote>
+<p>POP3.rset()</p>
+<blockquote>
+Remove any deletion marks for the mailbox.</blockquote>
+<p>POP3.noop()</p>
+<blockquote>
+Do nothing.  Might be used as a keep-alive.</blockquote>
+<p>POP3.quit()</p>
+<blockquote>
+Signoff:  commit changes, unlock mailbox, drop connection.</blockquote>
+<p>POP3.top(which, howmuch)</p>
+<blockquote>
+<p>Retrieves the message header plus <em>howmuch</em> lines of the message
+after the header of message number <em>which</em>. Result is in form
+<tt class="docutils literal"><span class="pre">(response,</span> <span class="pre">['line',</span> <span class="pre">...],</span> <span class="pre">octets)</span></tt>.</p>
+<p>The POP3 TOP command this method uses, unlike the RETR command,
+doesn&#8217;t set the message&#8217;s seen flag; unfortunately, TOP is poorly
+specified in the RFCs and is frequently broken in off-brand
+servers. Test this method by hand against the POP3 servers you will
+use before trusting it.</p>
+</blockquote>
+<p>POP3.uidl([which])</p>
+<blockquote>
+Return message digest (unique id) list. If <em>which</em> is specified,
+result contains the unique id for that message in the form
+<tt class="docutils literal"><span class="pre">'response</span> <span class="pre">mesgnum</span> <span class="pre">uid</span></tt>, otherwise result is list <tt class="docutils literal"><span class="pre">(response,</span>
+<span class="pre">['mesgnum</span> <span class="pre">uid',</span> <span class="pre">...],</span> <span class="pre">octets)</span></tt>.</blockquote>
+<p>Instances of <tt class="docutils literal"><span class="pre">POP3_SSL</span></tt> have no additional methods. The interface of
+this subclass is identical to its parent.</p>
+</div>
+<div class="section" id="pop3-example">
+<h2>20.9.2. POP3 Example<a class="headerlink" href="#pop3-example" title="Permalink to this headline">¶</a></h2>
+<p>Here is a minimal example (without error checking) that opens a
+mailbox and retrieves and prints all messages:</p>
+<blockquote>
+<p>import getpass, poplib</p>
+<p>M = poplib.POP3(&#8216;localhost&#8217;)
+M.user(getpass.getuser())
+M.pass_(getpass.getpass())
+numMessages = len(M.list()[1])
+for i in range(numMessages):</p>
+<blockquote>
+<dl class="docutils">
+<dt>for j in M.retr(i+1)[1]:</dt>
+<dd>print j</dd>
+</dl>
+</blockquote>
+</blockquote>
+<p>At the end of the module, there is a test section that contains a more
+extensive example of usage.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="imaplib.html" title="20.10. imaplib — IMAP4 protocol client"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ftplib.html" title="20.8. ftplib — FTP protocol client"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" >20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

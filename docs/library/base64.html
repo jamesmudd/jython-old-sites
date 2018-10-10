@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>18.11. base64 — RFC 3548: Base16, Base32, Base64 Data Encodings &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="18. Internet Data Handling" href="netdata.html" />
+    <link rel="next" title="18.12. binhex — Encode and decode binhex4 files" href="binhex.html" />
+    <link rel="prev" title="18.10. rfc822 — Parse RFC 2822 mail headers" href="rfc822.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="binhex.html" title="18.12. binhex — Encode and decode binhex4 files"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="rfc822.html" title="18.10. rfc822 — Parse RFC 2822 mail headers"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" accesskey="U">18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="rfc822.html"
+                                  title="previous chapter">18.10. <tt class="docutils literal"><span class="pre">rfc822</span></tt> &#8212; Parse RFC 2822 mail headers</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="binhex.html"
+                                  title="next chapter">18.12. <tt class="docutils literal"><span class="pre">binhex</span></tt> &#8212; Encode and decode binhex4 files</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/base64.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="base64-rfc-3548-base16-base32-base64-data-encodings">
+<h1>18.11. <tt class="docutils literal"><span class="pre">base64</span></tt> &#8212; RFC 3548: Base16, Base32, Base64 Data Encodings<a class="headerlink" href="#base64-rfc-3548-base16-base32-base64-data-encodings" title="Permalink to this headline">¶</a></h1>
+<p>This module provides data encoding and decoding as specified in <strong>RFC
+3548</strong>. This standard defines the Base16, Base32, and Base64
+algorithms for encoding and decoding arbitrary binary strings into
+text strings that can be safely sent by email, used as parts of URLs,
+or included as part of an HTTP POST request.  The encoding algorithm
+is not the same as the <strong>uuencode</strong> program.</p>
+<p>There are two interfaces provided by this module.  The modern
+interface supports encoding and decoding string objects using all
+three alphabets.  The legacy interface provides for encoding and
+decoding to and from file-like objects as well as strings, but only
+using the Base64 standard alphabet.</p>
+<p>The modern interface, which was introduced in Python 2.4, provides:</p>
+<p>base64.b64encode(s[, altchars])</p>
+<blockquote>
+<p>Encode a string use Base64.</p>
+<p><em>s</em> is the string to encode.  Optional <em>altchars</em> must be a string
+of at least length 2 (additional characters are ignored) which
+specifies an alternative alphabet for the <tt class="docutils literal"><span class="pre">+</span></tt> and <tt class="docutils literal"><span class="pre">/</span></tt>
+characters.  This allows an application to e.g. generate URL or
+filesystem safe Base64 strings.  The default is <tt class="xref docutils literal"><span class="pre">None</span></tt>, for which
+the standard Base64 alphabet is used.</p>
+<p>The encoded string is returned.</p>
+</blockquote>
+<p>base64.b64decode(s[, altchars])</p>
+<blockquote>
+<p>Decode a Base64 encoded string.</p>
+<p><em>s</em> is the string to decode.  Optional <em>altchars</em> must be a string
+of at least length 2 (additional characters are ignored) which
+specifies the alternative alphabet used instead of the <tt class="docutils literal"><span class="pre">+</span></tt> and
+<tt class="docutils literal"><span class="pre">/</span></tt> characters.</p>
+<p>The decoded string is returned.  A <tt class="docutils literal"><span class="pre">TypeError</span></tt> is raised if <em>s</em>
+were incorrectly padded or if there are non-alphabet characters
+present in the string.</p>
+</blockquote>
+<p>base64.standard_b64encode(s)</p>
+<blockquote>
+Encode string <em>s</em> using the standard Base64 alphabet.</blockquote>
+<p>base64.standard_b64decode(s)</p>
+<blockquote>
+Decode string <em>s</em> using the standard Base64 alphabet.</blockquote>
+<p>base64.urlsafe_b64encode(s)</p>
+<blockquote>
+Encode string <em>s</em> using a URL-safe alphabet, which substitutes
+<tt class="docutils literal"><span class="pre">-</span></tt> instead of <tt class="docutils literal"><span class="pre">+</span></tt> and <tt class="docutils literal"><span class="pre">_</span></tt> instead of <tt class="docutils literal"><span class="pre">/</span></tt> in the standard
+Base64 alphabet.  The result can still contain <tt class="docutils literal"><span class="pre">=</span></tt>.</blockquote>
+<p>base64.urlsafe_b64decode(s)</p>
+<blockquote>
+Decode string <em>s</em> using a URL-safe alphabet, which substitutes
+<tt class="docutils literal"><span class="pre">-</span></tt> instead of <tt class="docutils literal"><span class="pre">+</span></tt> and <tt class="docutils literal"><span class="pre">_</span></tt> instead of <tt class="docutils literal"><span class="pre">/</span></tt> in the standard
+Base64 alphabet.</blockquote>
+<p>base64.b32encode(s)</p>
+<blockquote>
+Encode a string using Base32.  <em>s</em> is the string to encode.  The
+encoded string is returned.</blockquote>
+<p>base64.b32decode(s[, casefold[, map01]])</p>
+<blockquote>
+<p>Decode a Base32 encoded string.</p>
+<p><em>s</em> is the string to decode.  Optional <em>casefold</em> is a flag
+specifying whether a lowercase alphabet is acceptable as input.
+For security purposes, the default is <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<p><strong>RFC 3548</strong> allows for optional mapping of the digit 0 (zero) to
+the letter O (oh), and for optional mapping of the digit 1 (one) to
+either the letter I (eye) or letter L (el).  The optional argument
+<em>map01</em> when not <tt class="xref docutils literal"><span class="pre">None</span></tt>, specifies which letter the digit 1
+should be mapped to (when <em>map01</em> is not <tt class="xref docutils literal"><span class="pre">None</span></tt>, the digit 0 is
+always mapped to the letter O).  For security purposes the default
+is <tt class="xref docutils literal"><span class="pre">None</span></tt>, so that 0 and 1 are not allowed in the input.</p>
+<p>The decoded string is returned.  A <tt class="docutils literal"><span class="pre">TypeError</span></tt> is raised if <em>s</em>
+were incorrectly padded or if there are non-alphabet characters
+present in the string.</p>
+</blockquote>
+<p>base64.b16encode(s)</p>
+<blockquote>
+<p>Encode a string using Base16.</p>
+<p><em>s</em> is the string to encode.  The encoded string is returned.</p>
+</blockquote>
+<p>base64.b16decode(s[, casefold])</p>
+<blockquote>
+<p>Decode a Base16 encoded string.</p>
+<p><em>s</em> is the string to decode.  Optional <em>casefold</em> is a flag
+specifying whether a lowercase alphabet is acceptable as input.
+For security purposes, the default is <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<p>The decoded string is returned.  A <tt class="docutils literal"><span class="pre">TypeError</span></tt> is raised if <em>s</em>
+were incorrectly padded or if there are non-alphabet characters
+present in the string.</p>
+</blockquote>
+<p>The legacy interface:</p>
+<p>base64.decode(input, output)</p>
+<blockquote>
+Decode the contents of the <em>input</em> file and write the resulting
+binary data to the <em>output</em> file. <em>input</em> and <em>output</em> must either
+be file objects or objects that mimic the file object interface.
+<em>input</em> will be read until <tt class="docutils literal"><span class="pre">input.read()</span></tt> returns an empty
+string.</blockquote>
+<p>base64.decodestring(s)</p>
+<blockquote>
+Decode the string <em>s</em>, which must contain one or more lines of
+base64 encoded data, and return a string containing the resulting
+binary data.</blockquote>
+<p>base64.encode(input, output)</p>
+<blockquote>
+Encode the contents of the <em>input</em> file and write the resulting
+base64 encoded data to the <em>output</em> file. <em>input</em> and <em>output</em> must
+either be file objects or objects that mimic the file object
+interface. <em>input</em> will be read until <tt class="docutils literal"><span class="pre">input.read()</span></tt> returns an
+empty string.  <tt class="docutils literal"><span class="pre">encode()</span></tt> returns the encoded data plus a
+trailing newline character (<tt class="docutils literal"><span class="pre">'\n'</span></tt>).</blockquote>
+<p>base64.encodestring(s)</p>
+<blockquote>
+Encode the string <em>s</em>, which can contain arbitrary binary data, and
+return a string containing one or more lines of base64-encoded
+data. <tt class="docutils literal"><span class="pre">encodestring()</span></tt> returns a string containing one or more
+lines of base64-encoded data always including an extra trailing
+newline (<tt class="docutils literal"><span class="pre">'\n'</span></tt>).</blockquote>
+<p>An example usage of the module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">base64</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">encoded</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="s">&#39;data to be encoded&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">encoded</span>
+<span class="go">&#39;ZGF0YSB0byBiZSBlbmNvZGVk&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">encoded</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span>
+<span class="go">&#39;data to be encoded&#39;</span>
+</pre></div>
+</div>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">binascii</span></tt></dt>
+<dd>Support module containing ASCII-to-binary and binary-to-ASCII
+conversions.</dd>
+</dl>
+<p><strong>RFC 1521</strong> - MIME (Multipurpose Internet Mail Extensions) Part
+One: Mechanisms for Specifying and Describing the Format of
+Internet Message Bodies</p>
+<blockquote>
+Section 5.2, &#8220;Base64 Content-Transfer-Encoding,&#8221; provides the
+definition of the base64 encoding.</blockquote>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="binhex.html" title="18.12. binhex — Encode and decode binhex4 files"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="rfc822.html" title="18.10. rfc822 — Parse RFC 2822 mail headers"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" >18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

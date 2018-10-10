@@ -1,0 +1,402 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9.1. math — Mathematical functions &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="9. Numeric and Mathematical Modules" href="numeric.html" />
+    <link rel="next" title="9.2. cmath — Mathematical functions for complex numbers" href="cmath.html" />
+    <link rel="prev" title="9. Numeric and Mathematical Modules" href="numeric.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="cmath.html" title="9.2. cmath — Mathematical functions for complex numbers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="numeric.html" title="9. Numeric and Mathematical Modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="numeric.html" accesskey="U">9. Numeric and Mathematical Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">9.1. <tt class="docutils literal"><span class="pre">math</span></tt> &#8212; Mathematical functions</a><ul>
+<li><a class="reference external" href="#number-theoretic-and-representation-functions">9.1.1. Number-theoretic and representation functions</a></li>
+<li><a class="reference external" href="#power-and-logarithmic-functions">9.1.2. Power and logarithmic functions</a></li>
+<li><a class="reference external" href="#trigonometric-functions">9.1.3. Trigonometric functions</a></li>
+<li><a class="reference external" href="#angular-conversion">9.1.4. Angular conversion</a></li>
+<li><a class="reference external" href="#hyperbolic-functions">9.1.5. Hyperbolic functions</a></li>
+<li><a class="reference external" href="#constants">9.1.6. Constants</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="numeric.html"
+                                  title="previous chapter">9. Numeric and Mathematical Modules</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="cmath.html"
+                                  title="next chapter">9.2. <tt class="docutils literal docutils literal docutils literal"><span class="pre">cmath</span></tt> &#8212; Mathematical functions for complex numbers</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/math.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="math-mathematical-functions">
+<h1>9.1. <tt class="docutils literal"><span class="pre">math</span></tt> &#8212; Mathematical functions<a class="headerlink" href="#math-mathematical-functions" title="Permalink to this headline">¶</a></h1>
+<p>This module is always available.  It provides access to the
+mathematical functions defined by the C standard.</p>
+<p>These functions cannot be used with complex numbers; use the functions
+of the same name from the <tt class="docutils literal"><span class="pre">cmath</span></tt> module if you require support for
+complex numbers.  The distinction between functions which support
+complex numbers and those which don&#8217;t is made since most users do not
+want to learn quite as much mathematics as required to understand
+complex numbers.  Receiving an exception instead of a complex result
+allows earlier detection of the unexpected complex number used as a
+parameter, so that the programmer can determine how and why it was
+generated in the first place.</p>
+<p>The following functions are provided by this module.  Except when
+explicitly noted otherwise, all return values are floats.</p>
+<div class="section" id="number-theoretic-and-representation-functions">
+<h2>9.1.1. Number-theoretic and representation functions<a class="headerlink" href="#number-theoretic-and-representation-functions" title="Permalink to this headline">¶</a></h2>
+<p>math.ceil(x)</p>
+<blockquote>
+Return the ceiling of <em>x</em> as a float, the smallest integer value
+greater than or equal to <em>x</em>.</blockquote>
+<p>math.copysign(x, y)</p>
+<blockquote>
+<p>Return <em>x</em> with the sign of <em>y</em>. <tt class="docutils literal"><span class="pre">copysign</span></tt> copies the sign bit
+of an IEEE 754 float, <tt class="docutils literal"><span class="pre">copysign(1,</span> <span class="pre">-0.0)</span></tt> returns <em>-1.0</em>.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>math.fabs(x)</p>
+<blockquote>
+Return the absolute value of <em>x</em>.</blockquote>
+<p>math.factorial(x)</p>
+<blockquote>
+<p>Return <em>x</em> factorial.  Raises <tt class="docutils literal"><span class="pre">ValueError</span></tt> if <em>x</em> is not integral
+or is negative.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>math.floor(x)</p>
+<blockquote>
+<p>Return the floor of <em>x</em> as a float, the largest integer value less
+than or equal to <em>x</em>.</p>
+<p>Changed in version 2.6: Added <tt class="docutils literal"><span class="pre">__floor__()</span></tt> delegation.</p>
+</blockquote>
+<p>math.fmod(x, y)</p>
+<blockquote>
+Return <tt class="docutils literal"><span class="pre">fmod(x,</span> <span class="pre">y)</span></tt>, as defined by the platform C library. Note
+that the Python expression <tt class="docutils literal"><span class="pre">x</span> <span class="pre">%</span> <span class="pre">y</span></tt> may not return the same
+result.  The intent of the C standard is that <tt class="docutils literal"><span class="pre">fmod(x,</span> <span class="pre">y)</span></tt> be
+exactly (mathematically; to infinite precision) equal to <tt class="docutils literal"><span class="pre">x</span> <span class="pre">-</span>
+<span class="pre">n*y</span></tt> for some integer <em>n</em> such that the result has the same sign
+as <em>x</em> and magnitude less than <tt class="docutils literal"><span class="pre">abs(y)</span></tt>.  Python&#8217;s <tt class="docutils literal"><span class="pre">x</span> <span class="pre">%</span> <span class="pre">y</span></tt>
+returns a result with the sign of <em>y</em> instead, and may not be
+exactly computable for float arguments. For example,
+<tt class="docutils literal"><span class="pre">fmod(-1e-100,</span> <span class="pre">1e100)</span></tt> is <tt class="docutils literal"><span class="pre">-1e-100</span></tt>, but the result of Python&#8217;s
+<tt class="docutils literal"><span class="pre">-1e-100</span> <span class="pre">%</span> <span class="pre">1e100</span></tt> is <tt class="docutils literal"><span class="pre">1e100-1e-100</span></tt>, which cannot be
+represented exactly as a float, and rounds to the surprising
+<tt class="docutils literal"><span class="pre">1e100</span></tt>.  For this reason, function <tt class="docutils literal"><span class="pre">fmod()</span></tt> is generally
+preferred when working with floats, while Python&#8217;s <tt class="docutils literal"><span class="pre">x</span> <span class="pre">%</span> <span class="pre">y</span></tt> is
+preferred when working with integers.</blockquote>
+<p>math.frexp(x)</p>
+<blockquote>
+Return the mantissa and exponent of <em>x</em> as the pair <tt class="docutils literal"><span class="pre">(m,</span> <span class="pre">e)</span></tt>.
+<em>m</em> is a float and <em>e</em> is an integer such that <tt class="docutils literal"><span class="pre">x</span> <span class="pre">==</span> <span class="pre">m</span> <span class="pre">*</span> <span class="pre">2**e</span></tt>
+exactly. If <em>x</em> is zero, returns <tt class="docutils literal"><span class="pre">(0.0,</span> <span class="pre">0)</span></tt>, otherwise <tt class="docutils literal"><span class="pre">0.5</span> <span class="pre">&lt;=</span>
+<span class="pre">abs(m)</span> <span class="pre">&lt;</span> <span class="pre">1</span></tt>.  This is used to &#8220;pick apart&#8221; the internal
+representation of a float in a portable way.</blockquote>
+<p>math.fsum(iterable)</p>
+<blockquote>
+<p>Return an accurate floating point sum of values in the iterable.
+Avoids loss of precision by tracking multiple intermediate partial
+sums:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">sum</span><span class="p">([</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">0.99999999999999989</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fsum</span><span class="p">([</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+<p>The algorithm&#8217;s accuracy depends on IEEE-754 arithmetic guarantees
+and the typical case where the rounding mode is half-even.  On some
+non-Windows builds, the underlying C library uses extended
+precision addition and may occasionally double-round an
+intermediate sum causing it to be off in its least significant bit.</p>
+<p>For further discussion and two alternative approaches, see the ASPN
+cookbook recipes for accurate floating point summation.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>math.isinf(x)</p>
+<blockquote>
+<p>Checks if the float <em>x</em> is positive or negative infinite.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>math.isnan(x)</p>
+<blockquote>
+<p>Checks if the float <em>x</em> is a NaN (not a number). NaNs are part of
+the IEEE 754 standards. Operation like but not limited to <tt class="docutils literal"><span class="pre">inf</span> <span class="pre">*</span>
+<span class="pre">0</span></tt>, <tt class="docutils literal"><span class="pre">inf</span> <span class="pre">/</span> <span class="pre">inf</span></tt> or any operation involving a NaN, e.g. <tt class="docutils literal"><span class="pre">nan</span> <span class="pre">*</span>
+<span class="pre">1</span></tt>, return a NaN.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>math.ldexp(x, i)</p>
+<blockquote>
+Return <tt class="docutils literal"><span class="pre">x</span> <span class="pre">*</span> <span class="pre">(2**i)</span></tt>.  This is essentially the inverse of function
+<tt class="docutils literal"><span class="pre">frexp()</span></tt>.</blockquote>
+<p>math.modf(x)</p>
+<blockquote>
+Return the fractional and integer parts of <em>x</em>.  Both results carry
+the sign of <em>x</em> and are floats.</blockquote>
+<p>math.trunc(x)</p>
+<blockquote>
+<p>Return the <tt class="docutils literal"><span class="pre">Real</span></tt> value <em>x</em> truncated to an <tt class="docutils literal"><span class="pre">Integral</span></tt> (usually
+a long integer). Delegates to <tt class="docutils literal"><span class="pre">x.__trunc__()</span></tt>.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>Note that <tt class="docutils literal"><span class="pre">frexp()</span></tt> and <tt class="docutils literal"><span class="pre">modf()</span></tt> have a different call/return
+pattern than their C equivalents: they take a single argument and
+return a pair of values, rather than returning their second return
+value through an &#8216;output parameter&#8217; (there is no such thing in
+Python).</p>
+<p>For the <tt class="docutils literal"><span class="pre">ceil()</span></tt>, <tt class="docutils literal"><span class="pre">floor()</span></tt>, and <tt class="docutils literal"><span class="pre">modf()</span></tt> functions, note that
+<em>all</em> floating-point numbers of sufficiently large magnitude are exact
+integers. Python floats typically carry no more than 53 bits of
+precision (the same as the platform C double type), in which case any
+float <em>x</em> with <tt class="docutils literal"><span class="pre">abs(x)</span> <span class="pre">&gt;=</span> <span class="pre">2**52</span></tt> necessarily has no fractional bits.</p>
+</div>
+<div class="section" id="power-and-logarithmic-functions">
+<h2>9.1.2. Power and logarithmic functions<a class="headerlink" href="#power-and-logarithmic-functions" title="Permalink to this headline">¶</a></h2>
+<p>math.exp(x)</p>
+<blockquote>
+Return <tt class="docutils literal"><span class="pre">e**x</span></tt>.</blockquote>
+<p>math.log(x[, base])</p>
+<blockquote>
+<p>Return the logarithm of <em>x</em> to the given <em>base</em>. If the <em>base</em> is
+not specified, return the natural logarithm of <em>x</em> (that is, the
+logarithm to base <em>e</em>).</p>
+<p>Changed in version 2.3: <em>base</em> argument added.</p>
+</blockquote>
+<p>math.log1p(x)</p>
+<blockquote>
+<p>Return the natural logarithm of <em>1+x</em> (base <em>e</em>). The result is
+calculated in a way which is accurate for <em>x</em> near zero.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>math.log10(x)</p>
+<blockquote>
+Return the base-10 logarithm of <em>x</em>.</blockquote>
+<p>math.pow(x, y)</p>
+<blockquote>
+<p>Return <tt class="docutils literal"><span class="pre">x</span></tt> raised to the power <tt class="docutils literal"><span class="pre">y</span></tt>.  Exceptional cases follow
+Annex &#8216;F&#8217; of the C99 standard as far as possible.  In particular,
+<tt class="docutils literal"><span class="pre">pow(1.0,</span> <span class="pre">x)</span></tt> and <tt class="docutils literal"><span class="pre">pow(x,</span> <span class="pre">0.0)</span></tt> always return <tt class="docutils literal"><span class="pre">1.0</span></tt>, even
+when <tt class="docutils literal"><span class="pre">x</span></tt> is a zero or a NaN.  If both <tt class="docutils literal"><span class="pre">x</span></tt> and <tt class="docutils literal"><span class="pre">y</span></tt> are finite,
+<tt class="docutils literal"><span class="pre">x</span></tt> is negative, and <tt class="docutils literal"><span class="pre">y</span></tt> is not an integer then <tt class="docutils literal"><span class="pre">pow(x,</span> <span class="pre">y)</span></tt>
+is undefined, and raises <tt class="docutils literal"><span class="pre">ValueError</span></tt>.</p>
+<p>Changed in version 2.6: The outcome of <tt class="docutils literal"><span class="pre">1**nan</span></tt> and <tt class="docutils literal"><span class="pre">nan**0</span></tt>
+was undefined.</p>
+</blockquote>
+<p>math.sqrt(x)</p>
+<blockquote>
+Return the square root of <em>x</em>.</blockquote>
+</div>
+<div class="section" id="trigonometric-functions">
+<h2>9.1.3. Trigonometric functions<a class="headerlink" href="#trigonometric-functions" title="Permalink to this headline">¶</a></h2>
+<p>math.acos(x)</p>
+<blockquote>
+Return the arc cosine of <em>x</em>, in radians.</blockquote>
+<p>math.asin(x)</p>
+<blockquote>
+Return the arc sine of <em>x</em>, in radians.</blockquote>
+<p>math.atan(x)</p>
+<blockquote>
+Return the arc tangent of <em>x</em>, in radians.</blockquote>
+<p>math.atan2(y, x)</p>
+<blockquote>
+Return <tt class="docutils literal"><span class="pre">atan(y</span> <span class="pre">/</span> <span class="pre">x)</span></tt>, in radians. The result is between <tt class="docutils literal"><span class="pre">-pi</span></tt>
+and <tt class="docutils literal"><span class="pre">pi</span></tt>. The vector in the plane from the origin to point <tt class="docutils literal"><span class="pre">(x,</span>
+<span class="pre">y)</span></tt> makes this angle with the positive X axis. The point of
+<tt class="docutils literal"><span class="pre">atan2()</span></tt> is that the signs of both inputs are known to it, so it
+can compute the correct quadrant for the angle. For example,
+<tt class="docutils literal"><span class="pre">atan(1</span></tt>) and <tt class="docutils literal"><span class="pre">atan2(1,</span> <span class="pre">1)</span></tt> are both <tt class="docutils literal"><span class="pre">pi/4</span></tt>, but <tt class="docutils literal"><span class="pre">atan2(-1,</span>
+<span class="pre">-1)</span></tt> is <tt class="docutils literal"><span class="pre">-3*pi/4</span></tt>.</blockquote>
+<p>math.cos(x)</p>
+<blockquote>
+Return the cosine of <em>x</em> radians.</blockquote>
+<p>math.hypot(x, y)</p>
+<blockquote>
+Return the Euclidean norm, <tt class="docutils literal"><span class="pre">sqrt(x*x</span> <span class="pre">+</span> <span class="pre">y*y)</span></tt>. This is the length
+of the vector from the origin to point <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y)</span></tt>.</blockquote>
+<p>math.sin(x)</p>
+<blockquote>
+Return the sine of <em>x</em> radians.</blockquote>
+<p>math.tan(x)</p>
+<blockquote>
+Return the tangent of <em>x</em> radians.</blockquote>
+</div>
+<div class="section" id="angular-conversion">
+<h2>9.1.4. Angular conversion<a class="headerlink" href="#angular-conversion" title="Permalink to this headline">¶</a></h2>
+<p>math.degrees(x)</p>
+<blockquote>
+Converts angle <em>x</em> from radians to degrees.</blockquote>
+<p>math.radians(x)</p>
+<blockquote>
+Converts angle <em>x</em> from degrees to radians.</blockquote>
+</div>
+<div class="section" id="hyperbolic-functions">
+<h2>9.1.5. Hyperbolic functions<a class="headerlink" href="#hyperbolic-functions" title="Permalink to this headline">¶</a></h2>
+<p>math.acosh(x)</p>
+<blockquote>
+<p>Return the inverse hyperbolic cosine of <em>x</em>.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>math.asinh(x)</p>
+<blockquote>
+<p>Return the inverse hyperbolic sine of <em>x</em>.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>math.atanh(x)</p>
+<blockquote>
+<p>Return the inverse hyperbolic tangent of <em>x</em>.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>math.cosh(x)</p>
+<blockquote>
+Return the hyperbolic cosine of <em>x</em>.</blockquote>
+<p>math.sinh(x)</p>
+<blockquote>
+Return the hyperbolic sine of <em>x</em>.</blockquote>
+<p>math.tanh(x)</p>
+<blockquote>
+Return the hyperbolic tangent of <em>x</em>.</blockquote>
+</div>
+<div class="section" id="constants">
+<h2>9.1.6. Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
+<p>math.pi</p>
+<blockquote>
+The mathematical constant <em>pi</em>.</blockquote>
+<p>math.e</p>
+<blockquote>
+The mathematical constant <em>e</em>.</blockquote>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">math</span></tt> module consists mostly of thin wrappers around the</dt>
+<dd><p class="first">platform C math library functions.  Behavior in exceptional cases is
+loosely specified by the C standards, and Python inherits much of
+its math-function error-reporting behavior from the platform C
+implementation.  As a result, the specific exceptions raised in
+error cases (and even whether some arguments are considered to be
+exceptional at all) are not defined in any useful cross-platform or
+cross-release way.  For example, whether <tt class="docutils literal"><span class="pre">math.log(0)</span></tt> returns
+<tt class="docutils literal"><span class="pre">-Inf</span></tt> or raises <tt class="docutils literal"><span class="pre">ValueError</span></tt> or <tt class="docutils literal"><span class="pre">OverflowError</span></tt> isn&#8217;t
+defined, and in cases where <tt class="docutils literal"><span class="pre">math.log(0)</span></tt> raises
+<tt class="docutils literal"><span class="pre">OverflowError</span></tt>, <tt class="docutils literal"><span class="pre">math.log(0L)</span></tt> may raise <tt class="docutils literal"><span class="pre">ValueError</span></tt>
+instead.All functions return a quiet <em>NaN</em> if at least one of the
+args is <em>NaN</em>. Signaling <em>NaN*s raise an exception. The exception
+type still depends on the platform and libm implementation. It&#8217;s
+usually ``ValueError`` for *EDOM</em> and <tt class="docutils literal"><span class="pre">OverflowError</span></tt> for errno
+<em>ERANGE</em>.</p>
+<p class="last">Changed in version 2.6: In earlier versions of Python the outcome of
+an operation with NaN as input depended on platform and libm
+implementation.</p>
+</dd>
+</dl>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">cmath</span></tt></dt>
+<dd>Complex number versions of many of these functions.</dd>
+</dl>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cmath.html" title="9.2. cmath — Mathematical functions for complex numbers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="numeric.html" title="9. Numeric and Mathematical Modules"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="numeric.html" >9. Numeric and Mathematical Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

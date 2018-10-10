@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>26.6. atexit — Exit handlers &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="26. Python Runtime Services" href="python.html" />
+    <link rel="next" title="26.7. traceback — Print or retrieve a stack traceback" href="traceback.html" />
+    <link rel="prev" title="26.5. contextlib — Utilities for with-statement contexts." href="contextlib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="traceback.html" title="26.7. traceback — Print or retrieve a stack traceback"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="contextlib.html" title="26.5. contextlib — Utilities for with-statement contexts."
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="python.html" accesskey="U">26. Python Runtime Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">26.6. <tt class="docutils literal"><span class="pre">atexit</span></tt> &#8212; Exit handlers</a><ul>
+<li><a class="reference external" href="#atexit-example">26.6.1. <tt class="docutils literal"><span class="pre">atexit</span></tt> Example</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="contextlib.html"
+                                  title="previous chapter">26.5. <tt class="docutils literal"><span class="pre">contextlib</span></tt> &#8212; Utilities for <tt class="docutils literal"><span class="pre">with</span></tt>-statement contexts.</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="traceback.html"
+                                  title="next chapter">26.7. <tt class="docutils literal docutils literal"><span class="pre">traceback</span></tt> &#8212; Print or retrieve a stack traceback</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/atexit.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="atexit-exit-handlers">
+<h1>26.6. <tt class="docutils literal"><span class="pre">atexit</span></tt> &#8212; Exit handlers<a class="headerlink" href="#atexit-exit-handlers" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.0.</p>
+<p>The <tt class="docutils literal"><span class="pre">atexit</span></tt> module defines a single function to register cleanup
+functions.  Functions thus registered are automatically executed upon
+normal interpreter termination.</p>
+<p>Note: the functions registered via this module are not called when the
+program is killed by a signal, when a Python fatal internal error is
+detected, or when <tt class="docutils literal"><span class="pre">os._exit()</span></tt> is called.</p>
+<p>This is an alternate interface to the functionality provided by the
+<tt class="docutils literal"><span class="pre">sys.exitfunc</span></tt> variable.</p>
+<p>Note: This module is unlikely to work correctly when used with other
+code that sets <tt class="docutils literal"><span class="pre">sys.exitfunc</span></tt>.  In particular, other core Python
+modules are free to use <tt class="docutils literal"><span class="pre">atexit</span></tt> without the programmer&#8217;s knowledge.
+Authors who use <tt class="docutils literal"><span class="pre">sys.exitfunc</span></tt> should convert their code to use
+<tt class="docutils literal"><span class="pre">atexit</span></tt> instead.  The simplest way to convert code that sets
+<tt class="docutils literal"><span class="pre">sys.exitfunc</span></tt> is to import <tt class="docutils literal"><span class="pre">atexit</span></tt> and register the function
+that had been bound to <tt class="docutils literal"><span class="pre">sys.exitfunc</span></tt>.</p>
+<p>atexit.register(func[, <a href="#id1"><span class="problematic" id="id2">*</span></a>args[, <a href="#id3"><span class="problematic" id="id4">**</span></a>kargs]])</p>
+<blockquote>
+<p>Register <em>func</em> as a function to be executed at termination.  Any
+optional arguments that are to be passed to <em>func</em> must be passed
+as arguments to <tt class="docutils literal"><span class="pre">register()</span></tt>.</p>
+<p>At normal program termination (for instance, if <tt class="docutils literal"><span class="pre">sys.exit()</span></tt> is
+called or the main module&#8217;s execution completes), all functions
+registered are called in last in, first out order.  The assumption
+is that lower level modules will normally be imported before higher
+level modules and thus must be cleaned up later.</p>
+<p>If an exception is raised during execution of the exit handlers, a
+traceback is printed (unless <tt class="docutils literal"><span class="pre">SystemExit</span></tt> is raised) and the
+exception information is saved.  After all exit handlers have had a
+chance to run the last exception to be raised is re-raised.</p>
+<p>Changed in version 2.6: This function now returns <em>func</em> which
+makes it possible to use it as a decorator without binding the
+original name to <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">readline</span></tt></dt>
+<dd>Useful example of <tt class="docutils literal"><span class="pre">atexit</span></tt> to read and write <tt class="docutils literal"><span class="pre">readline</span></tt>
+history files.</dd>
+</dl>
+</blockquote>
+<div class="section" id="atexit-example">
+<h2>26.6.1. <tt class="docutils literal"><span class="pre">atexit</span></tt> Example<a class="headerlink" href="#atexit-example" title="Permalink to this headline">¶</a></h2>
+<p>The following simple example demonstrates how a module can initialize
+a counter from a file when it is imported and save the counter&#8217;s
+updated value automatically when the program terminates without
+relying on the application making an explicit call into this module at
+termination.</p>
+<blockquote>
+<dl class="docutils">
+<dt>try:</dt>
+<dd>_count = int(open(&#8220;/tmp/counter&#8221;).read())</dd>
+<dt>except IOError:</dt>
+<dd>_count = 0</dd>
+<dt>def incrcounter(n):</dt>
+<dd>global _count
+_count = _count + n</dd>
+<dt>def savecounter():</dt>
+<dd>open(&#8220;/tmp/counter&#8221;, &#8220;w&#8221;).write(&#8220;%d&#8221; % _count)</dd>
+</dl>
+<p>import atexit
+atexit.register(savecounter)</p>
+</blockquote>
+<p>Positional and keyword arguments may also be passed to <tt class="docutils literal"><span class="pre">register()</span></tt>
+to be passed along to the registered function when it is called:</p>
+<blockquote>
+<dl class="docutils">
+<dt>def goodbye(name, adjective):</dt>
+<dd>print &#8216;Goodbye, %s, it was %s to meet you.&#8217; % (name, adjective)</dd>
+</dl>
+<p>import atexit
+atexit.register(goodbye, &#8216;Donny&#8217;, &#8216;nice&#8217;)</p>
+<p># or:
+atexit.register(goodbye, adjective=&#8217;nice&#8217;, name=&#8217;Donny&#8217;)</p>
+</blockquote>
+<p>Usage as a <em>decorator</em>:</p>
+<blockquote>
+<p>import atexit</p>
+<p>&#64;atexit.register
+def goodbye():</p>
+<blockquote>
+print &#8220;You are now leaving the Python sector.&#8221;</blockquote>
+</blockquote>
+<p>This obviously only works with functions that don&#8217;t take arguments.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="traceback.html" title="26.7. traceback — Print or retrieve a stack traceback"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="contextlib.html" title="26.5. contextlib — Utilities for with-statement contexts."
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="python.html" >26. Python Runtime Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

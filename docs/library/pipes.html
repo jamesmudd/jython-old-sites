@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>32.4. pipes — Interface to shell pipelines &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="32. Unix Specific Services" href="unix.html" />
+    <link rel="next" title="32.5. posixfile — File-like objects with locking support" href="posixfile.html" />
+    <link rel="prev" title="32.3. grp — The group database" href="grp.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="posixfile.html" title="32.5. posixfile — File-like objects with locking support"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="grp.html" title="32.3. grp — The group database"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="unix.html" accesskey="U">32. Unix Specific Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">32.4. <tt class="docutils literal"><span class="pre">pipes</span></tt> &#8212; Interface to shell pipelines</a><ul>
+<li><a class="reference external" href="#template-objects">32.4.1. Template Objects</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="grp.html"
+                                  title="previous chapter">32.3. <tt class="docutils literal docutils literal"><span class="pre">grp</span></tt> &#8212; The group database</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="posixfile.html"
+                                  title="next chapter">32.5. <tt class="docutils literal docutils literal"><span class="pre">posixfile</span></tt> &#8212; File-like objects with locking support</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/pipes.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pipes-interface-to-shell-pipelines">
+<h1>32.4. <tt class="docutils literal"><span class="pre">pipes</span></tt> &#8212; Interface to shell pipelines<a class="headerlink" href="#pipes-interface-to-shell-pipelines" title="Permalink to this headline">¶</a></h1>
+<p>Platform: Unix</p>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>Platforms: <a href="#id3"><span class="problematic" id="id4">*</span></a>Unix</p>
+<p>The <tt class="docutils literal"><span class="pre">pipes</span></tt> module defines a class to abstract the concept of a
+<em>pipeline</em> &#8212; a sequence of converters from one file to  another.</p>
+<p>Because the module uses <strong>/bin/sh</strong> command lines, a POSIX or
+compatible shell for <tt class="docutils literal"><span class="pre">os.system()</span></tt> and <tt class="docutils literal"><span class="pre">os.popen()</span></tt> is required.</p>
+<p>The <tt class="docutils literal"><span class="pre">pipes</span></tt> module defines the following class:</p>
+<p>class class pipes.Template</p>
+<blockquote>
+An abstraction of a pipeline.</blockquote>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pipes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">=</span><span class="n">pipes</span><span class="o">.</span><span class="n">Template</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;tr a-z A-Z&#39;</span><span class="p">,</span> <span class="s">&#39;--&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&#39;/tmp/1&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;hello world&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">open</span><span class="p">(</span><span class="s">&#39;/tmp/1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="go">&#39;HELLO WORLD&#39;</span>
+</pre></div>
+</div>
+<div class="section" id="template-objects">
+<h2>32.4.1. Template Objects<a class="headerlink" href="#template-objects" title="Permalink to this headline">¶</a></h2>
+<p>Template objects following methods:</p>
+<p>Template.reset()</p>
+<blockquote>
+Restore a pipeline template to its initial state.</blockquote>
+<p>Template.clone()</p>
+<blockquote>
+Return a new, equivalent, pipeline template.</blockquote>
+<p>Template.debug(flag)</p>
+<blockquote>
+If <em>flag</em> is true, turn debugging on. Otherwise, turn debugging
+off. When debugging is on, commands to be executed are printed, and
+the shell is given <tt class="docutils literal"><span class="pre">set</span> <span class="pre">-x</span></tt> command to be more verbose.</blockquote>
+<p>Template.append(cmd, kind)</p>
+<blockquote>
+<p>Append a new action at the end. The <em>cmd</em> variable must be a valid
+bourne shell command. The <em>kind</em> variable consists of two letters.</p>
+<p>The first letter can be either of <tt class="docutils literal"><span class="pre">'-'</span></tt> (which means the command
+reads its standard input), <tt class="docutils literal"><span class="pre">'f'</span></tt> (which means the commands reads
+a given file on the command line) or <tt class="docutils literal"><span class="pre">'.'</span></tt> (which means the
+commands reads no input, and hence must be first.)</p>
+<p>Similarly, the second letter can be either of <tt class="docutils literal"><span class="pre">'-'</span></tt> (which means
+the command writes to standard output), <tt class="docutils literal"><span class="pre">'f'</span></tt> (which means the
+command writes a file on the command line) or <tt class="docutils literal"><span class="pre">'.'</span></tt> (which means
+the command does not write anything, and hence must be last.)</p>
+</blockquote>
+<p>Template.prepend(cmd, kind)</p>
+<blockquote>
+Add a new action at the beginning. See <tt class="docutils literal"><span class="pre">append()</span></tt> for
+explanations of the arguments.</blockquote>
+<p>Template.open(file, mode)</p>
+<blockquote>
+Return a file-like object, open to <em>file</em>, but read from or written
+to by the pipeline.  Note that only one of <tt class="docutils literal"><span class="pre">'r'</span></tt>, <tt class="docutils literal"><span class="pre">'w'</span></tt> may be
+given.</blockquote>
+<p>Template.copy(infile, outfile)</p>
+<blockquote>
+Copy <em>infile</em> to <em>outfile</em> through the pipe.</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="posixfile.html" title="32.5. posixfile — File-like objects with locking support"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="grp.html" title="32.3. grp — The group database"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="unix.html" >32. Unix Specific Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

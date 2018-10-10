@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<title></title>
+<link rel="stylesheet" href="../cssold/html4css1.css" type="text/css" />
+<link type="text/css" href="css/newstyle.css" rel="stylesheet"> 
+<!--[if lt IE 7]>
+<script defer type="text/javascript" src="css/pngfix.js"></script>
+<![endif]-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="css/ddaccordion.js">
+/***********************************************
+* Accordion Content script- (c) Dynamic Drive DHTML code library (www.dynamicdrive.com)
+* Visit http://www.dynamicDrive.com for hundreds of DHTML scripts
+* This notice must stay intact for legal use
+***********************************************/
+</script>
+<script type="text/javascript">
+        ddaccordion.init({
+	headerclass: "silverheader", //Shared CSS class name of headers group
+	contentclass: "submenu", //Shared CSS class name of contents group
+	revealtype: "mouseover", //Reveal content when user clicks or onmouseover the header? Valid value: "click", "clickgo", or "mouseover"
+	mouseoverdelay: 200, //if revealtype="mouseover", set delay in milliseconds before header expands onMouseover
+	collapseprev: true, //Collapse previous content (so only one open at any time)? true/false
+	defaultexpanded: [0], //index of content(s) open by default [index1, index2, etc] [] denotes no content
+	onemustopen: true, //Specify whether at least one header should be open always (so never all headers closed)
+	animatedefault: false, //Should contents open by default be animated into view?
+	persiststate: true, //persist state of opened contents within browser session?
+	toggleclass: ["", "selected"], //Two CSS classes to be applied to the header when it's collapsed and expanded, respectively ["class1", "class2"]
+	togglehtml: ["", "", ""], //Additional HTML added to the header when it's collapsed and expanded, respectively  ["position", "html1", "html2"] (see docs)
+	animatespeed: "fast", //speed of animation: integer in milliseconds (ie: 200), or keywords "fast", "normal", or "slow"
+	oninit:function(headers, expandedindices){ //custom code to run when headers have initalized
+		//do nothing
+	},
+	onopenclose:function(header, index, state, isuseractivated){ //custom code to run whenever a header is opened or closed
+		//do nothing
+	}
+            }) 
+        </script>
+</head>
+<body>
+<div id="container">
+<div id="top">
+<div id="header">
+<div id="grouplogo">
+<a href="./" ><img class="logoImage" alt="Jython" style="border: 0px; padding-top: 20px; position:absolute; left: 35px" src="css/jython.png" title="Jython"></a>
+</div>
+<div class="latest_release" style="position:absolute; color:#000; width:180px; top: 15px; right: 30px; padding:0px 10px 10px 30px; font-size:11px; background:url('css/latest_release_bg.png') no-repeat">
+<p style="top: 25px; color:#000">Latest release - 2.5.4rc1<br/>
+<a style="color:#000" href="latest.html">View Release Notes</a><br/>
+Download: <a style="color:#000" href="http://search.maven.org/remotecontent?filepath=org/python/jython-installer/2.5.4-rc1/jython-installer-2.5.4-rc1.jar">.jar</a>
+</div>
+<div class="searchbox">
+<form action="http://www.google.com/search" method="get" class="roundtopsmall">
+<input value="www.jython.org" name="sitesearch" type="hidden"><input size="25" id="searchbox" name="q" id="query" type="text">&nbsp; 
+                    <input name="Search" value="Search" type="submit">
+</form></p>
+</div>
+</div></div>
+<h2 id="topper">Jython: Python for the Java Platform</h2>
+<div id="wrapper">
+<div id="content"><div class="document">
+
+
+<div class="section" id="acknowledgments">
+<h1>ACKNOWLEDGMENTS</h1>
+<p>Copyright © Corporation for National Research Initiatives</p>
+<blockquote>
+<p>Jim Hugunin invented JPython and was the primary developer while
+he was at CNRI.  In February 1999, Jim left CNRI for sunny
+California and Barry Warsaw became the primary maintainer.
+When Barry and the rest of PythonLabs left CNRI, Barry renamed
+JPython to Jython, put the sources on SourceForge and made
+Finn Bock the primary maintainer.</p>
+<p>Python's inventor Guido van Rossum and the rest of PythonLabs
+continues to help and support Jython by their understanding
+of how Jython must live with the limits of Java.</p>
+<p>You can contact the Jython maintainers directly via
+<a class="reference external" href="mailto:jython-dev&#64;lists.sourceforge.net">jython-dev&#64;lists.sourceforge.net</a>, or the Jython community at
+<a class="reference external" href="mailto:jython-users&#64;lists.sourceforge.net">jython-users&#64;lists.sourceforge.net</a>.</p>
+<p>Harry Mantakos contributed the underlying md5 implementation.</p>
+<p>The SHA1 implementation is taken from cryptix.</p>
+<p>Samuele Pedroni has designed and implemented the improved
+PackageManagers and java reload support and also fixed a lot
+of bugs.</p>
+<p>Kevin Butler has written and contributed the code for os.environ and
+os.system().</p>
+<p>Brian Zimmer contributed zxJDBC which is a Python DB API subsystem.</p>
+<p>Cyrille Morvan has written the code for the Jythonc ant task.</p>
+<p>Alan Kennedy contributed modjy, which bridges WSGI to the Servlet API</p>
+<p>Chris Gokey, David Syer and Finn Bock added PyServlet.</p>
+<p>A huge thanks goes to all the members of the jpython/jython
+mailing lists.  Other folks who have contributed to JPython and
+Jython in ways large and small, in no particular order:</p>
+<p>Greg Ward</p>
+<p>Tony Plate</p>
+<p>Jim Althoff</p>
+<p>Drew Morrissey</p>
+<p>John Mudd</p>
+<p>Bryn Keller</p>
+<p>dsyer</p>
+<p>Tim Hochberg</p>
+<p>Bernhard Bablok</p>
+<p>Dj Walker-Morgan</p>
+<p>Ivan Kougaenko</p>
+<p>Ype Kingma</p>
+<p>Ian Castleden</p>
+<p>Kent Johnson</p>
+<p>Robert W. Bill</p>
+<p>Durant Schoon</p>
+<p>Phil Surette</p>
+<p>Michael Becke</p>
+<p>Randy Jay Yarger</p>
+<p>Matt Conway</p>
+<p>Noel (Nick) Lockwood</p>
+<p>Steffen Ries</p>
+<p>Ben Burton</p>
+<p>Josselin PUJO</p>
+<p>Steve Cohen</p>
+<p>Alexey N. Solofnenko</p>
+<p>Charles Duffy</p>
+<p>Rodrigo B. de Oliveira</p>
+<p>Nathan Franzen</p>
+<p>Aleks Totic</p>
+<p>Randolph Brown</p>
+<p>Geoffrey French</p>
+<p>Tobias Ivarsson</p>
+<p>Lino Mastrodomenico</p>
+<p>Sébastien Boisgérault</p>
+<p>Jim Baker</p>
+<p>Charlie Groves</p>
+<p>Otmar Humbel</p>
+<p>Philip Jenvey</p>
+<p>Nicholas Riley</p>
+<p>Frank Wierzbicki</p>
+<p>Khalid Zuberi</p>
+<p>Sean McGrath</p>
+<p>Clark Updike</p>
+<p>Leonardo Soto</p>
+<p>James Robinson</p>
+<p>Jonathan Feinberg</p>
+<p>Josh Juneau</p>
+<p>Justin Deoliveira</p>
+<p>Costantino Cerbo</p>
+<p>Alex Groenholm</p>
+<p>Anselm Kruis</p>
+</blockquote>
+<p>YourKit is kindly supporting open source projects with its full-featured Java Profiler. YourKit, LLC is creator of innovative and intelligent tools for profiling Java and .NET applications. Take a look at YourKit's leading software products: YourKit Java Profiler and YourKit .NET Profiler.</p>
+</div>
+<div class="section" id="logo">
+<h1>Logo</h1>
+<p>Logo Design by Jesse Ross <a class="reference external" href="http://www.jesseross.com/">http://www.jesseross.com/</a></p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<a class="reference external" href="acknowledgments.txt">View document source</a>.
+
+</div>
+</div>
+</div>
+<div id="navigation"><div class="navcontainer"><ul class="navlist">
+<li class="menutitle">About</li>
+<li class="menupageitem"><a href="index.html">Welcome</a></li> 
+<li class="menupageitem"><a href="downloads.html">Download</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/InstallationInstructions">Installation</a></li> 
+<li class="menupageitem"><a href="http://sourceforge.net/mail/?group_id=12867">Mailing Lists</a></li> 
+<li class="menupageitem"><a href="license.html">License</a></li> 
+<li class="menupageitem"><a href="http://www.python.org/psf/">Foundation</a></li> 
+<li class="menupageitem"><a href="oldsites.html">Archived Sites</a></li> 
+<li class="menupageitem"><a href="acknowledgments.html">Acknowledgments</a></li> 
+<li class="menutitle">Documentation</li>
+<li class="menupageitem"><a href="currentdocs.html">Current Docs</a></li> 
+<li class="menupageitem"><a href="http://www.jython.org/devguide/">Core Development</a></li> 
+<li class="menupageitem"><a href="http://www.jython.org/jythonbook/en/1.0">Jython Book</a></li> 
+<li class="menutitle">Wiki links</li>
+<li class="menupageitem"><a href="http://wiki.python.org/jython/">Front page/News</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/JythonFaq">FAQ</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/WhyJython">Why Jython?</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/UserGuide">User Guide</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/JythonBibliography">Books and Articles</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/JythonMonthly/Newsletters">Jython Monthly</a></li> 
+<li class="menupageitem"><a href="http://wiki.python.org/jython/ReportingBugs">Reporting Bugs</a></li> 
+</ul>
+</div>
+</div>
+<div id="extra">
+<div class="applemenu">
+<div class="silverheader"><a>Using Jython</a></div>
+<div class="submenu">
+<iframe src="faq.htm" style="border: 0px; width:100%;height:100%"></iframe>
+</div>
+<div class="silverheader"><a>IRC Chat</a></div>
+<div class="submenu">
+<iframe style="border: 0px; width: 100%; height: 100%" src="JythonIrcLogin.html"></iframe>
+</div>
+<div class="silverheader"><a>Developer Information</a></div>
+<div class="submenu">
+<iframe src="developer.htm" style="border: 0px; width:100%; height:100%"></iframe>
+</div>
+</div>
+<br/><br/>
+</div>
+<div id="footer">
+<ul><li><a href="http://wiki.python.org/jython/JythonFaq">About</a></li>
+<li><a href="http://www.jython.org/jythonpodcast/">Jython Podcast</a></li>
+<li><a href="license.html">License</a>
+</ul>
+</div>
+</div></body>

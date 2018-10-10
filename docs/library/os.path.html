@@ -1,0 +1,395 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>10.1. os.path — Common pathname manipulations &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="10. File and Directory Access" href="filesys.html" />
+    <link rel="next" title="10.2. fileinput — Iterate over lines from multiple input streams" href="fileinput.html" />
+    <link rel="prev" title="10. File and Directory Access" href="filesys.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="fileinput.html" title="10.2. fileinput — Iterate over lines from multiple input streams"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="filesys.html" title="10. File and Directory Access"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="filesys.html" accesskey="U">10. File and Directory Access</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="filesys.html"
+                                  title="previous chapter">10. File and Directory Access</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="fileinput.html"
+                                  title="next chapter">10.2. <tt class="docutils literal docutils literal"><span class="pre">fileinput</span></tt> &#8212; Iterate over lines from multiple input streams</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/os.path.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="os-path-common-pathname-manipulations">
+<h1>10.1. <tt class="docutils literal"><span class="pre">os.path</span></tt> &#8212; Common pathname manipulations<a class="headerlink" href="#os-path-common-pathname-manipulations" title="Permalink to this headline">¶</a></h1>
+<p>This module implements some useful functions on pathnames. To read or
+write files see <tt class="docutils literal"><span class="pre">open()</span></tt>, and for accessing the filesystem see the
+<tt class="docutils literal"><span class="pre">os</span></tt> module.</p>
+<dl class="docutils">
+<dt>Note: On Windows, many of these functions do not properly support UNC</dt>
+<dd>pathnames. <tt class="docutils literal"><span class="pre">splitunc()</span></tt> and <tt class="docutils literal"><span class="pre">ismount()</span></tt> do handle them
+correctly.</dd>
+<dt>Note: Since different operating systems have different path name</dt>
+<dd><p class="first">conventions, there are several versions of this module in the
+standard library.  The <tt class="docutils literal"><span class="pre">os.path</span></tt> module is always the path module
+suitable for the operating system Python is running on, and
+therefore usable for local paths.  However, you can also import and
+use the individual modules if you want to manipulate a path that is
+<em>always</em> in one of the different formats.  They all have the same
+interface:</p>
+<ul class="last simple">
+<li><tt class="docutils literal"><span class="pre">posixpath</span></tt> for UNIX-style paths</li>
+<li><tt class="docutils literal"><span class="pre">ntpath</span></tt> for Windows paths</li>
+<li><tt class="docutils literal"><span class="pre">macpath</span></tt> for old-style MacOS paths</li>
+<li><tt class="docutils literal"><span class="pre">os2emxpath</span></tt> for OS/2 EMX paths</li>
+</ul>
+</dd>
+</dl>
+<p>os.path.abspath(path)</p>
+<blockquote>
+<p>Return a normalized absolutized version of the pathname <em>path</em>. On
+most platforms, this is equivalent to <tt class="docutils literal"><span class="pre">normpath(join(os.getcwd(),</span>
+<span class="pre">path))</span></tt>.</p>
+<p>New in version 1.5.2.</p>
+</blockquote>
+<p>os.path.basename(path)</p>
+<blockquote>
+Return the base name of pathname <em>path</em>.  This is the second half
+of the pair returned by <tt class="docutils literal"><span class="pre">split(path)</span></tt>.  Note that the result of
+this function is different from the Unix <strong>basename</strong> program;
+where <strong>basename</strong> for <tt class="docutils literal"><span class="pre">'/foo/bar/'</span></tt> returns <tt class="docutils literal"><span class="pre">'bar'</span></tt>, the
+<tt class="docutils literal"><span class="pre">basename()</span></tt> function returns an empty string (<tt class="docutils literal"><span class="pre">''</span></tt>).</blockquote>
+<p>os.path.commonprefix(list)</p>
+<blockquote>
+Return the longest path prefix (taken character-by-character) that
+is a prefix of all paths in  <em>list</em>.  If <em>list</em> is empty, return
+the empty string (<tt class="docutils literal"><span class="pre">''</span></tt>). Note that this may return invalid paths
+because it works a character at a time.</blockquote>
+<p>os.path.dirname(path)</p>
+<blockquote>
+Return the directory name of pathname <em>path</em>.  This is the first
+half of the pair returned by <tt class="docutils literal"><span class="pre">split(path)</span></tt>.</blockquote>
+<p>os.path.exists(path)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>path</em> refers to an existing path.  Returns
+<tt class="xref docutils literal"><span class="pre">False</span></tt> for broken symbolic links. On some platforms, this
+function may return <tt class="xref docutils literal"><span class="pre">False</span></tt> if permission is not granted to
+execute <tt class="docutils literal"><span class="pre">os.stat()</span></tt> on the requested file, even if the <em>path</em>
+physically exists.</blockquote>
+<p>os.path.lexists(path)</p>
+<blockquote>
+<p>Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>path</em> refers to an existing path. Returns
+<tt class="xref docutils literal"><span class="pre">True</span></tt> for broken symbolic links.   Equivalent to <tt class="docutils literal"><span class="pre">exists()</span></tt> on
+platforms lacking <tt class="docutils literal"><span class="pre">os.lstat()</span></tt>.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>os.path.expanduser(path)</p>
+<blockquote>
+<p>On Unix and Windows, return the argument with an initial component
+of <tt class="docutils literal"><span class="pre">~</span></tt> or <tt class="docutils literal"><span class="pre">~user</span></tt> replaced by that <em>user</em>&#8216;s home directory.</p>
+<p>On Unix, an initial <tt class="docutils literal"><span class="pre">~</span></tt> is replaced by the environment variable
+<strong>HOME</strong> if it is set; otherwise the current user&#8217;s home directory
+is looked up in the password directory through the built-in module
+<tt class="docutils literal"><span class="pre">pwd</span></tt>. An initial <tt class="docutils literal"><span class="pre">~user</span></tt> is looked up directly in the password
+directory.</p>
+<p>On Windows, <strong>HOME</strong> and <strong>USERPROFILE</strong> will be used if set,
+otherwise a combination of <strong>HOMEPATH</strong> and <strong>HOMEDRIVE</strong> will be
+used.  An initial <tt class="docutils literal"><span class="pre">~user</span></tt> is handled by stripping the last
+directory component from the created user path derived above.</p>
+<p>If the expansion fails or if the path does not begin with a tilde,
+the path is returned unchanged.</p>
+</blockquote>
+<p>os.path.expandvars(path)</p>
+<blockquote>
+<p>Return the argument with environment variables expanded.
+Substrings of the form <tt class="docutils literal"><span class="pre">$name</span></tt> or <tt class="docutils literal"><span class="pre">${name}</span></tt> are replaced by the
+value of environment variable <em>name</em>.  Malformed variable names and
+references to non-existing variables are left unchanged.</p>
+<p>On Windows, <tt class="docutils literal"><span class="pre">%name%</span></tt> expansions are supported in addition to
+<tt class="docutils literal"><span class="pre">$name</span></tt> and <tt class="docutils literal"><span class="pre">${name}</span></tt>.</p>
+</blockquote>
+<p>os.path.getatime(path)</p>
+<blockquote>
+<p>Return the time of last access of <em>path</em>.  The return value is a
+number giving the number of seconds since the epoch (see the
+<tt class="docutils literal"><span class="pre">time</span></tt> module).  Raise <tt class="docutils literal"><span class="pre">os.error</span></tt> if the file does not exist or
+is inaccessible.</p>
+<p>New in version 1.5.2.</p>
+<p>Changed in version 2.3: If <tt class="docutils literal"><span class="pre">os.stat_float_times()</span></tt> returns True,
+the result is a floating point number.</p>
+</blockquote>
+<p>os.path.getmtime(path)</p>
+<blockquote>
+<p>Return the time of last modification of <em>path</em>.  The return value
+is a number giving the number of seconds since the epoch (see the
+<tt class="docutils literal"><span class="pre">time</span></tt> module). Raise <tt class="docutils literal"><span class="pre">os.error</span></tt> if the file does not exist or
+is inaccessible.</p>
+<p>New in version 1.5.2.</p>
+<p>Changed in version 2.3: If <tt class="docutils literal"><span class="pre">os.stat_float_times()</span></tt> returns True,
+the result is a floating point number.</p>
+</blockquote>
+<p>os.path.getctime(path)</p>
+<blockquote>
+<p>Return the system&#8217;s ctime which, on some systems (like Unix) is the
+time of the last change, and, on others (like Windows), is the
+creation time for <em>path</em>. The return value is a number giving the
+number of seconds since the epoch (see the  <tt class="docutils literal"><span class="pre">time</span></tt> module).
+Raise <tt class="docutils literal"><span class="pre">os.error</span></tt> if the file does not exist or is inaccessible.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>os.path.getsize(path)</p>
+<blockquote>
+<p>Return the size, in bytes, of <em>path</em>.  Raise <tt class="docutils literal"><span class="pre">os.error</span></tt> if the
+file does not exist or is inaccessible.</p>
+<p>New in version 1.5.2.</p>
+</blockquote>
+<p>os.path.isabs(path)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>path</em> is an absolute pathname.  On Unix, that
+means it begins with a slash, on Windows that it begins with a
+(back)slash after chopping off a potential drive letter.</blockquote>
+<p>os.path.isfile(path)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>path</em> is an existing regular file.  This
+follows symbolic links, so both <tt class="docutils literal"><span class="pre">islink()</span></tt> and <tt class="docutils literal"><span class="pre">isfile()</span></tt> can
+be true for the same path.</blockquote>
+<p>os.path.isdir(path)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>path</em> is an existing directory.  This follows
+symbolic links, so both <tt class="docutils literal"><span class="pre">islink()</span></tt> and <tt class="docutils literal"><span class="pre">isdir()</span></tt> can be true
+for the same path.</blockquote>
+<p>os.path.islink(path)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>path</em> refers to a directory entry that is a
+symbolic link. Always <tt class="xref docutils literal"><span class="pre">False</span></tt> if symbolic links are not
+supported.</blockquote>
+<p>os.path.ismount(path)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if pathname <em>path</em> is a <em>mount point</em>: a point in a
+file system where a different file system has been mounted.  The
+function checks whether <em>path</em>&#8216;s parent, <tt class="docutils literal"><span class="pre">path/..</span></tt>, is on a
+different device than <em>path</em>, or whether <tt class="docutils literal"><span class="pre">path/..</span></tt> and <em>path</em>
+point to the same i-node on the same device &#8212; this should detect
+mount points for all Unix and POSIX variants.</blockquote>
+<p>os.path.join(path1[, path2[, ...]])</p>
+<blockquote>
+Join one or more path components intelligently.  If any component
+is an absolute path, all previous components (on Windows, including
+the previous drive letter, if there was one) are thrown away, and
+joining continues.  The return value is the concatenation of
+<em>path1</em>, and optionally <em>path2</em>, etc., with exactly one directory
+separator (<tt class="docutils literal"><span class="pre">os.sep</span></tt>) inserted between components, unless <em>path2</em>
+is empty.  Note that on Windows, since there is a current directory
+for each drive, <tt class="docutils literal"><span class="pre">os.path.join(&quot;c:&quot;,</span> <span class="pre">&quot;foo&quot;)</span></tt> represents a path
+relative to the current directory on drive <tt class="docutils literal"><span class="pre">C:</span></tt> (<tt class="docutils literal"><span class="pre">c:foo</span></tt>), not
+<tt class="docutils literal"><span class="pre">c:\foo</span></tt>.</blockquote>
+<p>os.path.normcase(path)</p>
+<blockquote>
+Normalize the case of a pathname.  On Unix and Mac OS X, this
+returns the path unchanged; on case-insensitive filesystems, it
+converts the path to lowercase.  On Windows, it also converts
+forward slashes to backward slashes.</blockquote>
+<p>os.path.normpath(path)</p>
+<blockquote>
+Normalize a pathname.  This collapses redundant separators and up-
+level references so that <tt class="docutils literal"><span class="pre">A//B</span></tt>, <tt class="docutils literal"><span class="pre">A/./B</span></tt> and <tt class="docutils literal"><span class="pre">A/foo/../B</span></tt> all
+become <tt class="docutils literal"><span class="pre">A/B</span></tt>. It does not normalize the case (use <tt class="docutils literal"><span class="pre">normcase()</span></tt>
+for that).  On Windows, it converts forward slashes to backward
+slashes. It should be understood that this may change the meaning
+of the path if it contains symbolic links!</blockquote>
+<p>os.path.realpath(path)</p>
+<blockquote>
+<p>Return the canonical path of the specified filename, eliminating
+any symbolic links encountered in the path (if they are supported
+by the operating system).</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>os.path.relpath(path[, start])</p>
+<blockquote>
+<p>Return a relative filepath to <em>path</em> either from the current
+directory or from an optional <em>start</em> point.</p>
+<p><em>start</em> defaults to <tt class="docutils literal"><span class="pre">os.curdir</span></tt>. Availability:  Windows, Unix.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>os.path.samefile(path1, path2)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if both pathname arguments refer to the same file
+or directory (as indicated by device number and i-node number).
+Raise an exception if a <tt class="docutils literal"><span class="pre">os.stat()</span></tt> call on either pathname
+fails. Availability: Unix.</blockquote>
+<p>os.path.sameopenfile(fp1, fp2)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the file descriptors <em>fp1</em> and <em>fp2</em> refer to
+the same file. Availability: Unix.</blockquote>
+<p>os.path.samestat(stat1, stat2)</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">True</span></tt> if the stat tuples <em>stat1</em> and <em>stat2</em> refer to the
+same file. These structures may have been returned by <tt class="docutils literal"><span class="pre">fstat()</span></tt>,
+<tt class="docutils literal"><span class="pre">lstat()</span></tt>, or <tt class="docutils literal"><span class="pre">stat()</span></tt>.  This function implements the
+underlying comparison used by <tt class="docutils literal"><span class="pre">samefile()</span></tt> and
+<tt class="docutils literal"><span class="pre">sameopenfile()</span></tt>. Availability: Unix.</blockquote>
+<p>os.path.split(path)</p>
+<blockquote>
+Split the pathname <em>path</em> into a pair, <tt class="docutils literal"><span class="pre">(head,</span> <span class="pre">tail)</span></tt> where
+<em>tail</em> is the last pathname component and <em>head</em> is everything
+leading up to that.  The <em>tail</em> part will never contain a slash; if
+<em>path</em> ends in a slash, <em>tail</em> will be empty.  If there is no slash
+in <em>path</em>, <em>head</em> will be empty.  If <em>path</em> is empty, both <em>head</em>
+and <em>tail</em> are empty.  Trailing slashes are stripped from <em>head</em>
+unless it is the root (one or more slashes only).  In nearly all
+cases, <tt class="docutils literal"><span class="pre">join(head,</span> <span class="pre">tail)</span></tt> equals <em>path</em> (the only exception being
+when there were multiple slashes separating <em>head</em> from <em>tail</em>).</blockquote>
+<p>os.path.splitdrive(path)</p>
+<blockquote>
+<p>Split the pathname <em>path</em> into a pair <tt class="docutils literal"><span class="pre">(drive,</span> <span class="pre">tail)</span></tt> where
+<em>drive</em> is either a drive specification or the empty string.  On
+systems which do not use drive specifications, <em>drive</em> will always
+be the empty string.  In all cases, <tt class="docutils literal"><span class="pre">drive</span> <span class="pre">+</span> <span class="pre">tail</span></tt> will be the
+same as <em>path</em>.</p>
+<p>New in version 1.3.</p>
+</blockquote>
+<p>os.path.splitext(path)</p>
+<blockquote>
+<p>Split the pathname <em>path</em> into a pair <tt class="docutils literal"><span class="pre">(root,</span> <span class="pre">ext)</span></tt>  such that
+<tt class="docutils literal"><span class="pre">root</span> <span class="pre">+</span> <span class="pre">ext</span> <span class="pre">==</span> <span class="pre">path</span></tt>, and <em>ext</em> is empty or begins with a period
+and contains at most one period. Leading periods on the basename
+are  ignored; <tt class="docutils literal"><span class="pre">splitext('.cshrc')</span></tt> returns  <tt class="docutils literal"><span class="pre">('.cshrc',</span> <span class="pre">'')</span></tt>.</p>
+<p>Changed in version 2.6: Earlier versions could produce an empty
+root when the only period was the first character.</p>
+</blockquote>
+<p>os.path.splitunc(path)</p>
+<blockquote>
+Split the pathname <em>path</em> into a pair <tt class="docutils literal"><span class="pre">(unc,</span> <span class="pre">rest)</span></tt> so that <em>unc</em>
+is the UNC mount point (such as <tt class="docutils literal"><span class="pre">r'\\host\mount'</span></tt>), if present,
+and <em>rest</em> the rest of the path (such as  <tt class="docutils literal"><span class="pre">r'\path\file.ext'</span></tt>).
+For paths containing drive letters, <em>unc</em> will always be the empty
+string. Availability:  Windows.</blockquote>
+<p>os.path.walk(path, visit, arg)</p>
+<blockquote>
+<p>Calls the function <em>visit</em> with arguments <tt class="docutils literal"><span class="pre">(arg,</span> <span class="pre">dirname,</span> <span class="pre">names)</span></tt>
+for each directory in the directory tree rooted at <em>path</em>
+(including <em>path</em> itself, if it is a directory).  The argument
+<em>dirname</em> specifies the visited directory, the argument <em>names</em>
+lists the files in the directory (gotten from
+<tt class="docutils literal"><span class="pre">os.listdir(dirname)</span></tt>). The <em>visit</em> function may modify <em>names</em>
+to influence the set of directories visited below <em>dirname</em>, e.g.
+to avoid visiting certain parts of the tree.  (The object referred
+to by <em>names</em> must be modified in place, using <tt class="docutils literal"><span class="pre">del</span></tt> or slice
+assignment.)</p>
+<dl class="docutils">
+<dt>Note: Symbolic links to directories are not treated as subdirectories,</dt>
+<dd>and that <tt class="docutils literal"><span class="pre">walk()</span></tt> therefore will not visit them. To visit
+linked directories you must identify them with
+<tt class="docutils literal"><span class="pre">os.path.islink(file)</span></tt> and <tt class="docutils literal"><span class="pre">os.path.isdir(file)</span></tt>, and invoke
+<tt class="docutils literal"><span class="pre">walk()</span></tt> as necessary.</dd>
+<dt>Note: This function is deprecated and has been removed in 3.0 in favor</dt>
+<dd>of <tt class="docutils literal"><span class="pre">os.walk()</span></tt>.</dd>
+</dl>
+</blockquote>
+<p>os.path.supports_unicode_filenames</p>
+<blockquote>
+<p>True if arbitrary Unicode strings can be used as file names (within
+limitations imposed by the file system), and if <tt class="docutils literal"><span class="pre">os.listdir()</span></tt>
+returns Unicode strings for a Unicode argument.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fileinput.html" title="10.2. fileinput — Iterate over lines from multiple input streams"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="filesys.html" title="10. File and Directory Access"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="filesys.html" >10. File and Directory Access</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

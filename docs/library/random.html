@@ -1,0 +1,401 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9.4. random — Generate pseudo-random numbers &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="9. Numeric and Mathematical Modules" href="numeric.html" />
+    <link rel="next" title="9.5. itertools — Functions creating iterators for efficient looping" href="itertools.html" />
+    <link rel="prev" title="9.3. decimal — Decimal fixed point and floating point arithmetic" href="decimal.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="itertools.html" title="9.5. itertools — Functions creating iterators for efficient looping"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="decimal.html" title="9.3. decimal — Decimal fixed point and floating point arithmetic"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="numeric.html" accesskey="U">9. Numeric and Mathematical Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="decimal.html"
+                                  title="previous chapter">9.3. <tt class="docutils literal docutils literal docutils literal"><span class="pre">decimal</span></tt> &#8212; Decimal fixed point and floating point arithmetic</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="itertools.html"
+                                  title="next chapter">9.5. <tt class="docutils literal docutils literal docutils literal"><span class="pre">itertools</span></tt> &#8212; Functions creating iterators for efficient looping</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/random.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="random-generate-pseudo-random-numbers">
+<h1>9.4. <tt class="docutils literal"><span class="pre">random</span></tt> &#8212; Generate pseudo-random numbers<a class="headerlink" href="#random-generate-pseudo-random-numbers" title="Permalink to this headline">¶</a></h1>
+<p>This module implements pseudo-random number generators for various
+distributions.</p>
+<p>For integers, uniform selection from a range. For sequences, uniform
+selection of a random element, a function to generate a random
+permutation of a list in-place, and a function for random sampling
+without replacement.</p>
+<p>On the real line, there are functions to compute uniform, normal
+(Gaussian), lognormal, negative exponential, gamma, and beta
+distributions. For generating distributions of angles, the von Mises
+distribution is available.</p>
+<p>Almost all module functions depend on the basic function <tt class="docutils literal"><span class="pre">random()</span></tt>,
+which generates a random float uniformly in the semi-open range [0.0,
+1.0).  Python uses the Mersenne Twister as the core generator.  It
+produces 53-bit precision floats and has a period of 2**19937-1.  The
+underlying implementation in C is both fast and threadsafe.  The
+Mersenne Twister is one of the most extensively tested random number
+generators in existence.  However, being completely deterministic, it
+is not suitable for all purposes, and is completely unsuitable for
+cryptographic purposes.</p>
+<p>The functions supplied by this module are actually bound methods of a
+hidden instance of the <tt class="docutils literal"><span class="pre">random.Random</span></tt> class.  You can instantiate
+your own instances of <tt class="docutils literal"><span class="pre">Random</span></tt> to get generators that don&#8217;t share
+state.  This is especially useful for multi-threaded programs,
+creating a different instance of <tt class="docutils literal"><span class="pre">Random</span></tt> for each thread, and using
+the <tt class="docutils literal"><span class="pre">jumpahead()</span></tt> method to make it likely that the generated
+sequences seen by each thread don&#8217;t overlap.</p>
+<p>Class <tt class="docutils literal"><span class="pre">Random</span></tt> can also be subclassed if you want to use a different
+basic generator of your own devising: in that case, override the
+<tt class="docutils literal"><span class="pre">random()</span></tt>, <tt class="docutils literal"><span class="pre">seed()</span></tt>, <tt class="docutils literal"><span class="pre">getstate()</span></tt>, <tt class="docutils literal"><span class="pre">setstate()</span></tt> and
+<tt class="docutils literal"><span class="pre">jumpahead()</span></tt> methods. Optionally, a new generator can supply a
+<tt class="docutils literal"><span class="pre">getrandbits()</span></tt> method &#8212; this allows <tt class="docutils literal"><span class="pre">randrange()</span></tt> to produce
+selections over an arbitrarily large range.</p>
+<p>New in version 2.4: the <tt class="docutils literal"><span class="pre">getrandbits()</span></tt> method.</p>
+<p>As an example of subclassing, the <tt class="docutils literal"><span class="pre">random</span></tt> module provides the
+<tt class="docutils literal"><span class="pre">WichmannHill</span></tt> class that implements an alternative generator in
+pure Python.  The class provides a backward compatible way to
+reproduce results from earlier versions of Python, which used the
+Wichmann-Hill algorithm as the core generator.  Note that this
+Wichmann-Hill generator can no longer be recommended: its period is
+too short by contemporary standards, and the sequence generated is
+known to fail some stringent randomness tests.  See the references
+below for a recent variant that repairs these flaws.</p>
+<p>Changed in version 2.3: Substituted MersenneTwister for Wichmann-Hill.</p>
+<p>Bookkeeping functions:</p>
+<p>random.seed([x])</p>
+<blockquote>
+<p>Initialize the basic random number generator. Optional argument <em>x</em>
+can be any <em>hashable</em> object. If <em>x</em> is omitted or <tt class="xref docutils literal"><span class="pre">None</span></tt>,
+current system time is used; current system time is also used to
+initialize the generator when the module is first imported.  If
+randomness sources are provided by the operating system, they are
+used instead of the system time (see the <tt class="docutils literal"><span class="pre">os.urandom()</span></tt> function
+for details on availability).</p>
+<p>Changed in version 2.4: formerly, operating system resources were
+not used.</p>
+<p>If <em>x</em> is not <tt class="xref docutils literal"><span class="pre">None</span></tt> or an int or long, <tt class="docutils literal"><span class="pre">hash(x)</span></tt> is used
+instead. If <em>x</em> is an int or long, <em>x</em> is used directly.</p>
+</blockquote>
+<p>random.getstate()</p>
+<blockquote>
+<p>Return an object capturing the current internal state of the
+generator.  This object can be passed to <tt class="docutils literal"><span class="pre">setstate()</span></tt> to restore
+the state.</p>
+<p>New in version 2.1.</p>
+<p>Changed in version 2.6: State values produced in Python 2.6 cannot
+be loaded into earlier versions.</p>
+</blockquote>
+<p>random.setstate(state)</p>
+<blockquote>
+<p><em>state</em> should have been obtained from a previous call to
+<tt class="docutils literal"><span class="pre">getstate()</span></tt>, and <tt class="docutils literal"><span class="pre">setstate()</span></tt> restores the internal state of
+the generator to what it was at the time <tt class="docutils literal"><span class="pre">setstate()</span></tt> was called.</p>
+<p>New in version 2.1.</p>
+</blockquote>
+<p>random.jumpahead(n)</p>
+<blockquote>
+<p>Change the internal state to one different from and likely far away
+from the current state.  <em>n</em> is a non-negative integer which is
+used to scramble the current state vector.  This is most useful in
+multi-threaded programs, in conjunction with multiple instances of
+the <tt class="docutils literal"><span class="pre">Random</span></tt> class: <tt class="docutils literal"><span class="pre">setstate()</span></tt> or <tt class="docutils literal"><span class="pre">seed()</span></tt> can be used to
+force all instances into the same internal state, and then
+<tt class="docutils literal"><span class="pre">jumpahead()</span></tt> can be used to force the instances&#8217; states far
+apart.</p>
+<p>New in version 2.1.</p>
+<p>Changed in version 2.3: Instead of jumping to a specific state, <em>n</em>
+steps ahead, <tt class="docutils literal"><span class="pre">jumpahead(n)</span></tt> jumps to another state likely to be
+separated by many steps.</p>
+</blockquote>
+<p>random.getrandbits(k)</p>
+<blockquote>
+<p>Returns a python <tt class="docutils literal"><span class="pre">long</span></tt> int with <em>k</em> random bits. This method is
+supplied with the MersenneTwister generator and some other
+generators may also provide it as an optional part of the API. When
+available, <tt class="docutils literal"><span class="pre">getrandbits()</span></tt> enables <tt class="docutils literal"><span class="pre">randrange()</span></tt> to handle
+arbitrarily large ranges.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>Functions for integers:</p>
+<p>random.randrange([start], stop[, step])</p>
+<blockquote>
+<p>Return a randomly selected element from <tt class="docutils literal"><span class="pre">range(start,</span> <span class="pre">stop,</span>
+<span class="pre">step)</span></tt>.  This is equivalent to <tt class="docutils literal"><span class="pre">choice(range(start,</span> <span class="pre">stop,</span>
+<span class="pre">step))</span></tt>, but doesn&#8217;t actually build a range object.</p>
+<p>New in version 1.5.2.</p>
+</blockquote>
+<p>random.randint(a, b)</p>
+<blockquote>
+Return a random integer <em>N</em> such that <tt class="docutils literal"><span class="pre">a</span> <span class="pre">&lt;=</span> <span class="pre">N</span> <span class="pre">&lt;=</span> <span class="pre">b</span></tt>.</blockquote>
+<p>Functions for sequences:</p>
+<p>random.choice(seq)</p>
+<blockquote>
+Return a random element from the non-empty sequence <em>seq</em>. If <em>seq</em>
+is empty, raises <tt class="docutils literal"><span class="pre">IndexError</span></tt>.</blockquote>
+<p>random.shuffle(x[, random])</p>
+<blockquote>
+<p>Shuffle the sequence <em>x</em> in place. The optional argument <em>random</em>
+is a 0-argument function returning a random float in [0.0, 1.0); by
+default, this is the function <tt class="docutils literal"><span class="pre">random()</span></tt>.</p>
+<p>Note that for even rather small <tt class="docutils literal"><span class="pre">len(x)</span></tt>, the total number of
+permutations of <em>x</em> is larger than the period of most random number
+generators; this implies that most permutations of a long sequence
+can never be generated.</p>
+</blockquote>
+<p>random.sample(population, k)</p>
+<blockquote>
+<p>Return a <em>k</em> length list of unique elements chosen from the
+population sequence. Used for random sampling without replacement.</p>
+<p>New in version 2.3.</p>
+<p>Returns a new list containing elements from the population while
+leaving the original population unchanged.  The resulting list is
+in selection order so that all sub-slices will also be valid random
+samples.  This allows raffle winners (the sample) to be partitioned
+into grand prize and second place winners (the subslices).</p>
+<p>Members of the population need not be <em>hashable</em> or unique.  If the
+population contains repeats, then each occurrence is a possible
+selection in the sample.</p>
+<p>To choose a sample from a range of integers, use an <tt class="docutils literal"><span class="pre">xrange()</span></tt>
+object as an argument.  This is especially fast and space efficient
+for sampling from a large population:  <tt class="docutils literal"><span class="pre">sample(xrange(10000000),</span>
+<span class="pre">60)</span></tt>.</p>
+</blockquote>
+<p>The following functions generate specific real-valued distributions.
+Function parameters are named after the corresponding variables in the
+distribution&#8217;s equation, as used in common mathematical practice; most
+of these equations can be found in any statistics text.</p>
+<p>random.random()</p>
+<blockquote>
+Return the next random floating point number in the range [0.0,
+1.0).</blockquote>
+<p>random.uniform(a, b)</p>
+<blockquote>
+<p>Return a random floating point number <em>N</em> such that <tt class="docutils literal"><span class="pre">a</span> <span class="pre">&lt;=</span> <span class="pre">N</span> <span class="pre">&lt;=</span> <span class="pre">b</span></tt>
+for <tt class="docutils literal"><span class="pre">a</span> <span class="pre">&lt;=</span> <span class="pre">b</span></tt> and <tt class="docutils literal"><span class="pre">b</span> <span class="pre">&lt;=</span> <span class="pre">N</span> <span class="pre">&lt;=</span> <span class="pre">a</span></tt> for <tt class="docutils literal"><span class="pre">b</span> <span class="pre">&lt;</span> <span class="pre">a</span></tt>.</p>
+<p>The end-point value <tt class="docutils literal"><span class="pre">b</span></tt> may or may not be included in the range
+depending on floating-point rounding in the equation <tt class="docutils literal"><span class="pre">a</span> <span class="pre">+</span> <span class="pre">(b-a)</span> <span class="pre">*</span>
+<span class="pre">random()</span></tt>.</p>
+</blockquote>
+<p>random.triangular(low, high, mode)</p>
+<blockquote>
+<p>Return a random floating point number <em>N</em> such that <tt class="docutils literal"><span class="pre">low</span> <span class="pre">&lt;=</span> <span class="pre">N</span> <span class="pre">&lt;=</span>
+<span class="pre">high</span></tt> and with the specified <em>mode</em> between those bounds.  The
+<em>low</em> and <em>high</em> bounds default to zero and one.  The <em>mode</em>
+argument defaults to the midpoint between the bounds, giving a
+symmetric distribution.</p>
+<p>New in version 2.6.</p>
+</blockquote>
+<p>random.betavariate(alpha, beta)</p>
+<blockquote>
+Beta distribution.  Conditions on the parameters are <tt class="docutils literal"><span class="pre">alpha</span> <span class="pre">&gt;</span> <span class="pre">0</span></tt>
+and <tt class="docutils literal"><span class="pre">beta</span> <span class="pre">&gt;</span> <span class="pre">0</span></tt>. Returned values range between 0 and 1.</blockquote>
+<p>random.expovariate(lambd)</p>
+<blockquote>
+Exponential distribution.  <em>lambd</em> is 1.0 divided by the desired
+mean.  It should be nonzero.  (The parameter would be called
+&#8220;lambda&#8221;, but that is a reserved word in Python.)  Returned values
+range from 0 to positive infinity if <em>lambd</em> is positive, and from
+negative infinity to 0 if <em>lambd</em> is negative.</blockquote>
+<p>random.gammavariate(alpha, beta)</p>
+<blockquote>
+Gamma distribution.  (<em>Not</em> the gamma function!)  Conditions on the
+parameters are <tt class="docutils literal"><span class="pre">alpha</span> <span class="pre">&gt;</span> <span class="pre">0</span></tt> and <tt class="docutils literal"><span class="pre">beta</span> <span class="pre">&gt;</span> <span class="pre">0</span></tt>.</blockquote>
+<p>random.gauss(mu, sigma)</p>
+<blockquote>
+Gaussian distribution.  <em>mu</em> is the mean, and <em>sigma</em> is the
+standard deviation.  This is slightly faster than the
+<tt class="docutils literal"><span class="pre">normalvariate()</span></tt> function defined below.</blockquote>
+<p>random.lognormvariate(mu, sigma)</p>
+<blockquote>
+Log normal distribution.  If you take the natural logarithm of this
+distribution, you&#8217;ll get a normal distribution with mean <em>mu</em> and
+standard deviation <em>sigma</em>.  <em>mu</em> can have any value, and <em>sigma</em>
+must be greater than zero.</blockquote>
+<p>random.normalvariate(mu, sigma)</p>
+<blockquote>
+Normal distribution.  <em>mu</em> is the mean, and <em>sigma</em> is the standard
+deviation.</blockquote>
+<p>random.vonmisesvariate(mu, kappa)</p>
+<blockquote>
+<em>mu</em> is the mean angle, expressed in radians between 0 and 2**pi*,
+and <em>kappa</em> is the concentration parameter, which must be greater
+than or equal to zero.  If <em>kappa</em> is equal to zero, this
+distribution reduces to a uniform random angle over the range 0 to
+2**pi*.</blockquote>
+<p>random.paretovariate(alpha)</p>
+<blockquote>
+Pareto distribution.  <em>alpha</em> is the shape parameter.</blockquote>
+<p>random.weibullvariate(alpha, beta)</p>
+<blockquote>
+Weibull distribution.  <em>alpha</em> is the scale parameter and <em>beta</em> is
+the shape parameter.</blockquote>
+<p>Alternative Generators:</p>
+<p>class class random.WichmannHill([seed])</p>
+<blockquote>
+Class that implements the Wichmann-Hill algorithm as the core
+generator. Has all of the same methods as <tt class="docutils literal"><span class="pre">Random</span></tt> plus the
+<tt class="docutils literal"><span class="pre">whseed()</span></tt> method described below.  Because this class is
+implemented in pure Python, it is not threadsafe and may require
+locks between calls.  The period of the generator is
+6,953,607,871,644 which is small enough to require care that two
+independent random sequences do not overlap.</blockquote>
+<p>random.whseed([x])</p>
+<blockquote>
+This is obsolete, supplied for bit-level compatibility with
+versions of Python prior to 2.1. See <tt class="docutils literal"><span class="pre">seed()</span></tt> for details.
+<tt class="docutils literal"><span class="pre">whseed()</span></tt> does not guarantee that distinct integer arguments
+yield distinct internal states, and can yield no more than about
+2**24 distinct internal states in all.</blockquote>
+<p>class class random.SystemRandom([seed])</p>
+<blockquote>
+<p>Class that uses the <tt class="docutils literal"><span class="pre">os.urandom()</span></tt> function for generating random
+numbers from sources provided by the operating system. Not
+available on all systems. Does not rely on software state and
+sequences are not reproducible. Accordingly, the <tt class="docutils literal"><span class="pre">seed()</span></tt> and
+<tt class="docutils literal"><span class="pre">jumpahead()</span></tt> methods have no effect and are ignored. The
+<tt class="docutils literal"><span class="pre">getstate()</span></tt> and <tt class="docutils literal"><span class="pre">setstate()</span></tt> methods raise
+<tt class="docutils literal"><span class="pre">NotImplementedError</span></tt> if called.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>Examples of basic usage:</p>
+<blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>        <span class="c"># Random float x, 0.0 &lt;= x &lt; 1.0</span>
+<span class="go">0.37444887175646646</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c"># Random float x, 1.0 &lt;= x &lt; 10.0</span>
+<span class="go">1.1800146073117523</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c"># Integer from 1 to 10, endpoints included</span>
+<span class="go">7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># Even integer from 0 to 100</span>
+<span class="go">26</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="s">&#39;abcdefghij&#39;</span><span class="p">)</span>  <span class="c"># Choose a random element</span>
+<span class="go">&#39;c&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">items</span>
+<span class="go">[7, 3, 2, 5, 6, 4, 1]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>  <span class="mi">3</span><span class="p">)</span>  <span class="c"># Choose 3 elements</span>
+<span class="go">[4, 1, 5]</span>
+</pre></div>
+</div>
+</blockquote>
+<p>See also:</p>
+<blockquote>
+<p>M. Matsumoto and T. Nishimura, &#8220;Mersenne Twister: A
+623-dimensionally equidistributed uniform pseudorandom number
+generator&#8221;, ACM Transactions on Modeling and Computer Simulation
+Vol. 8, No. 1, January pp.3-30 1998.</p>
+<p>Wichmann, B. A. &amp; Hill, I. D., &#8220;Algorithm AS 183: An efficient and
+portable pseudo-random number generator&#8221;, Applied Statistics 31
+(1982) 188-190.</p>
+<p>Complementary-Multiply-with-Carry recipe for a compatible
+alternative random number generator with a long period and
+comparatively simple update operations.</p>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="itertools.html" title="9.5. itertools — Functions creating iterators for efficient looping"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="decimal.html" title="9.3. decimal — Decimal fixed point and floating point arithmetic"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="numeric.html" >9. Numeric and Mathematical Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

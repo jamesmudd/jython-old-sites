@@ -1,0 +1,740 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>20.21. cookielib — Cookie handling for HTTP clients &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="20. Internet Protocols and Support" href="internet.html" />
+    <link rel="next" title="20.22. xmlrpclib — XML-RPC client access" href="xmlrpclib.html" />
+    <link rel="prev" title="20.20. CGIHTTPServer — CGI-capable HTTP request handler" href="cgihttpserver.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="xmlrpclib.html" title="20.22. xmlrpclib — XML-RPC client access"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cgihttpserver.html" title="20.20. CGIHTTPServer — CGI-capable HTTP request handler"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" accesskey="U">20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">20.21. <tt class="docutils literal"><span class="pre">cookielib</span></tt> &#8212; Cookie handling for HTTP clients</a><ul>
+<li><a class="reference external" href="#cookiejar-and-filecookiejar-objects">20.21.1. CookieJar and FileCookieJar Objects</a></li>
+<li><a class="reference external" href="#filecookiejar-subclasses-and-co-operation-with-web-browsers">20.21.2. FileCookieJar subclasses and co-operation with web browsers</a></li>
+<li><a class="reference external" href="#cookiepolicy-objects">20.21.3. CookiePolicy Objects</a></li>
+<li><a class="reference external" href="#defaultcookiepolicy-objects">20.21.4. DefaultCookiePolicy Objects</a></li>
+<li><a class="reference external" href="#cookie-objects">20.21.5. Cookie Objects</a></li>
+<li><a class="reference external" href="#examples">20.21.6. Examples</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="cgihttpserver.html"
+                                  title="previous chapter">20.20. <tt class="docutils literal docutils literal"><span class="pre">CGIHTTPServer</span></tt> &#8212; CGI-capable HTTP request handler</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="xmlrpclib.html"
+                                  title="next chapter">20.22. <tt class="docutils literal"><span class="pre">xmlrpclib</span></tt> &#8212; XML-RPC client access</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/cookielib.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="cookielib-cookie-handling-for-http-clients">
+<h1>20.21. <tt class="docutils literal"><span class="pre">cookielib</span></tt> &#8212; Cookie handling for HTTP clients<a class="headerlink" href="#cookielib-cookie-handling-for-http-clients" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">cookielib</span></tt> module has been renamed to <tt class="docutils literal"><span class="pre">http.cookiejar</span></tt> in</dt>
+<dd>Python 3.0.  The <em>2to3</em> tool will automatically adapt imports when
+converting your sources to 3.0.</dd>
+</dl>
+<p>New in version 2.4.</p>
+<p>The <tt class="docutils literal"><span class="pre">cookielib</span></tt> module defines classes for automatic handling of
+HTTP cookies.  It is useful for accessing web sites that require small
+pieces of data &#8211; <em>cookies</em> &#8211; to be set on the client machine by an
+HTTP response from a web server, and then returned to the server in
+later HTTP requests.</p>
+<p>Both the regular Netscape cookie protocol and the protocol defined by
+<strong>RFC 2965</strong> are handled.  RFC 2965 handling is switched off by
+default. <strong>RFC 2109</strong> cookies are parsed as Netscape cookies and
+subsequently treated either as Netscape or RFC 2965 cookies according
+to the &#8216;policy&#8217; in effect. Note that the great majority of cookies on
+the Internet are Netscape cookies. <tt class="docutils literal"><span class="pre">cookielib</span></tt> attempts to follow
+the de-facto Netscape cookie protocol (which differs substantially
+from that set out in the original Netscape specification), including
+taking note of the <tt class="docutils literal"><span class="pre">max-age</span></tt> and <tt class="docutils literal"><span class="pre">port</span></tt> cookie-attributes
+introduced with RFC 2965.</p>
+<dl class="docutils">
+<dt>Note: The various named parameters found in <em>Set-Cookie</em> and <em>Set-Cookie2</em></dt>
+<dd>headers (eg. <tt class="docutils literal"><span class="pre">domain</span></tt> and <tt class="docutils literal"><span class="pre">expires</span></tt>) are conventionally referred
+to as <em>attributes</em>.  To distinguish them from Python attributes, the
+documentation for this module uses the term <em>cookie-attribute</em>
+instead.</dd>
+</dl>
+<p>The module defines the following exception:</p>
+<p>exception exception cookielib.LoadError</p>
+<blockquote>
+<p>Instances of <tt class="docutils literal"><span class="pre">FileCookieJar</span></tt> raise this exception on failure to
+load cookies from a file.</p>
+<dl class="docutils">
+<dt>Note: For backwards-compatibility with Python 2.4 (which raised an</dt>
+<dd><tt class="docutils literal"><span class="pre">IOError</span></tt>), <tt class="docutils literal"><span class="pre">LoadError</span></tt> is a subclass of <tt class="docutils literal"><span class="pre">IOError</span></tt>.</dd>
+</dl>
+</blockquote>
+<p>The following classes are provided:</p>
+<p>class class cookielib.CookieJar(policy=None)</p>
+<blockquote>
+<p><em>policy</em> is an object implementing the <tt class="docutils literal"><span class="pre">CookiePolicy</span></tt> interface.</p>
+<p>The <tt class="docutils literal"><span class="pre">CookieJar</span></tt> class stores HTTP cookies.  It extracts cookies
+from HTTP requests, and returns them in HTTP responses.
+<tt class="docutils literal"><span class="pre">CookieJar</span></tt> instances automatically expire contained cookies when
+necessary.  Subclasses are also responsible for storing and
+retrieving cookies from a file or database.</p>
+</blockquote>
+<p>class class cookielib.FileCookieJar(filename, delayload=None, policy=None)</p>
+<blockquote>
+<p><em>policy</em> is an object implementing the <tt class="docutils literal"><span class="pre">CookiePolicy</span></tt> interface.
+For the other arguments, see the documentation for the
+corresponding attributes.</p>
+<p>A <tt class="docutils literal"><span class="pre">CookieJar</span></tt> which can load cookies from, and perhaps save
+cookies to, a file on disk.  Cookies are <strong>NOT</strong> loaded from the
+named file until either the <tt class="docutils literal"><span class="pre">load()</span></tt> or <tt class="docutils literal"><span class="pre">revert()</span></tt> method is
+called.  Subclasses of this class are documented in section
+<em>FileCookieJar subclasses and co-operation with web browsers</em>.</p>
+</blockquote>
+<p>class class cookielib.CookiePolicy</p>
+<blockquote>
+This class is responsible for deciding whether each cookie should
+be accepted from / returned to the server.</blockquote>
+<p>class class cookielib.DefaultCookiePolicy(blocked_domains=None, allowed_domains=None, netscape=True, rfc2965=False, rfc2109_as_netscape=None, hide_cookie2=False, strict_domain=False, strict_rfc2965_unverifiable=True, strict_ns_unverifiable=False, strict_ns_domain=DefaultCookiePolicy.DomainLiberal, strict_ns_set_initial_dollar=False, strict_ns_set_path=False)</p>
+<blockquote>
+<p>Constructor arguments should be passed as keyword arguments only.
+<em>blocked_domains</em> is a sequence of domain names that we never
+accept cookies from, nor return cookies to. <em>allowed_domains</em> if
+not <tt class="xref docutils literal"><span class="pre">None</span></tt>, this is a sequence of the only domains for which we
+accept and return cookies.  For all other arguments, see the
+documentation for <tt class="docutils literal"><span class="pre">CookiePolicy</span></tt> and <tt class="docutils literal"><span class="pre">DefaultCookiePolicy</span></tt>
+objects.</p>
+<p><tt class="docutils literal"><span class="pre">DefaultCookiePolicy</span></tt> implements the standard accept / reject
+rules for Netscape and RFC 2965 cookies.  By default, RFC 2109
+cookies (ie. cookies received in a <em>Set-Cookie</em> header with a
+version cookie-attribute of 1) are treated according to the RFC
+2965 rules.  However, if RFC 2965 handling is turned off or
+<tt class="docutils literal"><span class="pre">rfc2109_as_netscape</span></tt> is True, RFC 2109 cookies are &#8216;downgraded&#8217;
+by the <tt class="docutils literal"><span class="pre">CookieJar</span></tt> instance to Netscape cookies, by setting the
+<tt class="docutils literal"><span class="pre">version</span></tt> attribute of the <tt class="docutils literal"><span class="pre">Cookie</span></tt> instance to 0.
+<tt class="docutils literal"><span class="pre">DefaultCookiePolicy</span></tt> also provides some parameters to allow some
+fine-tuning of policy.</p>
+</blockquote>
+<p>class class cookielib.Cookie</p>
+<blockquote>
+This class represents Netscape, RFC 2109 and RFC 2965 cookies.  It
+is not expected that users of <tt class="docutils literal"><span class="pre">cookielib</span></tt> construct their own
+<tt class="docutils literal"><span class="pre">Cookie</span></tt> instances.  Instead, if necessary, call
+<tt class="docutils literal"><span class="pre">make_cookies()</span></tt> on a <tt class="docutils literal"><span class="pre">CookieJar</span></tt> instance.</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">urllib2</span></tt></dt>
+<dd>URL opening with automatic cookie handling.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">Cookie</span></tt></dt>
+<dd>HTTP cookie classes, principally useful for server-side code.
+The <tt class="docutils literal"><span class="pre">cookielib</span></tt> and <tt class="docutils literal"><span class="pre">Cookie</span></tt> modules do not depend on each
+other.</dd>
+<dt><a class="reference external" href="http://wwwsearch.sf.net/ClientCookie/">http://wwwsearch.sf.net/ClientCookie/</a></dt>
+<dd>Extensions to this module, including a class for reading
+Microsoft Internet Explorer cookies on Windows.</dd>
+<dt><a class="reference external" href="http://wp.netscape.com/newsref/std/cookie_spec.html">http://wp.netscape.com/newsref/std/cookie_spec.html</a></dt>
+<dd>The specification of the original Netscape cookie protocol.
+Though this is still the dominant protocol, the &#8216;Netscape cookie
+protocol&#8217; implemented by all the major browsers (and
+<tt class="docutils literal"><span class="pre">cookielib</span></tt>) only bears a passing resemblance to the one
+sketched out in <tt class="docutils literal"><span class="pre">cookie_spec.html</span></tt>.</dd>
+<dt><strong>RFC 2109</strong> - HTTP State Management Mechanism</dt>
+<dd>Obsoleted by RFC 2965. Uses <em>Set-Cookie</em> with version=1.</dd>
+<dt><strong>RFC 2965</strong> - HTTP State Management Mechanism</dt>
+<dd>The Netscape protocol with the bugs fixed.  Uses <em>Set-Cookie2</em>
+in place of <em>Set-Cookie</em>.  Not widely used.</dd>
+<dt><a class="reference external" href="http://kristol.org/cookie/errata.html">http://kristol.org/cookie/errata.html</a></dt>
+<dd>Unfinished errata to RFC 2965.</dd>
+</dl>
+<p><strong>RFC 2964</strong> - Use of HTTP State Management</p>
+</blockquote>
+<div class="section" id="cookiejar-and-filecookiejar-objects">
+<h2>20.21.1. CookieJar and FileCookieJar Objects<a class="headerlink" href="#cookiejar-and-filecookiejar-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">CookieJar</span></tt> objects support the <em>iterator</em> protocol for iterating
+over contained <tt class="docutils literal"><span class="pre">Cookie</span></tt> objects.</p>
+<p><tt class="docutils literal"><span class="pre">CookieJar</span></tt> has the following methods:</p>
+<p>CookieJar.add_cookie_header(request)</p>
+<blockquote>
+<p>Add correct <em>Cookie</em> header to <em>request</em>.</p>
+<p>If policy allows (ie. the <tt class="docutils literal"><span class="pre">rfc2965</span></tt> and <tt class="docutils literal"><span class="pre">hide_cookie2</span></tt>
+attributes of the <tt class="docutils literal"><span class="pre">CookieJar</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">CookiePolicy</span></tt> instance are
+true and false respectively), the <em>Cookie2</em> header is also added
+when appropriate.</p>
+<p>The <em>request</em> object (usually a <tt class="docutils literal"><span class="pre">urllib2.Request</span></tt> instance) must
+support the methods <tt class="docutils literal"><span class="pre">get_full_url()</span></tt>, <tt class="docutils literal"><span class="pre">get_host()</span></tt>,
+<tt class="docutils literal"><span class="pre">get_type()</span></tt>, <tt class="docutils literal"><span class="pre">unverifiable()</span></tt>, <tt class="docutils literal"><span class="pre">get_origin_req_host()</span></tt>,
+<tt class="docutils literal"><span class="pre">has_header()</span></tt>, <tt class="docutils literal"><span class="pre">get_header()</span></tt>, <tt class="docutils literal"><span class="pre">header_items()</span></tt>, and
+<tt class="docutils literal"><span class="pre">add_unredirected_header()</span></tt>,as documented by <tt class="docutils literal"><span class="pre">urllib2</span></tt>.</p>
+</blockquote>
+<p>CookieJar.extract_cookies(response, request)</p>
+<blockquote>
+<p>Extract cookies from HTTP <em>response</em> and store them in the
+<tt class="docutils literal"><span class="pre">CookieJar</span></tt>, where allowed by policy.</p>
+<p>The <tt class="docutils literal"><span class="pre">CookieJar</span></tt> will look for allowable <em>Set-Cookie</em> and <em>Set-
+Cookie2</em> headers in the <em>response</em> argument, and store cookies as
+appropriate (subject to the <tt class="docutils literal"><span class="pre">CookiePolicy.set_ok()</span></tt> method&#8217;s
+approval).</p>
+<p>The <em>response</em> object (usually the result of a call to
+<tt class="docutils literal"><span class="pre">urllib2.urlopen()</span></tt>, or similar) should support an <tt class="docutils literal"><span class="pre">info()</span></tt>
+method, which returns an object with a <tt class="docutils literal"><span class="pre">getallmatchingheaders()</span></tt>
+method (usually a <tt class="docutils literal"><span class="pre">mimetools.Message</span></tt> instance).</p>
+<p>The <em>request</em> object (usually a <tt class="docutils literal"><span class="pre">urllib2.Request</span></tt> instance) must
+support the methods <tt class="docutils literal"><span class="pre">get_full_url()</span></tt>, <tt class="docutils literal"><span class="pre">get_host()</span></tt>,
+<tt class="docutils literal"><span class="pre">unverifiable()</span></tt>, and <tt class="docutils literal"><span class="pre">get_origin_req_host()</span></tt>, as documented by
+<tt class="docutils literal"><span class="pre">urllib2</span></tt>.  The request is used to set default values for cookie-
+attributes as well as for checking that the cookie is allowed to be
+set.</p>
+</blockquote>
+<p>CookieJar.set_policy(policy)</p>
+<blockquote>
+Set the <tt class="docutils literal"><span class="pre">CookiePolicy</span></tt> instance to be used.</blockquote>
+<p>CookieJar.make_cookies(response, request)</p>
+<blockquote>
+<p>Return sequence of <tt class="docutils literal"><span class="pre">Cookie</span></tt> objects extracted from <em>response</em>
+object.</p>
+<p>See the documentation for <tt class="docutils literal"><span class="pre">extract_cookies()</span></tt> for the interfaces
+required of the <em>response</em> and <em>request</em> arguments.</p>
+</blockquote>
+<p>CookieJar.set_cookie_if_ok(cookie, request)</p>
+<blockquote>
+Set a <tt class="docutils literal"><span class="pre">Cookie</span></tt> if policy says it&#8217;s OK to do so.</blockquote>
+<p>CookieJar.set_cookie(cookie)</p>
+<blockquote>
+Set a <tt class="docutils literal"><span class="pre">Cookie</span></tt>, without checking with policy to see whether or
+not it should be set.</blockquote>
+<p>CookieJar.clear([domain[, path[, name]]])</p>
+<blockquote>
+<p>Clear some cookies.</p>
+<p>If invoked without arguments, clear all cookies.  If given a single
+argument, only cookies belonging to that <em>domain</em> will be removed.
+If given two arguments, cookies belonging to the specified <em>domain</em>
+and URL <em>path</em> are removed.  If given three arguments, then the
+cookie with the specified <em>domain</em>, <em>path</em> and <em>name</em> is removed.</p>
+<p>Raises <tt class="docutils literal"><span class="pre">KeyError</span></tt> if no matching cookie exists.</p>
+</blockquote>
+<p>CookieJar.clear_session_cookies()</p>
+<blockquote>
+<p>Discard all session cookies.</p>
+<p>Discards all contained cookies that have a true <tt class="docutils literal"><span class="pre">discard</span></tt>
+attribute (usually because they had either no <tt class="docutils literal"><span class="pre">max-age</span></tt> or
+<tt class="docutils literal"><span class="pre">expires</span></tt> cookie-attribute, or an explicit <tt class="docutils literal"><span class="pre">discard</span></tt> cookie-
+attribute).  For interactive browsers, the end of a session usually
+corresponds to closing the browser window.</p>
+<p>Note that the <tt class="docutils literal"><span class="pre">save()</span></tt> method won&#8217;t save session cookies anyway,
+unless you ask otherwise by passing a true <em>ignore_discard</em>
+argument.</p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">FileCookieJar</span></tt> implements the following additional methods:</p>
+<p>FileCookieJar.save(filename=None, ignore_discard=False, ignore_expires=False)</p>
+<blockquote>
+<p>Save cookies to a file.</p>
+<p>This base class raises <tt class="docutils literal"><span class="pre">NotImplementedError</span></tt>.  Subclasses may
+leave this method unimplemented.</p>
+<p><em>filename</em> is the name of file in which to save cookies.  If
+<em>filename</em> is not specified, <tt class="docutils literal"><span class="pre">self.filename</span></tt> is used (whose
+default is the value passed to the constructor, if any); if
+<tt class="docutils literal"><span class="pre">self.filename</span></tt> is <tt class="xref docutils literal"><span class="pre">None</span></tt>, <tt class="docutils literal"><span class="pre">ValueError</span></tt> is raised.</p>
+<p><em>ignore_discard</em>: save even cookies set to be discarded.
+<em>ignore_expires</em>: save even cookies that have expired</p>
+<p>The file is overwritten if it already exists, thus wiping all the
+cookies it contains.  Saved cookies can be restored later using the
+<tt class="docutils literal"><span class="pre">load()</span></tt> or <tt class="docutils literal"><span class="pre">revert()</span></tt> methods.</p>
+</blockquote>
+<p>FileCookieJar.load(filename=None, ignore_discard=False, ignore_expires=False)</p>
+<blockquote>
+<p>Load cookies from a file.</p>
+<p>Old cookies are kept unless overwritten by newly loaded ones.</p>
+<p>Arguments are as for <tt class="docutils literal"><span class="pre">save()</span></tt>.</p>
+<p>The named file must be in the format understood by the class, or
+<tt class="docutils literal"><span class="pre">LoadError</span></tt> will be raised.  Also, <tt class="docutils literal"><span class="pre">IOError</span></tt> may be raised, for
+example if the file does not exist.</p>
+<dl class="docutils">
+<dt>Note: For backwards-compatibility with Python 2.4 (which raised an</dt>
+<dd><tt class="docutils literal"><span class="pre">IOError</span></tt>), <tt class="docutils literal"><span class="pre">LoadError</span></tt> is a subclass of <tt class="docutils literal"><span class="pre">IOError</span></tt>.</dd>
+</dl>
+</blockquote>
+<p>FileCookieJar.revert(filename=None, ignore_discard=False, ignore_expires=False)</p>
+<blockquote>
+<p>Clear all cookies and reload cookies from a saved file.</p>
+<p><tt class="docutils literal"><span class="pre">revert()</span></tt> can raise the same exceptions as <tt class="docutils literal"><span class="pre">load()</span></tt>. If there
+is a failure, the object&#8217;s state will not be altered.</p>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">FileCookieJar</span></tt> instances have the following public attributes:</p>
+<p>FileCookieJar.filename</p>
+<blockquote>
+Filename of default file in which to keep cookies.  This attribute
+may be assigned to.</blockquote>
+<p>FileCookieJar.delayload</p>
+<blockquote>
+If true, load cookies lazily from disk.  This attribute should not
+be assigned to.  This is only a hint, since this only affects
+performance, not behaviour (unless the cookies on disk are
+changing). A <tt class="docutils literal"><span class="pre">CookieJar</span></tt> object may ignore it.  None of the
+<tt class="docutils literal"><span class="pre">FileCookieJar</span></tt> classes included in the standard library lazily
+loads cookies.</blockquote>
+</div>
+<div class="section" id="filecookiejar-subclasses-and-co-operation-with-web-browsers">
+<h2>20.21.2. FileCookieJar subclasses and co-operation with web browsers<a class="headerlink" href="#filecookiejar-subclasses-and-co-operation-with-web-browsers" title="Permalink to this headline">¶</a></h2>
+<p>The following <tt class="docutils literal"><span class="pre">CookieJar</span></tt> subclasses are provided for reading and
+writing .  Further <tt class="docutils literal"><span class="pre">CookieJar</span></tt> subclasses, including one that reads
+Microsoft Internet Explorer cookies, are available at
+<a class="reference external" href="http://wwwsearch.sf.net/ClientCookie/">http://wwwsearch.sf.net/ClientCookie/</a>.</p>
+<p>class class cookielib.MozillaCookieJar(filename, delayload=None, policy=None)</p>
+<blockquote>
+<p>A <tt class="docutils literal"><span class="pre">FileCookieJar</span></tt> that can load from and save cookies to disk in
+the Mozilla <tt class="docutils literal"><span class="pre">cookies.txt</span></tt> file format (which is also used by the
+Lynx and Netscape browsers).</p>
+<dl class="docutils">
+<dt>Note: Version 3 of the Firefox web browser no longer writes cookies in</dt>
+<dd>the <tt class="docutils literal"><span class="pre">cookies.txt</span></tt> file format.</dd>
+<dt>Note: This loses information about RFC 2965 cookies, and also about</dt>
+<dd>newer or non-standard cookie-attributes such as <tt class="docutils literal"><span class="pre">port</span></tt>.</dd>
+<dt>Warning: Back up your cookies before saving if you have cookies whose loss</dt>
+<dd>/ corruption would be inconvenient (there are some subtleties
+which may lead to slight changes in the file over a load / save
+round-trip).</dd>
+</dl>
+<p>Also note that cookies saved while Mozilla is running will get
+clobbered by Mozilla.</p>
+</blockquote>
+<p>class class cookielib.LWPCookieJar(filename, delayload=None, policy=None)</p>
+<blockquote>
+A <tt class="docutils literal"><span class="pre">FileCookieJar</span></tt> that can load from and save cookies to disk in
+format compatible with the libwww-perl library&#8217;s <tt class="docutils literal"><span class="pre">Set-Cookie3</span></tt>
+file format.  This is convenient if you want to store cookies in a
+human-readable file.</blockquote>
+</div>
+<div class="section" id="cookiepolicy-objects">
+<h2>20.21.3. CookiePolicy Objects<a class="headerlink" href="#cookiepolicy-objects" title="Permalink to this headline">¶</a></h2>
+<p>Objects implementing the <tt class="docutils literal"><span class="pre">CookiePolicy</span></tt> interface have the following
+methods:</p>
+<p>CookiePolicy.set_ok(cookie, request)</p>
+<blockquote>
+<p>Return boolean value indicating whether cookie should be accepted
+from server.</p>
+<p><em>cookie</em> is a <tt class="docutils literal"><span class="pre">cookielib.Cookie</span></tt> instance.  <em>request</em> is an
+object implementing the interface defined by the documentation for
+<tt class="docutils literal"><span class="pre">CookieJar.extract_cookies()</span></tt>.</p>
+</blockquote>
+<p>CookiePolicy.return_ok(cookie, request)</p>
+<blockquote>
+<p>Return boolean value indicating whether cookie should be returned
+to server.</p>
+<p><em>cookie</em> is a <tt class="docutils literal"><span class="pre">cookielib.Cookie</span></tt> instance.  <em>request</em> is an
+object implementing the interface defined by the documentation for
+<tt class="docutils literal"><span class="pre">CookieJar.add_cookie_header()</span></tt>.</p>
+</blockquote>
+<p>CookiePolicy.domain_return_ok(domain, request)</p>
+<blockquote>
+<p>Return false if cookies should not be returned, given cookie
+domain.</p>
+<p>This method is an optimization.  It removes the need for checking
+every cookie with a particular domain (which might involve reading
+many files).  Returning true from <tt class="docutils literal"><span class="pre">domain_return_ok()</span></tt> and
+<tt class="docutils literal"><span class="pre">path_return_ok()</span></tt> leaves all the work to <tt class="docutils literal"><span class="pre">return_ok()</span></tt>.</p>
+<p>If <tt class="docutils literal"><span class="pre">domain_return_ok()</span></tt> returns true for the cookie domain,
+<tt class="docutils literal"><span class="pre">path_return_ok()</span></tt> is called for the cookie path.  Otherwise,
+<tt class="docutils literal"><span class="pre">path_return_ok()</span></tt> and <tt class="docutils literal"><span class="pre">return_ok()</span></tt> are never called for that
+cookie domain.  If <tt class="docutils literal"><span class="pre">path_return_ok()</span></tt> returns true,
+<tt class="docutils literal"><span class="pre">return_ok()</span></tt> is called with the <tt class="docutils literal"><span class="pre">Cookie</span></tt> object itself for a
+full check.  Otherwise, <tt class="docutils literal"><span class="pre">return_ok()</span></tt> is never called for that
+cookie path.</p>
+<p>Note that <tt class="docutils literal"><span class="pre">domain_return_ok()</span></tt> is called for every <em>cookie</em>
+domain, not just for the <em>request</em> domain.  For example, the
+function might be called with both <tt class="docutils literal"><span class="pre">&quot;.example.com&quot;</span></tt> and
+<tt class="docutils literal"><span class="pre">&quot;www.example.com&quot;</span></tt> if the request domain is
+<tt class="docutils literal"><span class="pre">&quot;www.example.com&quot;</span></tt>.  The same goes for <tt class="docutils literal"><span class="pre">path_return_ok()</span></tt>.</p>
+<p>The <em>request</em> argument is as documented for <tt class="docutils literal"><span class="pre">return_ok()</span></tt>.</p>
+</blockquote>
+<p>CookiePolicy.path_return_ok(path, request)</p>
+<blockquote>
+<p>Return false if cookies should not be returned, given cookie path.</p>
+<p>See the documentation for <tt class="docutils literal"><span class="pre">domain_return_ok()</span></tt>.</p>
+</blockquote>
+<p>In addition to implementing the methods above, implementations of the
+<tt class="docutils literal"><span class="pre">CookiePolicy</span></tt> interface must also supply the following attributes,
+indicating which protocols should be used, and how.  All of these
+attributes may be assigned to.</p>
+<p>CookiePolicy.netscape</p>
+<blockquote>
+Implement Netscape protocol.</blockquote>
+<p>CookiePolicy.rfc2965</p>
+<blockquote>
+Implement RFC 2965 protocol.</blockquote>
+<p>CookiePolicy.hide_cookie2</p>
+<blockquote>
+Don&#8217;t add <em>Cookie2</em> header to requests (the presence of this header
+indicates to the server that we understand RFC 2965 cookies).</blockquote>
+<p>The most useful way to define a <tt class="docutils literal"><span class="pre">CookiePolicy</span></tt> class is by
+subclassing from <tt class="docutils literal"><span class="pre">DefaultCookiePolicy</span></tt> and overriding some or all of
+the methods above.  <tt class="docutils literal"><span class="pre">CookiePolicy</span></tt> itself may be used as a &#8216;null
+policy&#8217; to allow setting and receiving any and all cookies (this is
+unlikely to be useful).</p>
+</div>
+<div class="section" id="defaultcookiepolicy-objects">
+<h2>20.21.4. DefaultCookiePolicy Objects<a class="headerlink" href="#defaultcookiepolicy-objects" title="Permalink to this headline">¶</a></h2>
+<p>Implements the standard rules for accepting and returning cookies.</p>
+<p>Both RFC 2965 and Netscape cookies are covered.  RFC 2965 handling is
+switched off by default.</p>
+<p>The easiest way to provide your own policy is to override this class
+and call its methods in your overridden implementations before adding
+your own additional checks:</p>
+<blockquote>
+<p>import cookielib
+class MyCookiePolicy(cookielib.DefaultCookiePolicy):</p>
+<blockquote>
+<dl class="docutils">
+<dt>def set_ok(self, cookie, request):</dt>
+<dd><dl class="first docutils">
+<dt>if not cookielib.DefaultCookiePolicy.set_ok(self, cookie, request):</dt>
+<dd>return False</dd>
+<dt>if i_dont_want_to_store_this_cookie(cookie):</dt>
+<dd>return False</dd>
+</dl>
+<p class="last">return True</p>
+</dd>
+</dl>
+</blockquote>
+</blockquote>
+<p>In addition to the features required to implement the <tt class="docutils literal"><span class="pre">CookiePolicy</span></tt>
+interface, this class allows you to block and allow domains from
+setting and receiving cookies.  There are also some strictness
+switches that allow you to tighten up the rather loose Netscape
+protocol rules a little bit (at the cost of blocking some benign
+cookies).</p>
+<p>A domain blacklist and whitelist is provided (both off by default).
+Only domains not in the blacklist and present in the whitelist (if the
+whitelist is active) participate in cookie setting and returning.  Use
+the <em>blocked_domains</em> constructor argument, and <tt class="docutils literal"><span class="pre">blocked_domains()</span></tt>
+and <tt class="docutils literal"><span class="pre">set_blocked_domains()</span></tt> methods (and the corresponding argument
+and methods for <em>allowed_domains</em>).  If you set a whitelist, you can
+turn it off again by setting it to <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<p>Domains in block or allow lists that do not start with a dot must
+equal the cookie domain to be matched.  For example, <tt class="docutils literal"><span class="pre">&quot;example.com&quot;</span></tt>
+matches a blacklist entry of <tt class="docutils literal"><span class="pre">&quot;example.com&quot;</span></tt>, but
+<tt class="docutils literal"><span class="pre">&quot;www.example.com&quot;</span></tt> does not.  Domains that do start with a dot are
+matched by more specific domains too. For example, both
+<tt class="docutils literal"><span class="pre">&quot;www.example.com&quot;</span></tt> and <tt class="docutils literal"><span class="pre">&quot;www.coyote.example.com&quot;</span></tt> match
+<tt class="docutils literal"><span class="pre">&quot;.example.com&quot;</span></tt> (but <tt class="docutils literal"><span class="pre">&quot;example.com&quot;</span></tt> itself does not).  IP
+addresses are an exception, and must match exactly.  For example, if
+blocked_domains contains <tt class="docutils literal"><span class="pre">&quot;192.168.1.2&quot;</span></tt> and <tt class="docutils literal"><span class="pre">&quot;.168.1.2&quot;</span></tt>,
+192.168.1.2 is blocked, but 193.168.1.2 is not.</p>
+<p><tt class="docutils literal"><span class="pre">DefaultCookiePolicy</span></tt> implements the following additional methods:</p>
+<p>DefaultCookiePolicy.blocked_domains()</p>
+<blockquote>
+Return the sequence of blocked domains (as a tuple).</blockquote>
+<p>DefaultCookiePolicy.set_blocked_domains(blocked_domains)</p>
+<blockquote>
+Set the sequence of blocked domains.</blockquote>
+<p>DefaultCookiePolicy.is_blocked(domain)</p>
+<blockquote>
+Return whether <em>domain</em> is on the blacklist for setting or
+receiving cookies.</blockquote>
+<p>DefaultCookiePolicy.allowed_domains()</p>
+<blockquote>
+Return <tt class="xref docutils literal"><span class="pre">None</span></tt>, or the sequence of allowed domains (as a tuple).</blockquote>
+<p>DefaultCookiePolicy.set_allowed_domains(allowed_domains)</p>
+<blockquote>
+Set the sequence of allowed domains, or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>DefaultCookiePolicy.is_not_allowed(domain)</p>
+<blockquote>
+Return whether <em>domain</em> is not on the whitelist for setting or
+receiving cookies.</blockquote>
+<p><tt class="docutils literal"><span class="pre">DefaultCookiePolicy</span></tt> instances have the following attributes, which
+are all initialised from the constructor arguments of the same name,
+and which may all be assigned to.</p>
+<p>DefaultCookiePolicy.rfc2109_as_netscape</p>
+<blockquote>
+<p>If true, request that the <tt class="docutils literal"><span class="pre">CookieJar</span></tt> instance downgrade RFC 2109
+cookies (ie. cookies received in a <em>Set-Cookie</em> header with a
+version cookie-attribute of 1) to Netscape cookies by setting the
+version attribute of the <tt class="docutils literal"><span class="pre">Cookie</span></tt> instance to 0.  The default
+value is <tt class="xref docutils literal"><span class="pre">None</span></tt>, in which case RFC 2109 cookies are downgraded if
+and only if RFC 2965 handling is turned off.  Therefore, RFC 2109
+cookies are downgraded by default.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>General strictness switches:</p>
+<p>DefaultCookiePolicy.strict_domain</p>
+<blockquote>
+Don&#8217;t allow sites to set two-component domains with country-code
+top-level domains like <tt class="docutils literal"><span class="pre">.co.uk</span></tt>, <tt class="docutils literal"><span class="pre">.gov.uk</span></tt>, <tt class="docutils literal"><span class="pre">.co.nz</span></tt>.etc.
+This is far from perfect and isn&#8217;t guaranteed to work!</blockquote>
+<p>RFC 2965 protocol strictness switches:</p>
+<p>DefaultCookiePolicy.strict_rfc2965_unverifiable</p>
+<blockquote>
+Follow RFC 2965 rules on unverifiable transactions (usually, an
+unverifiable transaction is one resulting from a redirect or a
+request for an image hosted on another site).  If this is false,
+cookies are <em>never</em> blocked on the basis of verifiability</blockquote>
+<p>Netscape protocol strictness switches:</p>
+<p>DefaultCookiePolicy.strict_ns_unverifiable</p>
+<blockquote>
+apply RFC 2965 rules on unverifiable transactions even to Netscape
+cookies</blockquote>
+<p>DefaultCookiePolicy.strict_ns_domain</p>
+<blockquote>
+Flags indicating how strict to be with domain-matching rules for
+Netscape cookies.  See below for acceptable values.</blockquote>
+<p>DefaultCookiePolicy.strict_ns_set_initial_dollar</p>
+<blockquote>
+Ignore cookies in Set-Cookie: headers that have names starting with
+<tt class="docutils literal"><span class="pre">'$'</span></tt>.</blockquote>
+<p>DefaultCookiePolicy.strict_ns_set_path</p>
+<blockquote>
+Don&#8217;t allow setting cookies whose path doesn&#8217;t path-match request
+URI.</blockquote>
+<p><tt class="docutils literal"><span class="pre">strict_ns_domain</span></tt> is a collection of flags.  Its value is
+constructed by or-ing together (for example,
+<tt class="docutils literal"><span class="pre">DomainStrictNoDots|DomainStrictNonDomain</span></tt> means both flags are
+set).</p>
+<p>DefaultCookiePolicy.DomainStrictNoDots</p>
+<blockquote>
+When setting cookies, the &#8216;host prefix&#8217; must not contain a dot (eg.
+<tt class="docutils literal"><span class="pre">www.foo.bar.com</span></tt> can&#8217;t set a cookie for <tt class="docutils literal"><span class="pre">.bar.com</span></tt>, because
+<tt class="docutils literal"><span class="pre">www.foo</span></tt> contains a dot).</blockquote>
+<p>DefaultCookiePolicy.DomainStrictNonDomain</p>
+<blockquote>
+Cookies that did not explicitly specify a <tt class="docutils literal"><span class="pre">domain</span></tt> cookie-
+attribute can only be returned to a domain equal to the domain that
+set the cookie (eg. <tt class="docutils literal"><span class="pre">spam.example.com</span></tt> won&#8217;t be returned cookies
+from <tt class="docutils literal"><span class="pre">example.com</span></tt> that had no <tt class="docutils literal"><span class="pre">domain</span></tt> cookie-attribute).</blockquote>
+<p>DefaultCookiePolicy.DomainRFC2965Match</p>
+<blockquote>
+When setting cookies, require a full RFC 2965 domain-match.</blockquote>
+<p>The following attributes are provided for convenience, and are the
+most useful combinations of the above flags:</p>
+<p>DefaultCookiePolicy.DomainLiberal</p>
+<blockquote>
+Equivalent to 0 (ie. all of the above Netscape domain strictness
+flags switched off).</blockquote>
+<p>DefaultCookiePolicy.DomainStrict</p>
+<blockquote>
+Equivalent to <tt class="docutils literal"><span class="pre">DomainStrictNoDots|DomainStrictNonDomain</span></tt>.</blockquote>
+</div>
+<div class="section" id="cookie-objects">
+<h2>20.21.5. Cookie Objects<a class="headerlink" href="#cookie-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">Cookie</span></tt> instances have Python attributes roughly corresponding to
+the standard cookie-attributes specified in the various cookie
+standards.  The correspondence is not one-to-one, because there are
+complicated rules for assigning default values, because the
+<tt class="docutils literal"><span class="pre">max-age</span></tt> and <tt class="docutils literal"><span class="pre">expires</span></tt> cookie-attributes contain equivalent
+information, and because RFC 2109 cookies may be &#8216;downgraded&#8217; by
+<tt class="docutils literal"><span class="pre">cookielib</span></tt> from version 1 to version 0 (Netscape) cookies.</p>
+<p>Assignment to these attributes should not be necessary other than in
+rare circumstances in a <tt class="docutils literal"><span class="pre">CookiePolicy</span></tt> method.  The class does not
+enforce internal consistency, so you should know what you&#8217;re doing if
+you do that.</p>
+<p>Cookie.version</p>
+<blockquote>
+Integer or <tt class="xref docutils literal"><span class="pre">None</span></tt>.  Netscape cookies have <tt class="docutils literal"><span class="pre">version</span></tt> 0. RFC 2965
+and RFC 2109 cookies have a <tt class="docutils literal"><span class="pre">version</span></tt> cookie-attribute of 1.
+However, note that <tt class="docutils literal"><span class="pre">cookielib</span></tt> may &#8216;downgrade&#8217; RFC 2109 cookies
+to Netscape cookies, in which case <tt class="docutils literal"><span class="pre">version</span></tt> is 0.</blockquote>
+<p>Cookie.name</p>
+<blockquote>
+Cookie name (a string).</blockquote>
+<p>Cookie.value</p>
+<blockquote>
+Cookie value (a string), or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>Cookie.port</p>
+<blockquote>
+String representing a port or a set of ports (eg. &#8216;80&#8217;, or
+&#8216;80,8080&#8217;), or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>Cookie.path</p>
+<blockquote>
+Cookie path (a string, eg. <tt class="docutils literal"><span class="pre">'/acme/rocket_launchers'</span></tt>).</blockquote>
+<p>Cookie.secure</p>
+<blockquote>
+True if cookie should only be returned over a secure connection.</blockquote>
+<p>Cookie.expires</p>
+<blockquote>
+Integer expiry date in seconds since epoch, or <tt class="xref docutils literal"><span class="pre">None</span></tt>.  See also
+the <tt class="docutils literal"><span class="pre">is_expired()</span></tt> method.</blockquote>
+<p>Cookie.discard</p>
+<blockquote>
+True if this is a session cookie.</blockquote>
+<p>Cookie.comment</p>
+<blockquote>
+String comment from the server explaining the function of this
+cookie, or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>Cookie.comment_url</p>
+<blockquote>
+URL linking to a comment from the server explaining the function of
+this cookie, or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>Cookie.rfc2109</p>
+<blockquote>
+<p>True if this cookie was received as an RFC 2109 cookie (ie. the
+cookie arrived in a <em>Set-Cookie</em> header, and the value of the
+Version cookie-attribute in that header was 1).  This attribute is
+provided because <tt class="docutils literal"><span class="pre">cookielib</span></tt> may &#8216;downgrade&#8217; RFC 2109 cookies to
+Netscape cookies, in which case <tt class="docutils literal"><span class="pre">version</span></tt> is 0.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>Cookie.port_specified</p>
+<blockquote>
+True if a port or set of ports was explicitly specified by the
+server (in the <em>Set-Cookie</em> / <em>Set-Cookie2</em> header).</blockquote>
+<p>Cookie.domain_specified</p>
+<blockquote>
+True if a domain was explicitly specified by the server.</blockquote>
+<p>Cookie.domain_initial_dot</p>
+<blockquote>
+True if the domain explicitly specified by the server began with a
+dot (<tt class="docutils literal"><span class="pre">'.'</span></tt>).</blockquote>
+<p>Cookies may have additional non-standard cookie-attributes.  These may
+be accessed using the following methods:</p>
+<p>Cookie.has_nonstandard_attr(name)</p>
+<blockquote>
+Return true if cookie has the named cookie-attribute.</blockquote>
+<p>Cookie.get_nonstandard_attr(name, default=None)</p>
+<blockquote>
+If cookie has the named cookie-attribute, return its value.
+Otherwise, return <em>default</em>.</blockquote>
+<p>Cookie.set_nonstandard_attr(name, value)</p>
+<blockquote>
+Set the value of the named cookie-attribute.</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">Cookie</span></tt> class also defines the following method:</p>
+<p>Cookie.is_expired([now=None])</p>
+<blockquote>
+True if cookie has passed the time at which the server requested it
+should expire.  If <em>now</em> is given (in seconds since the epoch),
+return whether the cookie has expired at the specified time.</blockquote>
+</div>
+<div class="section" id="examples">
+<h2>20.21.6. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>The first example shows the most common usage of <tt class="docutils literal"><span class="pre">cookielib</span></tt>:</p>
+<blockquote>
+import cookielib, urllib2
+cj = cookielib.CookieJar()
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+r = opener.open(&#8220;<a class="reference external" href="http://example.com/">http://example.com/</a>&#8220;)</blockquote>
+<p>This example illustrates how to open a URL using your Netscape,
+Mozilla, or Lynx cookies (assumes Unix/Netscape convention for
+location of the cookies file):</p>
+<blockquote>
+import os, cookielib, urllib2
+cj = cookielib.MozillaCookieJar()
+cj.load(os.path.join(os.environ[&#8220;HOME&#8221;], &#8220;.netscape/cookies.txt&#8221;))
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+r = opener.open(&#8220;<a class="reference external" href="http://example.com/">http://example.com/</a>&#8220;)</blockquote>
+<p>The next example illustrates the use of <tt class="docutils literal"><span class="pre">DefaultCookiePolicy</span></tt>. Turn
+on RFC 2965 cookies, be more strict about domains when setting and
+returning Netscape cookies, and block some domains from setting
+cookies or having them returned:</p>
+<blockquote>
+<p>import urllib2
+from cookielib import CookieJar, DefaultCookiePolicy
+policy = DefaultCookiePolicy(</p>
+<blockquote>
+rfc2965=True, strict_ns_domain=DefaultCookiePolicy.DomainStrict,
+blocked_domains=[&#8220;ads.net&#8221;, &#8220;.ads.net&#8221;])</blockquote>
+<p>cj = CookieJar(policy)
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+r = opener.open(&#8220;<a class="reference external" href="http://example.com/">http://example.com/</a>&#8220;)</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xmlrpclib.html" title="20.22. xmlrpclib — XML-RPC client access"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cgihttpserver.html" title="20.20. CGIHTTPServer — CGI-capable HTTP request handler"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" >20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

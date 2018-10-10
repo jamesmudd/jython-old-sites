@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7.5. StringIO — Read and write strings as files &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="7. String Services" href="strings.html" />
+    <link rel="next" title="7.7. textwrap — Text wrapping and filling" href="textwrap.html" />
+    <link rel="prev" title="7.4. difflib — Helpers for computing deltas" href="difflib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="textwrap.html" title="7.7. textwrap — Text wrapping and filling"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="difflib.html" title="7.4. difflib — Helpers for computing deltas"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="strings.html" accesskey="U">7. String Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">7.5. <tt class="docutils literal"><span class="pre">StringIO</span></tt> &#8212; Read and write strings as files</a></li>
+<li><a class="reference external" href="#cstringio-faster-version-of-stringio">7.6. <tt class="docutils literal"><span class="pre">cStringIO</span></tt> &#8212; Faster version of <tt class="docutils literal"><span class="pre">StringIO</span></tt></a></li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="difflib.html"
+                                  title="previous chapter">7.4. <tt class="docutils literal docutils literal"><span class="pre">difflib</span></tt> &#8212; Helpers for computing deltas</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="textwrap.html"
+                                  title="next chapter">7.7. <tt class="docutils literal docutils literal"><span class="pre">textwrap</span></tt> &#8212; Text wrapping and filling</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/stringio.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="stringio-read-and-write-strings-as-files">
+<h1>7.5. <tt class="docutils literal"><span class="pre">StringIO</span></tt> &#8212; Read and write strings as files<a class="headerlink" href="#stringio-read-and-write-strings-as-files" title="Permalink to this headline">¶</a></h1>
+<p>This module implements a file-like class, <tt class="docutils literal"><span class="pre">StringIO</span></tt>, that reads and
+writes a string buffer (also known as <em>memory files</em>).  See the
+description of file objects for operations (section <em>File Objects</em>).
+(For standard strings, see <tt class="docutils literal"><span class="pre">str</span></tt> and <tt class="docutils literal"><span class="pre">unicode</span></tt>.)</p>
+<p>class class StringIO.StringIO([buffer])</p>
+<blockquote>
+<p>When a <tt class="docutils literal"><span class="pre">StringIO</span></tt> object is created, it can be initialized to an
+existing string by passing the string to the constructor. If no
+string is given, the <tt class="docutils literal"><span class="pre">StringIO</span></tt> will start empty. In both cases,
+the initial file position starts at zero.</p>
+<p>The <tt class="docutils literal"><span class="pre">StringIO</span></tt> object can accept either Unicode or 8-bit strings,
+but mixing the two may take some care.  If both are used, 8-bit
+strings that cannot be interpreted as 7-bit ASCII (that use the 8th
+bit) will cause a <tt class="docutils literal"><span class="pre">UnicodeError</span></tt> to be raised when <tt class="docutils literal"><span class="pre">getvalue()</span></tt>
+is called.</p>
+</blockquote>
+<p>The following methods of <tt class="docutils literal"><span class="pre">StringIO</span></tt> objects require special mention:</p>
+<p>StringIO.getvalue()</p>
+<blockquote>
+Retrieve the entire contents of the &#8220;file&#8221; at any time before the
+<tt class="docutils literal"><span class="pre">StringIO</span></tt> object&#8217;s <tt class="docutils literal"><span class="pre">close()</span></tt> method is called.  See the note
+above for information about mixing Unicode and 8-bit strings; such
+mixing can cause this method to raise <tt class="docutils literal"><span class="pre">UnicodeError</span></tt>.</blockquote>
+<p>StringIO.close()</p>
+<blockquote>
+Free the memory buffer.  Attempting to do further operations with a
+closed <tt class="docutils literal"><span class="pre">StringIO</span></tt> object will raise a <tt class="docutils literal"><span class="pre">ValueError</span></tt>.</blockquote>
+<p>Example usage:</p>
+<blockquote>
+<p>import StringIO</p>
+<p>output = StringIO.StringIO()
+output.write(&#8216;First line.n&#8217;)
+print &gt;&gt;output, &#8216;Second line.&#8217;</p>
+<p># Retrieve file contents &#8211; this will be
+# &#8216;First line.nSecond line.n&#8217;
+contents = output.getvalue()</p>
+<p># Close object and discard memory buffer &#8211;
+# .getvalue() will now raise an exception.
+output.close()</p>
+</blockquote>
+</div>
+<div class="section" id="cstringio-faster-version-of-stringio">
+<h1>7.6. <tt class="docutils literal"><span class="pre">cStringIO</span></tt> &#8212; Faster version of <tt class="docutils literal"><span class="pre">StringIO</span></tt><a class="headerlink" href="#cstringio-faster-version-of-stringio" title="Permalink to this headline">¶</a></h1>
+<p>The module <tt class="docutils literal"><span class="pre">cStringIO</span></tt> provides an interface similar to that of the
+<tt class="docutils literal"><span class="pre">StringIO</span></tt> module.  Heavy use of <tt class="docutils literal"><span class="pre">StringIO.StringIO</span></tt> objects can
+be made more efficient by using the function <tt class="docutils literal"><span class="pre">StringIO()</span></tt> from this
+module instead.</p>
+<p>Since this module provides a factory function which returns objects of
+built-in types, there&#8217;s no way to build your own version using
+subclassing.  It&#8217;s not possible to set attributes on it.  Use the
+original <tt class="docutils literal"><span class="pre">StringIO</span></tt> module in those cases.</p>
+<p>Unlike the memory files implemented by the <tt class="docutils literal"><span class="pre">StringIO</span></tt> module, those
+provided by this module are not able to accept Unicode strings that
+cannot be encoded as plain ASCII strings.</p>
+<p>Calling <tt class="docutils literal"><span class="pre">StringIO()</span></tt> with a Unicode string parameter populates the
+object with the buffer representation of the Unicode string, instead
+of encoding the string.</p>
+<p>Another difference from the <tt class="docutils literal"><span class="pre">StringIO</span></tt> module is that calling
+<tt class="docutils literal"><span class="pre">StringIO()</span></tt> with a string parameter creates a read-only object.
+Unlike an object created without a string parameter, it does not have
+write methods. These objects are not generally visible.  They turn up
+in tracebacks as <tt class="docutils literal"><span class="pre">StringI</span></tt> and <tt class="docutils literal"><span class="pre">StringO</span></tt>.</p>
+<p>The following data objects are provided as well:</p>
+<p>cStringIO.InputType</p>
+<blockquote>
+The type object of the objects created by calling <tt class="docutils literal"><span class="pre">StringIO()</span></tt>
+with a string parameter.</blockquote>
+<p>cStringIO.OutputType</p>
+<blockquote>
+The type object of the objects returned by calling <tt class="docutils literal"><span class="pre">StringIO()</span></tt>
+with no parameters.</blockquote>
+<p>There is a C API to the module as well; refer to the module source for
+more information.</p>
+<p>Example usage:</p>
+<blockquote>
+<p>import cStringIO</p>
+<p>output = cStringIO.StringIO()
+output.write(&#8216;First line.n&#8217;)
+print &gt;&gt;output, &#8216;Second line.&#8217;</p>
+<p># Retrieve file contents &#8211; this will be
+# &#8216;First line.nSecond line.n&#8217;
+contents = output.getvalue()</p>
+<p># Close object and discard memory buffer &#8211;
+# .getvalue() will now raise an exception.
+output.close()</p>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="textwrap.html" title="7.7. textwrap — Text wrapping and filling"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="difflib.html" title="7.4. difflib — Helpers for computing deltas"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="strings.html" >7. String Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

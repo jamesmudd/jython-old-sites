@@ -1,0 +1,565 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6. Built-in Exceptions &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="The Python Standard Library and What Comes with Jython" href="indexprogress.html" />
+    <link rel="next" title="7. String Services" href="strings.html" />
+    <link rel="prev" title="5. Built-in Types" href="stdtypes.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="strings.html" title="7. String Services"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="stdtypes.html" title="5. Built-in Types"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" accesskey="U">The Python Standard Library and What Comes with Jython</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">6. Built-in Exceptions</a><ul>
+<li><a class="reference external" href="#exception-hierarchy">6.1. Exception hierarchy</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="stdtypes.html"
+                                  title="previous chapter">5. Built-in Types</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="strings.html"
+                                  title="next chapter">7. String Services</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/exceptions.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="built-in-exceptions">
+<h1>6. Built-in Exceptions<a class="headerlink" href="#built-in-exceptions" title="Permalink to this headline">¶</a></h1>
+<p>Exceptions should be class objects.   The exceptions are defined in
+the module <tt class="docutils literal"><span class="pre">exceptions</span></tt>.  This module never needs to be imported
+explicitly: the exceptions are provided in the built-in namespace as
+well as the <tt class="docutils literal"><span class="pre">exceptions</span></tt> module.</p>
+<p>For class exceptions, in a <tt class="docutils literal"><span class="pre">try</span></tt> statement with an <tt class="docutils literal"><span class="pre">except</span></tt> clause
+that mentions a particular class, that clause also handles any
+exception classes derived from that class (but not exception classes
+from which <em>it</em> is derived).  Two exception classes that are not
+related via subclassing are never equivalent, even if they have the
+same name.</p>
+<p>The built-in exceptions listed below can be generated by the
+interpreter or built-in functions.  Except where mentioned, they have
+an &#8220;associated value&#8221; indicating the detailed cause of the error. This
+may be a string or a tuple containing several items of information
+(e.g., an error code and a string explaining the code). The associated
+value is the second argument to the <tt class="docutils literal"><span class="pre">raise</span></tt> statement.  If the
+exception class is derived from the standard root class
+<tt class="docutils literal"><span class="pre">BaseException</span></tt>, the associated value is present as the exception
+instance&#8217;s <tt class="docutils literal"><span class="pre">args</span></tt> attribute.</p>
+<p>User code can raise built-in exceptions.  This can be used to test an
+exception handler or to report an error condition &#8220;just like&#8221; the
+situation in which the interpreter raises the same exception; but
+beware that there is nothing to prevent user code from raising an
+inappropriate error.</p>
+<p>The built-in exception classes can be sub-classed to define new
+exceptions; programmers are encouraged to at least derive new
+exceptions from the <tt class="docutils literal"><span class="pre">Exception</span></tt> class and not <tt class="docutils literal"><span class="pre">BaseException</span></tt>.
+More information on defining exceptions is available in the Python
+Tutorial under <em>User-defined Exceptions</em>.</p>
+<p>The following exceptions are only used as base classes for other
+exceptions.</p>
+<p>exception exception BaseException</p>
+<blockquote>
+<p>The base class for all built-in exceptions.  It is not meant to be
+directly inherited by user-defined classes (for that use
+<tt class="docutils literal"><span class="pre">Exception</span></tt>).  If <tt class="docutils literal"><span class="pre">str()</span></tt> or <tt class="docutils literal"><span class="pre">unicode()</span></tt> is called on an
+instance of this class, the representation of the argument(s) to
+the instance are returned or the empty string when there were no
+arguments.  All arguments are  stored in <tt class="docutils literal"><span class="pre">args</span></tt> as a tuple.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>exception exception Exception</p>
+<blockquote>
+<p>All built-in, non-system-exiting exceptions are derived from this
+class.  All user-defined exceptions should also be derived from
+this class.</p>
+<p>Changed in version 2.5: Changed to inherit from <tt class="docutils literal"><span class="pre">BaseException</span></tt>.</p>
+</blockquote>
+<p>exception exception StandardError</p>
+<blockquote>
+The base class for all built-in exceptions except
+<tt class="docutils literal"><span class="pre">StopIteration</span></tt>, <tt class="docutils literal"><span class="pre">GeneratorExit</span></tt>, <tt class="docutils literal"><span class="pre">KeyboardInterrupt</span></tt> and
+<tt class="docutils literal"><span class="pre">SystemExit</span></tt>. <tt class="docutils literal"><span class="pre">StandardError</span></tt> itself is derived from
+<tt class="docutils literal"><span class="pre">Exception</span></tt>.</blockquote>
+<p>exception exception ArithmeticError</p>
+<blockquote>
+The base class for those built-in exceptions that are raised for
+various arithmetic errors: <tt class="docutils literal"><span class="pre">OverflowError</span></tt>,
+<tt class="docutils literal"><span class="pre">ZeroDivisionError</span></tt>, <tt class="docutils literal"><span class="pre">FloatingPointError</span></tt>.</blockquote>
+<p>exception exception LookupError</p>
+<blockquote>
+The base class for the exceptions that are raised when a key or
+index used on a mapping or sequence is invalid: <tt class="docutils literal"><span class="pre">IndexError</span></tt>,
+<tt class="docutils literal"><span class="pre">KeyError</span></tt>.  This can be raised directly by
+<tt class="docutils literal"><span class="pre">sys.setdefaultencoding()</span></tt>.</blockquote>
+<p>exception exception EnvironmentError</p>
+<blockquote>
+<p>The base class for exceptions that can occur outside the Python
+system: <tt class="docutils literal"><span class="pre">IOError</span></tt>, <tt class="docutils literal"><span class="pre">OSError</span></tt>.  When exceptions of this type are
+created with a 2-tuple, the first item is available on the
+instance&#8217;s <tt class="docutils literal"><span class="pre">errno</span></tt> attribute (it is assumed to be an error
+number), and the second item is available on the <tt class="docutils literal"><span class="pre">strerror</span></tt>
+attribute (it is usually the associated error message).  The tuple
+itself is also available on the <tt class="docutils literal"><span class="pre">args</span></tt> attribute.</p>
+<p>New in version 1.5.2.</p>
+<p>When an <tt class="docutils literal"><span class="pre">EnvironmentError</span></tt> exception is instantiated with a
+3-tuple, the first two items are available as above, while the
+third item is available on the <tt class="docutils literal"><span class="pre">filename</span></tt> attribute.  However,
+for backwards compatibility, the <tt class="docutils literal"><span class="pre">args</span></tt> attribute contains only a
+2-tuple of the first two constructor arguments.</p>
+<p>The <tt class="docutils literal"><span class="pre">filename</span></tt> attribute is <tt class="xref docutils literal"><span class="pre">None</span></tt> when this exception is
+created with other than 3 arguments.  The <tt class="docutils literal"><span class="pre">errno</span></tt> and
+<tt class="docutils literal"><span class="pre">strerror</span></tt> attributes are also <tt class="xref docutils literal"><span class="pre">None</span></tt> when the instance was
+created with other than 2 or 3 arguments. In this last case,
+<tt class="docutils literal"><span class="pre">args</span></tt> contains the verbatim constructor arguments as a tuple.</p>
+</blockquote>
+<p>The following exceptions are the exceptions that are actually raised.</p>
+<p>exception exception AssertionError</p>
+<blockquote>
+Raised when an <tt class="docutils literal"><span class="pre">assert</span></tt> statement fails.</blockquote>
+<p>exception exception AttributeError</p>
+<blockquote>
+Raised when an attribute reference (see <em>Attribute references</em>) or
+assignment fails.  (When an object does not support attribute
+references or attribute assignments at all, <tt class="docutils literal"><span class="pre">TypeError</span></tt> is
+raised.)</blockquote>
+<p>exception exception EOFError</p>
+<blockquote>
+Raised when one of the built-in functions (<tt class="docutils literal"><span class="pre">input()</span></tt> or
+<tt class="docutils literal"><span class="pre">raw_input()</span></tt>) hits an end-of-file condition (EOF) without
+reading any data. (N.B.: the <tt class="docutils literal"><span class="pre">file.read()</span></tt> and
+<tt class="docutils literal"><span class="pre">file.readline()</span></tt> methods return an empty string when they hit
+EOF.)</blockquote>
+<p>exception exception FloatingPointError</p>
+<blockquote>
+Raised when a floating point operation fails.  This exception is
+always defined, but can only be raised when Python is configured
+with the <em>&#8211;with-fpectl</em> option, or the <tt class="docutils literal"><span class="pre">WANT_SIGFPE_HANDLER</span></tt>
+symbol is defined in the <tt class="docutils literal"><span class="pre">pyconfig.h</span></tt> file.</blockquote>
+<p>exception exception GeneratorExit</p>
+<blockquote>
+<p>Raise when a <em>generator</em>&#8216;s <tt class="docutils literal"><span class="pre">close()</span></tt> method is called.  It
+directly inherits from <tt class="docutils literal"><span class="pre">BaseException</span></tt> instead of
+<tt class="docutils literal"><span class="pre">StandardError</span></tt> since it is technically not an error.</p>
+<p>New in version 2.5.</p>
+<p>Changed in version 2.6: Changed to inherit from <tt class="docutils literal"><span class="pre">BaseException</span></tt>.</p>
+</blockquote>
+<p>exception exception IOError</p>
+<blockquote>
+<p>Raised when an I/O operation (such as a <tt class="docutils literal"><span class="pre">print</span></tt> statement, the
+built-in <tt class="docutils literal"><span class="pre">open()</span></tt> function or a method of a file object) fails
+for an I/O-related reason, e.g., &#8220;file not found&#8221; or &#8220;disk full&#8221;.</p>
+<p>This class is derived from <tt class="docutils literal"><span class="pre">EnvironmentError</span></tt>.  See the
+discussion above for more information on exception instance
+attributes.</p>
+<p>Changed in version 2.6: Changed <tt class="docutils literal"><span class="pre">socket.error</span></tt> to use this as a
+base class.</p>
+</blockquote>
+<p>exception exception ImportError</p>
+<blockquote>
+Raised when an <tt class="docutils literal"><span class="pre">import</span></tt> statement fails to find the module
+definition or when a <tt class="docutils literal"><span class="pre">from</span> <span class="pre">...</span> <span class="pre">import</span></tt> fails to find a name that
+is to be imported.</blockquote>
+<p>exception exception IndexError</p>
+<blockquote>
+Raised when a sequence subscript is out of range.  (Slice indices
+are silently truncated to fall in the allowed range; if an index is
+not a plain integer, <tt class="docutils literal"><span class="pre">TypeError</span></tt> is raised.)</blockquote>
+<p>exception exception KeyError</p>
+<blockquote>
+Raised when a mapping (dictionary) key is not found in the set of
+existing keys.</blockquote>
+<p>exception exception KeyboardInterrupt</p>
+<blockquote>
+<p>Raised when the user hits the interrupt key (normally <tt class="docutils literal"><span class="pre">Control-C</span></tt>
+or <tt class="docutils literal"><span class="pre">Delete</span></tt>).  During execution, a check for interrupts is made
+regularly. Interrupts typed when a built-in function <tt class="docutils literal"><span class="pre">input()</span></tt> or
+<tt class="docutils literal"><span class="pre">raw_input()</span></tt> is waiting for input also raise this exception. The
+exception inherits from <tt class="docutils literal"><span class="pre">BaseException</span></tt> so as to not be
+accidentally caught by code that catches <tt class="docutils literal"><span class="pre">Exception</span></tt> and thus
+prevent the interpreter from exiting.</p>
+<p>Changed in version 2.5: Changed to inherit from <tt class="docutils literal"><span class="pre">BaseException</span></tt>.</p>
+</blockquote>
+<p>exception exception MemoryError</p>
+<blockquote>
+Raised when an operation runs out of memory but the situation may
+still be rescued (by deleting some objects).  The associated value
+is a string indicating what kind of (internal) operation ran out of
+memory. Note that because of the underlying memory management
+architecture (C&#8217;s <tt class="docutils literal"><span class="pre">malloc()</span></tt> function), the interpreter may not
+always be able to completely recover from this situation; it
+nevertheless raises an exception so that a stack traceback can be
+printed, in case a run-away program was the cause.</blockquote>
+<p>exception exception NameError</p>
+<blockquote>
+Raised when a local or global name is not found.  This applies only
+to unqualified names.  The associated value is an error message
+that includes the name that could not be found.</blockquote>
+<p>exception exception NotImplementedError</p>
+<blockquote>
+<p>This exception is derived from <tt class="docutils literal"><span class="pre">RuntimeError</span></tt>.  In user defined
+base classes, abstract methods should raise this exception when
+they require derived classes to override the method.</p>
+<p>New in version 1.5.2.</p>
+</blockquote>
+<p>exception exception OSError</p>
+<blockquote>
+<p>This exception is derived from <tt class="docutils literal"><span class="pre">EnvironmentError</span></tt>.  It is raised
+when a function returns a system-related error (not for illegal
+argument types or other incidental errors).  The <tt class="docutils literal"><span class="pre">errno</span></tt>
+attribute is a numeric error code from <tt class="docutils literal"><span class="pre">errno</span></tt>, and the
+<tt class="docutils literal"><span class="pre">strerror</span></tt> attribute is the corresponding string, as would be
+printed by the C function <tt class="docutils literal"><span class="pre">perror()</span></tt>. See the module <tt class="docutils literal"><span class="pre">errno</span></tt>,
+which contains names for the error codes defined by the underlying
+operating system.</p>
+<p>For exceptions that involve a file system path (such as <tt class="docutils literal"><span class="pre">chdir()</span></tt>
+or <tt class="docutils literal"><span class="pre">unlink()</span></tt>), the exception instance will contain a third
+attribute, <tt class="docutils literal"><span class="pre">filename</span></tt>, which is the file name passed to the
+function.</p>
+<p>New in version 1.5.2.</p>
+</blockquote>
+<p>exception exception OverflowError</p>
+<blockquote>
+Raised when the result of an arithmetic operation is too large to
+be represented.  This cannot occur for long integers (which would
+rather raise <tt class="docutils literal"><span class="pre">MemoryError</span></tt> than give up) and for most operations
+with plain integers, which return a long integer instead.  Because
+of the lack of standardization of floating point exception handling
+in C, most floating point operations also aren&#8217;t checked.</blockquote>
+<p>exception exception ReferenceError</p>
+<blockquote>
+<p>This exception is raised when a weak reference proxy, created by
+the <tt class="docutils literal"><span class="pre">weakref.proxy()</span></tt> function, is used to access an attribute of
+the referent after it has been garbage collected. For more
+information on weak references, see the <tt class="docutils literal"><span class="pre">weakref</span></tt> module.</p>
+<p>New in version 2.2: Previously known as the
+<tt class="docutils literal"><span class="pre">weakref.ReferenceError</span></tt> exception.</p>
+</blockquote>
+<p>exception exception RuntimeError</p>
+<blockquote>
+Raised when an error is detected that doesn&#8217;t fall in any of the
+other categories.  The associated value is a string indicating what
+precisely went wrong.  (This exception is mostly a relic from a
+previous version of the interpreter; it is not used very much any
+more.)</blockquote>
+<p>exception exception StopIteration</p>
+<blockquote>
+<p>Raised by an <em>iterator</em>&#8216;s <tt class="docutils literal"><span class="pre">next()</span></tt> method to signal that there
+are no further values.  This is derived from <tt class="docutils literal"><span class="pre">Exception</span></tt> rather
+than <tt class="docutils literal"><span class="pre">StandardError</span></tt>, since this is not considered an error in
+its normal application.</p>
+<p>New in version 2.2.</p>
+</blockquote>
+<p>exception exception SyntaxError</p>
+<blockquote>
+<p>Raised when the parser encounters a syntax error.  This may occur
+in an <tt class="docutils literal"><span class="pre">import</span></tt> statement, in an <tt class="docutils literal"><span class="pre">exec</span></tt> statement, in a call to
+the built-in function <tt class="docutils literal"><span class="pre">eval()</span></tt> or <tt class="docutils literal"><span class="pre">input()</span></tt>, or when reading
+the initial script or standard input (also interactively).</p>
+<p>Instances of this class have attributes <tt class="docutils literal"><span class="pre">filename</span></tt>, <tt class="docutils literal"><span class="pre">lineno</span></tt>,
+<tt class="docutils literal"><span class="pre">offset</span></tt> and <tt class="docutils literal"><span class="pre">text</span></tt> for easier access to the details.
+<tt class="docutils literal"><span class="pre">str()</span></tt> of the exception instance returns only the message.</p>
+</blockquote>
+<p>exception exception SystemError</p>
+<blockquote>
+<p>Raised when the interpreter finds an internal error, but the
+situation does not look so serious to cause it to abandon all hope.
+The associated value is a string indicating what went wrong (in
+low-level terms).</p>
+<p>You should report this to the author or maintainer of your Python
+interpreter. Be sure to report the version of the Python
+interpreter (<tt class="docutils literal"><span class="pre">sys.version</span></tt>; it is also printed at the start of an
+interactive Python session), the exact error message (the
+exception&#8217;s associated value) and if possible the source of the
+program that triggered the error.</p>
+</blockquote>
+<p>exception exception SystemExit</p>
+<blockquote>
+<p>This exception is raised by the <tt class="docutils literal"><span class="pre">sys.exit()</span></tt> function.  When it
+is not handled, the Python interpreter exits; no stack traceback is
+printed.  If the associated value is a plain integer, it specifies
+the system exit status (passed to C&#8217;s <tt class="docutils literal"><span class="pre">exit()</span></tt> function); if it
+is <tt class="xref docutils literal"><span class="pre">None</span></tt>, the exit status is zero; if it has another type (such
+as a string), the object&#8217;s value is printed and the exit status is
+one.</p>
+<p>Instances have an attribute <tt class="docutils literal"><span class="pre">code</span></tt> which is set to the proposed
+exit status or error message (defaulting to <tt class="xref docutils literal"><span class="pre">None</span></tt>). Also, this
+exception derives directly from <tt class="docutils literal"><span class="pre">BaseException</span></tt> and not
+<tt class="docutils literal"><span class="pre">StandardError</span></tt>, since it is not technically an error.</p>
+<p>A call to <tt class="docutils literal"><span class="pre">sys.exit()</span></tt> is translated into an exception so that
+clean-up handlers (<tt class="docutils literal"><span class="pre">finally</span></tt> clauses of <tt class="docutils literal"><span class="pre">try</span></tt> statements) can
+be executed, and so that a debugger can execute a script without
+running the risk of losing control.  The <tt class="docutils literal"><span class="pre">os._exit()</span></tt> function
+can be used if it is absolutely positively necessary to exit
+immediately (for example, in the child process after a call to
+<tt class="docutils literal"><span class="pre">fork()</span></tt>).</p>
+<p>The exception inherits from <tt class="docutils literal"><span class="pre">BaseException</span></tt> instead of
+<tt class="docutils literal"><span class="pre">StandardError</span></tt> or <tt class="docutils literal"><span class="pre">Exception</span></tt> so that it is not accidentally
+caught by code that catches <tt class="docutils literal"><span class="pre">Exception</span></tt>.  This allows the
+exception to properly propagate up and cause the interpreter to
+exit.</p>
+<p>Changed in version 2.5: Changed to inherit from <tt class="docutils literal"><span class="pre">BaseException</span></tt>.</p>
+</blockquote>
+<p>exception exception TypeError</p>
+<blockquote>
+Raised when an operation or function is applied to an object of
+inappropriate type.  The associated value is a string giving
+details about the type mismatch.</blockquote>
+<p>exception exception UnboundLocalError</p>
+<blockquote>
+<p>Raised when a reference is made to a local variable in a function
+or method, but no value has been bound to that variable.  This is a
+subclass of <tt class="docutils literal"><span class="pre">NameError</span></tt>.</p>
+<p>New in version 2.0.</p>
+</blockquote>
+<p>exception exception UnicodeError</p>
+<blockquote>
+<p>Raised when a Unicode-related encoding or decoding error occurs.
+It is a subclass of <tt class="docutils literal"><span class="pre">ValueError</span></tt>.</p>
+<p>New in version 2.0.</p>
+</blockquote>
+<p>exception exception UnicodeEncodeError</p>
+<blockquote>
+<p>Raised when a Unicode-related error occurs during encoding.  It is
+a subclass of <tt class="docutils literal"><span class="pre">UnicodeError</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>exception exception UnicodeDecodeError</p>
+<blockquote>
+<p>Raised when a Unicode-related error occurs during decoding.  It is
+a subclass of <tt class="docutils literal"><span class="pre">UnicodeError</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>exception exception UnicodeTranslateError</p>
+<blockquote>
+<p>Raised when a Unicode-related error occurs during translating.  It
+is a subclass of <tt class="docutils literal"><span class="pre">UnicodeError</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>exception exception ValueError</p>
+<blockquote>
+Raised when a built-in operation or function receives an argument
+that has the right type but an inappropriate value, and the
+situation is not described by a more precise exception such as
+<tt class="docutils literal"><span class="pre">IndexError</span></tt>.</blockquote>
+<p>exception exception VMSError</p>
+<blockquote>
+Only available on VMS.  Raised when a VMS-specific error occurs.</blockquote>
+<p>exception exception WindowsError</p>
+<blockquote>
+<p>Raised when a Windows-specific error occurs or when the error
+number does not correspond to an <tt class="docutils literal"><span class="pre">errno</span></tt> value.  The <tt class="docutils literal"><span class="pre">winerror</span></tt>
+and <tt class="docutils literal"><span class="pre">strerror</span></tt> values are created from the return values of the
+<tt class="docutils literal"><span class="pre">GetLastError()</span></tt> and <tt class="docutils literal"><span class="pre">FormatMessage()</span></tt> functions from the
+Windows Platform API. The <tt class="docutils literal"><span class="pre">errno</span></tt> value maps the <tt class="docutils literal"><span class="pre">winerror</span></tt>
+value to corresponding <tt class="docutils literal"><span class="pre">errno.h</span></tt> values. This is a subclass of
+<tt class="docutils literal"><span class="pre">OSError</span></tt>.</p>
+<p>New in version 2.0.</p>
+<p>Changed in version 2.5: Previous versions put the
+<tt class="docutils literal"><span class="pre">GetLastError()</span></tt> codes into <tt class="docutils literal"><span class="pre">errno</span></tt>.</p>
+</blockquote>
+<p>exception exception ZeroDivisionError</p>
+<blockquote>
+Raised when the second argument of a division or modulo operation
+is zero.  The associated value is a string indicating the type of
+the operands and the operation.</blockquote>
+<p>The following exceptions are used as warning categories; see the
+<tt class="docutils literal"><span class="pre">warnings</span></tt> module for more information.</p>
+<p>exception exception Warning</p>
+<blockquote>
+Base class for warning categories.</blockquote>
+<p>exception exception UserWarning</p>
+<blockquote>
+Base class for warnings generated by user code.</blockquote>
+<p>exception exception DeprecationWarning</p>
+<blockquote>
+Base class for warnings about deprecated features.</blockquote>
+<p>exception exception PendingDeprecationWarning</p>
+<blockquote>
+Base class for warnings about features which will be deprecated in
+the future.</blockquote>
+<p>exception exception SyntaxWarning</p>
+<blockquote>
+Base class for warnings about dubious syntax</blockquote>
+<p>exception exception RuntimeWarning</p>
+<blockquote>
+Base class for warnings about dubious runtime behavior.</blockquote>
+<p>exception exception FutureWarning</p>
+<blockquote>
+Base class for warnings about constructs that will change
+semantically in the future.</blockquote>
+<p>exception exception ImportWarning</p>
+<blockquote>
+<p>Base class for warnings about probable mistakes in module imports.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>exception exception UnicodeWarning</p>
+<blockquote>
+<p>Base class for warnings related to Unicode.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<div class="section" id="exception-hierarchy">
+<h2>6.1. Exception hierarchy<a class="headerlink" href="#exception-hierarchy" title="Permalink to this headline">¶</a></h2>
+<p>The class hierarchy for built-in exceptions is:</p>
+<blockquote>
+<dl class="docutils">
+<dt>BaseException</dt>
+<dd><p class="first">+&#8211; SystemExit
++&#8211; KeyboardInterrupt
++&#8211; GeneratorExit
++&#8211; Exception</p>
+<blockquote class="last">
+<p>+&#8211; StopIteration
++&#8211; StandardError
+|    +&#8211; BufferError
+|    +&#8211; ArithmeticError
+|    |    +&#8211; FloatingPointError
+|    |    +&#8211; OverflowError
+|    |    +&#8211; ZeroDivisionError
+|    +&#8211; AssertionError
+|    +&#8211; AttributeError
+|    +&#8211; EnvironmentError
+|    |    +&#8211; IOError
+|    |    +&#8211; OSError
+|    |         +&#8211; WindowsError (Windows)
+|    |         +&#8211; VMSError (VMS)
+|    +&#8211; EOFError
+|    +&#8211; ImportError
+|    +&#8211; LookupError
+|    |    +&#8211; IndexError
+|    |    +&#8211; KeyError
+|    +&#8211; MemoryError
+|    +&#8211; NameError
+|    |    +&#8211; UnboundLocalError
+|    +&#8211; ReferenceError
+|    +&#8211; RuntimeError
+|    |    +&#8211; NotImplementedError
+|    +&#8211; SyntaxError
+|    |    +&#8211; IndentationError
+|    |         +&#8211; TabError
+|    +&#8211; SystemError
+|    +&#8211; TypeError
+|    +&#8211; ValueError
+|         +&#8211; UnicodeError
+|              +&#8211; UnicodeDecodeError
+|              +&#8211; UnicodeEncodeError
+|              +&#8211; UnicodeTranslateError
++&#8211; Warning</p>
+<blockquote>
+<blockquote>
++&#8211; DeprecationWarning
++&#8211; PendingDeprecationWarning
++&#8211; RuntimeWarning
++&#8211; SyntaxWarning
++&#8211; UserWarning
++&#8211; FutureWarning</blockquote>
+<p>+&#8211; ImportWarning
++&#8211; UnicodeWarning
++&#8211; BytesWarning</p>
+</blockquote>
+</blockquote>
+</dd>
+</dl>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="strings.html" title="7. String Services"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="stdtypes.html" title="5. Built-in Types"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

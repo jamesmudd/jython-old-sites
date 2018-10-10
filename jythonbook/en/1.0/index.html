@@ -1,0 +1,553 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The Definitive Guide to Jython &mdash; Jython Book v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '1.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Book v1.0 documentation" href="#" />
+    <link rel="next" title="About The Authors" href="aboutTheAuthors.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="aboutTheAuthors.html" title="About The Authors"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-definitive-guide-to-jython">
+<h1>The Definitive Guide to Jython<a class="headerlink" href="#the-definitive-guide-to-jython" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="python-for-the-java-platform">
+<h2>Python for the Java Platform<a class="headerlink" href="#python-for-the-java-platform" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Authors:</th><td class="field-body">Josh Juneau,
+Jim Baker,
+Victor Ng,
+Leo Soto,
+Frank Wierzbicki</td>
+</tr>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">1.0 of 03/25/2010</td>
+</tr>
+</tbody>
+</table>
+<p>This book is presented in open source and licensed through Creative Commons 3.0.
+You are free to copy, distribute, transmit, and/or adapt the work.  This license
+is based upon the following conditions:</p>
+<p>Attribution:</p>
+<p>You must attribute the work in the manner specified by the author
+or licensor (but not in any way that suggests that they endorse
+you or your use of the work).</p>
+<p>Share Alike:</p>
+<p>If you alter, transform, or build upon this work, you may distribute the
+resulting work only under the same, similar or a compatible license.</p>
+<p>Any of the above conditions can be waived if you get permission from
+the copyright holder.</p>
+<p>In no way are any of the following rights affected by the license:</p>
+<blockquote>
+<ul class="simple">
+<li>Your fair dealing or fair use rights</li>
+<li>The author&#8217;s moral rights</li>
+<li>Rights other persons may have either in the work itself or in how
+the work is used, such as publicity or privacy rights</li>
+</ul>
+</blockquote>
+<p>Notice:  For any reuse or distribution, you must make clear to the others
+the license terms of this work.  The best way to do this is with a direct
+link to this page:  <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">http://creativecommons.org/licenses/by-sa/3.0/</a></p>
+</div>
+</div>
+<div class="section" id="inside-cover">
+<h1>Inside Cover<a class="headerlink" href="#inside-cover" title="Permalink to this headline">¶</a></h1>
+<p>The Definitive Guide to Jython: Python for the Java Platform</p>
+<p>Copyright © 2010 by Josh Juneau, Jim Baker, Victor Ng, Leo Soto, Frank Wierzbicki</p>
+<p>All rights reserved. No part of this work may be reproduced or transmitted in any form or by any means,
+electronic or mechanical, including photocopying, recording, or by any information storage or retrieval
+system, without the prior written permission of the copyright owner and the publisher.</p>
+<p>ISBN-13 (pbk): 978-1-4302-2527-0</p>
+<p>ISBN-13 (electronic): 978-1-4302-2528-7</p>
+<p>Printed and bound in the United States of America 9 8 7 6 5 4 3 2 1</p>
+<p>Trademarked names may appear in this book. Rather than use a trademark symbol with every
+occurrence of a trademarked name, we use the names only in an editorial fashion and to the benefit of
+the trademark owner, with no intention of infringement of the trademark.</p>
+<p>Java™ and all Java-based marks are trademarks or registered trademarks of Sun Microsystems, Inc., in
+the US and other countries. Apress, Inc., is not affiliated with Sun Microsystems, Inc., and this book was
+written without endorsement from Sun Microsystems, Inc.</p>
+<p>Lead Editors: Steve Anglin, Duncan Parkes</p>
+<p>Technical Reviewers: Mark Ramm, Tobias Ivarsson</p>
+<p>Editorial Board: Clay Andres, Steve Anglin, Mark Beckner, Ewan Buckingham, Gary Cornell,
+Jonathan Gennick, Jonathan Hassell, Michelle Lowman, Matthew Moodie, Duncan Parkes,
+Jeffrey Pepper, Frank Pohlmann, Douglas Pundick, Ben Renow-Clarke, Dominic
+Shakeshaft, Matt Wade, Tom Welsh</p>
+<p>Coordinating Editor: Mary Tobin</p>
+<p>Copy Editor: Tracy Brown Collins</p>
+<p>Associate Production Director: Kari Brooks-Copony</p>
+<p>Manufacturing Director: Tom Debolski</p>
+<p>Distributed to the book trade worldwide by Springer-Verlag New York, Inc., 233 Spring Street, 6th Floor,
+New York, NY 10013. Phone 1-800-SPRINGER, fax 201-348-4505, e-mail <a class="reference external" href="mailto:orders-ny&#37;&#52;&#48;springer-sbm&#46;com">orders-ny<span>&#64;</span>springer-sbm<span>&#46;</span>com</a>, or
+visit <a class="reference external" href="http://www.springeronline.com">http://www.springeronline.com</a>.</p>
+<p>For information on translations, please e-mail <a class="reference external" href="mailto:info&#37;&#52;&#48;apress&#46;com">info<span>&#64;</span>apress<span>&#46;</span>com</a>, or visit <a class="reference external" href="http://www.apress.com">http://www.apress.com</a>.</p>
+<p>Apress and friends of ED books may be purchased in bulk for academic, corporate, or promotional use.
+eBook versions and licenses are also available for most titles. For more information, reference our
+Special Bulk Sales–eBook Licensing web page at <a class="reference external" href="http://www.apress.com/info/bulksales">http://www.apress.com/info/bulksales</a>.</p>
+<p>The information in this book is distributed on an “as is” basis, without warranty. Although every
+precaution has been taken in the preparation of this work, neither the author(s) nor Apress shall have
+any liability to any person or entity with respect to any loss or damage caused or alleged to be caused
+directly or indirectly by the information contained in this work.
+This book is available online under the Creative Commons Attribution-Share Alike license
+(<a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">http://creativecommons.org/licenses/by-sa/3.0/</a>). You can read the book at <a class="reference external" href="http://jythonbook.com">http://jythonbook.com</a> or
+check out the source at the book project on bitbucket at <a class="reference external" href="http://bitbucket.org/javajuneau/jythonbook/">http://bitbucket.org/javajuneau/jythonbook/</a>.</p>
+</div>
+<div class="section" id="foreword">
+<h1>Foreword<a class="headerlink" href="#foreword" title="Permalink to this headline">¶</a></h1>
+<p>I started using Python in 2003, and I fell in love with the language for a variety of reasons. The elegance
+of Python’s whitespace based syntax, the well conceived built in data types, and a beautiful set of library
+functions. Since that time, many other people have discovered or rediscovered Python. At the time of
+this writing, the software industry is well into a resurgence of dynamically typed languages: Ruby, PHP,
+and Python.
+It wasn’t until I attended my first PyCon in 2004 that I became aware of Jython. People were glad of
+the ability to run Python programs on the Java Virtual Machine (JVM), but were wistful because at the
+time Jython was lagging behind the native C Python (CPython) interpreter in terms of supporting recent
+versions of the language. Jython was maintained by a series of individual developers, but the task of
+staying current with CPython was really too much for any single person. In December 2005, Frank
+Wierzbicki took over as the lead developer for Jython, and over the next few years managed to foster a
+community of developers for Jython. The authors of this book are some of the members of that
+community. In June of 2009, the Jython community released Jython 2.5, which implemented the same
+language as CPython 2.5. This was a major leap forward, bringing Jython much closer to feature parity
+with CPython, and laying a foundation for catching up the rest of the way with CPython. Jython 2.5 is
+able to run many of the most popular Python packages, including Django, Pylons, and SQLAlchemy.
+Jython makes for a best of both worlds bridge between the elegant, expressive code of the Python
+world and the “enterprise ready” Java world. Developers who work in organizations where Java is
+already in use can now take advantage of the expressiveness and conciseness of Python by running their
+Python programs on Jython. Jython provides easy integration and interoperability between Python code
+and existing Java code.
+Jython also has something to offer existing Python programmers, namely access to the very rich
+ecosystem of the Java Virtual Machine. There is an enormous amount of Java code out in the world.
+There are libraries for every task imaginable, and more. Jython gives Python programmers a way to tap
+into these libraries, saving both development and testing time. Web applications running on Jython can
+also take advantage of the scalability benefits of Java web containers such as Tomcat or GlassFish.
+Things are looking very bright for Jython, and this book is a timely resource for people interested in
+taking advantage of the benefits that Jython has to offer.</p>
+<p>Ted Leung</p>
+<ul class="simple">
+</ul>
+</div>
+<div class="section" id="back-cover-text">
+<h1>Back Cover Text<a class="headerlink" href="#back-cover-text" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+</ul>
+</div>
+<div class="section" id="front-matter">
+<h1>Front Matter<a class="headerlink" href="#front-matter" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="aboutTheAuthors.html">About The Authors</a><ul>
+<li class="toctree-l2"><a class="reference external" href="aboutTheAuthors.html#josh-juneau">Josh Juneau</a></li>
+<li class="toctree-l2"><a class="reference external" href="aboutTheAuthors.html#jim-baker">Jim Baker</a></li>
+<li class="toctree-l2"><a class="reference external" href="aboutTheAuthors.html#victor-ng">Victor Ng</a></li>
+<li class="toctree-l2"><a class="reference external" href="aboutTheAuthors.html#leo-soto">Leo Soto</a></li>
+<li class="toctree-l2"><a class="reference external" href="aboutTheAuthors.html#frank-wierzbicki">Frank Wierzbicki</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="attribution.html">Acknowledgment and Dedications</a><ul>
+<li class="toctree-l2"><a class="reference external" href="attribution.html#josh-juneau">Josh Juneau</a></li>
+<li class="toctree-l2"><a class="reference external" href="attribution.html#jim-baker">Jim Baker</a></li>
+<li class="toctree-l2"><a class="reference external" href="attribution.html#victor-ng">Victor Ng</a></li>
+<li class="toctree-l2"><a class="reference external" href="attribution.html#leo-soto">Leo Soto</a></li>
+<li class="toctree-l2"><a class="reference external" href="attribution.html#frank-wierzbicki">Frank Wierzbicki</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="attribution.html#special-thanks">Special Thanks</a></li>
+<li class="toctree-l1"><a class="reference external" href="aboutTechReviewers.html">About the Technical Reviewers</a><ul>
+<li class="toctree-l2"><a class="reference external" href="aboutTechReviewers.html#mark-ramm">Mark Ramm</a></li>
+<li class="toctree-l2"><a class="reference external" href="aboutTechReviewers.html#tobias-ivarsson">Tobias Ivarsson</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="errata">
+<h1>Errata<a class="headerlink" href="#errata" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="part-i-jython-basics-learning-the-language">
+<h1>Part I:  Jython Basics:  Learning the Language<a class="headerlink" href="#part-i-jython-basics-learning-the-language" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="LangSyntax.html">Chapter 1:  Language and Syntax</a><ul>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#the-difference-between-jython-and-python">The Difference between Jython and Python</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#installing-and-configuring-jython">Installing and Configuring Jython</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#identifiers-and-declaring-variables">Identifiers and Declaring Variables</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#reserved-words">Reserved Words</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#coding-structure">Coding Structure</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#operators">Operators</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#expressions">Expressions</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#classes">Classes</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#statements">Statements</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#iteration">Iteration</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#basic-keyboard-input">Basic Keyboard Input</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#other-python-statements">Other Python Statements</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#documenting-code">Documenting Code</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#python-help">Python Help</a></li>
+<li class="toctree-l2"><a class="reference external" href="LangSyntax.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="DataTypes.html">Chapter 2:  Data Types and Referencing</a><ul>
+<li class="toctree-l2"><a class="reference external" href="DataTypes.html#python-data-types">Python Data Types</a></li>
+<li class="toctree-l2"><a class="reference external" href="DataTypes.html#strings-and-string-methods">Strings and String Methods</a></li>
+<li class="toctree-l2"><a class="reference external" href="DataTypes.html#lists-dictionaries-sets-and-tuples">Lists, Dictionaries, Sets, and Tuples</a></li>
+<li class="toctree-l2"><a class="reference external" href="DataTypes.html#jython-specific-collections">Jython-specific Collections</a></li>
+<li class="toctree-l2"><a class="reference external" href="DataTypes.html#files">Files</a></li>
+<li class="toctree-l2"><a class="reference external" href="DataTypes.html#iterators">Iterators</a></li>
+<li class="toctree-l2"><a class="reference external" href="DataTypes.html#referencing-and-copies">Referencing and Copies</a></li>
+<li class="toctree-l2"><a class="reference external" href="DataTypes.html#garbage-collection">Garbage Collection</a></li>
+<li class="toctree-l2"><a class="reference external" href="DataTypes.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="OpsExpressPF.html">Chapter 3:  Operators, Expressions, and Program Flow</a><ul>
+<li class="toctree-l2"><a class="reference external" href="OpsExpressPF.html#types-of-expressions">Types of Expressions</a></li>
+<li class="toctree-l2"><a class="reference external" href="OpsExpressPF.html#mathematical-operations">Mathematical Operations</a></li>
+<li class="toctree-l2"><a class="reference external" href="OpsExpressPF.html#comparison-operators">Comparison Operators</a></li>
+<li class="toctree-l2"><a class="reference external" href="OpsExpressPF.html#bitwise-operators">Bitwise Operators</a></li>
+<li class="toctree-l2"><a class="reference external" href="OpsExpressPF.html#augmented-assignment">Augmented Assignment</a></li>
+<li class="toctree-l2"><a class="reference external" href="OpsExpressPF.html#boolean-expressions">Boolean Expressions</a></li>
+<li class="toctree-l2"><a class="reference external" href="OpsExpressPF.html#conversions">Conversions</a></li>
+<li class="toctree-l2"><a class="reference external" href="OpsExpressPF.html#using-expressions-to-control-program-flow">Using Expressions to Control Program Flow</a></li>
+<li class="toctree-l2"><a class="reference external" href="OpsExpressPF.html#example-code">Example Code</a></li>
+<li class="toctree-l2"><a class="reference external" href="OpsExpressPF.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html">Chapter 4:  Defining Functions and Using Built-ins</a><ul>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#function-syntax-and-basics">Function Syntax and Basics</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#recursive-function-calls">Recursive Function Calls</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#documenting-functions">Documenting Functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#returning-values">Returning Values</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#introducing-variables">Introducing Variables</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#other-statements">Other Statements</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#empty-functions">Empty Functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#miscellaneous-information-for-the-curious-reader">Miscellaneous Information for the Curious Reader</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#built-in-functions">Built-in Functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#alternative-ways-to-define-functions">Alternative Ways to Define Functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#generator-functions">Generator Functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#namespaces-nested-scopes-and-closures">Namespaces, Nested Scopes, and Closures</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#function-decorators">Function Decorators</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#coroutines">Coroutines</a></li>
+<li class="toctree-l2"><a class="reference external" href="DefiningFunctionsandUsingBuilt-Ins.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="InputOutput.html">Chapter 5:  Input and Output</a><ul>
+<li class="toctree-l2"><a class="reference external" href="InputOutput.html#input-from-the-keyboard">Input from the Keyboard</a></li>
+<li class="toctree-l2"><a class="reference external" href="InputOutput.html#obtaining-variables-from-jython-environment">Obtaining Variables from Jython Environment</a></li>
+<li class="toctree-l2"><a class="reference external" href="InputOutput.html#file-i-o">File I/O</a></li>
+<li class="toctree-l2"><a class="reference external" href="InputOutput.html#pickle">Pickle</a></li>
+<li class="toctree-l2"><a class="reference external" href="InputOutput.html#output-techniques">Output Techniques</a></li>
+<li class="toctree-l2"><a class="reference external" href="InputOutput.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="ObjectOrientedJython.html">Chapter 6:  Object-Oriented Jython</a><ul>
+<li class="toctree-l2"><a class="reference external" href="ObjectOrientedJython.html#basic-syntax">Basic Syntax</a></li>
+<li class="toctree-l2"><a class="reference external" href="ObjectOrientedJython.html#object-attribute-lookups">Object Attribute Lookups</a></li>
+<li class="toctree-l2"><a class="reference external" href="ObjectOrientedJython.html#inheritance-and-overloading">Inheritance and Overloading</a></li>
+<li class="toctree-l2"><a class="reference external" href="ObjectOrientedJython.html#underscore-methods">Underscore Methods</a></li>
+<li class="toctree-l2"><a class="reference external" href="ObjectOrientedJython.html#protocols">Protocols</a></li>
+<li class="toctree-l2"><a class="reference external" href="ObjectOrientedJython.html#default-arguments">Default Arguments</a></li>
+<li class="toctree-l2"><a class="reference external" href="ObjectOrientedJython.html#runtime-binding-of-methods">Runtime Binding of Methods</a></li>
+<li class="toctree-l2"><a class="reference external" href="ObjectOrientedJython.html#caching-attribute-access">Caching Attribute Access</a></li>
+<li class="toctree-l2"><a class="reference external" href="ObjectOrientedJython.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="ExceptionHandlingDebug.html">Chapter 7: &nbsp;Exception Handling and Debugging</a><ul>
+<li class="toctree-l2"><a class="reference external" href="ExceptionHandlingDebug.html#exception-handling-syntax-and-differences-with-java">Exception Handling Syntax and Differences with Java</a></li>
+<li class="toctree-l2"><a class="reference external" href="ExceptionHandlingDebug.html#defining-your-own-exceptions">Defining Your Own Exceptions</a></li>
+<li class="toctree-l2"><a class="reference external" href="ExceptionHandlingDebug.html#issuing-warnings">Issuing Warnings</a></li>
+<li class="toctree-l2"><a class="reference external" href="ExceptionHandlingDebug.html#assertions-and-debugging">Assertions and Debugging</a></li>
+<li class="toctree-l2"><a class="reference external" href="ExceptionHandlingDebug.html#context-managers">Context Managers</a></li>
+<li class="toctree-l2"><a class="reference external" href="ExceptionHandlingDebug.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="ModulesPackages.html">Chapter 8:  Modules and Packages for Code Reuse</a><ul>
+<li class="toctree-l2"><a class="reference external" href="ModulesPackages.html#imports-for-reuse">Imports for Reuse</a></li>
+<li class="toctree-l2"><a class="reference external" href="ModulesPackages.html#an-example-program">An Example Program</a></li>
+<li class="toctree-l2"><a class="reference external" href="ModulesPackages.html#types-of-import-statements">Types of Import Statements</a></li>
+<li class="toctree-l2"><a class="reference external" href="ModulesPackages.html#module-search-path-compilation-and-loading">Module Search Path, Compilation, and Loading</a></li>
+<li class="toctree-l2"><a class="reference external" href="ModulesPackages.html#java-package-scanning">Java Package Scanning</a></li>
+<li class="toctree-l2"><a class="reference external" href="ModulesPackages.html#python-modules-and-packages-versus-java-packages">Python Modules and Packages versus Java Packages</a></li>
+<li class="toctree-l2"><a class="reference external" href="ModulesPackages.html#advanced-import-manipulation">Advanced Import Manipulation</a></li>
+<li class="toctree-l2"><a class="reference external" href="ModulesPackages.html#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="part-ii-using-the-language">
+<h1>Part II: Using the Language<a class="headerlink" href="#part-ii-using-the-language" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="Scripting.html">Chapter 9:  Scripting With Jython</a><ul>
+<li class="toctree-l2"><a class="reference external" href="Scripting.html#getting-the-arguments-passed-to-a-script">Getting the Arguments Passed to a Script</a></li>
+<li class="toctree-l2"><a class="reference external" href="Scripting.html#searching-for-a-file">Searching for a File</a></li>
+<li class="toctree-l2"><a class="reference external" href="Scripting.html#manipulating-files">Manipulating Files</a></li>
+<li class="toctree-l2"><a class="reference external" href="Scripting.html#making-a-script-a-module">Making a Script a Module</a></li>
+<li class="toctree-l2"><a class="reference external" href="Scripting.html#parsing-commandline-options">Parsing Commandline Options</a></li>
+<li class="toctree-l2"><a class="reference external" href="Scripting.html#compiling-java-source">Compiling Java Source</a></li>
+<li class="toctree-l2"><a class="reference external" href="Scripting.html#example-script-builder-py">Example Script: Builder.py</a></li>
+<li class="toctree-l2"><a class="reference external" href="Scripting.html#helloworld-java">HelloWorld.java</a></li>
+<li class="toctree-l2"><a class="reference external" href="Scripting.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="JythonAndJavaIntegration.html">Chapter 10: Jython and Java Integration</a><ul>
+<li class="toctree-l2"><a class="reference external" href="JythonAndJavaIntegration.html#using-java-within-jython-applications">Using Java Within Jython Applications</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonAndJavaIntegration.html#using-jython-within-java-applications">Using Jython Within Java Applications</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonAndJavaIntegration.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="JythonIDE.html">Chapter 11:&nbsp; Using Jython in an IDE</a><ul>
+<li class="toctree-l2"><a class="reference external" href="JythonIDE.html#eclipse">Eclipse</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonIDE.html#debugging">Debugging</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonIDE.html#netbeans">Netbeans</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonIDE.html#ide-installation-and-configuration">IDE Installation and Configuration</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonIDE.html#advanced-python-options">Advanced Python Options</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonIDE.html#general-python-usage">General Python Usage</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonIDE.html#standalone-jython-apps">Standalone Jython Apps</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonIDE.html#jython-and-java-integrated-apps">Jython and Java Integrated Apps</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonIDE.html#the-netbeans-python-debugger">The Netbeans Python Debugger</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonIDE.html#other-netbeans-python-features">Other Netbeans Python Features</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonIDE.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="DatabasesAndJython.html">Chapter 12: Databases and Jython: Object Relational Mapping and Using JDBC</a><ul>
+<li class="toctree-l2"><a class="reference external" href="DatabasesAndJython.html#zxjdbc-using-python-s-db-api-via-jdbc">ZxJDBC—Using Python’s DB API via JDBC</a></li>
+<li class="toctree-l2"><a class="reference external" href="DatabasesAndJython.html#object-relational-mapping">Object Relational Mapping</a></li>
+<li class="toctree-l2"><a class="reference external" href="DatabasesAndJython.html#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="part-iii-developing-applications-with-jython">
+<h1>Part III: Developing Applications with Jython<a class="headerlink" href="#part-iii-developing-applications-with-jython" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="SimpleWebApps.html">Chapter 13: Simple Web Applications</a><ul>
+<li class="toctree-l2"><a class="reference external" href="SimpleWebApps.html#servlets">Servlets</a></li>
+<li class="toctree-l2"><a class="reference external" href="SimpleWebApps.html#applets-and-java-web-start">Applets and Java Web Start</a></li>
+<li class="toctree-l2"><a class="reference external" href="SimpleWebApps.html#wsgi-and-modjy">WSGI and Modjy</a></li>
+<li class="toctree-l2"><a class="reference external" href="SimpleWebApps.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="JythonDjango.html">Chapter 14: Web Applications With Django</a><ul>
+<li class="toctree-l2"><a class="reference external" href="JythonDjango.html#getting-django">Getting Django</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonDjango.html#a-quick-tour-of-django">A Quick Tour of Django</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonDjango.html#j2ee-deployment-and-integration">J2EE Deployment and Integration</a></li>
+<li class="toctree-l2"><a class="reference external" href="JythonDjango.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="IntroToPylons.html">Chapter 15:  Introduction to Pylons</a><ul>
+<li class="toctree-l2"><a class="reference external" href="IntroToPylons.html#a-guide-for-the-impatient">A Guide for the Impatient</a></li>
+<li class="toctree-l2"><a class="reference external" href="IntroToPylons.html#a-note-about-paste">A Note about Paste</a></li>
+<li class="toctree-l2"><a class="reference external" href="IntroToPylons.html#pylons-mvc">Pylons MVC</a></li>
+<li class="toctree-l2"><a class="reference external" href="IntroToPylons.html#an-interlude-into-java-s-memory-model">An Interlude into Java’s Memory Model</a></li>
+<li class="toctree-l2"><a class="reference external" href="IntroToPylons.html#invoking-the-pylons-shell">Invoking the Pylons Shell</a></li>
+<li class="toctree-l2"><a class="reference external" href="IntroToPylons.html#context-variables-and-application-globals">Context Variables and Application Globals</a></li>
+<li class="toctree-l2"><a class="reference external" href="IntroToPylons.html#routes">Routes</a></li>
+<li class="toctree-l2"><a class="reference external" href="IntroToPylons.html#controllers-and-templates">Controllers and Templates</a></li>
+<li class="toctree-l2"><a class="reference external" href="IntroToPylons.html#adding-a-json-api">Adding a JSON API</a></li>
+<li class="toctree-l2"><a class="reference external" href="IntroToPylons.html#unit-testing-functional-testing-and-logging">Unit Testing, Functional Testing, and Logging</a></li>
+<li class="toctree-l2"><a class="reference external" href="IntroToPylons.html#deployment-into-a-servlet-container">Deployment into a Servlet Container</a></li>
+<li class="toctree-l2"><a class="reference external" href="IntroToPylons.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="GUIApplications.html">Chapter 16: GUI Applications</a><ul>
+<li class="toctree-l2"><a class="reference external" href="GUIApplications.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="DeploymentTargets.html">Chapter 17: Deployment Targets</a><ul>
+<li class="toctree-l2"><a class="reference external" href="DeploymentTargets.html#application-servers">Application Servers</a></li>
+<li class="toctree-l2"><a class="reference external" href="DeploymentTargets.html#google-app-engine">Google App Engine</a></li>
+<li class="toctree-l2"><a class="reference external" href="DeploymentTargets.html#java-store">Java Store</a></li>
+<li class="toctree-l2"><a class="reference external" href="DeploymentTargets.html#mobile">Mobile</a></li>
+<li class="toctree-l2"><a class="reference external" href="DeploymentTargets.html#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="part-iv-strategy-and-technique">
+<h1>Part IV:  Strategy and Technique<a class="headerlink" href="#part-iv-strategy-and-technique" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="TestingIntegration.html">Chapter 18: Testing and Continuous Integration</a><ul>
+<li class="toctree-l2"><a class="reference external" href="TestingIntegration.html#python-testing-tools">Python Testing Tools</a></li>
+<li class="toctree-l2"><a class="reference external" href="TestingIntegration.html#a-complete-example">A Complete Example</a></li>
+<li class="toctree-l2"><a class="reference external" href="TestingIntegration.html#nose">Nose</a></li>
+<li class="toctree-l2"><a class="reference external" href="TestingIntegration.html#continuous-integration">Continuous Integration</a></li>
+<li class="toctree-l2"><a class="reference external" href="TestingIntegration.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="Concurrency.html">Chapter 19: Concurrency</a><ul>
+<li class="toctree-l2"><a class="reference external" href="Concurrency.html#java-or-python-apis">Java or Python APIs?</a></li>
+<li class="toctree-l2"><a class="reference external" href="Concurrency.html#working-with-threads">Working With Threads</a></li>
+<li class="toctree-l2"><a class="reference external" href="Concurrency.html#thread-locals">Thread Locals</a></li>
+<li class="toctree-l2"><a class="reference external" href="Concurrency.html#no-global-interpreter-lock">No Global Interpreter Lock</a></li>
+<li class="toctree-l2"><a class="reference external" href="Concurrency.html#module-import-lock">Module Import Lock</a></li>
+<li class="toctree-l2"><a class="reference external" href="Concurrency.html#working-with-tasks">Working With Tasks</a></li>
+<li class="toctree-l2"><a class="reference external" href="Concurrency.html#thread-safety">Thread Safety</a></li>
+<li class="toctree-l2"><a class="reference external" href="Concurrency.html#python-memory-model">Python Memory Model</a></li>
+<li class="toctree-l2"><a class="reference external" href="Concurrency.html#interruption">Interruption</a></li>
+<li class="toctree-l2"><a class="reference external" href="Concurrency.html#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="part-v-appendicies-and-attribution">
+<h1>Part V:  Appendicies and Attribution<a class="headerlink" href="#part-v-appendicies-and-attribution" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="appendixA.html">Appendix A: Using Other Tools with Jython</a><ul>
+<li class="toctree-l2"><a class="reference external" href="appendixA.html#the-jython-registry">The Jython Registry</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixA.html#setuptools">Setuptools</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixA.html#virtualenv">Virtualenv</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="appendixB.html">Appendix B: Jython Cookbook</a><ul>
+<li class="toctree-l2"><a class="reference external" href="appendixB.html#logging">Logging</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixB.html#working-with-spreadsheets">Working with Spreadsheets</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixB.html#jython-and-xml">Jython and XML</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixB.html#working-with-classpath">Working with CLASSPATH</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixB.html#ant">Ant</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixB.html#developing-django-web-apps">Developing Django Web Apps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="appendixC.html">Appendix C: Built-in Functions</a><ul>
+<li class="toctree-l2"><a class="reference external" href="appendixC.html#constructor-functions">Constructor Functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixC.html#math-built-in-functions">Math Built-in Functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixC.html#functions-on-iterables">Functions on Iterables</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixC.html#conversion-functions">Conversion Functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixC.html#functions-for-working-with-code">Functions for Working with Code</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixC.html#input-functions">Input Functions</a></li>
+<li class="toctree-l2"><a class="reference external" href="appendixC.html#functions-for-working-with-modules-and-objects">Functions for Working with Modules and Objects</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference external" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference external" href="modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference external" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="#">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">The Definitive Guide to Jython</a><ul>
+<li><a class="reference external" href="#python-for-the-java-platform">Python for the Java Platform</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#inside-cover">Inside Cover</a></li>
+<li><a class="reference external" href="#foreword">Foreword</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#back-cover-text">Back Cover Text</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#front-matter">Front Matter</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#errata">Errata</a></li>
+<li><a class="reference external" href="#part-i-jython-basics-learning-the-language">Part I:  Jython Basics:  Learning the Language</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#part-ii-using-the-language">Part II: Using the Language</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#part-iii-developing-applications-with-jython">Part III: Developing Applications with Jython</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#part-iv-strategy-and-technique">Part IV:  Strategy and Technique</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#part-v-appendicies-and-attribution">Part V:  Appendicies and Attribution</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+            <h4>Next topic</h4>
+            <p class="topless"><a href="aboutTheAuthors.html"
+                                  title="next chapter">About The Authors</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/index.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="aboutTheAuthors.html" title="About The Authors"
+             >next</a> |</li>
+        <li><a href="#">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+    <div class="footer">
+      &copy; Copyright 2009,2010, Josh Juneau, Frank Wierzbicki, Jim Baker, Leo Soto, Victor Ng.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-13131153-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  </body>
+</html>

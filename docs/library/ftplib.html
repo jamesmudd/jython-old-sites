@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>20.8. ftplib — FTP protocol client &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="20. Internet Protocols and Support" href="internet.html" />
+    <link rel="next" title="20.9. poplib — POP3 protocol client" href="poplib.html" />
+    <link rel="prev" title="20.7. httplib — HTTP protocol client" href="httplib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="poplib.html" title="20.9. poplib — POP3 protocol client"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="httplib.html" title="20.7. httplib — HTTP protocol client"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" accesskey="U">20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">20.8. <tt class="docutils literal"><span class="pre">ftplib</span></tt> &#8212; FTP protocol client</a><ul>
+<li><a class="reference external" href="#ftp-objects">20.8.1. FTP Objects</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="httplib.html"
+                                  title="previous chapter">20.7. <tt class="docutils literal"><span class="pre">httplib</span></tt> &#8212; HTTP protocol client</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="poplib.html"
+                                  title="next chapter">20.9. <tt class="docutils literal"><span class="pre">poplib</span></tt> &#8212; POP3 protocol client</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/ftplib.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="ftplib-ftp-protocol-client">
+<h1>20.8. <tt class="docutils literal"><span class="pre">ftplib</span></tt> &#8212; FTP protocol client<a class="headerlink" href="#ftplib-ftp-protocol-client" title="Permalink to this headline">¶</a></h1>
+<p>This module defines the class <tt class="docutils literal"><span class="pre">FTP</span></tt> and a few related items. The
+<tt class="docutils literal"><span class="pre">FTP</span></tt> class implements the client side of the FTP protocol.  You can
+use this to write Python programs that perform a variety of automated
+FTP jobs, such as mirroring other ftp servers.  It is also used by the
+module <tt class="docutils literal"><span class="pre">urllib</span></tt> to handle URLs that use FTP.  For more information
+on FTP (File Transfer Protocol), see Internet <strong>RFC 959</strong>.</p>
+<p>Here&#8217;s a sample session using the <tt class="docutils literal"><span class="pre">ftplib</span></tt> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ftplib</span> <span class="kn">import</span> <span class="n">FTP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ftp</span> <span class="o">=</span> <span class="n">FTP</span><span class="p">(</span><span class="s">&#39;ftp.cwi.nl&#39;</span><span class="p">)</span>   <span class="c"># connect to host, default port</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ftp</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>               <span class="c"># user anonymous, passwd anonymous@</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ftp</span><span class="o">.</span><span class="n">retrlines</span><span class="p">(</span><span class="s">&#39;LIST&#39;</span><span class="p">)</span>     <span class="c"># list directory contents</span>
+<span class="go">total 24418</span>
+<span class="go">drwxrwsr-x   5 ftp-usr  pdmaint     1536 Mar 20 09:48 .</span>
+<span class="go">dr-xr-srwt 105 ftp-usr  pdmaint     1536 Mar 21 14:32 ..</span>
+<span class="go">-rw-r--r--   1 ftp-usr  pdmaint     5305 Mar 20 09:48 INDEX</span>
+<span class="go"> .</span>
+<span class="go"> .</span>
+<span class="go"> .</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ftp</span><span class="o">.</span><span class="n">retrbinary</span><span class="p">(</span><span class="s">&#39;RETR README&#39;</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;README&#39;</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">)</span>
+<span class="go">&#39;226 Transfer complete.&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ftp</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The module defines the following items:</p>
+<p>class class ftplib.FTP([host[, user[, passwd[, acct[, timeout]]]]])</p>
+<blockquote>
+<p>Return a new instance of the <tt class="docutils literal"><span class="pre">FTP</span></tt> class.  When <em>host</em> is given,
+the method call <tt class="docutils literal"><span class="pre">connect(host)</span></tt> is made.  When <em>user</em> is given,
+additionally the method call <tt class="docutils literal"><span class="pre">login(user,</span> <span class="pre">passwd,</span> <span class="pre">acct)</span></tt> is made
+(where <em>passwd</em> and <em>acct</em> default to the empty string when not
+given).  The optional <em>timeout</em> parameter specifies a timeout in
+seconds for blocking operations like the connection attempt (if is
+not specified, the global default timeout setting will be used).</p>
+<p>Changed in version 2.6: <em>timeout</em> was added.</p>
+<p>all_errors</p>
+<blockquote>
+The set of all exceptions (as a tuple) that methods of <tt class="docutils literal"><span class="pre">FTP</span></tt>
+instances may raise as a result of problems with the FTP
+connection (as opposed to programming errors made by the
+caller).  This set includes the four exceptions listed below as
+well as <tt class="docutils literal"><span class="pre">socket.error</span></tt> and <tt class="docutils literal"><span class="pre">IOError</span></tt>.</blockquote>
+<p>exception exception error_reply</p>
+<blockquote>
+Exception raised when an unexpected reply is received from the
+server.</blockquote>
+<p>exception exception ftplib.error_temp</p>
+<blockquote>
+Exception raised when an error code in the range 400&#8211;499 is
+received.</blockquote>
+<p>exception exception ftplib.error_perm</p>
+<blockquote>
+Exception raised when an error code in the range 500&#8211;599 is
+received.</blockquote>
+<p>exception exception ftplib.error_proto</p>
+<blockquote>
+Exception raised when a reply is received from the server that
+does not begin with a digit in the range 1&#8211;5.</blockquote>
+</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">netrc</span></tt></dt>
+<dd>Parser for the <tt class="docutils literal"><span class="pre">.netrc</span></tt> file format.  The file <tt class="docutils literal"><span class="pre">.netrc</span></tt> is
+typically used by FTP clients to load user authentication
+information before prompting the user.</dd>
+</dl>
+<p>The file <tt class="docutils literal"><span class="pre">Tools/scripts/ftpmirror.py</span></tt> in the Python source
+distribution is a script that can mirror FTP sites, or portions
+thereof, using the <tt class="docutils literal"><span class="pre">ftplib</span></tt> module. It can be used as an extended
+example that applies this module.</p>
+</blockquote>
+<div class="section" id="ftp-objects">
+<h2>20.8.1. FTP Objects<a class="headerlink" href="#ftp-objects" title="Permalink to this headline">¶</a></h2>
+<p>Several methods are available in two flavors: one for handling text
+files and another for binary files.  These are named for the command
+which is used followed by <tt class="docutils literal"><span class="pre">lines</span></tt> for the text version or <tt class="docutils literal"><span class="pre">binary</span></tt>
+for the binary version.</p>
+<p><tt class="docutils literal"><span class="pre">FTP</span></tt> instances have the following methods:</p>
+<p>FTP.set_debuglevel(level)</p>
+<blockquote>
+Set the instance&#8217;s debugging level.  This controls the amount of
+debugging output printed.  The default, <tt class="docutils literal"><span class="pre">0</span></tt>, produces no
+debugging output.  A value of <tt class="docutils literal"><span class="pre">1</span></tt> produces a moderate amount of
+debugging output, generally a single line per request.  A value of
+<tt class="docutils literal"><span class="pre">2</span></tt> or higher produces the maximum amount of debugging output,
+logging each line sent and received on the control connection.</blockquote>
+<p>FTP.connect(host[, port[, timeout]])</p>
+<blockquote>
+<p>Connect to the given host and port.  The default port number is
+<tt class="docutils literal"><span class="pre">21</span></tt>, as specified by the FTP protocol specification.  It is
+rarely needed to specify a different port number.  This function
+should be called only once for each instance; it should not be
+called at all if a host was given when the instance was created.
+All other methods can only be used after a connection has been
+made.</p>
+<p>The optional <em>timeout</em> parameter specifies a timeout in seconds for
+the connection attempt. If no <em>timeout</em> is passed, the global
+default timeout setting will be used.</p>
+<p>Changed in version 2.6: <em>timeout</em> was added.</p>
+</blockquote>
+<p>FTP.getwelcome()</p>
+<blockquote>
+Return the welcome message sent by the server in reply to the
+initial connection.  (This message sometimes contains disclaimers
+or help information that may be relevant to the user.)</blockquote>
+<p>FTP.login([user[, passwd[, acct]]])</p>
+<blockquote>
+Log in as the given <em>user</em>.  The <em>passwd</em> and <em>acct</em> parameters are
+optional and default to the empty string.  If no <em>user</em> is
+specified, it defaults to <tt class="docutils literal"><span class="pre">'anonymous'</span></tt>.  If <em>user</em> is
+<tt class="docutils literal"><span class="pre">'anonymous'</span></tt>, the default <em>passwd</em> is <tt class="docutils literal"><span class="pre">'anonymous&#64;'</span></tt>.  This
+function should be called only once for each instance, after a
+connection has been established; it should not be called at all if
+a host and user were given when the instance was created.  Most FTP
+commands are only allowed after the client has logged in.</blockquote>
+<p>FTP.abort()</p>
+<blockquote>
+Abort a file transfer that is in progress.  Using this does not
+always work, but it&#8217;s worth a try.</blockquote>
+<p>FTP.sendcmd(command)</p>
+<blockquote>
+Send a simple command string to the server and return the response
+string.</blockquote>
+<p>FTP.voidcmd(command)</p>
+<blockquote>
+Send a simple command string to the server and handle the response.
+Return nothing if a response code in the range 200&#8211;299 is
+received. Raise an exception otherwise.</blockquote>
+<p>FTP.retrbinary(command, callback[, maxblocksize[, rest]])</p>
+<blockquote>
+Retrieve a file in binary transfer mode.  <em>command</em> should be an
+appropriate <tt class="docutils literal"><span class="pre">RETR</span></tt> command: <tt class="docutils literal"><span class="pre">'RETR</span> <span class="pre">filename'</span></tt>. The <em>callback</em>
+function is called for each block of data received, with a single
+string argument giving the data block. The optional <em>maxblocksize</em>
+argument specifies the maximum chunk size to read on the low-level
+socket object created to do the actual transfer (which will also be
+the largest size of the data blocks passed to <em>callback</em>).  A
+reasonable default is chosen. <em>rest</em> means the same thing as in the
+<tt class="docutils literal"><span class="pre">transfercmd()</span></tt> method.</blockquote>
+<p>FTP.retrlines(command[, callback])</p>
+<blockquote>
+Retrieve a file or directory listing in ASCII transfer mode.
+<em>command</em> should be an appropriate <tt class="docutils literal"><span class="pre">RETR</span></tt> command (see
+<tt class="docutils literal"><span class="pre">retrbinary()</span></tt>) or a command such as <tt class="docutils literal"><span class="pre">LIST</span></tt>, <tt class="docutils literal"><span class="pre">NLST</span></tt> or
+<tt class="docutils literal"><span class="pre">MLSD</span></tt> (usually just the string <tt class="docutils literal"><span class="pre">'LIST'</span></tt>).  The <em>callback</em>
+function is called for each line, with the trailing CRLF stripped.
+The default <em>callback</em> prints the line to <tt class="docutils literal"><span class="pre">sys.stdout</span></tt>.</blockquote>
+<p>FTP.set_pasv(boolean)</p>
+<blockquote>
+Enable &#8220;passive&#8221; mode if <em>boolean</em> is true, other disable passive
+mode.  (In Python 2.0 and before, passive mode was off by default;
+in Python 2.1 and later, it is on by default.)</blockquote>
+<p>FTP.storbinary(command, file[, blocksize, callback])</p>
+<blockquote>
+<p>Store a file in binary transfer mode.  <em>command</em> should be an
+appropriate <tt class="docutils literal"><span class="pre">STOR</span></tt> command: <tt class="docutils literal"><span class="pre">&quot;STOR</span> <span class="pre">filename&quot;</span></tt>. <em>file</em> is an
+open file object which is read until EOF using its <tt class="docutils literal"><span class="pre">read()</span></tt>
+method in blocks of size <em>blocksize</em> to provide the data to be
+stored.  The <em>blocksize</em> argument defaults to 8192. <em>callback</em> is
+an optional single parameter callable that is called on each block
+of data after it is sent.</p>
+<p>Changed in version 2.1: default for <em>blocksize</em> added.</p>
+<p>Changed in version 2.6: <em>callback</em> parameter added.</p>
+</blockquote>
+<p>FTP.storlines(command, file[, callback])</p>
+<blockquote>
+<p>Store a file in ASCII transfer mode.  <em>command</em> should be an
+appropriate <tt class="docutils literal"><span class="pre">STOR</span></tt> command (see <tt class="docutils literal"><span class="pre">storbinary()</span></tt>).  Lines are
+read until EOF from the open file object <em>file</em> using its
+<tt class="docutils literal"><span class="pre">readline()</span></tt> method to provide the data to be stored.  <em>callback</em>
+is an optional single parameter callable that is called on each
+line after it is sent.</p>
+<p>Changed in version 2.6: <em>callback</em> parameter added.</p>
+</blockquote>
+<p>FTP.transfercmd(cmd[, rest])</p>
+<blockquote>
+<p>Initiate a transfer over the data connection.  If the transfer is
+active, send a <tt class="docutils literal"><span class="pre">EPRT</span></tt> or  <tt class="docutils literal"><span class="pre">PORT</span></tt> command and the transfer
+command specified by <em>cmd</em>, and accept the connection.  If the
+server is passive, send a <tt class="docutils literal"><span class="pre">EPSV</span></tt> or <tt class="docutils literal"><span class="pre">PASV</span></tt> command, connect to
+it, and start the transfer command.  Either way, return the socket
+for the connection.</p>
+<p>If optional <em>rest</em> is given, a <tt class="docutils literal"><span class="pre">REST</span></tt> command is sent to the
+server, passing <em>rest</em> as an argument.  <em>rest</em> is usually a byte
+offset into the requested file, telling the server to restart
+sending the file&#8217;s bytes at the requested offset, skipping over the
+initial bytes.  Note however that RFC 959 requires only that <em>rest</em>
+be a string containing characters in the printable range from ASCII
+code 33 to ASCII code 126.  The <tt class="docutils literal"><span class="pre">transfercmd()</span></tt> method,
+therefore, converts <em>rest</em> to a string, but no check is performed
+on the string&#8217;s contents.  If the server does not recognize the
+<tt class="docutils literal"><span class="pre">REST</span></tt> command, an <tt class="docutils literal"><span class="pre">error_reply</span></tt> exception will be raised.  If
+this happens, simply call <tt class="docutils literal"><span class="pre">transfercmd()</span></tt> without a <em>rest</em>
+argument.</p>
+</blockquote>
+<p>FTP.ntransfercmd(cmd[, rest])</p>
+<blockquote>
+Like <tt class="docutils literal"><span class="pre">transfercmd()</span></tt>, but returns a tuple of the data connection
+and the expected size of the data.  If the expected size could not
+be computed, <tt class="xref docutils literal"><span class="pre">None</span></tt> will be returned as the expected size.  <em>cmd</em>
+and <em>rest</em> means the same thing as in <tt class="docutils literal"><span class="pre">transfercmd()</span></tt>.</blockquote>
+<p>FTP.nlst(argument[, ...])</p>
+<blockquote>
+Return a list of files as returned by the <tt class="docutils literal"><span class="pre">NLST</span></tt> command.  The
+optional <em>argument</em> is a directory to list (default is the current
+server directory). Multiple arguments can be used to pass non-
+standard options to the <tt class="docutils literal"><span class="pre">NLST</span></tt> command.</blockquote>
+<p>FTP.dir(argument[, ...])</p>
+<blockquote>
+Produce a directory listing as returned by the <tt class="docutils literal"><span class="pre">LIST</span></tt> command,
+printing it to standard output.  The optional <em>argument</em> is a
+directory to list (default is the current server directory).
+Multiple arguments can be used to pass non-standard options to the
+<tt class="docutils literal"><span class="pre">LIST</span></tt> command.  If the last argument is a function, it is used
+as a <em>callback</em> function as for <tt class="docutils literal"><span class="pre">retrlines()</span></tt>; the default prints
+to <tt class="docutils literal"><span class="pre">sys.stdout</span></tt>.  This method returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</blockquote>
+<p>FTP.rename(fromname, toname)</p>
+<blockquote>
+Rename file <em>fromname</em> on the server to <em>toname</em>.</blockquote>
+<p>FTP.delete(filename)</p>
+<blockquote>
+Remove the file named <em>filename</em> from the server.  If successful,
+returns the text of the response, otherwise raises <tt class="docutils literal"><span class="pre">error_perm</span></tt>
+on permission errors or <tt class="docutils literal"><span class="pre">error_reply</span></tt> on other errors.</blockquote>
+<p>FTP.cwd(pathname)</p>
+<blockquote>
+Set the current directory on the server.</blockquote>
+<p>FTP.mkd(pathname)</p>
+<blockquote>
+Create a new directory on the server.</blockquote>
+<p>FTP.pwd()</p>
+<blockquote>
+Return the pathname of the current directory on the server.</blockquote>
+<p>FTP.rmd(dirname)</p>
+<blockquote>
+Remove the directory named <em>dirname</em> on the server.</blockquote>
+<p>FTP.size(filename)</p>
+<blockquote>
+Request the size of the file named <em>filename</em> on the server.  On
+success, the size of the file is returned as an integer, otherwise
+<tt class="xref docutils literal"><span class="pre">None</span></tt> is returned. Note that the <tt class="docutils literal"><span class="pre">SIZE</span></tt> command is not
+standardized, but is supported by many common server
+implementations.</blockquote>
+<p>FTP.quit()</p>
+<blockquote>
+Send a <tt class="docutils literal"><span class="pre">QUIT</span></tt> command to the server and close the connection.
+This is the &#8220;polite&#8221; way to close a connection, but it may raise an
+exception if the server responds with an error to the <tt class="docutils literal"><span class="pre">QUIT</span></tt>
+command.  This implies a call to the <tt class="docutils literal"><span class="pre">close()</span></tt> method which
+renders the <tt class="docutils literal"><span class="pre">FTP</span></tt> instance useless for subsequent calls (see
+below).</blockquote>
+<p>FTP.close()</p>
+<blockquote>
+Close the connection unilaterally.  This should not be applied to
+an already closed connection such as after a successful call to
+<tt class="docutils literal"><span class="pre">quit()</span></tt>.  After this call the <tt class="docutils literal"><span class="pre">FTP</span></tt> instance should not be
+used any more (after a call to <tt class="docutils literal"><span class="pre">close()</span></tt> or <tt class="docutils literal"><span class="pre">quit()</span></tt> you cannot
+reopen the connection by issuing another <tt class="docutils literal"><span class="pre">login()</span></tt> method).</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="poplib.html" title="20.9. poplib — POP3 protocol client"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="httplib.html" title="20.7. httplib — HTTP protocol client"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" >20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

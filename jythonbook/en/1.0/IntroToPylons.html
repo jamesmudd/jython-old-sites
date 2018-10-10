@@ -1,0 +1,1026 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Chapter 15: Introduction to Pylons &mdash; Jython Book v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '1.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Book v1.0 documentation" href="index.html" />
+    <link rel="next" title="Chapter 16: GUI Applications" href="GUIApplications.html" />
+    <link rel="prev" title="Chapter 14: Web Applications With Django" href="JythonDjango.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="GUIApplications.html" title="Chapter 16: GUI Applications"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="JythonDjango.html" title="Chapter 14: Web Applications With Django"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="chapter-15-introduction-to-pylons">
+<h1>Chapter 15:  Introduction to Pylons<a class="headerlink" href="#chapter-15-introduction-to-pylons" title="Permalink to this headline">¶</a></h1>
+<p>Although Django is currently the most popular webframework for Python, it is by no means your only choice.
+Where Django grew out of the needs of newsrooms to implement content management solutions rapidly, Pylons grew out of a need to build web applications in environments that may have existing databases to integrate with, and the applications don’t fit neatly into the class of applications that are loosely defined in the “content management” space.</p>
+<p>Pylons greatest strength is that it takes a best-of-breed approach to constructing its technology stack.
+Where everything is “built in” with Django and the entire application stack is specifically designed with a single worldview of how applications should be done, Pylons takes precisely the opposite approach.
+Pylons, the core codebase that lives in the pylons namespace, is remarkably small.
+With the 0.9.7 release, it’s hovering around 5,500 lines of code.
+Django, by comparison, weighs in at about 125,000 lines of code.</p>
+<p>Pylons manages to do this magic by leveraging existing libraries extensively, and the Pylons community works with many other Python projects to develop standard APIs to promote interoperability.</p>
+<p>Ultimately, picking Django or Pylons is about deciding which tradeoffs you’re willing to make.
+Although Django is extremely easy to learn because all the documentation is in one place and all the documentation relating to any particular component is always discussed in the context of building a web application, you lose some flexibility when you need to start doing things that are at the margins of what Django was designed for.</p>
+<p>For example, in a project we’ve worked on recently, we needed to interact with a nontrivial database that was implemented in SQL Server 2000. For Django, implementing the SQL Server back-end was quite difficult.
+There aren’t that many web developers using Django on Windows, never mind SQL Server.
+While the Django ORM is a part of Django, it is also not the core focus of Django.
+Supporting arbitrary databases is simply not a goal for Django, and rightly so.</p>
+<p>Pylons uses SQLAlchemy, which is probably the most powerful database toolkit available in Python.
+It <em>None</em> focuses on database access.
+The SQL Server back-end was already built in a robust way for CPython, and implementing the extra code for a Jython backend took two days—and this was without seeing any of the code in SQLAlchemy’s internals.</p>
+<p>That experience alone sold us on Pylons.
+We don’t have to rely on the webframework people being experts in databases.
+Similarly, we don’t have to rely on the database experts to know anything about web templating.</p>
+<p>In short, when you have to deal with the non-standard things, Pylons makes a fabulous choice, and, let’s be honest, there’s almost always non-standard things you’re going to have to do.</p>
+<div class="section" id="a-guide-for-the-impatient">
+<h2>A Guide for the Impatient<a class="headerlink" href="#a-guide-for-the-impatient" title="Permalink to this headline">¶</a></h2>
+<p>The best way to install Pylons isinside of a virtualenv. Create a new virtualenv
+for Jython and run easy_install:</p>
+<p><em>Listing 15-1.</em></p>
+<div class="highlight-python"><pre>&gt; easy_install "Pylons==0.9.7"</pre>
+</div>
+<p>Create your application:</p>
+<div class="highlight-python"><pre>&gt; paster create --template=pylons RosterTool</pre>
+</div>
+<p>After initiating this command, you’ll be prompted to enter information about your application.
+Let’s accept the defaults for everything by just hitting Enter at each prompt.
+After you’ve entered the default information, your application will be created.
+You will see a directory named the same as your application created within your current directory.
+Go into that directory and you will see a series of .py files along with a couple of other files.
+To configure your development environment, open up the development.ini file in a text editor.
+You will see that there are several parameters in the file that can be changed, including email_to for the site administrator’s email address, smtp_server if you wish to configure mail for application, and many more.
+For the purposes of this example, we’ll leave the default values in the configuration file and continue.</p>
+<p>Next, launch the development server using the following command from within the application (<em>RosterTool)</em> directory:</p>
+<div class="highlight-python"><pre>&gt; paster serve --reload development.ini</pre>
+</div>
+<p>Open a browser and connect tohttp://127.0.0.1:5000/, and you should see
+something that lookssimilar to Figure 15-1.</p>
+<p><img alt="picture_0" src="_images/picture_0.png" /></p>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>Figure 15-1. Pylons server *</p>
+<p>Now that we have the development server running, it is good to note that we can stop the server at any time by pressing Ctrl+C on the keyboard.</p>
+<p>Now we have the base application created, and it is time to add some content.
+It is easy to create static HTML files for your Pylons application.
+Let’s create a static file named welcome.html and drop it into RosterTool/rostertool/public/ directory.</p>
+<p><em>Listing 15-2.</em></p>
+<div class="highlight-python"><pre>&lt;html&gt;
+    &lt;body&gt;Just a static file&lt;/body&gt;
+&lt;/html&gt;</pre>
+</div>
+<p><img alt="picture_0" src="_images/picture_0.png" /></p>
+<p>You should now be able to load the static content by taking your browser to <a class="reference external" href="http://localhost:5000/welcome.html">http://localhost:5000/welcome.html</a>.</p>
+<p>To create web content that handles requests, we need to create a controller for our application.
+A controller is a Python module that we map to a URL so that when the URL is visited, the controller is invoked.
+To add a controller, let’s start by initiating the following command:</p>
+<div class="highlight-python"><pre>RosterTool/rostertool &gt; paster controller roster</pre>
+</div>
+<p>Paste will install a directory named “controllers” inside the rostertool directory and install some files in there including a module named roster.py.
+You can open it up and you’ll see a class named “RosterController” and it will have a single method “index.” Pylons is smart enough to automatically map a URL to a controller classname and invoke a method.
+We’ll learn more about mapping URLs later in the chapter.
+To invoke the RosterController’s index method, you just need to start the development server again and invoke the following:</p>
+<div class="highlight-python"><pre>http://localhost:5000/roster/index</pre>
+</div>
+<p>Congratulations, you’ve got your most basic possible web application running now.
+It handles basic HTTP GET requests and calls a method on a controller and a response comes out.
+Let’s cover each of these pieces in detail now.</p>
+</div>
+<div class="section" id="a-note-about-paste">
+<h2>A Note about Paste<a class="headerlink" href="#a-note-about-paste" title="Permalink to this headline">¶</a></h2>
+<p>While you were setting up your toy Pylons application, you probably wondered why Pylons seems to use a command line tool called “paster” instead of something obvious like “pylons.” Paster is actually a part of the Paste set of tools that Pylons uses.</p>
+<p>Paste is used to build web applications and frameworks, but most commonly it is used to build web application frameworks like Pylons.
+Every time you use “paster,” that’s Paste being called.
+Every time you access the HTTP request and response objects, that’s WebOb, a descendant of Paste’s HTTP wrapper code.
+Pylons uses Paste extensively for configuration management, testing, basic HTTP handling with WebOb.
+You would do well to at least skim over the Paste documentation to see what is available in paste, it is available at <a class="reference external" href="http://pythonpaste.org/">http://pythonpaste.org/</a>.</p>
+</div>
+<div class="section" id="pylons-mvc">
+<h2>Pylons MVC<a class="headerlink" href="#pylons-mvc" title="Permalink to this headline">¶</a></h2>
+<p>Pylons, like Django and any reasonably sane webframework (or GUI toolkit for that matter) uses the model-view-controller design pattern.</p>
+<p>Table 15-1 shows what this maps to in Pylons.</p>
+<p><a href="#id3"><span class="problematic" id="id4">**</span></a>Table 15-1. <a href="#id5"><span class="problematic" id="id6">**</span></a>Pylon MVC design pattern mapping</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Component</th>
+<th class="head">Implementation</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Model</td>
+<td>SQLAlchemy (or any other database toolkit you prefer)</td>
+</tr>
+<tr><td>View</td>
+<td>Mako (or any templating language you prefer)</td>
+</tr>
+<tr><td>Controller</td>
+<td>Plain Python code</td>
+</tr>
+</tbody>
+</table>
+<p>To reiterate, Pylons is about letting you, the application developer, decide on the particular tradeoffs you’re willing to make.
+If using a template language more similar to the one in Django is better for your web designers, then switch go Jinja2. If you don’t really want to deal with SQLAlchemy, you can use SQLObject, files, a non-relational database, or raw SQL, if you prefer.</p>
+<p>Pylons provides tools to help you hook these pieces together in a rational way.</p>
+<p><strong>Routes</strong> is a library that maps URLs to classes.
+This is your basic mechanism for dispatching methods whenever your webserver is hit.
+Routes provides similar functionality to what Django’s URL dispatcher provides.</p>
+<p><strong>Webhelpers</strong> is the defacto standard library for Pylons.
+It contains commonly used functions for the web, such as flashing status messages to users, date conversion functions, HTML tag generation, pagination functions, text processing, and the list goes on.</p>
+<p>Pylons also provides infrastructure so that you can manipulate things that are particular to web applications including:</p>
+<ul class="simple">
+<li>WSGI middleware to add cross-cutting functionality to your application with minimal intrusion into your existing codebase.</li>
+<li>A robust testing framework, including a shockingly good debugger you can use through the web.</li>
+<li>Helpers to enable REST-ful API development so you can expose your application as a programmatic interface.</li>
+</ul>
+<p>Later in this chapter, we’ll wrap up the hockey roster up in a web application.
+We’ll target a few features:</p>
+<ul class="simple">
+<li>Form handling and validation to add new players through the web</li>
+<li>Login and authentication to make sure not anybody can edit our lists</li>
+<li>Add a JSON/REST api so that we can modify data from other tools</li>
+</ul>
+<p>In the process, we’ll use the interactive debugger from both command line and through the web to directly observe and interact with the state of the running application.</p>
+</div>
+<div class="section" id="an-interlude-into-java-s-memory-model">
+<h2>An Interlude into Java’s Memory Model<a class="headerlink" href="#an-interlude-into-java-s-memory-model" title="Permalink to this headline">¶</a></h2>
+<p>A note about reloading: sometimes if you’re doing development with Pylons on Jython, Java will through an OutOfMemory error like this:</p>
+<p><em>Listing 15-3.</em></p>
+<div class="highlight-python"><pre>java.lang.OutOfMemoryError: PermGen space
+    at java.lang.ClassLoader.defineClass1(Native Method)
+    at java.lang.ClassLoader.defineClass(ClassLoader.java:620)</pre>
+</div>
+<p>ava keeps track of class definitions in something called the Permanent Generation heap space.
+This is a problem for Pylons when the HTTP threads are restarted and your classes are reloaded.
+The old class definitions don’t go away; they never get garbage collected.
+Because Jython is dynamically creating Java classes behind the scenes, each time your development server restarts, you’re potentially getting hundreds of new classes loaded into the JVM.</p>
+<p>Repeat this several times and it doesn’t take long until your JVM has run out of permgen space and it keels over and dies</p>
+<p>To modify the permgen heap size, you’ll need to instruct Java using some extended command line options.
+To set the heap to 128M, you’ll need to use “-XX:MaxPermSize=128M.”</p>
+<p>To get this behavior by default for Jython, you’ll want to edit your Jython startup script in JYTHON_HOME/bin/jython (or jython.bat) by editing the line that reads:</p>
+<p><em>Listing 15-4.</em></p>
+<div class="highlight-python"><pre>set_JAVA_OPTS=</pre>
+</div>
+<p>to be</p>
+<div class="highlight-python"><pre>set_JAVA_OPTS=-XX:MaxPermSize=128M</pre>
+</div>
+<p>This shouldn’t be a problem in production environments where you’re not generating new class definitions during runtime, but it can be quite frustrating during development.</p>
+</div>
+<div class="section" id="invoking-the-pylons-shell">
+<h2>Invoking the Pylons Shell<a class="headerlink" href="#invoking-the-pylons-shell" title="Permalink to this headline">¶</a></h2>
+<p>Yes, we’re going to start with testing right away because it will provide you with a way to explore the Pylons application in an interactive way.</p>
+<p>Pylons gives you an interactive shell much like Django’s. You can start it up with the following commands:</p>
+<p><em>Listing 15-5.</em></p>
+<div class="highlight-python"><pre>RosterTool &gt; jython setup.py egg_info
+RosterTool &gt; paster shell test.ini</pre>
+</div>
+<p>This will yield a nice interactive shell you can start playing with right away.
+Now let’s take a look at those request and response objects in our toy application.</p>
+<p><em>Listing 15-6.</em></p>
+<div class="highlight-python"><pre>RosterTool &gt; paster shell test.ini
+
+Pylons Interactive Shell
+Jython 2.5.0 (Release_2_5_0:6476, Jun 16 2009, 13:33:26)
+[OpenJDK Server VM (Sun Microsystems Inc.)]
+
+All objects from rostertool.lib.base are available
+Additional Objects:
+mapper     -  Routes mapper object
+wsgiapp    -  This project's WSGI App instance
+app        -  paste.fixture wrapped around wsgiapp
+
+&gt;&gt;&gt; resp = app.get('/roster/index')
+&gt;&gt;&gt; resp
+&lt;Response 200 OK 'Hello World'&gt;
+&gt;&gt;&gt; resp.req
+&lt;Request at 0x43 GET http://localhost/roster/index&gt;</pre>
+</div>
+<p>Pylons lets you actually run requests against the application and play with the resulting response.
+Even for something as “simple” as the HTTP request and response, Pylons uses a library to provide convenience methods and attributes to make your development life easier.
+In this case, it’s WebOb.</p>
+<p>The request and the response objects both have literally dozens of attributes and methods that are provided by the framework.
+You will almost certainly benefit if you take time to browse through WebOb’s documentation, which is available at <a class="reference external" href="http://pythonpaste.org/webob/">http://pythonpaste.org/webob/</a>.</p>
+<p>Here’s four attributes you really have to know to make sense of the request object.
+The best thing to do is to try playing with the request object in the shell.</p>
+<div class="section" id="request-get">
+<h3>request.GET<a class="headerlink" href="#request-get" title="Permalink to this headline">¶</a></h3>
+<p>GET is a special dictionary of the variables that were passed in the URL.
+Pylons automatically converts URL arguments that appear multiple times into discrete key value pairs.</p>
+<p><em>Listing 15-7.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resp</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/roster/index?foo=bar&amp;x=42&amp;x=50&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resp</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">GET</span>
+<span class="go">UnicodeMultiDict([(&#39;foo&#39;, u&#39;bar&#39;), (&#39;x&#39;, u&#39;42&#39;), (&#39;x&#39;, u&#39;50&#39;)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resp</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span>
+<span class="go">u&#39;50&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resp</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">getall</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="go">[u&#39;42&#39;, u&#39;50&#39;]</span>
+</pre></div>
+</div>
+<p>Note how you can get either the last value or the list of values depending on how you choose to fetch values from the dictionary.
+This can cause subtle bugs if you’re not paying attention.</p>
+</div>
+<div class="section" id="request-post">
+<h3>request.POST<a class="headerlink" href="#request-post" title="Permalink to this headline">¶</a></h3>
+<p>POST is similar to GET, but appropriately: it only returns the variables that were sent up during an HTTP POST submission.</p>
+</div>
+<div class="section" id="request-params">
+<h3>request.params<a class="headerlink" href="#request-params" title="Permalink to this headline">¶</a></h3>
+<p>Pylons merges all the GET and POST data into a single MultiValueDict.
+In almost all cases, this is the one attribute that you really want to use to get the data that the user sent to the server.</p>
+</div>
+<div class="section" id="request-headers">
+<h3>request.headers<a class="headerlink" href="#request-headers" title="Permalink to this headline">¶</a></h3>
+<p>This dictionary provides all theHTTP headers that the client sent to the server.</p>
+</div>
+</div>
+<div class="section" id="context-variables-and-application-globals">
+<h2>Context Variables and Application Globals<a class="headerlink" href="#context-variables-and-application-globals" title="Permalink to this headline">¶</a></h2>
+<p>Most web frameworks provide a request scoped variable to act as a bag of values.
+Pylons is no exception: whenever you create a new controller with paste, it will automatically import an attribute ‘c’ which is the context variable.</p>
+<p>This is one aspect of Pylons that we’ve found to be frustrating.
+The ‘c’ attribute is code generated as an import when you instruct paste to build you a new controller.
+The ‘c’ value is <em>None</em> an attribute of your controller—Pylons has special global threadsafe variables, this is just one of them.
+You can store variables that you want to exist for the duration of the request in the context.
+These values won’t persist after the request/response cycle has completed, so don’t confuse this with the session variable.</p>
+<p>The other global variable you’ll end up using a lot is pylons.session.
+This is where you’ll store variables that need to persist over the course of several request/response cycles.
+You can treat this variable as a special dictionary: just use standard Jython dictionary syntax and Pylons will handle the rest.</p>
+</div>
+<div class="section" id="routes">
+<h2>Routes<a class="headerlink" href="#routes" title="Permalink to this headline">¶</a></h2>
+<p>Routes is much like Django’s URL dispatcher.
+It provides a mechanism for you to map URLs to controllers classes and methods to invoke.</p>
+<p>Generally, we find that Routes makes a tradeoff of less URL matching expressiveness in exchange for simpler reasoning about which URLs are directed to a particular controller and method.
+Routes doesn’t support regular expressions, just simple variable substitution.</p>
+<p>A typical route will look something like this</p>
+<p>map.connect(&#8216;/{mycontroller}/{someaction}/{var1}/{var2}&#8217;)</p>
+<p>This route would find the controller called “mycontroller” (note the casing of the class) and invoke the “someaction” method on that object.
+Variables var1 and var2 would be passed in as arguments.</p>
+<p>The connect() method of the map object will also take in optional arguments to fill in default values for URLs that do not have enough URL-encoded data in them to properly invoke a method with the minimum required number of arguments.
+The front page is an example of this; let’s try connecting the frontpage to the Roster.index method.</p>
+<p>Edit RosterTool/rostertool/config/routing.py so that there are 3 lines after #CUSTOM_ROUTES_HERE that should read like the following</p>
+<p><em>Listing 15-8.</em></p>
+<div class="highlight-python"><pre>map.connect('/', controller='roster',action='index')  ---
+map.connect('/{action}/{id}/',controller='roster')  ---
+map.connect('/add_player/',controller='roster', action='add_player')</pre>
+</div>
+<p>While this <em>None</em> like it should work, you can try running paster server: it won’t.</p>
+<p>By default, Pylons always tries to serve static content before searching for controllers and methods to invoke.
+You’ll need to go to RosterTool/rostertool/public and delete the “index.html” file that paster installed when you first created your application.
+If you wanted to change the default implementation, you could tweak the middleware*.py* module to your liking.</p>
+<p>Load <a class="reference external" href="http://localhost:5000/">http://localhost:5000/</a> again in your browser—the default index.html should be gone and you should now get your response from the controller method that is mapped to index, in this case, you should see “Hello World.”</p>
+</div>
+<div class="section" id="controllers-and-templates">
+<h2>Controllers and Templates<a class="headerlink" href="#controllers-and-templates" title="Permalink to this headline">¶</a></h2>
+<p>Leveraging off of the Table model we defined in Chapter 12, let’s create the hockey roster, but this time using the PostgreSQL database.
+We’ll assume that you have a PostgreSQL installation running that allows you to create new databases.
+You can also use a different database if you choose by simply creating a different engine with SQLAlchemy.
+For more details, please visit the documentation about creating database engines at <a class="reference external" href="http://www.sqlalchemy.org/docs/05/dbengine.html">http://www.sqlalchemy.org/docs/05/dbengine.html</a>.</p>
+<p>Begin by opening up a Pylons interactive shell and typing the following commands:</p>
+<p><em>Listing 15-9.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sqlalchemy.schema</span> <span class="kn">import</span> <span class="n">Sequence</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s">&#39;postgresql+zxjdbc://myuser:mypass@localhost:5432/mydb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">connection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metadata</span> <span class="o">=</span> <span class="n">MetaData</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">player</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s">&#39;player&#39;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">Column</span><span class="p">(</span><span class="s">&#39;first&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mf">50</span><span class="p">)),</span>
+<span class="gp">... </span>    <span class="n">Column</span><span class="p">(</span><span class="s">&#39;last&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mf">50</span><span class="p">)),</span>
+<span class="gp">... </span>    <span class="n">Column</span><span class="p">(</span><span class="s">&#39;position&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mf">30</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now let’s wire the data up to the controllers, display some data, and get basic form handling working.
+We’re going to create a basic CRUD (create, read, update, delete) interface to the sqlalchemy model.
+Because of space constraints, this HTML is going to be very basic; but you’ll get a taste of how things fit together.</p>
+<p>Paste doesn’t just generate a stub for your controller—it will also code generate an empty functional test case in rostertool/tests/functional/ as test_roster.py.
+We’ll visit testing shortly.</p>
+<p>Controllers are really where the action occurs in Pylons.
+This is where your application will take data from the database and prepare it for a template to render it as HTML.
+Let&#8217;s put the list of all players on the front page of the site.
+We’ll implement a template to render the list of all players.
+Then, we’ll implement a method in the controller to override the index() method of Roster to use SQLAlchemy to load the records from disk and send them to the template.</p>
+<p>Along the way, we’ll touch on template inheritance so that you can see how you can save keystrokes by subclassing your templates in Mako.</p>
+<p>First, let’s create two templates, base.html and list_players.html in the rostertool/templates directory.</p>
+<p><em>Listing 15-10. base.html</em></p>
+<div class="highlight-python"><pre>&lt;html&gt;
+    &lt;body&gt;
+        &lt;div class="header"&gt;
+            ${self.header()}
+        &lt;/div&gt;
+
+        ${self.body()}
+    &lt;/body&gt;
+&lt;/html&gt;
+
+&lt;%def name="header()"&gt;
+    &lt;h1&gt;${c.page_title}&lt;/h1&gt;
+    &lt;% messages = h.flash.pop_messages() %&gt;
+    % if messages:
+    &lt;ul id="flash-messages"&gt;
+        % for message in messages:
+        &lt;li&gt;${message}&lt;/li&gt;
+        % endfor
+    &lt;/ul&gt;
+    % endif
+&lt;/%def&gt;</pre>
+</div>
+<p><em>Listing 15-11. list_players.html</em></p>
+<div class="highlight-python"><pre>&lt;%inherit file="base.html" /&gt;
+&lt;table border="1"&gt;
+    &lt;tr&gt;
+        &lt;th&gt;Position&lt;/th&gt;&lt;th&gt;Last name&lt;/th&gt;&lt;th&gt;First name&lt;/th&gt;&lt;th&gt;Edit&lt;/th&gt;
+    &lt;/tr&gt;
+    % for player in c.players:
+        ${makerow(player)}
+    % endfor
+&lt;/table&gt;
+
+&lt;h2&gt;Add a new player&lt;/h2&gt;
+${h.form(h.url_for(controller='roster', action='add_player'), method='POST')}
+    ${h.text('first', 'First Name')} &lt;br /&gt;
+    ${h.text('last', 'Last Name')} &lt;br /&gt;
+    ${h.text('position', 'Position')} &lt;br /&gt;
+    ${h.submit('add_player', "Add Player")}
+${h.end_form()}
+
+&lt;%def name="makerow(row)"&gt;
+&lt;tr&gt;
+    &lt;td&gt;${row.position}&lt;/td&gt;\
+    &lt;td&gt;${row.last}&lt;/td&gt;\
+    &lt;td&gt;${row.first}&lt;/td&gt;\
+    &lt;td&gt;&lt;a href="${h.url_for(controller='roster', action='edit_player', id=row.id)}"&gt;Edit&lt;/a&gt;&lt;/td&gt;\
+&lt;/tr&gt;
+&lt;/%def&gt;</pre>
+</div>
+<p>There’s quite a bit going on here.
+The base template lets Mako define a boilerplate set of HTML that all pages can reuse.
+Each section is defined with a &lt;%def name=&#8221;block()&#8221;&gt; section, and the blocks are overloaded in the subclassed templates.
+In effect, Mako lets your page templates look like objects with methods that can render subsections of your pages.</p>
+<p>The list_players.html template has content that is immediately substituted into the self.body() method of the base template.
+The first part of our body uses our magic context variable ‘c’. Here, we’re iterating over each of the players in the database and rendering them into a table as a row.
+Note here that we can use the Mako method syntax to create a method called “makerow” and invoke it directly within our template.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Mako provides a rich set of functions for templating.
+We’re only going to use the most basic parts of Mako: inheritance, variable substitution, and loop iteration to get the toy application working.
+I strongly suggest you dive into the Mako documentation to discover features and get a better understanding of how to use the template library.</p>
+</div>
+<p>Next, we add in a small form to create new players.
+The trick here is to see that the form is being generated programmatically by helper functions.
+Pylons automatically imports YOURPROJECT/lib/helpers (in our case, rostertool.lib.helpers) as the ‘h’ variable in your template.
+The helpers module typically imports functions from parts of Pylons or a dependent library to allow access to those features from anywhere in the application.
+Although this seems like a violation of “separation of concerns,” look at the template and see what it buys us: we get fully decoupled URLs from the particular controller and method that need to be invoked.
+The template uses a special routes function “url_for” to compute the URL that would have been mapped for a particular controller and method.
+The last part of our base.html file contains code to display alert messages.</p>
+<p>Let’s take a look at our rostertool.lib.helpers module now.</p>
+<p><em>Listing 15-12.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">routes</span> <span class="kn">import</span> <span class="n">url_for</span>
+<span class="kn">from</span> <span class="nn">webhelpers.html.tags</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">webhelpers.pylonslib</span> <span class="kn">import</span> <span class="n">Flash</span> <span class="k">as</span> <span class="n">_Flash</span>
+
+<span class="c"># Send alert messages back to the user</span>
+<span class="n">flash</span> <span class="o">=</span> <span class="n">_Flash</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Here, we’re importing the url_for function from routes to do our URL reversal computations.
+We import HTML tag generators from the main html.tags helper modules and we import Flash to provide alert messages for our pages.
+We’ll show you how flash messages are used when we cover the controller code in more detail in the next couple of pages.</p>
+<p>Now, create a controller with paste (you’ve already done this if you were impatient at the beginning of the chapter).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If you have already created the controller using thequickstart at the
+beginning of the chapter, you will need to add theSQLAlchemy configuration to
+the development*.ini* file by addingthe following line to the file.</p>
+<div class="last highlight-python"><pre>sqlalchemy.url= postgresql+zxjdbc://dbuser:dbpassword@dbhost:port/dbname</pre>
+</div>
+</div>
+<p><em>Listing 15-13.</em></p>
+<div class="highlight-python"><pre>$ cd ROSTERTOOL/rostertool
+$ paster controller roster</pre>
+</div>
+<p>Next, we need to add the metadata for our databasetable to the
+RosterTool/rostertool/model/__init__.py module. To doso, change the file so that
+it reads as follows:</p>
+<p><em>Listing 15-14.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;The application&#39;s model objects&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="kn">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">orm</span><span class="p">,</span> <span class="n">schema</span><span class="p">,</span> <span class="n">types</span>
+
+<span class="kn">from</span> <span class="nn">rostertool.model</span> <span class="kn">import</span> <span class="n">meta</span>
+
+<span class="k">def</span> <span class="nf">init_model</span><span class="p">(</span><span class="n">engine</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Call me before using any of the tables or classes in the model&quot;&quot;&quot;</span>
+    <span class="c">## Reflected tables must be defined and mapped here</span>
+    <span class="c">#global reflected_table</span>
+    <span class="c">#reflected_table = sa.Table(&quot;Reflected&quot;, meta.metadata, autoload=True,</span>
+    <span class="c">#                           autoload_with=engine)</span>
+    <span class="c">#orm.mapper(Reflected, reflected_table)</span>
+    <span class="c">#</span>
+    <span class="n">meta</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="n">engine</span><span class="p">)</span>
+    <span class="n">meta</span><span class="o">.</span><span class="n">engine</span> <span class="o">=</span> <span class="n">engine</span>
+
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">MetaData</span><span class="p">()</span>
+
+<span class="c"># Create the metadata for the player table, and assign it to player_table</span>
+<span class="n">player_table</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s">&#39;player&#39;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+    <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+    <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s">&#39;first&#39;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">Text</span><span class="p">(),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s">&#39;last&#39;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">Text</span><span class="p">(),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s">&#39;position&#39;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">Text</span><span class="p">(),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c"># Create a class to be used for mapping the player_table object</span>
+<span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="c"># Map the Player class to the player_table object, we can now refer to the</span>
+<span class="c"># player_table using Player</span>
+<span class="n">orm</span><span class="o">.</span><span class="n">mapper</span><span class="p">(</span><span class="n">Player</span><span class="p">,</span> <span class="n">player_table</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that we are creatingthe proper metadata for mapping to the player database
+table. We thencreate an empty Player class object andlater use the
+orm*.*mapper**to map the metadata to the emptyPlayer object. We can now use the
+Player object to work with ourdatabase table.</p>
+<p>Next, we should alter the index method that iscreated inside the RosterContoller
+class. We will add an import tobring in the meta**and Player**objects, and
+change the index**function so that it queriesthe list of players in the
+database. In the end, the index**function should read as follows:</p>
+<p><em>Listing 15-15.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">rostertool.model</span> <span class="kn">import</span> <span class="n">meta</span><span class="p">,</span> <span class="n">Player</span>
+<span class="o">...</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">page_title</span> <span class="o">=</span> <span class="s">&#39;Player List&#39;</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">players</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Player</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="s">&#39;list_players.html&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This code is fairly straightforward; we are simplyusing a SQLAlchemy session to
+load all the Player objects from diskand assigning to the special context
+variable c. Pylons is theninstructed to render the list_player.html file.</p>
+<p>The context should be your default place to placevalues you want to pass to
+other parts of the application. Note thatPylons will automatically bind in URL
+values to the context so whileyou can grab the form values from
+self.form_result, you can also grabraw URL values from the context.</p>
+<p>You should be able run the debug webserver now andyou can get to the front page
+to load an empty list of players. Startup your debug webserver as you did at the
+beginning of this chapterand go to <a class="reference external" href="http://localhost:5000/">http://localhost:5000/</a> to see the page load
+with your listof players (currently an empty list).</p>
+<p>Now we need to get to the meaty part where we canstart create, edit, and delete
+players. Well make sure that theinputs are at least minimally validated, errors
+are displayed to theuser, and that alert messages are properly populated.</p>
+<p>First, we need a page that shows just a singleplayer and provides buttons for
+edit and delete.</p>
+<p><em>Listing 15-16.</em></p>
+<div class="highlight-python"><pre>&lt;%inherit file="base.html" /&gt;
+
+&lt;h2&gt;Edit player&lt;/h2&gt;
+${h.form(h.url_for(controller='roster', action='save_player', id=c.player.id), method='POST')}
+    ${h.hidden('id', c.player.id)} &lt;br /&gt;
+    ${h.text('first', c.player.first)} &lt;br /&gt;
+    ${h.text('last', c.player.last)} &lt;br /&gt;
+    ${h.text('position', c.player.position)} &lt;br /&gt;
+    ${h.submit('save_player', "Save Player")}
+${h.end_form()}
+
+${h.form(h.url_for(controller='roster', action='delete_player', id=c.player.id), method='POST')}
+    ${h.hidden('id', c.player.id)} &lt;br /&gt;
+    ${h.hidden('first', c.player.first)} &lt;br /&gt;
+    ${h.hidden('last', c.player.last)} &lt;br /&gt;
+    ${h.hidden('position', c.player.position)} &lt;br /&gt;
+    ${h.submit('delete_player', "Delete Player")}
+${h.end_form()}</pre>
+</div>
+<p>This template assumes that there is a playervalue assigned to the context and,
+not surprisingly, its going tobe a full blown instance of the Player object that
+we first saw inChapter 12. The helper functions let us define our HTML form
+usingwebhelper tag generation functions. This means you wont have toworry about
+escaping characters or remembering the particular detailsof the HTML attributes.
+The helper.tag functions will do sensiblethings by default. The <em>h</em> is a default
+template variable thatrefers to the repository of helper functions.</p>
+<p>Weve set up the edit and delete forms to pointto different URLs. You might want
+to conserve URLs, but havingdiscrete URLs for each action has advantages,
+especially fordebugging. You can trivially view which URLs are being hit on
+awebserver by reading log files. Seeing the same kind of behavior ifthe URLs are
+the same, but the behavior is dictated by some formvaluewell, thats a whole lot
+harder to debug. Its also a lotharder to setup in your controllers because you
+need to dispatch thebehavior on a per method level. Why not just have separate
+methodsfor separate behavior? Everybody will thank you for it when they needto
+debug your code in the future.</p>
+<p>Before we create our controller methods forcreate, edit and delete, well create
+a formencode schema toprovide basic validation. Again, Pylons doesnt provide
+validationbehaviorit just leverages another library to do so. Add thefollowing
+class to rostertool/controllers/roster.py:</p>
+<p><em>Listing 15-17.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">PlayerForm</span><span class="p">(</span><span class="n">formencode</span><span class="o">.</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c"># You need the next line to drop the submit button values</span>
+    <span class="n">allow_extra_fields</span><span class="o">=</span><span class="bp">True</span>
+
+    <span class="n">first</span> <span class="o">=</span> <span class="n">formencode</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">not_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="n">formencode</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">not_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">formencode</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">not_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This simply provides basic string verification onour inputs. Note how this
+doesnt provide any hint as to what theHTML form looks likeor that its HTML at
+all. FormEncode canvalidate arbitrary Python dictionaries and return errors
+about them.</p>
+<p>Were just going to show you the add method, andthe edit_player methods. You
+should try to implement the save_playerand delete_player methods to make sure
+you understand whats goingon here. First, add the import for the
+validate**decorator.Next, add the add*_*player**and edit_player functions tothe
+RosterConroller class.</p>
+<p><em>Listing 15-18.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pylons.decorators</span> <span class="kn">import</span> <span class="n">validate</span>
+
+
+<span class="nd">@validate</span><span class="p">(</span><span class="n">schema</span><span class="o">=</span><span class="n">PlayerForm</span><span class="p">(),</span> <span class="n">form</span><span class="o">=</span><span class="s">&#39;index&#39;</span><span class="p">,</span> <span class="n">post_only</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">on_get</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_player</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_result</span><span class="p">[</span><span class="s">&#39;first&#39;</span><span class="p">]</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_result</span><span class="p">[</span><span class="s">&#39;last&#39;</span><span class="p">]</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_result</span><span class="p">[</span><span class="s">&#39;position&#39;</span><span class="p">]</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Player</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">first</span><span class="o">=</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="n">last</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mf">0</span><span class="p">:</span>
+        <span class="n">h</span><span class="o">.</span><span class="n">flash</span><span class="p">(</span><span class="s">&quot;Player already exists!&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">redirect_to</span><span class="p">(</span><span class="n">controller</span><span class="o">=</span><span class="s">&#39;roster&#39;</span><span class="p">)</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">redirect_to</span><span class="p">(</span><span class="n">controller</span><span class="o">=</span><span class="s">&#39;roster&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;index&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">edit_player</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Player</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="n">player</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="s">&#39;edit_player.html&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A couple of notes here. The edit_player functionis passed the id attribute
+directly by Routes. In theedit_player method, player is assigned to the context,
+but thecontext is never explicitly passed into the template renderer. Pylonsis
+going to automatically take the attributes bound to the contextand write them
+into the template and render the HTML output. The <em>c*variable is automatically
+available in the template namespace muchlike the *h</em> variable as discussed
+previously.</p>
+<p>With the add_player method, were using thevalidate decorator to enforce the
+inputs against the PlayerForm. Inthe case of error, the form attribute of the
+decorator is used toload an action against the current controller. In this case,
+index,so the front page loads.</p>
+<p>The SQLAlchemy code should be familiar to you ifyou have already gone through
+Chapter 12. The last line of theadd_player method is a redirect to prevent
+problems with hittingreload in the browser. Once all data manipulation has
+occurred, theserver redirects the client to a results page. In the case that
+auser hits reload on the result page, no data will be mutated.</p>
+<p>Heres the signatures of the remaining methodsyoull need to implement to make
+things work:</p>
+<ul class="simple">
+<li>save_player(self):</li>
+<li>delete_player(self):</li>
+</ul>
+<p>If you get stuck, you can always consult theworking sample code on the books web
+site.</p>
+</div>
+<div class="section" id="adding-a-json-api">
+<h2>Adding a JSON API<a class="headerlink" href="#adding-a-json-api" title="Permalink to this headline">¶</a></h2>
+<p>JSON integration into Pylons isvery straight forward. The steps are roughly the
+same as addingcontroller methods for plain HTML views. You invoke paste, paste
+thengenerates your controller stubs and test stubs, you add in someroutes to
+wire controllers to URLs and then you just fill in thecontroller code.</p>
+<p><em>Listing 15-19.</em></p>
+<div class="highlight-python"><pre>$ cd ROSTERTOOL_HOME/rostertool
+$ paster controller api</pre>
+</div>
+<p>Pylons provides a special &#64;jsonify decorator whichwill automatically convert
+Python primitive types into JSON objects.It will <a href="#id7"><span class="problematic" id="id8">*</span></a>not*convert the POST data into
+an object though; thats yourresponsibility. Adding a simple read interface into
+the player listrequires only adding a single method to your ApiController:</p>
+<p><em>Listing 15-20.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@jsonify</span>
+<span class="k">def</span> <span class="nf">players</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
+    <span class="n">players</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;first&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">first</span><span class="p">,</span>
+                <span class="s">&#39;last&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">last</span><span class="p">,</span>
+                <span class="s">&#39;position&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">position</span><span class="p">,</span>
+                <span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">id</span><span class="p">}</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Player</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">players</span>
+</pre></div>
+</div>
+<p>Adding a hook so that people can POST data to yourserver in JSON format to
+create new player is almost as easy.</p>
+<p><em>Listing 15-21.</em></p>
+<p>import simplejson as json</p>
+<blockquote>
+<p>&#64;jsonify
+def add_player(self):</p>
+<blockquote>
+<p>obj = json.loads(request.body)
+schema = PlayerForm()
+try:</p>
+<blockquote>
+form_result = schema.to_python(obj)</blockquote>
+<dl class="docutils">
+<dt>except formencode.Invalid, error:</dt>
+<dd>response.content_type = &#8216;text/plain&#8217;
+return &#8216;Invalid: &#8216;+unicode(error)</dd>
+<dt>else:</dt>
+<dd><p class="first">session = Session()
+first, last, position = obj[&#8216;first&#8217;], obj[&#8216;last&#8217;], obj[&#8216;position&#8217;]
+if session.query(Player).filter_by(last=last, first=first,</p>
+<blockquote>
+<blockquote>
+position=position).count() == 0:</blockquote>
+<p>session.add(Player(first, last, position))
+session.commit()
+return {&#8216;result&#8217;: &#8216;OK&#8217;}</p>
+</blockquote>
+<dl class="last docutils">
+<dt>else:</dt>
+<dd>return {&#8216;result&#8217;:&#8217;fail&#8217;, &#8216;msg&#8217;: &#8216;Player already exists&#8217;}</dd>
+</dl>
+</dd>
+</dl>
+</blockquote>
+</blockquote>
+</div>
+<div class="section" id="unit-testing-functional-testing-and-logging">
+<h2>Unit Testing, Functional Testing, and Logging<a class="headerlink" href="#unit-testing-functional-testing-and-logging" title="Permalink to this headline">¶</a></h2>
+<p>One of our favorite features inPylons is its rich set of tools for testing and
+debugging. It evenmanages to take social networking, turn it upside-down, and
+make itinto a debugger feature. Well get to that shortly.</p>
+<p>The first step to knowing how to test code inPylons is to familiarize yourself
+with the nose testing framework.Nose makes testing simple by getting out of your
+way. There are noclasses to subclass, just start writing functions that start
+with theword test and nose will run them. Write a class that has testprefixed in
+the name and nose will treat it as a suite of testsrunning each method that
+starts with test. For each testmethod, nose will execute the setup() method just
+prior to executingyour test and nose will execute the teardown() method after
+your testcase.</p>
+<p>Best of all, nose will automatically hunt downanything that looks like a test
+and will run it for you. There is nocomplicated chain of test cases you need to
+organize in a tree. Thecomputer will do that for you.</p>
+<p>Lets take a look at your first test case: welljust instrument the model, in this
+caseSQLAlchemy. Because themodel layer has no dependency on Pylons, this
+effectively tests onlyyour SQLAlchemy model code.</p>
+<p>In ROSTERTOOL_HOME/rostertool/tests, create amodule called test_models.py with
+the following content</p>
+<p><em>Listing 15-22.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">rostertool.model</span> <span class="kn">import</span> <span class="n">Player</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">engine</span>
+
+<span class="k">class</span> <span class="nc">TestModels</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Player</span><span class="p">):</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">test_create_player</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
+        <span class="n">player1</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s">&#39;Josh&#39;</span><span class="p">,</span> <span class="s">&#39;Juneau&#39;</span><span class="p">,</span> <span class="s">&#39;forward&#39;</span><span class="p">)</span>
+        <span class="n">player2</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s">&#39;Jim&#39;</span><span class="p">,</span> <span class="s">&#39;Baker&#39;</span><span class="p">,</span> <span class="s">&#39;forward&#39;</span><span class="p">)</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">player1</span><span class="p">)</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">player2</span><span class="p">)</span>
+
+        <span class="c"># But 2 are in the session, but not in the database</span>
+        <span class="k">assert</span> <span class="mf">2</span> <span class="o">==</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Player</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="mf">0</span> <span class="o">==</span> <span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;select count(id) from player&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mf">0</span><span class="p">]</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+        <span class="c"># Check that 2 records are all in the database</span>
+        <span class="k">assert</span> <span class="mf">2</span> <span class="o">==</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Player</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="mf">2</span> <span class="o">==</span> <span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;select count(id) from player&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mf">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Before we can run the tests, well need to editthe model module a little so that
+the models know to lookup theconnection URL from Pylons configuration file. In
+your test.ini,add a line setting the sqlalchemy.url setting to point to
+yourdatabase in the [app:main] section.</p>
+<p>You should have a line that looks something likethis:</p>
+<p><em>Listing 15-23.</em></p>
+<div class="highlight-python"><pre> [app:main]
+use = config:development.ini
+sqlalchemy.url = postgresql+zxjdbc://username:password@localhost:5432/mydb</pre>
+</div>
+<p>Now edit the model file so that the create_enginecall uses that configuration.
+This is as simple as importing configfrom pylons and doing a dictionary lookup.
+The two lines you want are</p>
+<p><em>Listing 15-24.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pylons</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;sqlalchemy.url&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>and thats it. Your model willnow lookup your database connection string from
+Pylons. Even better,nose will know how to use that configuration as well.</p>
+<p>From the command line, you can run the tests fromROSTERTOOL_HOME like this now:</p>
+<p><em>Listing 15-25.</em></p>
+<div class="highlight-python"><pre>ROSTERTOOL_HOME $ nosetests rostertool/tests/test_models.py
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.502s</pre>
+</div>
+<p>Perfect! To capture stdout and get verbose output,you can choose to use the -sv
+option. Another nice option is-pdb-failures, which will drop you into the
+debugger on failures.Nose has its own active community of developers. You can
+get plug-insto do coverage analysis and performance profiling with some of
+theplugins. Use nosetests &#8211;help for a list of the optionsavailable for a
+complete list.</p>
+<p>Due to the nature of Pylons and its decoupleddesign, writing small unit tests to
+test each little piece of code isvery easy. Feel free to assemble your tests any
+which way you want.Just want to have a bunch of test functions? Great! If you
+need tohave setup and teardown and writing a test class makes sense, then doso.</p>
+<p>Testing with nose is a joyyou arent forcedto fit into any particular structure
+with respect to where you testsmust go so that they will be executed. You can
+organize your tests ina way that makes the most sense to <em>you</em>.</p>
+<p>That covers basic unit testing, but suppose wewant to test the JSON interface to
+our hockey roster. We really wantto be able to invoke GET and POST on the URLs
+to make sure that URLrouting is working as we expect. We want to make sure that
+thecontent-type is properly set to application/x-json. In otherwords, we want to
+have a proper functional test, a test thats notas fine grained as a unit test.</p>
+<p>The prior exposure to the app object when weran the paste shell should give you
+a rough idea of what is required.In Pylons, you can instrument your application
+code by using aTestController. Lucky for you, Pylons has already created one for
+youin your <a href="#id9"><span class="problematic" id="id10">:math:`&lt;`</span></a>app<a href="#id11"><span class="problematic" id="id12">:math:`&gt;`</span></a>/tests directory. Just import it, subclass
+it andyou can start using the app object just like you did inside ofthe shell.</p>
+<p>Lets take a look at a functional test in detailnow. Heres a sample you can save
+intorostertool/tests/functional/test_api.py:</p>
+<p><em>Listing 15-26.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">rostertool.tests</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">simplejson</span> <span class="kn">as</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">rostertool.model.models</span> <span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Player</span>
+
+<span class="k">class</span> <span class="nc">TestApiController</span><span class="p">(</span><span class="n">TestController</span><span class="p">):</span>
+    <span class="c"># Note that we&#39;re using subclasses of unittest.TestCase so we need</span>
+    <span class="c"># to be careful with setup/teardown camelcasing unlike nose&#39;s</span>
+    <span class="c"># default behavior</span>
+
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Player</span><span class="p">):</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">test_add_player</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;first&#39;</span><span class="p">:</span> <span class="s">&#39;Victor&#39;</span><span class="p">,</span>
+            <span class="s">&#39;last&#39;</span><span class="p">:</span> <span class="s">&#39;Ng&#39;</span><span class="p">,</span>
+            <span class="s">&#39;position&#39;</span><span class="p">:</span> <span class="s">&#39;Goalie&#39;</span><span class="p">})</span>
+        <span class="c"># Note that the content-type is set in the headers to make</span>
+        <span class="c"># sure that paste.test doesn&#39;t URL encode our data</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">(</span><span class="n">controller</span><span class="o">=</span><span class="s">&#39;api&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;add_player&#39;</span><span class="p">),</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;content-type&#39;</span><span class="p">:</span> <span class="s">&#39;application/x-json&#39;</span><span class="p">})</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">obj</span><span class="p">[</span><span class="s">&#39;result&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;OK&#39;</span>
+
+        <span class="c"># Do it again and fail</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">(</span><span class="n">controller</span><span class="o">=</span><span class="s">&#39;api&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;add_player&#39;</span><span class="p">),</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;content-type&#39;</span><span class="p">:</span> <span class="s">&#39;application/x-json&#39;</span><span class="p">})</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">obj</span><span class="p">[</span><span class="s">&#39;result&#39;</span><span class="p">]</span> <span class="o">&lt;&gt;</span> <span class="s">&#39;OK&#39;</span>
+</pre></div>
+</div>
+<p>Theres a minor detail which you can easily misswhen youre using the
+TestController as your superclass. First off,TestController is a descendant of
+unittest.TestCase from the standardpython unit test library. Nose will not run
+setup andteardown methods on TestCase subclasses. Instead, youll haveto use the
+camel case names that TestCase uses.</p>
+<p>Reading through the testcase should show you howmuch detail you can be exposed.
+All your headers are exposed, theresponse content is exposed; indeed, the HTTP
+response is completelyexposed as an object for you to inspect and verify.</p>
+<p>So great, now we can run small unit tests, biggerfunctional tests; lets take a
+look at the debugging facilitiesprovided through the web.</p>
+<p>Consider what happens with most web applicationstacks when an error occurs.
+Maybe you get a stack trace, maybe youdont. If youre lucky, you can see the
+local variables at eachstack frame like Django does. Usually though, youre out
+of luck ifyou want to interact with the live application as the error
+isoccurring.</p>
+<p>Eventually, you may locate the part of the stacktrace that triggered the error,
+but the only way of sharing thatinformation is through either the mailing lists
+or by doing a formalpatch against source control. Lets take a look at an example
+ofthat.</p>
+<p>Were going to startup our application indevelopment mode. Were also going to
+intentionally break some codein the controller to see the stack trace. But
+first, well need toput some data into our app.</p>
+<p>Add a sqlalchemy.url configuration line to thedevelopment.ini file as you did in
+the test.ini configuration, andlets startup the application in development mode.
+Were going tohave the server run so that any code changes on the file system
+areautomatically detected and the code is reloaded</p>
+<p>$paster serve development.ini &#8211;reload</p>
+<p>Well add a single player John Doe as acenter, and save the record. Next, lets
+intentionally break somecode to trigger the debugger. Modify the
+RosterControllers indexmethod and edit the call that loads the list of players.
+Well usethe web session instead of the database session to try loading thePlayer
+objects.</p>
+<p><em>Listing 15-27.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">db_session</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">page_title</span> <span class="o">=</span> <span class="s">&#39;Player List&#39;</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">players</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Player</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="s">&#39;list_players.html&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Load <a class="reference external" href="http://localhost:5000/">http://localhost:5000/</a> to see the error page.</p>
+<p>Theres a lot of information that Pylons throwsback at you. Along the top of the
+screen, youll see four tabs:Traceback, Extra Data, Template, and Source. Pylons
+will have put youin the Traceback tab by default to start with. If you look at
+theerror, youll see the exact line number in the source file that theerror
+occurred in. Whats special about Pylons traceback tab isthat this is actually a
+fully interactive session.</p>
+<p>You can select the+ signs to expand each stackframe and a text input along
+withsome local variables on that frame will be revealed. That text inputis an
+interface into your server process. You can type virtually anyPython command
+into it, hit Enter, and you will get back liveresults. From here, we can see
+that we should have used thedb_session and not the session variable. See Figure
+15-2.</p>
+<p><img alt="picture_1" src="_images/picture_1.png" /></p>
+<p><em>Figure 15-2. Error message caused by use of Session</em></p>
+<p>This is pretty fantastic. If you click on the Viewlink, you can even jump to the
+full source listing of the Jythonmodule that caused the error. One bug in Pylons
+at the time ofwriting is that sometimes the hyperlink is malformed. So,
+althoughthe traceback will correctly list the line number that the erroroccurred
+at, the source listing may go to the wrong line.</p>
+<p>The Pylons developers have also embedded aninterface into search engines to see
+if your error has beenpreviously reported. If you scroll down to the bottom of
+yourtraceback page, youll see another tab control with a Search MailLists
+option. Here, Pylons will automatically extract the exceptionmessage and provide
+you an interface so you can literally search allthe mailing lists that are
+relevant to your particular Pylonsinstallation.</p>
+<p>If you cant find your error on the mailinglists, you can go to the next tab,
+Post Traceback, and submit yourstacktrace to a webservice on PylonsHQ.com so
+that you can try todebug your problems online with other collaborators.
+Combining unittests, functional tests, and the myriad of debugging options
+affordedto you in the web debugger, Pylons makes the debugging experience
+aspainless as possible.</p>
+</div>
+<div class="section" id="deployment-into-a-servlet-container">
+<h2>Deployment into a Servlet Container<a class="headerlink" href="#deployment-into-a-servlet-container" title="Permalink to this headline">¶</a></h2>
+<p>Deploying your pylons applicationinto a servlet container is very straight
+forward. Just installsnakefight from PyPI using easy_install and you can start
+buildingWAR files.</p>
+<p><em>Listing 15-28.</em></p>
+<div class="highlight-python"><pre>$ easy_install snakefight
+...snakefight will download and install here ...
+$ jython setup.py bdist_war --paste-config test.ini</pre>
+</div>
+<p>By default, snakefight will bundle a completeinstance of your Jython
+installation into the WAR file. What itdoesnt include is any JAR files that your
+application depends on.For our small example, this is just the postgresql JDBC
+driver. Youcan use the &#8211;include-jars options and provide a comma separated
+listof JAR files.</p>
+<p><em>Listing 15-29.</em></p>
+<div class="highlight-python"><pre>$ jython setup.py bdist_war \
+    --include-jars=postgresql-8.3-604.jdbc4.jar \
+    --paste-config=test.ini</pre>
+</div>
+<p>The final WAR file will be located under the distdirectory. It will contain your
+postgreql JDBC driver, a completeinstallation of Jython including anything
+located in site-packagesand your application. Your war file should deploy
+without any issuesinto any standards compliant servlet container.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Weve only scratched the surfaceof whats possible, but I hope youve gotten a
+taste of what ispossible with Pylons. Pylons uses a large number of packages so
+youwill need to spend more time getting over the initial learning curve,but the
+dividend is the ability to pick and choose the libraries thatbest solve your
+particular problems. It would be helpful to take alook at some other resources
+such as <em>The Definitive Guide toPylons</em> from Apress, which is also available
+online athttp://pylonsbook.com.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Chapter 15:  Introduction to Pylons</a><ul>
+<li><a class="reference external" href="#a-guide-for-the-impatient">A Guide for the Impatient</a></li>
+<li><a class="reference external" href="#a-note-about-paste">A Note about Paste</a></li>
+<li><a class="reference external" href="#pylons-mvc">Pylons MVC</a></li>
+<li><a class="reference external" href="#an-interlude-into-java-s-memory-model">An Interlude into Java’s Memory Model</a></li>
+<li><a class="reference external" href="#invoking-the-pylons-shell">Invoking the Pylons Shell</a><ul>
+<li><a class="reference external" href="#request-get">request.GET</a></li>
+<li><a class="reference external" href="#request-post">request.POST</a></li>
+<li><a class="reference external" href="#request-params">request.params</a></li>
+<li><a class="reference external" href="#request-headers">request.headers</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#context-variables-and-application-globals">Context Variables and Application Globals</a></li>
+<li><a class="reference external" href="#routes">Routes</a></li>
+<li><a class="reference external" href="#controllers-and-templates">Controllers and Templates</a></li>
+<li><a class="reference external" href="#adding-a-json-api">Adding a JSON API</a></li>
+<li><a class="reference external" href="#unit-testing-functional-testing-and-logging">Unit Testing, Functional Testing, and Logging</a></li>
+<li><a class="reference external" href="#deployment-into-a-servlet-container">Deployment into a Servlet Container</a></li>
+<li><a class="reference external" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="JythonDjango.html"
+                                  title="previous chapter">Chapter 14: Web Applications With Django</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="GUIApplications.html"
+                                  title="next chapter">Chapter 16: GUI Applications</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/IntroToPylons.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="GUIApplications.html" title="Chapter 16: GUI Applications"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="JythonDjango.html" title="Chapter 14: Web Applications With Django"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+    <div class="footer">
+      &copy; Copyright 2009,2010, Josh Juneau, Frank Wierzbicki, Jim Baker, Leo Soto, Victor Ng.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-13131153-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  </body>
+</html>

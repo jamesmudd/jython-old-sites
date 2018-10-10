@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>12.1. zlib — Compression compatible with gzip &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="12. Data Compression and Archiving" href="archiving.html" />
+    <link rel="next" title="12.2. gzip — Support for gzip files" href="gzip.html" />
+    <link rel="prev" title="12. Data Compression and Archiving" href="archiving.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="gzip.html" title="12.2. gzip — Support for gzip files"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="archiving.html" title="12. Data Compression and Archiving"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="archiving.html" accesskey="U">12. Data Compression and Archiving</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="archiving.html"
+                                  title="previous chapter">12. Data Compression and Archiving</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="gzip.html"
+                                  title="next chapter">12.2. <tt class="docutils literal docutils literal docutils literal"><span class="pre">gzip</span></tt> &#8212; Support for <strong>gzip</strong> files</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/zlib.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="zlib-compression-compatible-with-gzip">
+<h1>12.1. <tt class="docutils literal"><span class="pre">zlib</span></tt> &#8212; Compression compatible with <strong>gzip</strong><a class="headerlink" href="#zlib-compression-compatible-with-gzip" title="Permalink to this headline">¶</a></h1>
+<p>For applications that require data compression, the functions in this
+module allow compression and decompression, using the zlib library.
+The zlib library has its own home page at <a class="reference external" href="http://www.zlib.net">http://www.zlib.net</a>.   There
+are known incompatibilities between the Python module and versions of
+the zlib library earlier than 1.1.3; 1.1.3 has a security
+vulnerability, so we recommend using 1.1.4 or later.</p>
+<p>zlib&#8217;s functions have many options and often need to be used in a
+particular order.  This documentation doesn&#8217;t attempt to cover all of
+the permutations; consult the zlib manual at
+<a class="reference external" href="http://www.zlib.net/manual.html">http://www.zlib.net/manual.html</a> for authoritative information.</p>
+<p>For reading and writing <tt class="docutils literal"><span class="pre">.gz</span></tt> files see the <tt class="docutils literal"><span class="pre">gzip</span></tt> module. For
+other archive formats, see the <tt class="docutils literal"><span class="pre">bz2</span></tt>, <tt class="docutils literal"><span class="pre">zipfile</span></tt>, and <tt class="docutils literal"><span class="pre">tarfile</span></tt>
+modules.</p>
+<p>The available exception and functions in this module are:</p>
+<p>exception exception zlib.error</p>
+<blockquote>
+Exception raised on compression and decompression errors.</blockquote>
+<p>zlib.adler32(data[, value])</p>
+<blockquote>
+<p>Computes a Adler-32 checksum of <em>data</em>.  (An Adler-32 checksum is
+almost as reliable as a CRC32 but can be computed much more
+quickly.)  If <em>value</em> is present, it is used as the starting value
+of the checksum; otherwise, a fixed default value is used.  This
+allows computing a running checksum over the concatenation of
+several inputs.  The algorithm is not cryptographically strong, and
+should not be used for authentication or digital signatures.  Since
+the algorithm is designed for use as a checksum algorithm, it is
+not suitable for use as a general hash algorithm.</p>
+<p>This function always returns an integer object.</p>
+</blockquote>
+<dl class="docutils">
+<dt>Note: To generate the same numeric value across all Python versions and</dt>
+<dd>platforms use adler32(data) &amp; 0xffffffff.  If you are only using the
+checksum in packed binary format this is not necessary as the return
+value is the correct 32bit binary representation regardless of sign.</dd>
+</dl>
+<p>Changed in version 2.6: The return value is in the range [-2**31,
+2**31-1] regardless of platform.  In older versions the value is
+signed on some platforms and unsigned on others.</p>
+<p>Changed in version 3.0: The return value is unsigned and in the range
+[0, 2**32-1] regardless of platform.</p>
+<p>zlib.compress(string[, level])</p>
+<blockquote>
+Compresses the data in <em>string</em>, returning a string contained
+compressed data. <em>level</em> is an integer from <tt class="docutils literal"><span class="pre">1</span></tt> to <tt class="docutils literal"><span class="pre">9</span></tt>
+controlling the level of compression; <tt class="docutils literal"><span class="pre">1</span></tt> is fastest and produces
+the least compression, <tt class="docutils literal"><span class="pre">9</span></tt> is slowest and produces the most.  The
+default value is <tt class="docutils literal"><span class="pre">6</span></tt>.  Raises the <tt class="docutils literal"><span class="pre">error</span></tt> exception if any
+error occurs.</blockquote>
+<p>zlib.compressobj([level])</p>
+<blockquote>
+Returns a compression object, to be used for compressing data
+streams that won&#8217;t fit into memory at once.  <em>level</em> is an integer
+from <tt class="docutils literal"><span class="pre">1</span></tt> to <tt class="docutils literal"><span class="pre">9</span></tt> controlling the level of compression; <tt class="docutils literal"><span class="pre">1</span></tt> is
+fastest and produces the least compression, <tt class="docutils literal"><span class="pre">9</span></tt> is slowest and
+produces the most.  The default value is <tt class="docutils literal"><span class="pre">6</span></tt>.</blockquote>
+<p>zlib.crc32(data[, value])</p>
+<blockquote>
+<p>Computes a CRC (Cyclic Redundancy Check)  checksum of <em>data</em>. If
+<em>value</em> is present, it is used as the starting value of the
+checksum; otherwise, a fixed default value is used.  This allows
+computing a running checksum over the concatenation of several
+inputs.  The algorithm is not cryptographically strong, and should
+not be used for authentication or digital signatures.  Since the
+algorithm is designed for use as a checksum algorithm, it is not
+suitable for use as a general hash algorithm.</p>
+<p>This function always returns an integer object.</p>
+</blockquote>
+<dl class="docutils">
+<dt>Note: To generate the same numeric value across all Python versions and</dt>
+<dd>platforms use crc32(data) &amp; 0xffffffff.  If you are only using the
+checksum in packed binary format this is not necessary as the return
+value is the correct 32bit binary representation regardless of sign.</dd>
+</dl>
+<p>Changed in version 2.6: The return value is in the range [-2**31,
+2**31-1] regardless of platform.  In older versions the value would be
+signed on some platforms and unsigned on others.</p>
+<p>Changed in version 3.0: The return value is unsigned and in the range
+[0, 2**32-1] regardless of platform.</p>
+<p>zlib.decompress(string[, wbits[, bufsize]])</p>
+<blockquote>
+<p>Decompresses the data in <em>string</em>, returning a string containing
+the uncompressed data.  The <em>wbits</em> parameter controls the size of
+the window buffer.  If <em>bufsize</em> is given, it is used as the
+initial size of the output buffer.  Raises the <tt class="docutils literal"><span class="pre">error</span></tt> exception
+if any error occurs.</p>
+<p>The absolute value of <em>wbits</em> is the base two logarithm of the size
+of the history buffer (the &#8220;window size&#8221;) used when compressing
+data.  Its absolute value should be between 8 and 15 for the most
+recent versions of the zlib library, larger values resulting in
+better compression at the expense of greater memory usage.  The
+default value is 15.  When <em>wbits</em> is negative, the standard
+<strong>gzip</strong> header is suppressed; this is an undocumented feature of
+the zlib library, used for compatibility with <strong>unzip</strong>&#8216;s
+compression file format.</p>
+<p><em>bufsize</em> is the initial size of the buffer used to hold
+decompressed data.  If more space is required, the buffer size will
+be increased as needed, so you don&#8217;t have to get this value exactly
+right; tuning it will only save a few calls to <tt class="docutils literal"><span class="pre">malloc()</span></tt>.  The
+default size is 16384.</p>
+</blockquote>
+<p>zlib.decompressobj([wbits])</p>
+<blockquote>
+Returns a decompression object, to be used for decompressing data
+streams that won&#8217;t fit into memory at once.  The <em>wbits</em> parameter
+controls the size of the window buffer.</blockquote>
+<p>Compression objects support the following methods:</p>
+<p>Compress.compress(string)</p>
+<blockquote>
+Compress <em>string</em>, returning a string containing compressed data
+for at least part of the data in <em>string</em>.  This data should be
+concatenated to the output produced by any preceding calls to the
+<tt class="docutils literal"><span class="pre">compress()</span></tt> method.  Some input may be kept in internal buffers
+for later processing.</blockquote>
+<p>Compress.flush([mode])</p>
+<blockquote>
+All pending input is processed, and a string containing the
+remaining compressed output is returned.  <em>mode</em> can be selected
+from the constants <tt class="docutils literal"><span class="pre">Z_SYNC_FLUSH</span></tt>,  <tt class="docutils literal"><span class="pre">Z_FULL_FLUSH</span></tt>,  or
+<tt class="docutils literal"><span class="pre">Z_FINISH</span></tt>, defaulting to <tt class="docutils literal"><span class="pre">Z_FINISH</span></tt>.  <tt class="docutils literal"><span class="pre">Z_SYNC_FLUSH</span></tt> and
+<tt class="docutils literal"><span class="pre">Z_FULL_FLUSH</span></tt> allow compressing further strings of data, while
+<tt class="docutils literal"><span class="pre">Z_FINISH</span></tt> finishes the compressed stream and  prevents
+compressing any more data.  After calling <tt class="docutils literal"><span class="pre">flush()</span></tt> with <em>mode</em>
+set to <tt class="docutils literal"><span class="pre">Z_FINISH</span></tt>, the <tt class="docutils literal"><span class="pre">compress()</span></tt> method cannot be called
+again; the only realistic action is to delete the object.</blockquote>
+<p>Compress.copy()</p>
+<blockquote>
+<p>Returns a copy of the compression object.  This can be used to
+efficiently compress a set of data that share a common initial
+prefix.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>Decompression objects support the following methods, and two
+attributes:</p>
+<p>Decompress.unused_data</p>
+<blockquote>
+<p>A string which contains any bytes past the end of the compressed
+data. That is, this remains <tt class="docutils literal"><span class="pre">&quot;&quot;</span></tt> until the last byte that
+contains compression data is available.  If the whole string turned
+out to contain compressed data, this is <tt class="docutils literal"><span class="pre">&quot;&quot;</span></tt>, the empty string.</p>
+<p>The only way to determine where a string of compressed data ends is
+by actually decompressing it.  This means that when compressed data
+is contained part of a larger file, you can only find the end of it
+by reading data and feeding it followed by some non-empty string
+into a decompression object&#8217;s <tt class="docutils literal"><span class="pre">decompress()</span></tt> method until the
+<tt class="docutils literal"><span class="pre">unused_data</span></tt> attribute is no longer the empty string.</p>
+</blockquote>
+<p>Decompress.unconsumed_tail</p>
+<blockquote>
+A string that contains any data that was not consumed by the last
+<tt class="docutils literal"><span class="pre">decompress()</span></tt> call because it exceeded the limit for the
+uncompressed data buffer.  This data has not yet been seen by the
+zlib machinery, so you must feed it (possibly with further data
+concatenated to it) back to a subsequent <tt class="docutils literal"><span class="pre">decompress()</span></tt> method
+call in order to get correct output.</blockquote>
+<p>Decompress.decompress(string[, max_length])</p>
+<blockquote>
+<p>Decompress <em>string</em>, returning a string containing the uncompressed
+data corresponding to at least part of the data in <em>string</em>.  This
+data should be concatenated to the output produced by any preceding
+calls to the <tt class="docutils literal"><span class="pre">decompress()</span></tt> method.  Some of the input data may
+be preserved in internal buffers for later processing.</p>
+<p>If the optional parameter <em>max_length</em> is supplied then the return
+value will be no longer than <em>max_length</em>. This may mean that not
+all of the compressed input can be processed; and unconsumed data
+will be stored in the attribute <tt class="docutils literal"><span class="pre">unconsumed_tail</span></tt>. This string
+must be passed to a subsequent call to <tt class="docutils literal"><span class="pre">decompress()</span></tt> if
+decompression is to continue.  If <em>max_length</em> is not supplied then
+the whole input is decompressed, and <tt class="docutils literal"><span class="pre">unconsumed_tail</span></tt> is an
+empty string.</p>
+</blockquote>
+<p>Decompress.flush([length])</p>
+<blockquote>
+<p>All pending input is processed, and a string containing the
+remaining uncompressed output is returned.  After calling
+<tt class="docutils literal"><span class="pre">flush()</span></tt>, the <tt class="docutils literal"><span class="pre">decompress()</span></tt> method cannot be called again;
+the only realistic action is to delete the object.</p>
+<p>The optional parameter <em>length</em> sets the initial size of the output
+buffer.</p>
+</blockquote>
+<p>Decompress.copy()</p>
+<blockquote>
+<p>Returns a copy of the decompression object.  This can be used to
+save the state of the decompressor midway through the data stream
+in order to speed up random seeks into the stream at a future
+point.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">gzip</span></tt></dt>
+<dd>Reading and writing <strong>gzip</strong>-format files.</dd>
+<dt><a class="reference external" href="http://www.zlib.net">http://www.zlib.net</a></dt>
+<dd>The zlib library home page.</dd>
+<dt><a class="reference external" href="http://www.zlib.net/manual.html">http://www.zlib.net/manual.html</a></dt>
+<dd>The zlib manual explains  the semantics and usage of the
+library&#8217;s many functions.</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gzip.html" title="12.2. gzip — Support for gzip files"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="archiving.html" title="12. Data Compression and Archiving"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="archiving.html" >12. Data Compression and Archiving</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

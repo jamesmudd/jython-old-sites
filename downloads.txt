@@ -1,0 +1,64 @@
+Downloads
+---------
+
+The most current stable release of Jython is 2.7.0.  For production purposes, please use this version.
+
+Please use the link below to download the Java installer. 
+Once downloaded, please double-click on the JAR file to start the installation process.
+You may also want to read the `Installation instructions`_ or the `Release Notes`_.
+
+Jython 2.7.0
+------------
+
+`Download Jython 2.7.0 - Installer`_ : Executable jar for installing Jython
+
+`Download Jython 2.7.0 - Standalone Jar`_ : For embedding Jython in Java applications
+
+Jython 2.5.4rc1
+---------------
+
+`Download Jython 2.5.4rc1 - Installer`_ : Executable jar for installing Jython
+
+`Download Jython 2.5.4rc1 - Standalone Jar`_ : For embedding Jython in Java applications
+
+
+Previous Releases
+-----------------
+
+`Jython 2.5.3`_
+
+- MD5:  ``41633b4557483d6d4237ee79ffcebe7b``
+- SHA1: ``6b6ac4354733b6d68d51acf2f3d5c823a10a4ce4``
+
+`Jython 2.5.2`_
+
+- MD5:  ``7c7d9abd8985df480edeacd27ed9dcd5``
+- SHA1: ``d4534a691edf40aa1d51723dfe3e22db1e39b432``
+
+`Jython 2.5.1`_
+
+- MD5: ``2ee978eff4306b23753b3fe9d7af5b37``
+- SHA1: ``f0e8137b79b6f42cdc0835ab5344d823173ae326``
+
+`Jython 2.5.0`_
+
+- MD5: ``f98b83fce9669feec69d0a17ee515a20``
+- SHA1: ``6bffcbacafe9c8ccbbc62a4eeb80c62fa6790a1c``
+
+`Jython 2.2.1`_
+
+- MD5: ``774543534bef2d68247953882237d448``
+- SHA1: ``6fea1e8985af955fc843789e2d60fcfc38a76fd8``
+
+.. _Download Jython 2.7.0 - Installer: http://search.maven.org/remotecontent?filepath=org/python/jython-installer/2.7.0/jython-installer-2.7.0.jar
+.. _Download Jython 2.7.0 - Standalone Jar: http://search.maven.org/remotecontent?filepath=org/python/jython-standalone/2.7.0/jython-standalone-2.7.0.jar
+.. _Download Jython 2.5.4rc1 - Installer: http://search.maven.org/remotecontent?filepath=org/python/jython-installer/2.5.4-rc1/jython-installer-2.5.4-rc1.jar
+.. _Download Jython 2.5.4rc1 - Standalone Jar: http://search.maven.org/remotecontent?filepath=org/python/jython-standalone/2.5.4-rc1/jython-standalone-2.5.4-rc1.jar
+.. _Jython 2.5.3: http://search.maven.org/remotecontent?filepath=org/python/jython-installer/2.5.3/jython-installer-2.5.3.jar
+.. _Jython 2.5.2: http://sourceforge.net/projects/jython/files/jython/2.5.2/jython_installer-2.5.2.jar/download
+.. _Jython 2.5.1: http://sourceforge.net/projects/jython/files/jython/2.5.1/jython_installer-2.5.1.jar/download
+.. _Jython 2.5.0: http://sourceforge.net/projects/jython/files/jython/2.5.0/jython_installer-2.5.0.jar/download
+.. _Jython 2.2.1: http://sourceforge.net/projects/jython/files/jython/jython_installer-2.2.1.jar
+.. _Installation instructions: http://wiki.python.org/jython/InstallationInstructions
+.. _Release Notes: http://www.jython.org/latest.html
+

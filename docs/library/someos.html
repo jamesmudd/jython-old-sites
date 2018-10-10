@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>16. Optional Operating System Services &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="The Python Standard Library and What Comes with Jython" href="indexprogress.html" />
+    <link rel="next" title="16.1. select — Waiting for I/O completion" href="select.html" />
+    <link rel="prev" title="15.8. errno — Standard errno system symbols" href="errno.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="select.html" title="16.1. select — Waiting for I/O completion"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="errno.html" title="15.8. errno — Standard errno system symbols"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" accesskey="U">The Python Standard Library and What Comes with Jython</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="errno.html"
+                                  title="previous chapter">15.8. <tt class="docutils literal docutils literal docutils literal"><span class="pre">errno</span></tt> &#8212; Standard errno system symbols</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="select.html"
+                                  title="next chapter">16.1. <tt class="docutils literal docutils literal"><span class="pre">select</span></tt> &#8212; Waiting for I/O completion</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/someos.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="optional-operating-system-services">
+<span id="someos"></span><h1>16. Optional Operating System Services<a class="headerlink" href="#optional-operating-system-services" title="Permalink to this headline">¶</a></h1>
+<p>The modules described in this chapter provide interfaces to operating system
+features that are available on selected operating systems only. The interfaces
+are generally modeled after the Unix or C interfaces but they are available on
+some other systems as well (e.g. Windows or NT).  Here&#8217;s an overview:</p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="select.html">16.1. <tt class="docutils literal"><span class="pre">select</span></tt> &#8212; Waiting for I/O completion</a><ul>
+<li class="toctree-l2"><a class="reference external" href="select.html#edge-and-level-trigger-polling-epoll-objects">16.1.1. Edge and Level Trigger Polling (epoll) Objects</a></li>
+<li class="toctree-l2"><a class="reference external" href="select.html#polling-objects">16.1.2. Polling Objects</a></li>
+<li class="toctree-l2"><a class="reference external" href="select.html#kqueue-objects">16.1.3. Kqueue Objects</a></li>
+<li class="toctree-l2"><a class="reference external" href="select.html#kevent-objects">16.1.4. Kevent Objects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="threading.html">16.2. <tt class="docutils literal"><span class="pre">threading</span></tt> &#8212; Higher-level threading interface</a><ul>
+<li class="toctree-l2"><a class="reference external" href="threading.html#thread-objects">16.2.1. Thread Objects</a></li>
+<li class="toctree-l2"><a class="reference external" href="threading.html#lock-objects">16.2.2. Lock Objects</a></li>
+<li class="toctree-l2"><a class="reference external" href="threading.html#rlock-objects">16.2.3. RLock Objects</a></li>
+<li class="toctree-l2"><a class="reference external" href="threading.html#condition-objects">16.2.4. Condition Objects</a></li>
+<li class="toctree-l2"><a class="reference external" href="threading.html#semaphore-objects">16.2.5. Semaphore Objects</a><ul>
+<li class="toctree-l3"><a class="reference external" href="threading.html#semaphore-example">16.2.5.1. <tt class="docutils literal"><span class="pre">Semaphore</span></tt> Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference external" href="threading.html#event-objects">16.2.6. Event Objects</a></li>
+<li class="toctree-l2"><a class="reference external" href="threading.html#timer-objects">16.2.7. Timer Objects</a></li>
+<li class="toctree-l2"><a class="reference external" href="threading.html#using-locks-conditions-and-semaphores-in-the-with-statement">16.2.8. Using locks, conditions, and semaphores in the <tt class="docutils literal"><span class="pre">with</span></tt> statement</a></li>
+<li class="toctree-l2"><a class="reference external" href="threading.html#importing-in-threaded-code">16.2.9. Importing in threaded code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="thread.html">16.3. <tt class="docutils literal"><span class="pre">thread</span></tt> &#8212; Multiple threads of control</a></li>
+<li class="toctree-l1"><a class="reference external" href="dummy_thread.html">16.4. <tt class="docutils literal"><span class="pre">dummy_thread</span></tt> &#8212; Drop-in replacement for the <tt class="docutils literal"><span class="pre">thread</span></tt> module</a></li>
+<li class="toctree-l1"><a class="reference external" href="rlcompleter.html">16.5. <tt class="docutils literal"><span class="pre">rlcompleter</span></tt> &#8212; Completion function for GNU readline</a><ul>
+<li class="toctree-l2"><a class="reference external" href="rlcompleter.html#completer-objects">16.5.1. Completer Objects</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="select.html" title="16.1. select — Waiting for I/O completion"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="errno.html" title="15.8. errno — Standard errno system symbols"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

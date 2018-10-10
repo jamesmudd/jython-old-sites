@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>29.7. pyclbr — Python class browser support &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="29. Python Language Services" href="language.html" />
+    <link rel="next" title="29.8. py_compile — Compile Python source files" href="py_compile.html" />
+    <link rel="prev" title="29.6. tabnanny — Detection of ambiguous indentation" href="tabnanny.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="py_compile.html" title="29.8. py_compile — Compile Python source files"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tabnanny.html" title="29.6. tabnanny — Detection of ambiguous indentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="language.html" accesskey="U">29. Python Language Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">29.7. <tt class="docutils literal"><span class="pre">pyclbr</span></tt> &#8212; Python class browser support</a><ul>
+<li><a class="reference external" href="#class-objects">29.7.1. Class Objects</a></li>
+<li><a class="reference external" href="#function-objects">29.7.2. Function Objects</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="tabnanny.html"
+                                  title="previous chapter">29.6. <tt class="docutils literal"><span class="pre">tabnanny</span></tt> &#8212; Detection of ambiguous indentation</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="py_compile.html"
+                                  title="next chapter">29.8. <tt class="docutils literal docutils literal docutils literal"><span class="pre">py_compile</span></tt> &#8212; Compile Python source files</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/pyclbr.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pyclbr-python-class-browser-support">
+<h1>29.7. <tt class="docutils literal"><span class="pre">pyclbr</span></tt> &#8212; Python class browser support<a class="headerlink" href="#pyclbr-python-class-browser-support" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">pyclbr</span></tt> module can be used to determine some limited
+information about the classes, methods and top-level functions defined
+in a module.  The information provided is sufficient to implement a
+traditional three-pane class browser.  The information is extracted
+from the source code rather than by importing the module, so this
+module is safe to use with untrusted code.  This restriction makes it
+impossible to use this module with modules not implemented in Python,
+including all standard and optional extension modules.</p>
+<p>pyclbr.readmodule(module[, path=None])</p>
+<blockquote>
+Read a module and return a dictionary mapping class names to class
+descriptor objects.  The parameter <em>module</em> should be the name of a
+module as a string; it may be the name of a module within a
+package.  The <em>path</em> parameter should be a sequence, and is used to
+augment the value of <tt class="docutils literal"><span class="pre">sys.path</span></tt>, which is used to locate module
+source code.</blockquote>
+<p>pyclbr.readmodule_ex(module[, path=None])</p>
+<blockquote>
+Like <tt class="docutils literal"><span class="pre">readmodule()</span></tt>, but the returned dictionary, in addition to
+mapping class names to class descriptor objects, also maps top-
+level function names to function descriptor objects.  Moreover, if
+the module being read is a package, the key <tt class="docutils literal"><span class="pre">'__path__'</span></tt> in the
+returned dictionary has as its value a list which contains the
+package search path.</blockquote>
+<div class="section" id="class-objects">
+<h2>29.7.1. Class Objects<a class="headerlink" href="#class-objects" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">Class</span></tt> objects used as values in the dictionary returned by
+<tt class="docutils literal"><span class="pre">readmodule()</span></tt> and <tt class="docutils literal"><span class="pre">readmodule_ex()</span></tt> provide the following data
+members:</p>
+<p>Class.module</p>
+<blockquote>
+The name of the module defining the class described by the class
+descriptor.</blockquote>
+<p>Class.name</p>
+<blockquote>
+The name of the class.</blockquote>
+<p>Class.super</p>
+<blockquote>
+A list of <tt class="docutils literal"><span class="pre">Class</span></tt> objects which describe the immediate base
+classes of the class being described.  Classes which are named as
+superclasses but which are not discoverable by <tt class="docutils literal"><span class="pre">readmodule()</span></tt> are
+listed as a string with the class name instead of as <tt class="docutils literal"><span class="pre">Class</span></tt>
+objects.</blockquote>
+<p>Class.methods</p>
+<blockquote>
+A dictionary mapping method names to line numbers.</blockquote>
+<p>Class.file</p>
+<blockquote>
+Name of the file containing the <tt class="docutils literal"><span class="pre">class</span></tt> statement defining the
+class.</blockquote>
+<p>Class.lineno</p>
+<blockquote>
+The line number of the <tt class="docutils literal"><span class="pre">class</span></tt> statement within the file named by
+<tt class="docutils literal"><span class="pre">file</span></tt>.</blockquote>
+</div>
+<div class="section" id="function-objects">
+<h2>29.7.2. Function Objects<a class="headerlink" href="#function-objects" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">Function</span></tt> objects used as values in the dictionary returned by
+<tt class="docutils literal"><span class="pre">readmodule_ex()</span></tt> provide the following data members:</p>
+<p>Function.module</p>
+<blockquote>
+The name of the module defining the function described by the
+function descriptor.</blockquote>
+<p>Function.name</p>
+<blockquote>
+The name of the function.</blockquote>
+<p>Function.file</p>
+<blockquote>
+Name of the file containing the <tt class="docutils literal"><span class="pre">def</span></tt> statement defining the
+function.</blockquote>
+<p>Function.lineno</p>
+<blockquote>
+The line number of the <tt class="docutils literal"><span class="pre">def</span></tt> statement within the file named by
+<tt class="docutils literal"><span class="pre">file</span></tt>.</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="py_compile.html" title="29.8. py_compile — Compile Python source files"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tabnanny.html" title="29.6. tabnanny — Detection of ambiguous indentation"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="language.html" >29. Python Language Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>20.19. SimpleHTTPServer — Simple HTTP request handler &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="20. Internet Protocols and Support" href="internet.html" />
+    <link rel="next" title="20.20. CGIHTTPServer — CGI-capable HTTP request handler" href="cgihttpserver.html" />
+    <link rel="prev" title="20.18. BaseHTTPServer — Basic HTTP server" href="basehttpserver.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="cgihttpserver.html" title="20.20. CGIHTTPServer — CGI-capable HTTP request handler"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="basehttpserver.html" title="20.18. BaseHTTPServer — Basic HTTP server"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" accesskey="U">20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="basehttpserver.html"
+                                  title="previous chapter">20.18. <tt class="docutils literal docutils literal"><span class="pre">BaseHTTPServer</span></tt> &#8212; Basic HTTP server</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="cgihttpserver.html"
+                                  title="next chapter">20.20. <tt class="docutils literal docutils literal docutils literal"><span class="pre">CGIHTTPServer</span></tt> &#8212; CGI-capable HTTP request handler</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/simplehttpserver.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="simplehttpserver-simple-http-request-handler">
+<h1>20.19. <tt class="docutils literal"><span class="pre">SimpleHTTPServer</span></tt> &#8212; Simple HTTP request handler<a class="headerlink" href="#simplehttpserver-simple-http-request-handler" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Note: The <tt class="docutils literal"><span class="pre">SimpleHTTPServer</span></tt> module has been merged into <tt class="docutils literal"><span class="pre">http.server</span></tt></dt>
+<dd>in Python 3.0.  The <em>2to3</em> tool will automatically adapt imports
+when converting your sources to 3.0.</dd>
+</dl>
+<p>The <tt class="docutils literal"><span class="pre">SimpleHTTPServer</span></tt> module defines a single class,
+<tt class="docutils literal"><span class="pre">SimpleHTTPRequestHandler</span></tt>, which is interface-compatible with
+<tt class="docutils literal"><span class="pre">BaseHTTPServer.BaseHTTPRequestHandler</span></tt>.</p>
+<p>The <tt class="docutils literal"><span class="pre">SimpleHTTPServer</span></tt> module defines the following class:</p>
+<p>class class SimpleHTTPServer.SimpleHTTPRequestHandler(request, client_address, server)</p>
+<blockquote>
+<p>This class serves files from the current directory and below,
+directly mapping the directory structure to HTTP requests.</p>
+<p>A lot of the work, such as parsing the request, is done by the base
+class <tt class="docutils literal"><span class="pre">BaseHTTPServer.BaseHTTPRequestHandler</span></tt>.  This class
+implements the <tt class="docutils literal"><span class="pre">do_GET()</span></tt> and <tt class="docutils literal"><span class="pre">do_HEAD()</span></tt> functions.</p>
+<p>The following are defined as class-level attributes of
+<tt class="docutils literal"><span class="pre">SimpleHTTPRequestHandler</span></tt>:</p>
+<p>server_version</p>
+<p>This will be <tt class="docutils literal"><span class="pre">&quot;SimpleHTTP/&quot;</span> <span class="pre">+</span> <span class="pre">__version__</span></tt>, where <tt class="docutils literal"><span class="pre">__version__</span></tt>
+is defined at the module level.</p>
+<p>extensions_map</p>
+<blockquote>
+A dictionary mapping suffixes into MIME types. The default is
+signified by an empty string, and is considered to be
+<tt class="docutils literal"><span class="pre">application/octet-stream</span></tt>. The mapping is used case-
+insensitively, and so should contain only lower-cased keys.</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">SimpleHTTPRequestHandler</span></tt> class defines the following
+methods:</p>
+<p>do_HEAD()</p>
+<blockquote>
+This method serves the <tt class="docutils literal"><span class="pre">'HEAD'</span></tt> request type: it sends the
+headers it would send for the equivalent <tt class="docutils literal"><span class="pre">GET</span></tt> request. See
+the <tt class="docutils literal"><span class="pre">do_GET()</span></tt> method for a more complete explanation of the
+possible headers.</blockquote>
+<p>do_GET()</p>
+<blockquote>
+<p>The request is mapped to a local file by interpreting the
+request as a path relative to the current working directory.</p>
+<p>If the request was mapped to a directory, the directory is
+checked for a file named <tt class="docutils literal"><span class="pre">index.html</span></tt> or <tt class="docutils literal"><span class="pre">index.htm</span></tt> (in
+that order). If found, the file&#8217;s contents are returned;
+otherwise a directory listing is generated by calling the
+<tt class="docutils literal"><span class="pre">list_directory()</span></tt> method. This method uses <tt class="docutils literal"><span class="pre">os.listdir()</span></tt>
+to scan the directory, and returns a <tt class="docutils literal"><span class="pre">404</span></tt> error response if
+the <tt class="docutils literal"><span class="pre">listdir()</span></tt> fails.</p>
+<p>If the request was mapped to a file, it is opened and the
+contents are returned.  Any <tt class="docutils literal"><span class="pre">IOError</span></tt> exception in opening the
+requested file is mapped to a <tt class="docutils literal"><span class="pre">404</span></tt>, <tt class="docutils literal"><span class="pre">'File</span> <span class="pre">not</span> <span class="pre">found'</span></tt>
+error. Otherwise, the content type is guessed by calling the
+<tt class="docutils literal"><span class="pre">guess_type()</span></tt> method, which in turn uses the <em>extensions_map</em>
+variable.</p>
+<p>A <tt class="docutils literal"><span class="pre">'Content-type:'</span></tt> header with the guessed content type is
+output, followed by a <tt class="docutils literal"><span class="pre">'Content-Length:'</span></tt> header with the
+file&#8217;s size and a <tt class="docutils literal"><span class="pre">'Last-Modified:'</span></tt> header with the file&#8217;s
+modification time.</p>
+<p>Then follows a blank line signifying the end of the headers, and
+then the contents of the file are output. If the file&#8217;s MIME
+type starts with <tt class="docutils literal"><span class="pre">text/</span></tt> the file is opened in text mode;
+otherwise binary mode is used.</p>
+<p>For example usage, see the implementation of the <tt class="docutils literal"><span class="pre">test()</span></tt>
+function.</p>
+<p>New in version 2.5: The <tt class="docutils literal"><span class="pre">'Last-Modified'</span></tt> header.</p>
+</blockquote>
+</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">BaseHTTPServer</span></tt></dt>
+<dd>Base class implementation for Web server and request handler.</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cgihttpserver.html" title="20.20. CGIHTTPServer — CGI-capable HTTP request handler"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="basehttpserver.html" title="20.18. BaseHTTPServer — Basic HTTP server"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" >20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

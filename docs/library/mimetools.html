@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>18.5. mimetools — Tools for parsing MIME messages &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="18. Internet Data Handling" href="netdata.html" />
+    <link rel="next" title="18.6. mimetypes — Map filenames to MIME types" href="mimetypes.html" />
+    <link rel="prev" title="18.4. mhlib — Access to MH mailboxes" href="mhlib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="mimetypes.html" title="18.6. mimetypes — Map filenames to MIME types"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mhlib.html" title="18.4. mhlib — Access to MH mailboxes"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" accesskey="U">18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">18.5. <tt class="docutils literal"><span class="pre">mimetools</span></tt> &#8212; Tools for parsing MIME messages</a><ul>
+<li><a class="reference external" href="#additional-methods-of-message-objects">18.5.1. Additional Methods of Message Objects</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="mhlib.html"
+                                  title="previous chapter">18.4. <tt class="docutils literal docutils literal docutils literal"><span class="pre">mhlib</span></tt> &#8212; Access to MH mailboxes</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="mimetypes.html"
+                                  title="next chapter">18.6. <tt class="docutils literal"><span class="pre">mimetypes</span></tt> &#8212; Map filenames to MIME types</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/mimetools.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="mimetools-tools-for-parsing-mime-messages">
+<h1>18.5. <tt class="docutils literal"><span class="pre">mimetools</span></tt> &#8212; Tools for parsing MIME messages<a class="headerlink" href="#mimetools-tools-for-parsing-mime-messages" title="Permalink to this headline">¶</a></h1>
+<p>Deprecated since version 2.3: The <tt class="docutils literal"><span class="pre">email</span></tt> package should be used in
+preference to the <tt class="docutils literal"><span class="pre">mimetools</span></tt> module.  This module is present only
+to maintain backward compatibility, and it has been removed in 3.x.</p>
+<p>This module defines a subclass of the <tt class="docutils literal"><span class="pre">rfc822</span></tt> module&#8217;s <tt class="docutils literal"><span class="pre">Message</span></tt>
+class and a number of utility functions that are useful for the
+manipulation for MIME multipart or encoded message.</p>
+<p>It defines the following items:</p>
+<p>class class mimetools.Message(fp[, seekable])</p>
+<blockquote>
+Return a new instance of the <tt class="docutils literal"><span class="pre">Message</span></tt> class.  This is a subclass
+of the <tt class="docutils literal"><span class="pre">rfc822.Message</span></tt> class, with some additional methods (see
+below).  The <em>seekable</em> argument has the same meaning as for
+<tt class="docutils literal"><span class="pre">rfc822.Message</span></tt>.</blockquote>
+<p>mimetools.choose_boundary()</p>
+<blockquote>
+Return a unique string that has a high likelihood of being usable
+as a part boundary.  The string has the form
+<tt class="docutils literal"><span class="pre">'hostipaddr.uid.pid.timestamp.random'</span></tt>.</blockquote>
+<p>mimetools.decode(input, output, encoding)</p>
+<blockquote>
+Read data encoded using the allowed MIME <em>encoding</em> from open file
+object <em>input</em> and write the decoded data to open file object
+<em>output</em>.  Valid values for <em>encoding</em> include <tt class="docutils literal"><span class="pre">'base64'</span></tt>,
+<tt class="docutils literal"><span class="pre">'quoted-printable'</span></tt>, <tt class="docutils literal"><span class="pre">'uuencode'</span></tt>, <tt class="docutils literal"><span class="pre">'x-uuencode'</span></tt>,
+<tt class="docutils literal"><span class="pre">'uue'</span></tt>, <tt class="docutils literal"><span class="pre">'x-uue'</span></tt>, <tt class="docutils literal"><span class="pre">'7bit'</span></tt>, and  <tt class="docutils literal"><span class="pre">'8bit'</span></tt>.  Decoding
+messages encoded in <tt class="docutils literal"><span class="pre">'7bit'</span></tt> or <tt class="docutils literal"><span class="pre">'8bit'</span></tt> has no effect.  The
+input is simply copied to the output.</blockquote>
+<p>mimetools.encode(input, output, encoding)</p>
+<blockquote>
+Read data from open file object <em>input</em> and write it encoded using
+the allowed MIME <em>encoding</em> to open file object <em>output</em>. Valid
+values for <em>encoding</em> are the same as for <tt class="docutils literal"><span class="pre">decode()</span></tt>.</blockquote>
+<p>mimetools.copyliteral(input, output)</p>
+<blockquote>
+Read lines from open file <em>input</em> until EOF and write them to open
+file <em>output</em>.</blockquote>
+<p>mimetools.copybinary(input, output)</p>
+<blockquote>
+Read blocks until EOF from open file <em>input</em> and write them to open
+file <em>output</em>.  The block size is currently fixed at 8192.</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">email</span></tt></dt>
+<dd>Comprehensive email handling package; supersedes the
+<tt class="docutils literal"><span class="pre">mimetools</span></tt> module.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">rfc822</span></tt></dt>
+<dd>Provides the base class for <tt class="docutils literal"><span class="pre">mimetools.Message</span></tt>.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">multifile</span></tt></dt>
+<dd>Support for reading files which contain distinct parts, such as
+MIME data.</dd>
+<dt><a class="reference external" href="http://faqs.cs.uu.nl/na-dir/mail/mime-faq/.html">http://faqs.cs.uu.nl/na-dir/mail/mime-faq/.html</a></dt>
+<dd>The MIME Frequently Asked Questions document.  For an overview
+of MIME, see the answer to question 1.1 in Part 1 of this
+document.</dd>
+</dl>
+</blockquote>
+<div class="section" id="additional-methods-of-message-objects">
+<h2>18.5.1. Additional Methods of Message Objects<a class="headerlink" href="#additional-methods-of-message-objects" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">Message</span></tt> class defines the following methods in addition to the
+<tt class="docutils literal"><span class="pre">rfc822.Message</span></tt> methods:</p>
+<p>Message.getplist()</p>
+<blockquote>
+Return the parameter list of the <em>Content-Type</em> header. This is a
+list of strings.  For parameters of the form <tt class="docutils literal"><span class="pre">key=value</span></tt>, <em>key</em>
+is converted to lower case but <em>value</em> is not.  For example, if the
+message contains the header <tt class="docutils literal"><span class="pre">Content-type:</span> <span class="pre">text/html;</span> <span class="pre">spam=1;</span>
+<span class="pre">Spam=2;</span> <span class="pre">Spam</span></tt> then <tt class="docutils literal"><span class="pre">getplist()</span></tt> will return the Python list
+<tt class="docutils literal"><span class="pre">['spam=1',</span> <span class="pre">'spam=2',</span> <span class="pre">'Spam']</span></tt>.</blockquote>
+<p>Message.getparam(name)</p>
+<blockquote>
+Return the <em>value</em> of the first parameter (as returned by
+<tt class="docutils literal"><span class="pre">getplist()</span></tt>) of the form <tt class="docutils literal"><span class="pre">name=value</span></tt> for the given <em>name</em>.
+If <em>value</em> is surrounded by quotes of the form &#8216;<tt class="docutils literal"><span class="pre">&lt;</span></tt>...``&gt;``&#8217; or
+&#8216;<tt class="docutils literal"><span class="pre">&quot;</span></tt>...``&#8221;<a href="#id1"><span class="problematic" id="id2">``</span></a>&#8216;, these are removed.</blockquote>
+<p>Message.getencoding()</p>
+<blockquote>
+Return the encoding specified in the <em>Content-Transfer-Encoding</em>
+message header.  If no such header exists, return <tt class="docutils literal"><span class="pre">'7bit'</span></tt>.  The
+encoding is converted to lower case.</blockquote>
+<p>Message.gettype()</p>
+<blockquote>
+Return the message type (of the form <tt class="docutils literal"><span class="pre">type/subtype</span></tt>) as specified
+in the <em>Content-Type</em> header.  If no such header exists, return
+<tt class="docutils literal"><span class="pre">'text/plain'</span></tt>.  The type is converted to lower case.</blockquote>
+<p>Message.getmaintype()</p>
+<blockquote>
+Return the main type as specified in the <em>Content-Type</em> header.  If
+no such header exists, return <tt class="docutils literal"><span class="pre">'text'</span></tt>.  The main type is
+converted to lower case.</blockquote>
+<p>Message.getsubtype()</p>
+<blockquote>
+Return the subtype as specified in the <em>Content-Type</em> header.  If
+no such header exists, return <tt class="docutils literal"><span class="pre">'plain'</span></tt>.  The subtype is
+converted to lower case.</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mimetypes.html" title="18.6. mimetypes — Map filenames to MIME types"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mhlib.html" title="18.4. mhlib — Access to MH mailboxes"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" >18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

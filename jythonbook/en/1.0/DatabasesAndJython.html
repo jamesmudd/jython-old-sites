@@ -1,0 +1,1866 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Chapter 12: Databases and Jython: Object Relational Mapping and Using JDBC &mdash; Jython Book v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '1.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Book v1.0 documentation" href="index.html" />
+    <link rel="next" title="Chapter 13: Simple Web Applications" href="SimpleWebApps.html" />
+    <link rel="prev" title="Chapter 11:  Using Jython in an IDE" href="JythonIDE.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="SimpleWebApps.html" title="Chapter 13: Simple Web Applications"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="JythonIDE.html" title="Chapter 11:  Using Jython in an IDE"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="chapter-12-databases-and-jython-object-relational-mapping-and-using-jdbc">
+<h1>Chapter 12: Databases and Jython: Object Relational Mapping and Using JDBC<a class="headerlink" href="#chapter-12-databases-and-jython-object-relational-mapping-and-using-jdbc" title="Permalink to this headline">¶</a></h1>
+<p>In this chapter, we will look at zxJDBC package, which is a
+standard part of Jython since version 2.1 and complies with the
+Python 2.0 DBI standard. zxJDBC can be an appropriate choice for
+simple one-off scripts where database portability is not a concern.
+In addition, it’s (generally) necessary to use zxJDBC when writing
+a new dialect for SQLAlchemy or Django. (But that’s not strictly
+true: you can use pg8000, a pure Python DBI driver, and of course
+write your own DBI drivers. But please don’t do that.) So knowing
+how zxJDBC works can be useful when working with these packages.
+However, it’s too low level for us to recommend for more general
+usage. Use SQLAlchemy or Django if at all possible. Finally, JDBC
+itself is also directly accessible, like any other Java package
+from Jython. Simply use the java.sql package. In practice this
+should be rarely necessary.</p>
+<p>The second portion of this chapter will focus on using object
+relational mapping with Jython. The release of Jython 2.5 has
+presented many new options for object relational mapping. In this
+chapter we’ll focus on using SQLAlchemy with Jython, as well as
+using Java technologies such as Hibernate. In the end you should
+have a couple of different choices for using object relational
+mapping in your Jython applications.</p>
+<div class="section" id="zxjdbc-using-python-s-db-api-via-jdbc">
+<h2>ZxJDBC—Using Python’s DB API via JDBC<a class="headerlink" href="#zxjdbc-using-python-s-db-api-via-jdbc" title="Permalink to this headline">¶</a></h2>
+<p>The zxJDBC package provides an easy-to-use Python wrapper around
+JDBC. zxJDBC bridges two standards:</p>
+<p>JDBC is the standard platform for database access in Java.</p>
+<p>DBI is the standard database API for Python apps.</p>
+<p>ZxJDBC, part of Jython, provides a DBI 2.0 standard compliant
+interface to JDBC. Over 200 drivers are available for JDBC
+(<a class="reference external" href="http://developers.sun.com/product/jdbc/drivers">http://developers.sun.com/product/jdbc/drivers</a>), and they all work
+with zxJDBC. High performance drivers are available for all major
+relational databases, including DB2, Derby, MySQL, Oracle,
+PostgreSQL, SQLite, SQL Server, and Sybase. And drivers are also
+available for non-relational and specialized databases, too.</p>
+<p>However, unlike JDBC, zxJDBC when used in the simplest way
+possible, blocks SQL injection attacks, minimizes overhead, and
+avoids resource exhaustion. In addition, zxJDBC defaults to using a
+transactional model (when available), instead of autocommit.</p>
+<p>First we will look at connections and cursors, which are the key
+resources in working with zxJDBC, just like any other DBI package.
+Then we will look at what you can do them with them, in terms of
+typical queries and data manipulating transactions.</p>
+<div class="section" id="getting-started">
+<h3>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h3>
+<p>The first step in developing an application that utilizes a
+database back-end is to determine what database or databases the
+application will use. In the case of using zxJDBC or another JDBC
+implementation, the determination of what database the application
+will make use of is critical to the overall development process.
+Many application developers will choose to use an object relational
+mapper for this very reason. When an application is coded with a
+JDBC implementation, whereas SQL code is hand-coded, the specified
+database of choice will cause different dialects of SQL to be used.
+One of the benefits of object relation mapping (ORM) technology is
+that the SQL is transparent to the developer. The ORM technology
+takes care of the different dialects behind the scenes. This is one
+of the reasons why ORM technology may be slower at implementing
+support for many different databases. Take SQLAlchemy or Django for
+instance: each of these technologies must have a different dialect
+coded for each database. Using an ORM can make an application more
+portable over many different databases. However, as stated in the
+preface using zxJDBC would be a fine choice if your application is
+only going to target one or two databases.</p>
+<p>While using JDBC for Java, one has to deal with the task of finding
+and registering a driver for the database. Most of the major
+databases make their JDBC drivers readily available for use. Others
+may make you register prior to downloading the driver, or in some
+cases purchase it. Because zxJDBC is an alternative implementation
+of JDBC, one must use a JDBC driver in order to use the API. Most
+JDBC drivers come in the format of a JAR file that can be installed
+to an application server container, and IDE. In order to make use
+of a particular database driver, it must reside within the
+CLASSPATH. As mentioned previously, to find a given JDBC driver for
+a particular database, take a look at the Sun Microsystems JDBC
+Driver search page (<a class="reference external" href="http://developers.sun.com/product/jdbc/drivers">http://developers.sun.com/product/jdbc/drivers</a>)
+as it contains a listing of different JDBC drivers for <em>most</em> of
+the databases available today.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Examples in this section are for Jython 2.5.1 and later.
+Jython 2.5.1 introduced some simplifications for working with
+connections and cursors. In addition, we assume PostgreSQL for most
+examples, using the world sample database (also available for
+MySQL). In order to follow along with the examples in the following
+sections, you should have a PostgreSQL database available with the
+<em>world</em> database example. Please go to the PostgreSQL homepage at
+<a class="reference external" href="http://www.postgresql.org">http://www.postgresql.org</a> to download the database. The world
+database sample is available with the source for this book. It can
+be installed into a PostgreSQL database by opening psql and
+initiating the following command:</p>
+<div class="last highlight-python"><pre>postgres=# \\i &lt;path to world sql&gt;/world.sql</pre>
+</div>
+</div>
+<p>As stated previously, once a driver has been obtained it must be
+placed into the classpath. What follows are a few examples for
+adding JDBC drivers to the CLASSPATH for a couple of the most
+popular databases.</p>
+<p><em>Listing 12-1. Adding JDBC drivers for popular databases to the CLASSPATH</em></p>
+<div class="highlight-python"><pre># Oracle
+# Windows
+set CLASSPATH=&lt;PATH TO JDBC&gt;\\ojdbc14.jar;%CLASSPATH%
+# OS X
+export CLASSPATH=&lt;PATH TO JDBC&gt;/ojdbc14.jar:$CLASSPATH
+# PostgreSQL
+# Windows
+set CLASSPATH=&lt;PATH TO JDBC&gt;\\postgresql-x.x.jdbc4.jar;%CLASSPATH%
+# OS X
+export CLASSPATH=&lt;PATH TO
+JDBC&gt;/postgresql-x.x.jdbc4.jar:$CLASSPATH</pre>
+</div>
+<p>After the appropriate JAR file for the target database has been
+added to the CLASSPATH, development can commence. It is important
+to note that zxJDBC (and all other JDBC implementations) use a
+similar procedure for working with the database. One must perform
+the following tasks to use a JDBC implementation:</p>
+<ul class="simple">
+<li>Create a connection.</li>
+<li>Create a query or statement.</li>
+<li>Obtain results of query or statement.</li>
+<li>If using a query, obtain results in a cursor and iterate over data</li>
+</ul>
+<p>to perform tasks.
+- Close cursor.
+- Close connection (If not using the with_statement syntax in
+versions of Jython prior to 2.5.1).</p>
+<p>Over the next few sections, we’ll take a look at each of these
+steps and how zxJDBC can make them easier than using JDBC
+directly.</p>
+</div>
+<div class="section" id="connections">
+<h3>Connections<a class="headerlink" href="#connections" title="Permalink to this headline">¶</a></h3>
+<p>A database connection is simply a resource object that manages
+access to the database system. Because database resources are
+generally expensive objects to allocate, and can be readily
+exhausted, it is important to close them as soon as you&#8217;re finished
+using them. There are two ways to create database connections:</p>
+<ul class="simple">
+<li><em>Direct creation.</em> Standalone code, such as a script, will directly</li>
+</ul>
+<p>create a connection.</p>
+<ul class="simple">
+<li><em>JNDI.</em> Code managed by a container should use JNDI for connection</li>
+</ul>
+<p>creation. Such containers include GlassFish, JBoss, Tomcat,
+WebLogic, and WebSphere. Normally connections are pooled when run
+in this context and are also associated with a given security
+context.</p>
+<p>The following is an example of the best way to create a database
+connection outside of a managed container using Jython 2.5.1. It is
+important to note that prior to 2.5.1, the <em>with_statement</em> syntax
+was not available. This is due to the underlying implementation of
+PyConnection in versions of Jython prior to 2.5.1. As a rule, any
+object that can be used via the <em>with_statement</em> must implement
+certain functionality, including the <em>__exit__</em> method. Please
+see the note that follows to find out how to implement this
+functionality in versions prior to 2.5.1. Another thing to notice
+is that in order to connect, we must use a JDBC url which conforms
+to the standards of a given database in this case, PostgreSQL.</p>
+<p><em>Listing 12-2</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">com.ziclix.python.sql</span> <span class="kn">import</span> <span class="n">zxJDBC</span>
+
+<span class="c"># for example</span>
+<span class="n">jdbc_url</span> <span class="o">=</span> <span class="s">&quot;jdbc:postgresql:test&quot;</span>
+<span class="n">username</span> <span class="o">=</span> <span class="s">&quot;postgres&quot;</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s">&quot;jython25&quot;</span>
+<span class="n">driver</span> <span class="o">=</span> <span class="s">&quot;org.postgresql.Driver&quot;</span>
+
+<span class="c"># obtain a connection using the with-statment</span>
+<span class="k">with</span> <span class="n">zxJDBC</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">jdbc_url</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;select name from country&quot;</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Walking through the steps, you can see that the <em>with_statement</em>
+and zxJDBC are imported as we will use them to obtain our
+connection. The next step is to define a series of string values
+that will be used for the connection activity. Note that these only
+need to be defined once if set up as globals. Lastly, the
+connection is obtained and some work is done. Now let’s take a look
+at this same procedure coded in Java for comparison.</p>
+<p><em>Listing 12-3.</em></p>
+<div class="highlight-python"><pre>import java.sql.*;
+import org.postgresql.Driver;
+...
+// In some method
+Connection conn = null;
+String jdbc_url = "jdbc:postgresql:test";
+String username = "postgres";
+String password = "jython25";
+String driver = "org.postgresql.Driver";
+try {
+  DriverManager.registerDriver(new org.postgresql.Driver());
+  conn = DriverManager.getConnection(jdbc_url,
+               username, password);
+  // do something using statement and resultset
+  conn.close();
+} catch(Exception e) {
+  logWriter.error("getBeanConnection ERROR: ",e);
+}</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>In versions of Jython prior to 2.5.1, the
+<em>with_statement</em> syntax is not available. For this reason, we must
+work directly with the connection (i.e. close it when finished).
+Take a look at the following code for an example of using zxJDBC
+connections without the with_statement functionality.</p>
+<div class="last highlight-python"><pre>from __future__ import with_statement from
+com.ziclix.python.sql import zxJDBC
+
+# for example jdbc_url = "jdbc:postgresql:test" username =
+"postgres" password = "jython25" driver = "org.postgresql.Driver"
+
+conn = zxJDBC.connect(jdbc_url, username, password, driver)
+do_something(conn) # Be sure to clean up by closing the connection
+(and cursor) conn.close()</pre>
+</div>
+</div>
+<p>The <em>with</em> statement ensures that the connection is immediately
+closed following the work. The alternative is to use finally to
+perform the close. Using the latter technique allows for more
+tightly controlled exception handling technique, but also adds a
+considerable amount of code. As noted previously, the with
+statement is not available in versions of Jython prior to 2.5.1, so
+this is the recommended approach when using those versions:</p>
+<p><em>Listing 12-4.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">zxJDBC</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">jdbc_url</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span>
+    <span class="n">do_something</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The connection (PyConnection) object in zxJDBC has a number of
+methods and attributes that can be used to perform various
+functions and obtain metadata information. For instance, the
+<em>close</em> method can be used to close the connection. Tables 12-1 and
+12-2 are listings of all available methods and attributes for a
+connection and what they do.</p>
+<p><em>Table 12-1:  Connection Methods</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Method</th>
+<th class="head">Functionality</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>close</td>
+<td>Close the connection now (rather than whenever __del__ is called).</td>
+</tr>
+<tr><td>commit</td>
+<td>Commits all work that has been performed against a connection</td>
+</tr>
+<tr><td>cursor</td>
+<td>Returns a new cursor object from the connection</td>
+</tr>
+<tr><td>rollback</td>
+<td>In case a database does provide transactions this method causes the database to roll back to the start of any pending transaction.</td>
+</tr>
+<tr><td>nativesql</td>
+<td>Converts the given SQL statement into the system&#8217;s native SQL grammar</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 12-2:  Connection Attributes</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Attribute</th>
+<th class="head">Functionality</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>autocommit</td>
+<td>Enable or disable autocommit on a connection.  Default is disabled.</td>
+</tr>
+<tr><td>dbname</td>
+<td>Returns the name of the database</td>
+</tr>
+<tr><td>dbversion</td>
+<td>Returns the version of databae</td>
+</tr>
+<tr><td>drivername</td>
+<td>Returns the database driver name</td>
+</tr>
+<tr><td>driverversion</td>
+<td>Returns the database driver version</td>
+</tr>
+<tr><td>url</td>
+<td>Returns the database URL in use</td>
+</tr>
+<tr><td>__connection__</td>
+<td>Returns the type of connection in use</td>
+</tr>
+<tr><td>__cursors__</td>
+<td>Returns a listing of all open cursors on the connection</td>
+</tr>
+<tr><td>__statements__</td>
+<td>Returns a listing of all open statements on the connection</td>
+</tr>
+<tr><td>closed</td>
+<td>Returns a boolean stating whether connection is closed</td>
+</tr>
+</tbody>
+</table>
+<p>Of course, we can always use the connection to obtain a listing of
+all methods and attributes using the syntax shown in Listing 12-5.</p>
+<p><em>Listing 12-5.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">__methods__</span>
+<span class="go">[&#39;close&#39;, &#39;commit&#39;, &#39;cursor&#39;, &#39;rollback&#39;, &#39;nativesql&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">__members__</span>
+<span class="go">[&#39;autocommit&#39;, &#39;dbname&#39;, &#39;dbversion&#39;, &#39;drivername&#39;,</span>
+<span class="go">&#39;driverversion&#39;, &#39;url&#39;, &#39;__connection__&#39;, &#39;__cursors__&#39;,</span>
+<span class="go">&#39;__statements__&#39;, &#39;closed&#39;]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Connection pools help ensure for more robust operation,
+by providing for reuse of connections while ensuring the
+connections are in fact valid. Often naive code will hold a
+connection for a very long time, to avoid the overhead of creating
+a connection, and then go to the trouble of managing reconnecting
+in the event of a network or server failure. It&#8217;s better to let
+that be managed by the connection pool infrastructure instead of
+reinventing it.</p>
+</div>
+<p>All transactions, if supported, are done within the context of a
+connection. We will be discussing transactions further in the
+subsection on data modification, but Listing 12-6 is the basic
+recipe.</p>
+<p><em>Listing 12-6. Transaction Recipe</em></p>
+<div class="highlight-python"><pre>try:
+    # Obtain a connection that is not using auto-commit (default for
+    zxJDBC)
+    conn = zxJDBC.connect(jdbc_url, username, password, driver)
+    # Perform all work on connection
+    do_something(conn)
+    # After all work is complete, commit
+    conn.commit()
+except:
+    # If a failure occurs along the way, rollback all previous work
+    conn.rollback()</pre>
+</div>
+</div>
+<div class="section" id="zxjdbc-lookup">
+<h3>ZxJDBC.lookup<a class="headerlink" href="#zxjdbc-lookup" title="Permalink to this headline">¶</a></h3>
+<p>In a managed container, you would use zxJDBC.lookup instead of
+zxJDBC.connect. If you have code that needs to run both inside and
+outside containers, we recommend you use a factory to abstract
+this. Inside a container, like an app server, you should use JDNI
+to allocate the resource. Generally the connection will be managed
+by a connection pool (see Listing 12-7).</p>
+<p><em>Listing 12-7.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">factory</span> <span class="o">=</span> <span class="s">&quot;com.sun.jndi.fscontext.RefFSContextFactory&quot;</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">zxJDBC</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="s">&#39;jdbc/postgresDS&#39;</span><span class="p">,</span>
+    <span class="n">INITIAL_CONTEXT_FACTORY</span><span class="o">=</span><span class="n">factory</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This example assumes that the datasource defined in the container
+is named “jdbc/postgresDS,” and it uses the Sun FileSystem JNDI
+reference implementation. This lookup process does not require
+knowing the JDBC URL or the driver factory class. These aspects, as
+well as possibly the user name and password, are configured by the
+administrator of the container using tools specific to that
+container. Most often by convention you will find that JNDI names
+typically resemble a <em>jdbc/NAME</em> format.</p>
+<div class="section" id="cursors">
+<h4>Cursors<a class="headerlink" href="#cursors" title="Permalink to this headline">¶</a></h4>
+<p>Once you have a connection, you probably want to do something with
+it. Because you can do multiple things within a transaction, such
+as query one table, update another, you need one more resource,
+which is a cursor. A cursor in zxJDBC is a wrapper around the JDBC
+statement and resultSet objects that provides a very <em>Pythonic</em>
+syntax for working with the database. The result is an easy to use
+and extremely flexible API. Cursors are used to hold data that has
+been obtained via the database, and they can be used in a variety
+of fashions which we will discuss. There are two types of cursors
+available for use, static and dynamic. A static cursor is the
+default type, and it basically performs an iteration on an entire
+resultSet at once. The latter dynamic cursor is known as a lazy
+cursor and it only iterates through the resultSet on an as-needed
+basis. The following listings are examples of creating each type of
+cursor.</p>
+<p><em>Listing 12-8. Creating all possible cursor types</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Assume that necessary imports have been performed</span>
+<span class="c"># and that a connection has been obtained and assigned</span>
+<span class="c"># to a variable &#39;conn&#39;</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="c"># static cursor creation</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span> <span class="c"># dynamic cursor creation with the Boolean argument</span>
+</pre></div>
+</div>
+<p>Dynamic cursors tend to perform better due to memory constraints;
+however, in some cases they are not as convenient as working with a
+static cursor. For example, if you’d like to query the database to
+find a row count it is very easy with a static cursor because all
+rows are obtained at once. This is not possible with a dynamic
+cursor and one must perform two queries in order to achieve the
+same result.</p>
+<p><em>Listing 12-9.</em></p>
+<div class="highlight-python"><pre># Using a static cursor to obtain rowcount
+&gt;&gt;&gt; cursor = conn.cursor()
+&gt;&gt;&gt; cursor.execute("select * from country")
+&gt;&gt;&gt; cursor.rowcount
+239
+# Using a dynamic cursor to obtain rowcount
+&gt;&gt;&gt; cursor = conn.cursor(1)
+&gt;&gt;&gt; cursor.execute("select * from country")
+&gt;&gt;&gt; cursor.rowcount
+0
+# Since rowcount does not work with dynamic, we must
+# perform a separate count query to obtain information
+&gt;&gt;&gt; cursor.execute("select count(*) from country")
+&gt;&gt;&gt; cursor.fetchone()
+(239L,)</pre>
+</div>
+<p>Cursors are used to execute queries, inserts, updates, deletes,
+and/or issue database commands. Like connections, cursors have a
+number of methods and attributes that can be used to perform
+actions or obtain metadata information. See Tables 12-3 and 12-4.</p>
+<p><em>Table 12-3: Cursor Methods</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Method</th>
+<th class="head">Functionality</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>tables</td>
+<td>Retrieves a list of tables.  (catalog, schema-pattern, table-pattern, types)</td>
+</tr>
+<tr><td>columns</td>
+<td>Retrieves a list of columns.  (catalog, schema-pattern, table-name-pattern, column-name-pattern)</td>
+</tr>
+<tr><td>primarykeys</td>
+<td>Retrieves a list of primary keys.  (catalog, schema, table)</td>
+</tr>
+<tr><td>foreignkeys</td>
+<td>Retrieves a list of foreign keys.  (primary-catalog, primary-schema, primary-table, foreign-catalog, foreign-schema, foreign-table)</td>
+</tr>
+<tr><td>procedures</td>
+<td>Retrieves a list of procedures.  (catalog, schema, tables)</td>
+</tr>
+<tr><td>procedurecolumns</td>
+<td>Retrieves a list of procedure columns.  (catalog, schema-pattern, procedure-pattern, column-pattern)</td>
+</tr>
+<tr><td>statistics</td>
+<td>Obtains statistics on the query. (catalog, schema, table, unique, approximation)</td>
+</tr>
+<tr><td>bestrow</td>
+<td>Optimal set of columns that uniquely identifies a row</td>
+</tr>
+<tr><td>versioncolumns</td>
+<td>Columns that are automatically updated when any value in a row is updated</td>
+</tr>
+<tr><td>close</td>
+<td>Closes the cursor</td>
+</tr>
+<tr><td>execute</td>
+<td>Executes code contained within the cursor</td>
+</tr>
+<tr><td>executemany</td>
+<td>Used to execute prepared statements or sql with a parameter list</td>
+</tr>
+<tr><td>fetchone</td>
+<td>Fetch the next row of a query result set, returning a single sequence, or None if no more data exists</td>
+</tr>
+<tr><td>fetchall</td>
+<td>Fetch all (remaining) rows of a query result, returning them as a sequence of sequnces</td>
+</tr>
+<tr><td>fetchmany</td>
+<td>Fetch the next set of rows of a query result, returning a sequence of seqences</td>
+</tr>
+<tr><td>callproc</td>
+<td>Executes a stored procedure</td>
+</tr>
+<tr><td>next</td>
+<td>Moves to the next row in the cursor</td>
+</tr>
+<tr><td>write</td>
+<td>Execute the sql written to this file-like object</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 12-4:  Cursor Attributes</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Attribute</th>
+<th class="head">Functionality</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>arraysize</td>
+<td>Number of rows <em>fetchmany()</em> should return without any arguments</td>
+</tr>
+<tr><td>rowcount</td>
+<td>Returns the number of resulting rows</td>
+</tr>
+<tr><td>rownumber</td>
+<td>Returns the current row number</td>
+</tr>
+<tr><td>description</td>
+<td>Returns information regarding each column in the query</td>
+</tr>
+<tr><td>datahandler</td>
+<td>Returns the specified datahandler</td>
+</tr>
+<tr><td>warnings</td>
+<td>Returns all wornings on the cursor</td>
+</tr>
+<tr><td>lastrowid</td>
+<td>Returns the rowid of the last row fetched</td>
+</tr>
+<tr><td>updatecount</td>
+<td>Returns the number of updates that the current cursor has performed</td>
+</tr>
+<tr><td>closed</td>
+<td>Returns a boolean representing whether the cursor has been closed</td>
+</tr>
+<tr><td>connection</td>
+<td>Returns the connection object that contains the cursor</td>
+</tr>
+</tbody>
+</table>
+<p>A number of the methods and attributes above cannot be used until a
+cursor has been executed with a query or statement of some kind.
+Most of the time, the particular method or attribute name will
+provide a good enough description of its functionality.</p>
+</div>
+<div class="section" id="creating-and-executing-queries">
+<h4>Creating and Executing Queries<a class="headerlink" href="#creating-and-executing-queries" title="Permalink to this headline">¶</a></h4>
+<p>As you’ve seen previously, it is quite easy to initiate a query
+against a given cursor. Simply provide a <em>sel**ect</em> statement in
+string format as a parameter to the cursor <em>execute()</em> or
+<em>executemany()</em> methods and then use one of the <em>fetch</em> methods to
+iterate over the returned results. In the following examples we
+query the world data and display some cursor data via the
+associated attributes and methods.</p>
+<p><em>Listing 12-10.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;select country, region from country&quot;</span><span class="p">)</span>
+<span class="go"># Fetch next record</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+<span class="go">((AFG,Afghanistan,Asia,&quot;Southern and Central Asia&quot;,652090,1919,22720000,45.9,5976.00,,Afganistan/Afqanestan,&quot;Islamic</span>
+<span class="go">Emirate&quot;,&quot;Mohammad Omar&quot;,1,AF), u&#39;Southern and Central Asia&#39;)</span>
+<span class="go"># Calling fetchmany() without any parameters returns next record</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchmany</span><span class="p">()</span>
+<span class="go">[((NLD,Netherlands,Europe,&quot;Western</span>
+<span class="go">Europe&quot;,41526,1581,15864000,78.3,371362.00,360478.00,Nederland,&quot;Constitutional</span>
+<span class="go">Monarchy&quot;,Beatrix,5,NL), u&#39;Western Europe&#39;)]</span>
+<span class="go"># Fetch the next two records</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchmany</span><span class="p">(</span><span class="mf">2</span><span class="p">)</span>
+<span class="go">[((ANT,&quot;Netherlands Antilles&quot;,&quot;North America&quot;,Caribbean,800,,217000,74.7,1941.00,,&quot;Nederlandse</span>
+<span class="go">Antillen&quot;,&quot;Nonmetropolitan Territory of The Netherlands&quot;,Beatrix,33,AN), u&#39;Caribbean&#39;),</span>
+<span class="go">((ALB,Albania,Europe,&quot;Southern</span>
+<span class="go">Europe&quot;,28748,1912,3401200,71.6,3205.00,2500.00,Shqip?ria,Republic,&quot;Rexhep Mejdani&quot;,34,AL), u&#39;Southern Europe&#39;)]</span>
+<span class="go"># Calling fetchall() would retrieve the rest of the records</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="go"># Using description provides data regarding the query in the cursor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">description</span>
+<span class="go">[(&#39;country&#39;, 1111, 2147483647, None, None, None, 2), (&#39;region&#39;, 12, 2147483647, None, None, None, 0)]</span>
+</pre></div>
+</div>
+<p>Creating a cursor using the with_statement syntax is easy, please
+take a look at the following example for use with Jython 2.5.1 and
+beyond.</p>
+<p><em>Listing 12-11.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+    <span class="n">do_some_work</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Like connections, you need to ensure the resource is appropriately
+closed. So you can just do this to follow the shorter examples we
+will look at:</p>
+<p><em>Listing 12-12.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># work with cursor</span>
+</pre></div>
+</div>
+<p>As you can see, queries are easy to work with using cursors. In the
+previous example, we used the <em>f**etchall()</em> method to retrieve all
+of the results of the query. However, there are other options
+available for cases where all results are not desired including the
+<em>fetchone()</em> and <em>fetchmany()</em> options. Sometimes it is best to
+iterate over results of a query in order to work with each record
+separately. Listing 12-13 iterates over the countries contained
+within the country table.</p>
+<p><em>Listing 12-13.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">com.ziclix.python.sql</span> <span class="kn">import</span> <span class="n">zxJDBC</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span> <span class="o">=</span> <span class="n">zxJDBC</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&quot;jdbc:postgresql:test&quot;</span><span class="p">,</span><span class="s">&quot;postgres&quot;</span><span class="p">,</span><span class="s">&quot;jython25&quot;</span><span class="p">,</span><span class="s">&quot;org.postgresql.Driver&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;select name from country&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">while</span> <span class="n">cursor</span><span class="o">.</span><span class="n">next</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="go">(u&#39;Netherlands Antilles&#39;,)</span>
+<span class="go">(u&#39;Algeria&#39;,)</span>
+<span class="go">(u&#39;Andorra&#39;,)</span>
+<span class="gp">...</span>
+</pre></div>
+</div>
+<p>Often, queries are not hard-coded, and we need the ability to
+substitute values in the query to select the data that our
+application requires. Developers also need a way to create dynamic
+SQL statements at times. Of course, there are multiple ways to
+perform these feats. The easiest way to substitute variables or
+create a dynamic query is to simply use string concatenation. After
+all, the <em>execute()</em> method takes a string-based query. Listing
+12-14 shows how to use string concatenation for dynamically forming
+a query and also substituting variables.</p>
+<p><em>Listing 12-14. String Concatenation for Dynamic Query Formation</em></p>
+<div class="highlight-python"><pre>...
+# Assume that the user selected a pull-down menu choice determining
+# what results to retrieve from the database, either continent or country name.
+# The selected choice is stored in the selectedChoice variable. Let's also assume
+# that we are interested in all continents or countries beginning with the letter "A"
+&gt;&gt;&gt; qry = "select " + selectedChoice + " from country where " + selectedChoice + " like 'A%'"
+&gt;&gt;&gt; cursor.execute(qry)
+&gt;&gt;&gt; while cursor.next():
+... print cursor.fetchone()
+...
+(u'Albania',)
+(u'American Samoa',)
+...</pre>
+</div>
+<p>This technique works very well for creating dynamic queries, but it
+also has its share of issues. For instance, reading through
+concatenated strings of code can become troublesome on the eyes.
+Maintaining such code is a tedious task. Above that, string
+concatenation is not the safest way to construct a query as it
+opens an application up for a SQL injection attack. SQL injection
+is a technique that is used to pass undesirable SQL code into an
+application in such a way that it alters a query to perform
+unwanted tasks. If the user has the ability to type free text into
+a textfield and have that text passed into a string concatenated
+query, it is best to perform some other means of filtering to
+ensure certain keywords or commenting symbols are not contained in
+the value. A better way of getting around these issues is to make
+use of prepared statements.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Ideally, never construct a query statement directly from
+user data. SQL injection attacks employ such construction as their
+attack vector. Even when not malicious, user data will often
+contain characters, such as quotation marks, that can cause the
+query to fail if not properly escaped. In all cases, it’s important
+to scrub and then escape the user data before it’s used in the
+query.</p>
+<p>One other consideration is that such queries will generally consume
+more resources unless the database statement cache is able to match
+it (if at all).</p>
+<p>But there are two important exceptions to our recommendation:</p>
+<p><em>SQL statement requirements: Bind variables cannot be used everywhere. However, specifics will depend on the database.</em></p>
+<p><em>Ad hoc or unrepresentative queries: In databases like Oracle, the statement cache will cache the execution plan, without taking in account lopsided distributions of values that are indexed, but are known to the database if presented literally. In those cases, a more efficient execution plan will result if the value is put in the statement directly.</em></p>
+<p class="last">However, even in these exceptional cases, it&#8217;s imperative that any
+user data is fully scrubbed. A good solution is to use some sort of
+mapping table, either an internal dictionary or a mapping table
+driven from the database itself. In certain cases, a carefully
+constructed regular expression may also work. Be careful.</p>
+</div>
+</div>
+</div>
+<div class="section" id="prepared-statements">
+<h3>Prepared Statements<a class="headerlink" href="#prepared-statements" title="Permalink to this headline">¶</a></h3>
+<p>To get around using the string concatenation technique for
+substituting variables, we can use a technique known as
+<em>prepared statements</em>. Prepared statements allow one to use bind
+variables for data substitution, and they are generally safer to
+use because most security considerations are taken care of without
+developer interaction. However, it is always a good idea to filter
+input to help reduce the risk. Prepared statements in zxJDBC work
+the same as they do in JDBC, just a simpler syntax. In Listing
+12-15, we will perform a query on the country table using a
+prepared statement. Note that the question marks are used as place
+holders for the substituted variables. It is also important to note
+that the <em>executemany()</em> method is invoked when using a prepared
+statement. Any substitution variables being passed into the
+prepared statement must be in the form of a tuple or list.</p>
+<p><em>Listing 12-15. Using Prepared Statements</em></p>
+<div class="highlight-python"><pre>...
+# Passing a string value into the query
+qry = "select continent from country where name = ?"
+&gt;&gt;&gt; cursor.executemany(qry,['Austria'])
+&gt;&gt;&gt; cursor.fetchall()
+[(u'Europe',)]
+
+# Passing some variables into the query
+&gt;&gt;&gt; continent1 = 'Asia'
+&gt;&gt;&gt; continent2 = 'Africa'
+&gt;&gt;&gt; qry = "select name from country where continent in (?,?)"
+&gt;&gt;&gt; cursor.executemany(qry, [continent1, continent2])
+&gt;&gt;&gt; cursor.fetchall()
+[(u'Afghanistan',), (u'Algeria',), (u'Angola',), (u'United Arab Emirates',), (u'Armenia',), (u'Azerbaijan',),
+...</pre>
+</div>
+</div>
+<div class="section" id="resource-management">
+<h3>Resource Management<a class="headerlink" href="#resource-management" title="Permalink to this headline">¶</a></h3>
+<p>You should always close connections and cursors. This is not only
+good practice but absolutely essential in a managed container so as
+to avoid exhausting the corresponding connection pool, which needs
+the connections returned as soon as they are no longer in use. The
+<em>with</em> statement makes it easy. See Listing 12-16.</p>
+<p><em>Listing 12-16. Managing Connections Using With Statements</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
+<span class="kn">from</span> <span class="nn">com.ziclix.python.sql</span> <span class="kn">import</span> <span class="n">zxJDBC</span>
+<span class="c"># externalize</span>
+<span class="n">jdbc_url</span> <span class="o">=</span> <span class="s">&quot;jdbc:oracle:thin:@host:port:sid&quot;</span>
+<span class="n">username</span> <span class="o">=</span> <span class="s">&quot;world&quot;</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s">&quot;world&quot;</span>
+<span class="n">driver</span> <span class="o">=</span> <span class="s">&quot;oracle.jdbc.driver.OracleDriver&quot;</span>
+<span class="k">with</span> <span class="n">zxJDBC</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">jdbc_url</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;select * from emp&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">islice</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mf">20</span><span class="p">):</span>
+                <span class="k">print</span> <span class="n">row</span> <span class="c"># let&#39;s redo this w/ namedtuple momentarily...</span>
+</pre></div>
+</div>
+<p>The older alternative is available. It’s more verbose, and similar
+to the Java code that would normally have to be written to ensure
+that the resource is closed. See Listing 12-17.</p>
+<p><em>Listing 12-17. Managing Connections Avoiding the With Statement</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">zxJDBC</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">jdbc_url</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="c"># do something with the cursor</span>
+    <span class="c"># Be sure to clean up by closing the connection (and cursor)</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">cursor</span><span class="p">:</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="metadata">
+<h3>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h3>
+<p>As mentioned previously in this chapter, it is possible to obtain
+metadata information via the use of certain attributes that are
+available to both connection and cursor objects. zxJDBC matches
+these attributes to the properties that are found in the JDBC
+<em>java.sql.DatabaseMetaData</em> object. Therefore, when one of these
+attributes is called, the JDBC <em>DatabaseMetaData</em> object is
+actually obtaining the information.</p>
+<p>Listing 12-18 shows how to retrieve metadata about a connection,
+cursor, or even a specific query. Note that whenever obtaining
+metadata about a cursor, you must fetch the data after setting up
+the attributes.</p>
+<p><em>Listing 12-18. Retrieving Metadata About a Connection, Cursor or Specific Query</em></p>
+<div class="highlight-python"><pre># Obtain information about the connection using connection attributes
+&gt;&gt;&gt; conn.dbname
+'PostgreSQL'
+&gt;&gt;&gt; conn.dbversion
+'8.4.0'
+&gt;&gt;&gt; conn.drivername
+'PostgreSQL Native Driver'
+# Check for existing cursors
+&gt;&gt;&gt; conn.__cursors__
+[&lt;PyExtendedCursor object instance at 1&gt;]
+
+# Obtain information about the cursor and the query
+&gt;&gt;&gt; cursor = conn.cursor()
+# List all tables
+&gt;&gt;&gt; cursor.tables(None, None, '%', ('TABLE',))
+&gt;&gt;&gt; cursor.fetchall()
+[(None, u'public', u'city', u'TABLE', None), (None, u'public', u'country', u'TABLE', None), (None, u'public', u'countrylanguage',
+u'TABLE', None), (None, u'public', u'test', u'TABLE', None)]</pre>
+</div>
+</div>
+<div class="section" id="data-manipulation-language-and-data-definition-language">
+<h3>Data Manipulation Language and Data Definition Language<a class="headerlink" href="#data-manipulation-language-and-data-definition-language" title="Permalink to this headline">¶</a></h3>
+<p>Any application that will manipulate data contained in a RDBMS must
+be able to issue Data Manipulation Language (DML). Of course, DML
+consists of issuing statements such as INSERT, UPDATE, and DELETE.
+. .the basics of CRUD programming. zxJDBC makes it rather easy to
+use DML in a standard cursor object. When doing so, the cursor will
+return a value to provide information about the result. A standard
+DML transaction in JDBC uses a prepared statement with the cursor
+object, and assigns the result to a variable that can be read
+afterwards to determine whether the statement succeeded.</p>
+<p>ZxJDBC also uses cursors to define new constructs in the database
+using Data Definition Language (DDL). Examples of doing such are
+creating tables, altering tables, creating indexes, and the like.
+Similarly to performing DML with zxJDBC, a resulting DDL statement
+returns a value to assist in determining whether the statement
+succeeded or not.</p>
+<p>In the next couple of examples, we’ll create a table, insert some
+values, delete values, and finally delete the table.</p>
+<p><em>Listing 12-19. Using DML</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="go">&gt;&gt;&gt;</span>
+<span class="go"># Create a table named PYTHON_IMPLEMENTATIONS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;create table python_implementations (id integer, python_implementation varchar, current_version varchar)&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">result</span>
+<span class="go">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">tables</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;%&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;TABLE&#39;</span><span class="p">,))</span>
+<span class="go"># Ensure table was created</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="go">[(None, u&#39;public&#39;, u&#39;city&#39;, u&#39;TABLE&#39;, None), (None, u&#39;public&#39;, u&#39;country&#39;, u&#39;TABLE&#39;, None), (None, u&#39;public&#39;, u&#39;countrylanguage&#39;,</span>
+<span class="go">u&#39;TABLE&#39;, None), (None, u&#39;public&#39;, u&#39;python_implementations&#39;, u&#39;TABLE&#39;, None), (None, u&#39;public&#39;, u&#39;test&#39;, u&#39;TABLE&#39;, None)]</span>
+<span class="go"># Insert some values into the table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;insert into PYTHON_IMPLEMENTATIONS values (?, ?, ?)&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span><span class="s">&#39;Jython&#39;</span><span class="p">,</span><span class="s">&#39;2.5.1&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span> <span class="p">[</span><span class="mf">2</span><span class="p">,</span><span class="s">&#39;CPython&#39;</span><span class="p">,</span><span class="s">&#39;3.1.1&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span> <span class="p">[</span><span class="mf">3</span><span class="p">,</span><span class="s">&#39;IronPython&#39;</span><span class="p">,</span><span class="s">&#39;2.0.2&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span> <span class="p">[</span><span class="mf">4</span><span class="p">,</span><span class="s">&#39;PyPy&#39;</span><span class="p">,</span><span class="s">&#39;1.1&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="go"># Query the database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;select python_implementation, current_version from python_implementations&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">rowcount</span>
+<span class="go">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="go">[(u&#39;Jython&#39;, u&#39;2.5.1&#39;), (u&#39;CPython&#39;, u&#39;3.1.1&#39;), (u&#39;IronPython&#39;, u&#39;2.0.2&#39;), (u&#39;PyPy&#39;, u&#39;1.1&#39;)]</span>
+<span class="go"># Update values and re-query</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;update python_implementations set</span>
+<span class="go">python_implementation = &#39;CPython -Standard Implementation&#39; where id = 2&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">result</span>
+<span class="go">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;select python_implementation, current_version from python_implementations&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="go">[(u&#39;Jython&#39;, u&#39;2.5.1&#39;), (u&#39;IronPython&#39;, u&#39;2.0.2&#39;), (u&#39;PyPy&#39;, u&#39;1.1&#39;), (u&#39;CPython -Standard Implementation&#39;, u&#39;3.1.1&#39;)]</span>
+</pre></div>
+</div>
+<p>It is a good practice to make use of bulk inserts and updates. Each
+time a commit is issued it incurs a performance penalty. If DML
+statements are grouped together and then followed by a commit, the
+resulting transaction will perform much better. Another good reason
+to use bulk DML statements is to ensure transactional safety. It is
+likely that if one statement in a transaction fails, all others
+should be rolled back. As mentioned previously in the chapter,
+using a try/except clause will maintain transactional dependencies.
+If one statement fails then all others will be rolled back.
+Likewise, if they all succeed then they will be committed to the
+database with one final commit.</p>
+<div class="section" id="calling-procedures">
+<h4>Calling Procedures<a class="headerlink" href="#calling-procedures" title="Permalink to this headline">¶</a></h4>
+<p>Database applications often make use of procedures and functions
+that live inside the database. Most often these procedures are
+written in a SQL procedural language such as Oracle’s PL/SQL or
+PostgreSQL’s PL/pgSQL. Writing database procedures and using them
+with external applications such written in Python, Java, or the
+like makes lots of sense, because procedures are often the easiest
+way to work with data. Not only are they running close to the metal
+since they are in the database, but they also perform much faster
+than say a Jython application that needs to connect and close
+connections on the database. Since a procedure lives within the
+database, there is no performance penalty due to connections being
+made.</p>
+<p>ZxJDBC can easily invoke a database procedure just as JDBC can do.
+This helps developers to create applications that have some of the
+more database-centric code residing within the database as
+procedures, and other application-specific code running on the
+application server and interacting seamlessly with the database. In
+order to make a call to a database procedure, zxJDBC offers the
+<em>callproc()</em> method which takes the name of the procedure to be
+invoked. In Listing 12-20, we create a relatively useless procedure
+and then call it using Jython (Listing 12-21).</p>
+<p><em>Listing 12-20. PostgreSQL Procedure</em></p>
+<div class="highlight-python"><pre>CREATE OR REPLACE FUNCTION proc_test(
+    OUT out_parameter CHAR VARYING(25) )
+AS $$
+DECLARE
+BEGIN
+    SELECT python_implementation
+    INTO out_parameter
+    FROM python_implementations
+    WHERE id = 1;
+    RETURN;
+END;
+$$ LANGUAGE plpgsql;</pre>
+</div>
+<p><em>Listing 12-21. Jython Calling Code</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">callproc</span><span class="p">(</span><span class="s">&#39;proc_test&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="go">[(u&#39;Jython&#39;,)]</span>
+</pre></div>
+</div>
+<p>Although this example was relatively trivial, it is easily to see
+how the use of database procedures from zxJDBC could easily become
+important. Combining database procedures and functions with
+application code is a powerful technique, but it does tie an
+application to a specific database so it should be used wisely.</p>
+</div>
+<div class="section" id="customizing-zxjdbc-calls">
+<h4>Customizing zxJDBC Calls<a class="headerlink" href="#customizing-zxjdbc-calls" title="Permalink to this headline">¶</a></h4>
+<p>At times, it is convenient to have the ability to alter or
+manipulate a SQL statement automatically. This can be done before
+the statement is sent to the database, after it is sent to the
+database, or even just to obtain information about the statement
+that has been sent. To manipulate or customize data calls, it is
+possible to make use of the <em>DataHandler</em> interface that is
+available via zxJDBC. There are basically three different methods
+for handling type mappings when using DataHandler. They are called
+at different times in the process, one when fetching and the other
+when binding objects for use in a prepared statement. These
+datatype mapping callbacks are categorized into four different
+groups: life cycle, developer support, binding prepared statements,
+and building results.</p>
+<p>At first mention, customizing and manipulating statements can seem
+overwhelming and perhaps even a bit daunting. However, the zxJDBC
+DataHandler makes this task fairly trivial. Simply create a handler
+class and implement the functionality that is required by
+overriding a given handler method. What follows is a listing of the
+various methods that can be overridden, and we’ll look at a simple
+example afterward.</p>
+<div class="section" id="life-cycle">
+<h5>Life Cycle<a class="headerlink" href="#life-cycle" title="Permalink to this headline">¶</a></h5>
+<p><em>public void preExecute(Statement stmt)**throws SQLException;</em></p>
+<p>A callback prior to each execution of the statement. If the
+statement is a PreparedStatement (created when parameters are sent
+to the execute method), all the parameters will have been set.</p>
+<p><em>public void postExecute**(Statement stmt) throws SQLException;</em></p>
+<p>A callback after successfully executing the statement. This is
+particularly useful for cases such as auto-incrementing columns
+where the statement knows the inserted value.</p>
+</div>
+<div class="section" id="developer-support">
+<h5>Developer Support<a class="headerlink" href="#developer-support" title="Permalink to this headline">¶</a></h5>
+<p><em>public String getMetaDataName**(String name);</em></p>
+<p>A callback for determining the proper case of a name used in a
+DatabaseMetaData method, such as getTables(). This is particularly
+useful for Oracle which expects all names to be upper case.</p>
+<p><em>public PyObject getRowId**(Statement stmt) throws SQLException;</em></p>
+<p>A callback for returning the row id of the last insert statement.</p>
+</div>
+<div class="section" id="binding-prepared-statements">
+<h5>Binding Prepared Statements<a class="headerlink" href="#binding-prepared-statements" title="Permalink to this headline">¶</a></h5>
+<p><em>public Object getJDBCObject**(PyObject object, int type);</em></p>
+<p>This method is called when a PreparedStatement is created through
+use of the execute method. When the parameters are being bound to
+the statement, the DataHandler gets a callback to map the type.
+<em>This is only called if type bindings are present.</em></p>
+<p><em>public Object getJDBCObject**(PyObject object);</em></p>
+<p>This method is called when no type bindings are present during the
+execution of a PreparedStatement.</p>
+</div>
+<div class="section" id="building-results">
+<h5>Building Results<a class="headerlink" href="#building-results" title="Permalink to this headline">¶</a></h5>
+<p><em>public PyObject ge**tPyObject(**ResultSet set, int col, int type);</em></p>
+<p>This method is called upon fetching data from the database. Given
+the JDBC type, return the appropriate PyObject subclass from the
+Java object at column col in the ResultSet set.</p>
+<p>Now we’ll examine a simple example of utilizing this technique. The
+recipe basically follows these steps:</p>
+<ol class="arabic simple">
+<li>Create a handler class to implement a particular functionality  (must implement the DataHandler interface).</li>
+<li>Assign the created handler class to a given cursor object.</li>
+<li>Use the cursor object to make database calls.</li>
+</ol>
+<p>In Listing 12-22, we override the <em>preExecute</em> method to print a
+message stating that the functionality has been altered. As you can
+see, it is quite easy to do and opens up numerous possibilities.</p>
+<p><em>Listing 12-22. PyHandler.py</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">com.ziclix.python.sql</span> <span class="kn">import</span> <span class="n">DataHandler</span>
+
+<span class="k">class</span> <span class="nc">PyHandler</span><span class="p">(</span><span class="n">DataHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="n">handler</span>
+        <span class="k">print</span> <span class="s">&#39;Inside DataHandler&#39;</span>
+    <span class="k">def</span> <span class="nf">getPyObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">datatype</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">getPyObject</span><span class="p">(</span><span class="n">set</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">datatype</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getJDBCObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">datatype</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;handling prepared statement&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">getJDBCObject</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">datatype</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">preExecute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stmt</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;calling pre-execute to alter behavior&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">preExecute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Jython Interpreter Code</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">datahandler</span> <span class="o">=</span> <span class="n">PyHandler</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">datahandler</span><span class="p">)</span>
+<span class="go">Inside DataHandler</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;insert into test values (?,?)&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">])</span>
+<span class="go">calling pre-execute</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="history">
+<h3>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h3>
+<p>zxJDBC was contributed by Brian Zimmer, one-time lead committer for
+Jython. This API was written to enable Jython developers to have
+the capability of working with databases using techniques that more
+closely resembled the Python DB API. The package eventually became
+part of the Jython distribution and today it is one of the most
+important underlying APIs for working with higher level frameworks
+such as Django. The zxJDBC API is evolving at the time of this
+publication, and it is likely to become more useful in future
+releases.</p>
+</div>
+</div>
+<div class="section" id="object-relational-mapping">
+<h2>Object Relational Mapping<a class="headerlink" href="#object-relational-mapping" title="Permalink to this headline">¶</a></h2>
+<p>Although zxJDBC certainly offers a viable option for database
+access via Jython, there are many other solutions available. Many
+developers today are choosing to use ORM (Object Relational
+Mapping) solutions to work with the database. This section is not
+an introduction to ORM, we assume that you are at least a bit
+familiar with the topic. Furthermore, the ORM solutions that are
+about to be discussed have an enormous amount of very good
+documentation already available either on the web or in book
+format. Therefore, this section will give insight on how to use
+these technologies with Jython, but it will not go into great
+detail on how each ORM solution works. With that said, there is no
+doubt in stating that these solutions are all very powerful and
+capable for standalone and enterprise applications alike.</p>
+<p>In the next couple of sections, we’ll cover how to use some of the
+most popular ORM solutions available today with Jython. You’ll
+learn how to set up your environment and how to code Jython to work
+with each ORM. By the end of this chapter, you should have enough
+knowledge to begin working with these ORMs using Jython, and even
+start building Jython ORM applications.</p>
+<div class="section" id="sqlalchemy">
+<h3>SqlAlchemy<a class="headerlink" href="#sqlalchemy" title="Permalink to this headline">¶</a></h3>
+<p>No doubt about it, SqlAlchemy is one of the most widely known and
+used ORM solutions for the Python programming language. It has been
+around long enough that its maturity and stability make it a great
+contender for use in your applications. It is simple to setup, and
+easy-to-use for both new databases and legacy databases alike. You
+can download and install SqlAlchemy and begin using it in a very
+short amount of time. The syntax for using this solution is very
+straight forward, and as with other ORM technologies, working with
+database entities occurs via the use of a mapper that links a
+special Jython class to a particular table in the database. The
+overall result is that the application persists through the use of
+entity classes as opposed to database SQL transactions.</p>
+<p>In this section we will cover the installation and configuration of
+SqlAlchemy with Jython. The section will then show you how to get
+started using it through a few short examples; we will not get into
+great detail as there are plenty of excellent references on
+SqlAlchemy already. However, this section should fill in the gaps
+for making use of this great solution on Jython.</p>
+</div>
+<div class="section" id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<p>We’ll begin by downloading SqlAlchemy from the web site
+(www.sqlalchemy.org), at the time of this writing the version that
+should be used is 0.6. This version has been installed and tested
+with the Jython 2.5.0 release. Once you’ve downloaded the package,
+unzip it to a directory on your workstation and then traverse to
+that directory in your terminal or command prompt. Once you are
+inside of your SqlAlchemy directory, issue the following command to
+install:</p>
+<div class="highlight-python"><pre>jython setup.py install</pre>
+</div>
+<p>Once you’ve completed this process, SqlAlchemy should be
+successfully installed into your jython Libsite-packages directory.
+You can now access the SqlAlchemy modules from Jython, and you can
+open up your terminal and check to ensure that the install was a
+success by importing sqlalchemy and checking the version. See
+Listing 12-23.</p>
+<p><em>Listing 12-23.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sqlalchemy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sqlalchemy</span><span class="o">.</span><span class="n">__version__</span>
+<span class="go">&#39;0.6beta1&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>After we’ve ensured that the installation was a success, it is time
+to begin working with SqlAlchemy via the terminal. However, we have
+one step left before we can begin. Jython uses zxJDBC to implement
+the Python database API in Java. The end result is that most of the
+dialects that are available for use with SqlAlchemy will not work
+with Jython out of the box. This is because the dialects need to be
+rewritten to implement zxJDBC. At the time of this writing, we
+could only find one completed dialect, zxoracle, that was rewritten
+to use zxJDBC, and we’ll be showing you some examples based upon
+zxoracle in the next sections. However, other dialects are in the
+works including SQL Server and MySQL. The bad news is that
+SqlAlchemy will not yet work with every database available, on the
+other hand, Oracle is a very good start and implementing a new
+dialect is not very difficult. You can find the zxoracle.py dialect
+included in the source for this book. Browse through it and you
+will find that it may not be too difficult to implement a similar
+dialect for the database of your choice. You can either place
+zxoracle somewhere on your Jython path, or place it into the Lib
+directory in your Jython installation.</p>
+<p>Lastly, we will need to ensure that our database JDBC driver is
+somewhere on our path so that Jython can access it. Once you’ve
+performed the procedures included in this section, start up Jython
+and practice some basic SqlAlchemy using the information from the
+next couple of sections.</p>
+</div>
+<div class="section" id="using-sqlalchemy">
+<h3>Using SqlAlchemy<a class="headerlink" href="#using-sqlalchemy" title="Permalink to this headline">¶</a></h3>
+<p>We can work directly with SqlAlchemy via the terminal or command
+line. There is a relatively basic set of steps you’ll need to
+follow in order to work with it. First, import the necessary
+modules for the tasks you plan to perform. Second, create an engine
+to use while accessing your database. Third, create your database
+tables if you have not yet done so, and map them to Python classes
+using a SqlAlchemy mapper. Lastly, begin to work with the
+database.</p>
+<p>Now there are a couple of different ways to do things in this
+technology, just like any other. For instance, you can either
+follow a very granular process for table creation, class creation,
+and mapping that involves separate steps for each, or you can use
+what is known as a declarative procedure and perform all of these
+tasks at the same time. We will show you how to do each of these in
+this chapter, along with performing basic database activities using
+SqlAlchemy. If you are new to SqlAlchemy, we suggest reading
+through this section and then going to sqlalchemy.org and reading
+through some of the large library of documentation available there.
+However, if you’re already familiar with SqlAlchemy, you can move
+on if you wish because the rest of this section is a basic tutorial
+of the ORM solution itself.</p>
+<p>Our first step is to create an engine that can be used with our
+database. Once we’ve got an engine created then we can begin to
+perform database tasks making use of it. Type the following lines
+of code (Listing 12-24) in your terminal, replacing database
+specific information with the details of your development
+database.</p>
+<p><em>Listing 12-24. Creating a Database Engine and Performing Database Tasks</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">zxoracle</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s">&#39;zxoracle://schema:password@hostname:port/database)</span>
+</pre></div>
+</div>
+<p>Next, we’ll create the metadata that is necessary to create our
+database table using SqlAlchemy (Listing 12-25). You can create one
+or more tables via metadata, and they are not actually created
+until after the metadata is applied to your database engine using a
+create_all() call on the metadata. In this example, we are going
+to walk you through the creation of a table named Player that will
+be used in an application example in the next section.</p>
+<p><em>Listing 12-25. Creating a Database Table</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="go">&gt;&gt;&gt;player = Table(&#39;player&#39;, metadata,</span>
+<span class="gp">... </span><span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+<span class="gp">... </span><span class="n">Column</span><span class="p">(</span><span class="s">&#39;first&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mf">50</span><span class="p">)),</span>
+<span class="gp">... </span><span class="n">Column</span><span class="p">(</span><span class="s">&#39;last&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mf">50</span><span class="p">)),</span>
+<span class="gp">... </span><span class="n">Column</span><span class="p">(</span><span class="s">&#39;position&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mf">30</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Our table should now exist in the database and the next step is to
+create a Python class to use for accessing this table. See Listing
+12-26.</p>
+<p><em>Listing 12-26. Creating a Python Class to Access a Database Table</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="n">first</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last</span> <span class="o">=</span> <span class="n">last</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">position</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;Player(&#39;</span><span class="si">%s</span><span class="s">&#39;, &#39;</span><span class="si">%s</span><span class="s">&#39;, &#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">first</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The next step is to create a mapper to correlate the Player python
+object and the player database table. To do this, we use the
+mapper() function to create a new Mapper object binding the class
+and table together (Listing 12-27). The mapper function then stores
+the object away for future reference.</p>
+<p><em>Listing 12-27. Create a Mapper to Correlate the Python Object and the Database Table</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">mapper</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mapper</span><span class="p">(</span><span class="n">Player</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+<span class="go">&lt;Mapper at 0x4; Player&gt;</span>
+</pre></div>
+</div>
+<p>Creating the mapper is the last step in the process of setting up
+the environment to work with our table. Now, let’s go back and take
+a quick look at performing all of these steps in an easier way. If
+we want to create a table, class, and mapper all at once, then we
+can do this declaratively. Please note that with the Oracle
+dialect, we need to use a sequence to generate the auto-incremented
+id column for the table. To do so, import the
+sqlalchemy.schema.Sequence object and pass it to the id column when
+creating. You must ensure that you’ve manually created this
+sequence in your Oracle database or this will not work. See Listing
+12-28.</p>
+<p><em>Listing 12-28. Creating a Table, Class and Mapper at Once</em></p>
+<div class="highlight-python"><pre>SQL&gt; create sequence id_seq
+2 start with 1
+3 increment by 1;
+
+Sequence created.
+
+# Delarative creation of the table, class, and mapper
+&gt;&gt;&gt; from sqlalchemy.ext.declarative import declarative_base
+&gt;&gt;&gt; from sqlalchemy.schema import Sequence
+&gt;&gt;&gt; Base = declarative_base()
+&gt;&gt;&gt; class Player(object):
+...     __tablename__ = 'player'
+...     id = Column(Integer, Sequence(‘id_seq’), primary_key=True)
+...     first = Column(String(50))
+...     last = Column(String(50))
+...     position = Column(String(30))
+...     def __init__(self, first, last, position):
+...         self.first = first
+...         self.last = last
+...         self.position = position
+...     def __repr__(self):
+...         return "&lt;Player('%s','%s','%s')&gt;" % (self.first, self.last, self.position)
+...</pre>
+</div>
+<p>It is time to create a session and begin working with our database.
+We must create a session class and bind it to our database engine
+that was defined with create_engine­ earlier. Once created, the
+Session class will create new session object for our database. The
+Session class can also do other things that are out of scope for
+this section, but you can read more about them at sqlalchemy.org or
+other great references available on the web. See Listing 12-29.</p>
+<p><em>Listing 12-29. Creating a Session Class</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">sessionmaker</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Session</span> <span class="o">=</span> <span class="n">sessionmaker</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can start to create Player objects now and save them to our
+session. The objects will persist in the database once they are
+needed; this is also known as a flush(). If we create the object in
+the session and then query for it, SqlAlchemy will first persist
+the object to the database and then perform the query. See Listing
+12-30.</p>
+<p><em>Listing 12-30. Creating and Querying the Player Object</em></p>
+<div class="highlight-python"><pre>#Import sqlalchemy module and zxoracle
+&gt;&gt;&gt; import zxoracle
+&gt;&gt;&gt; from sqlalchemy import create_engine
+&gt;&gt;&gt; from sqlalchemy import Table, Column, String, Integer, MetaData, ForeignKey
+&gt;&gt;&gt; from sqlalchemy.schema import Sequence
+
+# Create engine
+&gt;&gt;&gt; db = create_engine('zxoracle://schema:password@hostname:port/database’)
+# Create metadata and table
+&gt;&gt;&gt; metadata = MetaData()
+&gt;&gt;&gt; player = Table('player', metadata,
+... Column('id', Integer, Sequence('id_seq'), primary_key=True),
+... Column('first', String(50)),
+... Column('last', String(50)),
+... Column('position', String(30)))
+&gt;&gt;&gt; metadata.create_all(db)
+
+# Create class to hold table object
+&gt;&gt;&gt; class Player(object):
+... def __init__(self, first, last, position):
+... self.first = first
+... self.last = last
+... self.position = position
+... def __repr__(self):
+... return "&lt;Player('%s','%s','%s')&gt;" % (self.first, self.last, self.position)
+
+# Create mapper to map the table to the class
+&gt;&gt;&gt; from sqlalchemy.orm import mapper
+&gt;&gt;&gt; mapper(Player, player)
+&lt;Mapper at 0x4; Player&gt;
+
+# Create Session class and bind it to the database
+&gt;&gt;&gt; from sqlalchemy.orm import sessionmaker
+&gt;&gt;&gt; Session = sessionmaker(bind=db)
+&gt;&gt;&gt; session = Session()
+
+# Create player objects, add them to the session
+&gt;&gt;&gt; player1 = Player('Josh', 'Juneau', 'forward')
+&gt;&gt;&gt; player2 = Player('Jim', 'Baker', 'forward')
+&gt;&gt;&gt; player3 = Player('Frank', 'Wierzbicki', 'defense')
+&gt;&gt;&gt; player4 = Player('Leo', 'Soto', 'defense')
+&gt;&gt;&gt; player5 = Player('Vic', 'Ng', 'center')
+&gt;&gt;&gt; session.add(player1)
+&gt;&gt;&gt; session.add(player2)
+&gt;&gt;&gt; session.add(player3)
+&gt;&gt;&gt; session.add(player4)
+&gt;&gt;&gt; session.add(player5)
+
+# Query the objects
+&gt;&gt;&gt; forwards = session.query(Player).filter_by(position='forward').all()
+&gt;&gt;&gt; forwards
+[&lt;Player('Josh','Juneau','forward')&gt;, &lt;Player('Jim','Baker','forward')&gt;]
+&gt;&gt;&gt; defensemen = session.query(Player).filter_by(position='defense').all()
+&gt;&gt;&gt; defensemen
+[&lt;Player('Frank','Wierzbicki','defense')&gt;, &lt;Player('Leo','Soto','defense')&gt;]
+&gt;&gt;&gt; center = session.query(Player).filter_by(position='center').all()
+&gt;&gt;&gt; center
+[&lt;Player('Vic','Ng','center')&gt;]</pre>
+</div>
+<p>Well, hopefully from this example you can see the benefits of using
+SqlAlchemy. Of course, you can perform all of the necessary SQL
+actions such as insert, update, select, and delete against the
+objects. However, as said before, there are many very good
+tutorials where you can learn how to do these things. We’ve barely
+scratched the surface of what you can do with SqlAlchemy, it is a
+very powerful tool to add to any Jython or Python developer’s
+arsenal.</p>
+</div>
+<div class="section" id="hibernate">
+<h3>Hibernate<a class="headerlink" href="#hibernate" title="Permalink to this headline">¶</a></h3>
+<p>Hibernate is a very popular object relational mapping solution used
+in the Java world. As a matter of fact, it is so popular that many
+other ORM solutions are either making use of Hibernate or extending
+it in various ways. As Jython developers, we can make use of
+Hibernate to create powerful hybrid applications. Because Hibernate
+works by mapping POJO (plain old Java object) classes to database
+tables, we cannot map our Jython objects to it directly. While we
+could always try to make use of an object factory to coerce our
+Jython objects into a format that Hibernate could use, this
+approach leaves a bit to be desired. Therefore, if you wish to
+create an application coded entirely using Jython, this would
+probably not be the best ORM solution. However, most Jython
+developers are used to doing a bit of work in Java and as such,
+they can harness the maturity and power of the Hibernate API to
+create first-class hybrid applications. This section will show you
+how to create database persistence objects using Hibernate and
+Java, and then use them directly from a Jython application. The end
+result, code the entity POJOs in Java, place them into a JAR file
+along with Hibernate and all required mapping documents, and then
+import the JAR into your Jython application and use.</p>
+<p>We have found that the easiest way to create such an application is
+to make use of an IDE such as Eclipse or Netbeans. Then create two
+separate projects, one of the projects would be a pure Java
+application that will include the entity beans. The other project
+would be a pure Jython application that would include everything
+else. In this situation, you could simply add resulting JAR from
+your Java project into the sys.path of your Jython project and
+you’ll be ready to go. However, this works just as well if you do
+not wish to use an IDE.</p>
+<p>It is important to note that this section will provide you with one
+use case for using Jython, Java, and Hibernate together. There may
+be many other scenarios in which this combination of technologies
+would work out just as well, if not better. It is also good to note
+that this section will not cover Hibernate in any great depth;
+we’ll just scratch the surface of what it is capable of doing.
+There are a plethora of great Hibernate tutorials available on the
+web if you find this solution to be useful.</p>
+</div>
+<div class="section" id="entity-classes-and-hibernate-configuration">
+<h3>Entity Classes and Hibernate Configuration<a class="headerlink" href="#entity-classes-and-hibernate-configuration" title="Permalink to this headline">¶</a></h3>
+<p>Because our Hibernate entity beans must be coded in Java, most of
+the Hibernate configuration will reside in your Java project.
+Hibernate works in a straightforward manner. You basically map a
+table to a POJO and use a configuration file to map the two
+together. It is also possible to use annotations as opposed to XML
+configuration files, but for the purposes of this use case we will
+show you how to use the configuration files.</p>
+<p>The first configuration file we need to assemble is the
+hibernate.cfg.xml, which you can find in the root of your Java
+project directory tree. The purpose of this file is to define your
+database connection information as well as declare which entity
+configuration files will be used in your project. For the purposes
+of this example, we will be using the PostgreSql database, and
+we’ll be using the classic examples of the hockey roster
+application. This makes for a very simple use-case as we only deal
+with one table here, the Player table. Hibernate makes it very
+possible to work with multiple tables and even associate them in
+various ways.</p>
+<p><em>Listing 12-31.</em></p>
+<div class="highlight-python"><pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate
+Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd"&gt;
+&lt;hibernate-configuration&gt;
+&lt;session-factory&gt;
+    &lt;!-- Database connection settings --&gt;
+    &lt;property
+    name="connection.driver_class"&gt;org.postgresql.Driver&lt;/property&gt;
+    &lt;property
+    name="connection.url"&gt;jdbc:postgresql://localhost/database-name&lt;/property&gt;
+    &lt;property name="connection.username"&gt;username&lt;/property&gt;
+    &lt;property name="connection.password"&gt;password&lt;/property&gt;
+    &lt;!-- JDBC connection pool (use the built-in) --&gt;
+    &lt;property name="connection.pool_size"&gt;1&lt;/property&gt;
+    &lt;!-- SQL dialect --&gt;
+    &lt;property
+    name="dialect"&gt;org.hibernate.dialect.PostgreSQLDialect&lt;/property&gt;
+    &lt;mapping resource="org/jythonbook/entity/Player.hbm.xml"/&gt;
+&lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;</pre>
+</div>
+<p>Our next step is to code the plain old Java object for our database
+table. In this case, we’ll code an object named Player that
+contains only four database columns: id, first, last, and position.
+As you’ll see, we use standard public accessor methods with private
+variables in this class.</p>
+<p><em>Listing 12-32.</em></p>
+<div class="highlight-python"><pre>package org.jythonbook.entity;
+
+public class Player {
+
+    public Player(){}
+
+    private long id;
+    private String first;
+    private String last;
+    private String position;
+
+    public long getId(){
+        return this.id;
+    }
+    private void setId(long id){
+        this.id = id;
+    }
+    public String getFirst(){
+        return this.first;
+    }
+    public void setFirst(String first){
+        this.first = first;
+    }
+    public String getLast(){
+        return this.last;
+    }
+    public void setLast(String last){
+        this.last = last;
+    }
+    public String getPosition(){
+        return this.position;
+    }
+    public void setPosition(String position){
+        this.position = position;
+    }
+}</pre>
+</div>
+<p>Lastly, we will create a configuration file that will be used by
+Hibernate to map our POJO to the database table itself. We’ll
+ensure that the primary key value is always populated by using a
+generator class type of increment. Hibernate also allows for the
+use of other generators, including sequences if desired. The
+player.hbm.xml file should go into the same package as our POJO, in
+this case, the org.jythonbook.entity package.</p>
+<p><em>Listing 12-33. Creating a Hibernate Configuration File</em></p>
+<div class="highlight-python"><pre>&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"&gt;
+&lt;hibernate-mapping package="org.jythonbook.entity"&gt;
+    &lt;class name="Player" table="player" lazy="true"&gt;
+        &lt;comment&gt;Player for Hockey Team&lt;/comment&gt;
+        &lt;id name="id" column="id"&gt;
+            &lt;generator class="increment"/&gt;
+        &lt;/id&gt;
+        &lt;property name="first" column="first"/&gt;
+        &lt;property name="last" column="last"/&gt;
+        &lt;property name="position" column="position"/&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+</div>
+<p>That is all we have to do inside of the Java project for our simple
+example. Of course, you can add as many entity classes as you’d
+like to your own project. The main point to remember is that all of
+the entity classes are coded in Java, and we will code the rest of
+the application in Jython.</p>
+</div>
+<div class="section" id="jython-implementation-using-the-java-entity-classes">
+<h3>Jython Implementation Using the Java Entity Classes<a class="headerlink" href="#jython-implementation-using-the-java-entity-classes" title="Permalink to this headline">¶</a></h3>
+<p>The remainder of our use-case will be coded in Jython. Although all
+of the Hibernate configuration files and entity classes are coded
+and place within the Java project, we’ll need to import that
+project into the Jython project, and also import the Hibernate JAR
+file so that we can make use of its database session and
+transactional utilities to work with the entities. In the case of
+Netbeans, you’d create a Python application then set the Python
+platform to Jython 2.5.0. After that, you should add all of the
+required Hibernate JAR files as well as the Java project JAR file
+to the Python path from within the project properties. Once you’ve
+set up the project and taken care of the dependencies, you’re ready
+to code the implementation.</p>
+<p>As said previously, for this example we are coding a hockey roster
+implementation. The application runs on the command line and
+basically allows one to add players to a roster, remove players,
+and check the current roster. All of the database transactions will
+make use of the Player entity we coded in our Java application, and
+we’ll make use of Hibernate’s transaction management from within
+our Jython code.</p>
+<p><em>Listing 12-34. Hockey Roster Application Code</em></p>
+<div class="highlight-python"><pre>from org.hibernate.cfg import Environment
+from org.hibernate.cfg import Configuration
+from org.hibernate import Query
+from org.hibernate import Session
+from org.hibernate import SessionFactory
+from org.hibernate import Transaction
+from org.jythonbook.entity import Player
+
+
+class HockeyRoster:
+
+    def __init__(self):
+        self.cfg = Configuration().configure()
+        self.factory = self.cfg.buildSessionFactory()
+
+    def make_selection(self):
+        '''
+        Creates a selector for our application. The function prints output to the
+        command line. It then takes a parameter as keyboard input at the command
+        line in order to choose our application option.
+        '''
+        options_dict = {1:self.add_player,
+                    2:self.print_roster,
+                    3:self.search_roster,
+                    4:self.remove_player}
+        print "Please chose an option\\n"
+
+        selection = raw_input('''Press 1 to add a player, 2 to print the roster,
+                3 to search for a player on the team,
+                4 to remove player, 5 to quit: ''')
+        if int(selection) not in options_dict.keys():
+            if int(selection) == 5:
+                print "Thanks for using the HockeyRoster application."
+            else:
+                print "Not a valid option, please try again\\n"
+                self.make_selection()
+        else:
+            func = options_dict[int(selection)]
+            if func:
+                func()
+            else:
+                print "Thanks for using the HockeyRoster application."
+
+    def add_player(self):
+        '''
+        Accepts keyboard input to add a player object to the roster list.
+        This function creates a new player object each time it is invoked
+        and inserts a record into the corresponding database table.
+        '''
+        addNew = 'Y'
+        print "Add a player to the roster by providing the following information\\n"
+        while addNew.upper() == 'Y':
+            first = raw_input("First Name: ")
+            last = raw_input("Last Name: ")
+            position = raw_input("Position: ")
+            id = len(self.return_player_list())
+            session = self.factory.openSession()
+            try:
+                tx = session.beginTransaction()
+                player = Player()
+                player.first = first
+                player.last = last
+                player.position = position
+                session.save(player)
+                tx.commit()
+            except Exception,e:
+                if tx!=None:
+                    tx.rollback()
+                    print e
+            finally:
+                session.close()
+
+            print "Player successfully added to the roster\\n"
+            addNew = raw_input("Add another? (Y or N)")
+        self.make_selection()
+
+    def print_roster(self):
+        '''
+        Prints the contents of the Player database table
+        '''
+        print "====================\\n"
+        print "Complete Team Roster\\n"
+        print "======================\\n\\n"
+        playerList = self.return_player_list()
+        for player in playerList:
+            print "%s %s - %s" % (player.first, player.last, player.position)
+        print "\\n"
+        print "=== End of Roster ===\\n"
+        self.make_selection()
+
+    def search_roster(self):
+        '''
+        Takes input from the command line for a player's name to search within the
+        database. If the player is found in the list then an affirmative message
+        is printed. If not found, then a negative message is printed.
+        '''
+        index = 0
+        found = False
+        print "Enter a player name below to search the team\\n"
+        first = raw_input("First Name: ")
+        last = raw_input("Last Name: ")
+        position = None
+        playerList = self.return_player_list()
+        while index &lt; len(playerList):
+            player = playerList[index]
+            if player.first.upper() == first.upper():
+                if player.last.upper() == last.upper():
+                    found = True
+                    position = player.position
+            index = index + 1
+        if found:
+            print '%s %s is in the roster as %s' % (first, last, position)
+        else:
+            print '%s %s is not in the roster.' % (first, last)
+        self.make_selection()
+
+    def remove_player(self):
+        '''
+        Removes a designated player from the database
+        '''
+        index = 0
+        found = False
+        print "Enter a player name below to remove them from the team roster\\n"
+        first = raw_input("First Name: ")
+        last = raw_input("Last Name: ")
+        position = None
+        playerList = self.return_player_list()
+        found_player = Player()
+        while index &lt; len(playerList):
+            player = playerList[index]
+            if player.first.upper() == first.upper():
+                if player.last.upper() == last.upper():
+                    found = True
+                    found_player = player
+            index = index + 1
+
+        if found:
+            print '''%s %s is in the roster as %s,
+                are you sure you wish to remove?''' % (found_player.first,
+                                                    found_player.last,
+                                                    found_player.position)
+            yesno = raw_input("Y or N")
+            if yesno.upper() == 'Y':
+                session = self.factory.openSession()
+                tx = None
+                try:
+                    delQuery = "delete from Player player where id = %s" % (found_player.id)
+
+                    tx = session.beginTransaction()
+                    q = session.createQuery(delQuery)
+                    q.executeUpdate()
+                    tx.commit()
+                    print 'The player has been removed from the roster', found_player.id
+                except Exception,e:
+                    if tx!=None:
+                        tx.rollback()
+                        print e
+                finally:
+                s   ession.close
+            else:
+                print 'The player will not be removed'
+        else:
+            print '%s %s is not in the roster.' % (first, last)
+        self.make_selection()
+
+    def return_player_list(self):
+        '''
+        Connects to database and retrieves the contents of the player table
+        '''
+        session = self.factory.openSession()
+        try:
+            tx = session.beginTransaction()
+            playerList = session.createQuery("from Player").list()
+            tx.commit()
+        except Exception,e:
+            if tx!=None:
+                tx.rollback()
+            print e
+        finally:
+            session.close
+        return playerList
+
+    # main
+    #
+    # This is the application entry point. It simply prints the application title
+    # to the command line and then invokes the makeSelection() function.
+    if __name__ == "__main__":
+        print "Hockey Roster Application\\n\\n"
+        hockey = HockeyRoster()
+        hockey.make_selection()</pre>
+</div>
+<p>We begin our implementation in the main block, where the
+HockeyRoster class is instantiated. As you can see, the hibernate
+configuration is initialized and the session factory is built
+within the class initializer. Next, the make_selection() method is
+invoked which begins the actual execution of the program. The
+entire Hibernate configuration resides within the Java project, so
+we are not working with XML here, just making use of it. The code
+then begins to branch so that various tasks can be performed. In
+the case of adding a player to the roster, a user could enter the
+number 1 at the command prompt. You can see that the addPlayer()
+function simply creates a new Player object, populates it, and
+saves it into the database. Likewise, the searchRoster() function
+calls another function named returnPlayerList() which queries the
+player table using Hibernate query language and returns a list of
+Player objects.</p>
+<p>In the end, we have a completely scalable solution. We can code our
+entities using a mature and widely used Java ORM solution, and then
+implement the rest of the application in Jython. This allows us to
+make use of the best features of the Python language, but at the
+same time, persist our data using Java.</p>
+</div>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>You would be hard-pressed to find too many enterprise-level
+applications today that do not make use of a relational database in
+one form or another. The majority of applications in use today use
+databases to store information as they help to provide robust
+solutions. That being said, the topics covered in this chapter are
+very important to any developer. In this chapter, we learned that
+there are many different ways to implement database applications in
+Jython, specifically through the Java database connectivity API or
+an object relational mapping solution.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Chapter 12: Databases and Jython: Object Relational Mapping and Using JDBC</a><ul>
+<li><a class="reference external" href="#zxjdbc-using-python-s-db-api-via-jdbc">ZxJDBC—Using Python’s DB API via JDBC</a><ul>
+<li><a class="reference external" href="#getting-started">Getting Started</a></li>
+<li><a class="reference external" href="#connections">Connections</a></li>
+<li><a class="reference external" href="#zxjdbc-lookup">ZxJDBC.lookup</a><ul>
+<li><a class="reference external" href="#cursors">Cursors</a></li>
+<li><a class="reference external" href="#creating-and-executing-queries">Creating and Executing Queries</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#prepared-statements">Prepared Statements</a></li>
+<li><a class="reference external" href="#resource-management">Resource Management</a></li>
+<li><a class="reference external" href="#metadata">Metadata</a></li>
+<li><a class="reference external" href="#data-manipulation-language-and-data-definition-language">Data Manipulation Language and Data Definition Language</a><ul>
+<li><a class="reference external" href="#calling-procedures">Calling Procedures</a></li>
+<li><a class="reference external" href="#customizing-zxjdbc-calls">Customizing zxJDBC Calls</a><ul>
+<li><a class="reference external" href="#life-cycle">Life Cycle</a></li>
+<li><a class="reference external" href="#developer-support">Developer Support</a></li>
+<li><a class="reference external" href="#binding-prepared-statements">Binding Prepared Statements</a></li>
+<li><a class="reference external" href="#building-results">Building Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference external" href="#history">History</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#object-relational-mapping">Object Relational Mapping</a><ul>
+<li><a class="reference external" href="#sqlalchemy">SqlAlchemy</a></li>
+<li><a class="reference external" href="#installation">Installation</a></li>
+<li><a class="reference external" href="#using-sqlalchemy">Using SqlAlchemy</a></li>
+<li><a class="reference external" href="#hibernate">Hibernate</a></li>
+<li><a class="reference external" href="#entity-classes-and-hibernate-configuration">Entity Classes and Hibernate Configuration</a></li>
+<li><a class="reference external" href="#jython-implementation-using-the-java-entity-classes">Jython Implementation Using the Java Entity Classes</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="JythonIDE.html"
+                                  title="previous chapter">Chapter 11:&nbsp; Using Jython in an IDE</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="SimpleWebApps.html"
+                                  title="next chapter">Chapter 13: Simple Web Applications</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/DatabasesAndJython.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="SimpleWebApps.html" title="Chapter 13: Simple Web Applications"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="JythonIDE.html" title="Chapter 11:  Using Jython in an IDE"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+    <div class="footer">
+      &copy; Copyright 2009,2010, Josh Juneau, Frank Wierzbicki, Jim Baker, Leo Soto, Victor Ng.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-13131153-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  </body>
+</html>

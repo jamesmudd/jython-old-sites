@@ -1,0 +1,400 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>17.7. asynchat — Asynchronous socket command/response handler &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="17. Interprocess Communication and Networking" href="ipc.html" />
+    <link rel="next" title="18. Internet Data Handling" href="netdata.html" />
+    <link rel="prev" title="17.6. asyncore — Asynchronous socket handler" href="asyncore.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="netdata.html" title="18. Internet Data Handling"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="asyncore.html" title="17.6. asyncore — Asynchronous socket handler"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="ipc.html" accesskey="U">17. Interprocess Communication and Networking</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">17.7. <tt class="docutils literal"><span class="pre">asynchat</span></tt> &#8212; Asynchronous socket command/response handler</a><ul>
+<li><a class="reference external" href="#asynchat-auxiliary-classes-and-functions">17.7.1. asynchat - Auxiliary Classes and Functions</a></li>
+<li><a class="reference external" href="#asynchat-example">17.7.2. asynchat Example</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="asyncore.html"
+                                  title="previous chapter">17.6. <tt class="docutils literal"><span class="pre">asyncore</span></tt> &#8212; Asynchronous socket handler</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="netdata.html"
+                                  title="next chapter">18. Internet Data Handling</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/asynchat.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="asynchat-asynchronous-socket-command-response-handler">
+<h1>17.7. <tt class="docutils literal"><span class="pre">asynchat</span></tt> &#8212; Asynchronous socket command/response handler<a class="headerlink" href="#asynchat-asynchronous-socket-command-response-handler" title="Permalink to this headline">¶</a></h1>
+<p>This module builds on the <tt class="docutils literal"><span class="pre">asyncore</span></tt> infrastructure, simplifying
+asynchronous clients and servers and making it easier to handle
+protocols whose elements are terminated by arbitrary strings, or are
+of variable length. <tt class="docutils literal"><span class="pre">asynchat</span></tt> defines the abstract class
+<tt class="docutils literal"><span class="pre">async_chat</span></tt> that you subclass, providing implementations of the
+<tt class="docutils literal"><span class="pre">collect_incoming_data()</span></tt> and <tt class="docutils literal"><span class="pre">found_terminator()</span></tt> methods. It
+uses the same asynchronous loop as <tt class="docutils literal"><span class="pre">asyncore</span></tt>, and the two types of
+channel, <tt class="docutils literal"><span class="pre">asyncore.dispatcher</span></tt> and <tt class="docutils literal"><span class="pre">asynchat.async_chat</span></tt>, can
+freely be mixed in the channel map. Typically an
+<tt class="docutils literal"><span class="pre">asyncore.dispatcher</span></tt> server channel generates new
+<tt class="docutils literal"><span class="pre">asynchat.async_chat</span></tt> channel objects as it receives incoming
+connection requests.</p>
+<p>class class asynchat.async_chat</p>
+<blockquote>
+<p>This class is an abstract subclass of <tt class="docutils literal"><span class="pre">asyncore.dispatcher</span></tt>. To
+make practical use of the code you must subclass <tt class="docutils literal"><span class="pre">async_chat</span></tt>,
+providing meaningful <tt class="docutils literal"><span class="pre">collect_incoming_data()</span></tt> and
+<tt class="docutils literal"><span class="pre">found_terminator()</span></tt> methods. The <tt class="docutils literal"><span class="pre">asyncore.dispatcher</span></tt> methods
+can be used, although not all make sense in a message/response
+context.</p>
+<p>Like <tt class="docutils literal"><span class="pre">asyncore.dispatcher</span></tt>, <tt class="docutils literal"><span class="pre">async_chat</span></tt> defines a set of
+events that are generated by an analysis of socket conditions after
+a <tt class="docutils literal"><span class="pre">select()</span></tt> call. Once the polling loop has been started the
+<tt class="docutils literal"><span class="pre">async_chat</span></tt> object&#8217;s methods are called by the event-processing
+framework with no action on the part of the programmer.</p>
+<p>Two class attributes can be modified, to improve performance, or
+possibly even to conserve memory.</p>
+<p>ac_in_buffer_size</p>
+<blockquote>
+The asynchronous input buffer size (default <tt class="docutils literal"><span class="pre">4096</span></tt>).</blockquote>
+<p>ac_out_buffer_size</p>
+<blockquote>
+The asynchronous output buffer size (default <tt class="docutils literal"><span class="pre">4096</span></tt>).</blockquote>
+<p>Unlike <tt class="docutils literal"><span class="pre">asyncore.dispatcher</span></tt>, <tt class="docutils literal"><span class="pre">async_chat</span></tt> allows you to define
+a first-in-first-out queue (fifo) of <em>producers</em>. A producer need
+have only one method, <tt class="docutils literal"><span class="pre">more()</span></tt>, which should return data to be
+transmitted on the channel. The producer indicates exhaustion
+(<em>i.e.</em> that it contains no more data) by having its <tt class="docutils literal"><span class="pre">more()</span></tt>
+method return the empty string. At this point the <tt class="docutils literal"><span class="pre">async_chat</span></tt>
+object removes the producer from the fifo and starts using the next
+producer, if any. When the producer fifo is empty the
+<tt class="docutils literal"><span class="pre">handle_write()</span></tt> method does nothing. You use the channel
+object&#8217;s <tt class="docutils literal"><span class="pre">set_terminator()</span></tt> method to describe how to recognize
+the end of, or an important breakpoint in, an incoming transmission
+from the remote endpoint.</p>
+<p>To build a functioning <tt class="docutils literal"><span class="pre">async_chat</span></tt> subclass your  input methods
+<tt class="docutils literal"><span class="pre">collect_incoming_data()</span></tt> and <tt class="docutils literal"><span class="pre">found_terminator()</span></tt> must handle
+the data that the channel receives asynchronously. The methods are
+described below.</p>
+</blockquote>
+<p>async_chat.close_when_done()</p>
+<blockquote>
+Pushes a <tt class="xref docutils literal"><span class="pre">None</span></tt> on to the producer fifo. When this producer is
+popped off the fifo it causes the channel to be closed.</blockquote>
+<p>async_chat.collect_incoming_data(data)</p>
+<blockquote>
+Called with <em>data</em> holding an arbitrary amount of received data.
+The default method, which must be overridden, raises a
+<tt class="docutils literal"><span class="pre">NotImplementedError</span></tt> exception.</blockquote>
+<p>async_chat._collect_incoming_data(data)</p>
+<blockquote>
+Sample implementation of a data collection rutine to be used in
+conjunction with <tt class="docutils literal"><span class="pre">_get_data()</span></tt> in a user-specified
+<tt class="docutils literal"><span class="pre">found_terminator()</span></tt>.</blockquote>
+<p>async_chat.discard_buffers()</p>
+<blockquote>
+In emergencies this method will discard any data held in the input
+and/or output buffers and the producer fifo.</blockquote>
+<p>async_chat.found_terminator()</p>
+<blockquote>
+Called when the incoming data stream  matches the termination
+condition set by <tt class="docutils literal"><span class="pre">set_terminator()</span></tt>. The default method, which
+must be overridden, raises a <tt class="docutils literal"><span class="pre">NotImplementedError</span></tt> exception. The
+buffered input data should be available via an instance attribute.</blockquote>
+<p>async_chat._get_data()</p>
+<blockquote>
+Will return and clear the data received with the sample
+<tt class="docutils literal"><span class="pre">_collect_incoming_data()</span></tt> implementation.</blockquote>
+<p>async_chat.get_terminator()</p>
+<blockquote>
+Returns the current terminator for the channel.</blockquote>
+<p>async_chat.handle_close()</p>
+<blockquote>
+Called when the channel is closed. The default method silently
+closes the channel&#8217;s socket.</blockquote>
+<p>async_chat.handle_read()</p>
+<blockquote>
+Called when a read event fires on the channel&#8217;s socket in the
+asynchronous loop.  The default method checks for the termination
+condition established by <tt class="docutils literal"><span class="pre">set_terminator()</span></tt>, which can be either
+the appearance of a particular string in the input stream or the
+receipt of a particular number of characters.  When the terminator
+is found, <tt class="docutils literal"><span class="pre">handle_read()</span></tt> calls the <tt class="docutils literal"><span class="pre">found_terminator()</span></tt> method
+after calling <tt class="docutils literal"><span class="pre">collect_incoming_data()</span></tt> with any data preceding
+the terminating condition.</blockquote>
+<p>async_chat.handle_write()</p>
+<blockquote>
+Called when the application may write data to the channel.   The
+default method calls the <tt class="docutils literal"><span class="pre">initiate_send()</span></tt> method, which in turn
+will call <tt class="docutils literal"><span class="pre">refill_buffer()</span></tt> to collect data from the producer
+fifo associated with the channel.</blockquote>
+<p>async_chat.push(data)</p>
+<blockquote>
+Creates a <tt class="docutils literal"><span class="pre">simple_producer</span></tt> object (<em>see below</em>) containing the
+data and pushes it on to the channel&#8217;s <tt class="docutils literal"><span class="pre">producer_fifo</span></tt> to ensure
+its transmission.  This is all you need to do to have the channel
+write the data out to the network, although it is possible to use
+your own producers in more complex schemes to implement encryption
+and chunking, for example.</blockquote>
+<p>async_chat.push_with_producer(producer)</p>
+<blockquote>
+Takes a producer object and adds it to the producer fifo associated
+with the channel.  When all currently-pushed producers have been
+exhausted the channel will consume this producer&#8217;s data by calling
+its <tt class="docutils literal"><span class="pre">more()</span></tt> method and send the data to the remote endpoint.</blockquote>
+<p>async_chat.readable()</p>
+<blockquote>
+Should return <tt class="xref docutils literal"><span class="pre">True</span></tt> for the channel to be included in the set of
+channels tested by the <tt class="docutils literal"><span class="pre">select()</span></tt> loop for readability.</blockquote>
+<p>async_chat.refill_buffer()</p>
+<blockquote>
+Refills the output buffer by calling the <tt class="docutils literal"><span class="pre">more()</span></tt> method of the
+producer at the head of the fifo.  If it is exhausted then the
+producer is popped off the fifo and the next producer is activated.
+If the current producer is, or becomes, <tt class="xref docutils literal"><span class="pre">None</span></tt> then the channel
+is closed.</blockquote>
+<p>async_chat.set_terminator(term)</p>
+<blockquote>
+<p>Sets the terminating condition to be recognized on the channel.
+<tt class="docutils literal"><span class="pre">term</span></tt> may be any of three types of value, corresponding to three
+different ways to handle incoming protocol data.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="78%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">term</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><em>string</em></td>
+<td>Will call <tt class="docutils literal"><span class="pre">found_terminator()</span></tt> when the
+string is found in the input stream</td>
+</tr>
+<tr><td><em>integer</em></td>
+<td>Will call <tt class="docutils literal"><span class="pre">found_terminator()</span></tt> when the
+indicated number of characters have been
+received</td>
+</tr>
+<tr><td><tt class="xref docutils literal"><span class="pre">None</span></tt></td>
+<td>The channel continues to collect data forever</td>
+</tr>
+</tbody>
+</table>
+<p>Note that any data following the terminator will be available for
+reading by the channel after <tt class="docutils literal"><span class="pre">found_terminator()</span></tt> is called.</p>
+</blockquote>
+<p>async_chat.writable()</p>
+<blockquote>
+Should return <tt class="xref docutils literal"><span class="pre">True</span></tt> as long as items remain on the producer
+fifo, or the channel is connected and the channel&#8217;s output buffer
+is non-empty.</blockquote>
+<div class="section" id="asynchat-auxiliary-classes-and-functions">
+<h2>17.7.1. asynchat - Auxiliary Classes and Functions<a class="headerlink" href="#asynchat-auxiliary-classes-and-functions" title="Permalink to this headline">¶</a></h2>
+<p>class class asynchat.simple_producer(data[, buffer_size=512])</p>
+<blockquote>
+<p>A <tt class="docutils literal"><span class="pre">simple_producer</span></tt> takes a chunk of data and an optional buffer
+size.  Repeated calls to its <tt class="docutils literal"><span class="pre">more()</span></tt> method yield successive
+chunks of the data no larger than <em>buffer_size</em>.</p>
+<p>more()</p>
+<blockquote>
+Produces the next chunk of information from the producer, or
+returns the empty string.</blockquote>
+</blockquote>
+<p>class class asynchat.fifo([list=None])</p>
+<blockquote>
+<p>Each channel maintains a <tt class="docutils literal"><span class="pre">fifo</span></tt> holding data which has been
+pushed by the application but not yet popped for writing to the
+channel.  A <tt class="docutils literal"><span class="pre">fifo</span></tt> is a list used to hold data and/or producers
+until they are required.  If the <em>list</em> argument is provided then
+it should contain producers or data items to be written to the
+channel.</p>
+<p>is_empty()</p>
+<blockquote>
+Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if and only if the fifo is empty.</blockquote>
+<p>first()</p>
+<blockquote>
+Returns the least-recently <a href="#id1"><span class="problematic" id="id2">``</span></a>push()``ed item from the fifo.</blockquote>
+<p>push(data)</p>
+<blockquote>
+Adds the given data (which may be a string or a producer object)
+to the producer fifo.</blockquote>
+<p>pop()</p>
+<blockquote>
+If the fifo is not empty, returns <tt class="docutils literal"><span class="pre">True,</span> <span class="pre">first()</span></tt>, deleting
+the popped item.  Returns <tt class="docutils literal"><span class="pre">False,</span> <span class="pre">None</span></tt> for an empty fifo.</blockquote>
+</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">asynchat</span></tt> module also defines one utility function, which may
+be of use in network and textual analysis operations.</p>
+<p>asynchat.find_prefix_at_end(haystack, needle)</p>
+<blockquote>
+Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if string <em>haystack</em> ends with any non-empty
+prefix of string <em>needle</em>.</blockquote>
+</div>
+<div class="section" id="asynchat-example">
+<h2>17.7.2. asynchat Example<a class="headerlink" href="#asynchat-example" title="Permalink to this headline">¶</a></h2>
+<p>The following partial example shows how HTTP requests can be read with
+<tt class="docutils literal"><span class="pre">async_chat</span></tt>.  A web server might create an <tt class="docutils literal"><span class="pre">http_request_handler</span></tt>
+object for each incoming client connection. Notice that initially the
+channel terminator is set to match the blank line at the end of the
+HTTP headers, and a flag indicates that the headers are being read.</p>
+<p>Once the headers have been read, if the request is of type POST
+(indicating that further data are present in the input stream) then
+the <tt class="docutils literal"><span class="pre">Content-Length:</span></tt> header is used to set a numeric terminator to
+read the right amount of data from the channel.</p>
+<p>The <tt class="docutils literal"><span class="pre">handle_request()</span></tt> method is called once all relevant input has
+been marshalled, after setting the channel terminator to <tt class="xref docutils literal"><span class="pre">None</span></tt> to
+ensure that any extraneous data sent by the web client are ignored.</p>
+<blockquote>
+<p>class http_request_handler(asynchat.async_chat):</p>
+<blockquote>
+<dl class="docutils">
+<dt>def __init__(self, sock, addr, sessions, log):</dt>
+<dd>asynchat.async_chat.__init__(self, sock=sock)
+self.addr = addr
+self.sessions = sessions
+self.ibuffer = []
+self.obuffer = &#8220;&#8221;
+self.set_terminator(&#8220;rnrn&#8221;)
+self.reading_headers = True
+self.handling = False
+self.cgi_data = None
+self.log = log</dd>
+<dt>def collect_incoming_data(self, data):</dt>
+<dd>&#8220;&#8221;&#8220;Buffer the data&#8221;&#8220;&#8221;
+self.ibuffer.append(data)</dd>
+<dt>def found_terminator(self):</dt>
+<dd><dl class="first last docutils">
+<dt>if self.reading_headers:</dt>
+<dd><p class="first">self.reading_headers = False
+self.parse_headers(&#8220;&#8221;.join(self.ibuffer))
+self.ibuffer = []
+if self.op.upper() == &#8220;POST&#8221;:</p>
+<blockquote>
+clen = self.headers.getheader(&#8220;content-length&#8221;)
+self.set_terminator(int(clen))</blockquote>
+<dl class="last docutils">
+<dt>else:</dt>
+<dd>self.handling = True
+self.set_terminator(None)
+self.handle_request()</dd>
+</dl>
+</dd>
+<dt>elif not self.handling:</dt>
+<dd>self.set_terminator(None) # browsers sometimes over-send
+self.cgi_data = parse(self.headers, &#8220;&#8221;.join(self.ibuffer))
+self.handling = True
+self.ibuffer = []
+self.handle_request()</dd>
+</dl>
+</dd>
+</dl>
+</blockquote>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="netdata.html" title="18. Internet Data Handling"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="asyncore.html" title="17.6. asyncore — Asynchronous socket handler"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="ipc.html" >17. Interprocess Communication and Networking</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

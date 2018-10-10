@@ -1,0 +1,1124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Chapter 7:  Exception Handling and Debugging &mdash; Jython Book v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '1.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Book v1.0 documentation" href="index.html" />
+    <link rel="next" title="Chapter 8: Modules and Packages for Code Reuse" href="ModulesPackages.html" />
+    <link rel="prev" title="Chapter 6: Object-Oriented Jython" href="ObjectOrientedJython.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ModulesPackages.html" title="Chapter 8: Modules and Packages for Code Reuse"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ObjectOrientedJython.html" title="Chapter 6: Object-Oriented Jython"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="chapter-7-exception-handling-and-debugging">
+<h1>Chapter 7: &nbsp;Exception Handling and Debugging<a class="headerlink" href="#chapter-7-exception-handling-and-debugging" title="Permalink to this headline">¶</a></h1>
+<p>Any good program makes use of a language’s exception handling mechanisms. There
+is no better way to frustrate an end-user then by having them run into an issue
+with your software and displaying a big ugly error message on the screen,
+followed by a program crash. Exception handling is all about ensuring that when
+your program encounters an issue, it will continue to run and provide
+informative feedback to the end-user or program administrator. Any Java
+programmer becomes familiar with exception handling on day one, as some Java
+code won’t even compile unless there is some form of exception handling put
+into place via the try-catch-finally syntax. Python has similar constructs to
+that of Java, and we’ll discuss them in this chapter.</p>
+<p>After you have found an exception, or preferably before your software is
+distributed, you should go through the code and debug it in order to find and
+repair the erroneous code. There are many different ways to debug and repair
+code; we will go through some debugging methodologies in this chapter. In
+Python as well as Java, the assert keyword can help out tremendously in this
+area. We’ll cover assert in depth here and learn the different ways that it can
+be used to help you out and save time debugging those hard-to-find errors.</p>
+<div class="section" id="exception-handling-syntax-and-differences-with-java">
+<h2>Exception Handling Syntax and Differences with Java<a class="headerlink" href="#exception-handling-syntax-and-differences-with-java" title="Permalink to this headline">¶</a></h2>
+<p>Java developers are very familiar with the try-catch-finally block as this is
+the main mechanism that is used to perform exception handling. Python exception
+handling differs a bit from Java, but the syntax is fairly similar. However,
+Java differs a bit in the way that an exception is thrown in code. Now, realize
+that I just used the term throw…this is Java terminology. Python does not throw
+exceptions, but instead it raises them. Two different terms which mean
+basically the same thing. In this section, we’ll step through the process of
+handling and raising exceptions in Python code, and show you how it differs
+from that in Java.</p>
+<p>For those who are unfamiliar, I will show you how to perform some exception
+handling in the Java language. This will give you an opportunity to compare the
+two syntaxes and appreciate the flexibility that Python offers.</p>
+<p><em>Listing 7-1. Exception Handling in Java</em></p>
+<div class="highlight-python"><pre>try {
+// perform some tasks that may throw an exception
+} catch (ExceptionType messageVariable) {
+// perform some exception handling
+} finally {
+// execute code that must always be invoked
+}</pre>
+</div>
+<p>Now let’s go on to learn how to make this work in Python. Not only will we see
+how to handle and raise exceptions, but you’ll also learn some other great
+techniques such as using assertions later in the chapter.</p>
+<div class="section" id="catching-exceptions">
+<h3>Catching Exceptions<a class="headerlink" href="#catching-exceptions" title="Permalink to this headline">¶</a></h3>
+<p>How often have you been working in a program and performed some action that
+caused the program to abort and display a nasty error message? It happens more
+often than it should because most exceptions can be caught and handled nicely.
+By nicely, I mean that the program will not abort and the end user will receive
+a descriptive error message stating what the problem is, and in some cases how
+it can be resolved. The exception handling mechanisms within programming
+languages were developed for this purpose.</p>
+<p><em>Listing 7-2. try-except Example</em></p>
+<div class="highlight-python"><pre># This function uses a try-except clause to provide a nice error
+# message if the user passes a zero in as the divisor
+&gt;&gt;&gt; from __future__ import division
+&gt;&gt;&gt; def divide_numbers(x, y):
+...     try:
+...         return x/y
+...     except ZeroDivisionError:
+...         return 'You cannot divide by zero, try again'
+…
+# Attempt to divide 8 by 3
+&gt;&gt;&gt; divide_numbers(8,3)
+2.6666666666666665
+# Attempt to divide 8 by zero
+&gt;&gt;&gt; divide_numbers(8, 0)
+'You cannot divide by zero, try again'</pre>
+</div>
+<p>Table 7-1 lists of all exceptions that are built into the Python language along
+with a description of each. You can write any of these into an except clause
+and try to handle them. Later in this chapter I will show you how you and raise
+them if you’d like. Lastly, if there is a specific type of exception that you’d
+like to throw that does not fit any of these, then you can write your own
+exception type object. It is important to note that Python exception handling
+differs a bit from Java exception handling. In Java, many times the compiler
+forces you to catch exceptions, such is known as checked exceptions. Checked
+exceptions are basically exceptions that a method may throw while performing
+some task. The developer is forced to handle these checked exceptions using a
+try/catch or a throws clause, otherwise the compiler complains. Python has no
+such facility built into its error handling system. The developer decides when
+to handle exceptions and when not to do so. It is a best practice to include
+error handling wherever possible even though the interpreter does not force it.</p>
+<p>Exceptions in Python are special classes that are built into the language. As
+such, there is a class hierarchy for exceptions and some exceptions are
+actually subclasses of another exception class. In this case, a program can
+handle the superclass of such an exception and all subclassed exceptions are
+handled automatically. Table 7-1 lists the exceptions defined in the Python
+language, and the indentation resembles the class hierarchy.</p>
+<p><em>Table 7-1. Exceptions</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Exception</td>
+<td>Description</td>
+</tr>
+<tr><td>BaseException</td>
+<td>This is the root exception for all others</td>
+</tr>
+<tr><td>GeneratorExit</td>
+<td>Raised by close() method of generators for terminating
+iteration</td>
+</tr>
+<tr><td>KeyboardInterrupt</td>
+<td>Raised by the interrupt key</td>
+</tr>
+<tr><td>SystemExit</td>
+<td>Program exit</td>
+</tr>
+<tr><td>Exception</td>
+<td>Root for all non-exiting exceptions</td>
+</tr>
+<tr><td>StopIteration</td>
+<td>Raised to stop an iteration action</td>
+</tr>
+<tr><td>StandardError</td>
+<td>Base class for all built-in exceptions</td>
+</tr>
+<tr><td>ArithmeticError</td>
+<td>Base for all arithmetic exceptions</td>
+</tr>
+<tr><td>FloatingPointError</td>
+<td>Raised when a floating-point operation fails</td>
+</tr>
+<tr><td>OverflowError</td>
+<td>Arithmetic operations that are too large</td>
+</tr>
+<tr><td>ZeroDivisionError</td>
+<td>Division or modulo operation with zero as divisor</td>
+</tr>
+<tr><td>AssertionError</td>
+<td>Raised when an assert statement fails</td>
+</tr>
+<tr><td>AttributeError</td>
+<td>Attribute reference or assignment failure</td>
+</tr>
+<tr><td>EnvironmentError</td>
+<td>An error occurred outside of Python</td>
+</tr>
+<tr><td>IOError</td>
+<td>Error in Input/Output operation</td>
+</tr>
+<tr><td>OSError</td>
+<td>An error occurred in the os module</td>
+</tr>
+<tr><td>EOFError</td>
+<td>input() or raw_input() tried to read past the end of a
+file</td>
+</tr>
+<tr><td>ImportError</td>
+<td>Import failed to find module or name</td>
+</tr>
+<tr><td>LookupError</td>
+<td>Base class for IndexError and KeyError</td>
+</tr>
+<tr><td>IndexError</td>
+<td>A sequence index goes out of range</td>
+</tr>
+<tr><td>KeyError</td>
+<td>Referenced a non-existent mapping (dict) key</td>
+</tr>
+<tr><td>MemoryError</td>
+<td>Memory exhausted</td>
+</tr>
+<tr><td>NameError</td>
+<td>Failure to find a local or global name</td>
+</tr>
+<tr><td>UnboundLocalError</td>
+<td>Unassigned local variable is referenced</td>
+</tr>
+<tr><td>ReferenceError</td>
+<td>Attempt to access a garbage-collected object</td>
+</tr>
+<tr><td>RuntimeError</td>
+<td>Obsolete catch-all error</td>
+</tr>
+<tr><td>NotImplementedError</td>
+<td>Raised when a feature is not implemented</td>
+</tr>
+<tr><td>SyntaxError</td>
+<td>Parser encountered a syntax error</td>
+</tr>
+<tr><td>IndentationError</td>
+<td>Parser encountered an indentation issue</td>
+</tr>
+<tr><td>TabError</td>
+<td>Incorrect mixture of tabs and spaces</td>
+</tr>
+<tr><td>SystemError</td>
+<td>Non-fatal interpreter error</td>
+</tr>
+<tr><td>TypeError</td>
+<td>Inappropriate type was passed to an operator or function</td>
+</tr>
+<tr><td>ValueError</td>
+<td>Argument error not covered by TypeError or a more precise
+error</td>
+</tr>
+<tr><td>Warning</td>
+<td>Base for all warnings</td>
+</tr>
+</tbody>
+</table>
+<p>The try-except-finally block is used in Python programs to perform the
+exception-handling task. Much like that of Java, code that may or may not raise
+an exception can be placed in the try block. Differently though, exceptions
+that may be caught go into an except block much like the Java catch equivalent.
+Any tasks that must be performed no matter if an exception is thrown or not
+should go into the finally block. All tasks within the finally block are
+performed if an exception is raised either within the except block or by some
+other exception. The tasks are also performed before the exception is raised to
+ensure that they are completed. The finally block is a great place to perform
+cleanup activity such as closing open files and such.</p>
+<p><em>Listing 7-3. try-except-finally Logic</em></p>
+<div class="highlight-python"><pre>try:
+    # perform some task that may raise an exception
+except Exception, value:
+    # perform some exception handling
+finally:
+    # perform tasks that must always be completed (Will be performed before the exception is # raised.)</pre>
+</div>
+<p>Python also offers an optional else clause to create the try-except-else logic.
+This optional code placed inside the else block is run if there are no
+exceptions found in the block.</p>
+<p><em>Listing 7-4. try-finally logic</em></p>
+<div class="highlight-python"><pre>try:
+    # perform some tasks that may raise an exception
+finally:
+    # perform tasks that must always be completed (Will be performed before the exception is # raised.)</pre>
+</div>
+<p>The <em>else</em> clause can be used with the exception handling logic to ensure that
+some tasks are only run if no exceptions are raised. Code within the else
+clause is only initiated if no exceptions are thrown, and if any exceptions are
+raised within the else clause the control does not go back out to the except.
+Such activities to place in inside an else clause would be transactions such as
+a database commit. If several database transactions were taking place inside
+the try clause you may not want a commit to occur unless there were no
+exceptions raised.</p>
+<p><em>Listing 7-5. try-except-else logic:</em></p>
+<div class="highlight-python"><pre>try:
+    # perform some tasks that may raise an exception
+except:
+    # perform some exception handling
+else:
+    # perform some tasks thatwill only be performed if no exceptions are thrown</pre>
+</div>
+<p>You can name the specific type of exception to catch within the except block,
+or you can generically define an exception handling block by not naming any
+exception at all. Best practice of course states that you should always try to
+name the exception and then provide the best possible handling solution for the
+case. After all, if the program is simply going to spit out a nasty error then
+the exception handling block is not very user friendly and is only helpful to
+developers. However, there are some rare cases where it would be advantageous
+to not explicitly refer to an exception type when we simply wish to ignore
+errors and move on. The except block also allows us to define a variable to
+which the exception message will be assigned. This allows us the ability to
+store that message and display it somewhere within our exception handling code
+block. If you are calling a piece of Java code from within Jython and the Java
+code throws an exception, it can be handled within Jython in the same manner as
+Jython exceptions.</p>
+<p><em>Listing 7-6. Exception Handling in Python</em></p>
+<div class="highlight-python"><pre># Code without an exception handler
+&gt;&gt;&gt; x = 10
+&gt;&gt;&gt; z = x / y
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+NameError: name 'y' is not defined
+# The same code with an exception handling block
+&gt;&gt;&gt; x = 10
+&gt;&gt;&gt; try:
+...     z = x / y
+... except NameError, err:
+...     print "One of the variables was undefined: ", err
+...
+One of the variables was undefined:  name 'y' is not defined</pre>
+</div>
+<p>It is important to note that Jython 2.5.x uses the Python 2.5.x exception
+handling syntax. This syntax will be changing in future releases of Jython.
+Take note of the syntax that is being used for defining the variable that holds
+the exception. Namely, the except ExceptionType, value statement syntax in
+Python and Jython 2.5 differs from that beyond 2.5. In Python 2.6, the syntax
+changes a bit in order to ready developers for Python 3, which exclusively uses
+the new syntax.</p>
+<p><em>Listing 7-7. Jython and Python 2.5 and Prior</em></p>
+<div class="highlight-python"><pre>try:
+    # code
+except ExceptionType, messageVar:
+    # code</pre>
+</div>
+<p><em>Listing 7-8. Jython 2.6 (Not Yet Implemented) and Python 2.6 and Beyond</em></p>
+<div class="highlight-python"><pre>try:
+   # code
+except ExceptionType as messageVar:
+    # code</pre>
+</div>
+<p>We had previously mentioned that it was simply bad programming practice to not
+explicitly name an exception type when writing exception handling code. This is
+true, however Python provides us with another a couple of means to obtain the
+type of exception that was thrown. The easiest way to find an exception type is
+to simply catch the exception as a variable as we’ve discussed previously. You
+can then find the specific exception type by using the type(error_variable)
+syntax if needed.</p>
+<p><em>Listing 7-9. Determining Exception Type</em></p>
+<div class="highlight-python"><pre># In this example, we catch a general exception and then determine the type
+later
+&gt;&gt;&gt; try:
+...     8/0
+... except Exception, ex1:
+...     'An error has occurred'
+...
+'An error has occurred'
+&gt;&gt;&gt; ex1
+ZeroDivisionError('integer division or modulo by zero',)
+&gt;&gt;&gt; type(ex1)
+&lt;type 'exceptions.ZeroDivisionError'&gt;
+&gt;&gt;&gt;</pre>
+</div>
+<p>There is also a function provided in the sys package known as sys.exc_info()
+that will provide us with both the exception type and the exception message.
+This can be quite useful if we are wrapping some code in a try-except block but
+we really aren’t sure what type of exception may be thrown. Below is an example
+of using this technique.</p>
+<p><em>Listing 7-10. Using sys.exc_info()</em></p>
+<div class="highlight-python"><pre># Perform exception handling without explicitly naming the exception type
+&gt;&gt;&gt; x = 10
+&gt;&gt;&gt; try:
+...     z = x / y
+... except:
+...     print "Unexpected error: ", sys.exc_info()[0], sys.exc_info()[1]
+...
+Unexpected error:  &lt;type 'exceptions.NameError'&gt; name 'y' is not defined</pre>
+</div>
+<p>Sometimes you may run into a situation where it is applicable to catch more
+than one exception. Python offers a couple of different options if you need to
+do such exception handling. You can either use multiple except clauses, which
+does the trick and works well if you’re interested in performing different
+tasks for each different exception that occurs, but may become too wordy. The
+other preferred option is to enclose your exception types within parentheses
+and separated by commas on your except statement. Take a look at the following
+example that portrays the latter approach using Listing 7-6.</p>
+<p><em>Listing 7-11. Handling Multiple Exceptions</em></p>
+<div class="highlight-python"><pre># Catch NameError, but also a ZeroDivisionError in case a zero is used in the
+equation
+&gt;&gt;&gt; try:
+...     z = x/y
+... except(NameError, ZeroDivisionError), err:
+...     "An error has occurred, please check your values and try again"
+...
+'An error has occurred, please check your values and try again'
+
+# Using multiple except clauses
+&gt;&gt;&gt; x = 10
+&gt;&gt;&gt; y = 0
+&gt;&gt;&gt; try:
+...     z = x / y
+... except NameError, err1:
+...     print err1
+... except ZeroDivisionError, err2:
+...     print 'You cannot divide a number by zero!'
+...
+You cannot divide a number by zero!</pre>
+</div>
+<p>As mentioned previously, an exception is simply a class in Python. There are
+superclasses and subclasses for exceptions. You can catch a superclass
+exception to catch any of the exceptions that subclass that exception are
+thrown. For instance, if a program had a specific function that accepted either
+a list or dict object, it would make sense to catch a LookupError as opposed to
+finding a KeyError or IndexError separately. Look at the following example to
+see one way that this can be done.</p>
+<p><em>Listing 7-12. Catching a Superclass Exceptions</em></p>
+<div class="highlight-python"><pre># In the following example, we define a function that will return
+# a value from some container.  The function accepts either lists
+# or dictionary objects.  The LookupError superclass is caught
+# as opposed to checking for each of it's subclasses...namely KeyError and IndexError.
+&gt;&gt;&gt; def find_value(obj, value):
+...     try:
+...         return obj[value]
+...     except LookupError, ex:
+...         return 'An exception has been raised, check your values and try again'
+...
+
+# Create both a dict and a list and test the function by looking for a value that does
+# not exist in either container
+&gt;&gt;&gt; mydict = {'test1':1,'test2':2}
+&gt;&gt;&gt; mylist = [1,2,3]
+&gt;&gt;&gt; find_value(mydict, 'test3')
+'An exception has been raised, check your values and try again'
+&gt;&gt;&gt; find_value(mylist, 2)
+3
+&gt;&gt;&gt; find_value(mylist, 3)
+'An exception has been raised, check your values and try again'
+&gt;&gt;&gt;</pre>
+</div>
+<p>If multiple exception blocks have been coded, the first matching exception is
+the one that is caught. For instance, if we were to redesign the find_value
+function that was defined in the previous example, but instead raised each
+exception separately then the first matching exception would be raised. . .the
+others would be ignored. Let’s see how this would work.</p>
+<p><em>Listing 7-13. Catching the First Matching Exceptions</em></p>
+<div class="highlight-python"><pre># Redefine the find_value() function to check for each exception separately
+# Only the first matching exception will be raised, others will be ignored.
+# So in these examples, the except LookupError code is never run.
+&gt;&gt;&gt; def find_value(obj, value):
+...     try:
+...        return obj[value]
+...     except KeyError:
+...         return 'The specified key was not in the dict, please try again'
+...     except IndexError:
+...         return 'The specified index was out of range, please try again'
+...     except LookupError:
+...         return 'The specified key was not found, please try again'
+...
+&gt;&gt;&gt; find_value(mydict, 'test3')
+'The specified key was not in the dict, please try again'
+&gt;&gt;&gt; find_value(mylist, 3)
+'The specified index was out of range, please try again'
+&gt;&gt;&gt;</pre>
+</div>
+<p>The try-except­ block can be nested as deep as you’d like. In the case of
+nested exception handling blocks, if an exception is thrown then the program
+control will jump out of the inner most block that received the error, and up
+to the block just above it. This is very much the same type of action that is
+taken when you are working in a nested loop and then run into a break
+statement, your code will stop executing and jump back up to the outer loop.
+The following example shows an example for such logic.</p>
+<p><em>Listing 7-14. Nested Exception Handling Blocks</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Perform some division on numbers entered by keyboard</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c"># do some work</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">raw_input</span> <span class="p">(</span><span class="s">&#39;Enter a number for the dividend:  &#39;</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">&#39;Enter a number to divisor: &#39;</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="c"># handle exception and move to outer try-except</span>
+        <span class="k">print</span> <span class="s">&#39;You must enter a numeric value!&#39;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span>
+<span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+    <span class="c"># handle exception</span>
+    <span class="k">print</span> <span class="s">&#39;You cannot divide by zero!&#39;</span>
+<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">&#39;Retry and only use numeric values this time!&#39;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">&#39;Your quotient is: </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">z</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the previous example, we nested the different exception blocks. If the first
+ValueError were raised, it would give control back to the outer exception
+block. Therefore, the ZeroDivisionError and TypeError could still be raised.
+Otherwise, if those last two exceptions are not thrown then the tasks within
+the else clause would be run.</p>
+<p>As stated previously, it is a common practice in Jython to handle Java
+exceptions. Oftentimes we have a Java class that throws exceptions, and these
+can be handled or displayed in Jython just the same way as handling Python
+exceptions.</p>
+<p><em>Listing 7-15. Handling Java Exceptions in Jython</em></p>
+<div class="highlight-python"><pre>// Java Class TaxCalc
+public class TaxCalc {
+    public static void main(String[] args) {
+    double cost = 0.0;
+    int pct   = 0;
+    double tip = 0.0;
+    try {
+        cost = Double.parseDouble(args[0]);
+        pct = Integer.parseInt(args[1]);
+        tip = (cost * (pct * .01));
+        System.out.println("The total gratutity based on " + pct + " percent would be " + tip);
+        System.out.println("The total bill would be " + (cost + tip) );
+    } catch (NumberFormatException ex){
+        System.out.println("You must pass number values as arguments.  Exception: " + ex);
+    } catch (ArrayIndexOutOfBoundsException ex1){
+        System.out.println("You must pass two values to this utility.  " +
+        "Format: TaxCalc(cost, percentage)  Exception: " + ex1);
+    }
+    }
+}</pre>
+</div>
+<p>Using Jython:</p>
+<div class="highlight-python"><pre># Now lets bring the TaxCalc Java class into Jython and use it
+
+&gt;&gt;&gt; import TaxCalc
+&gt;&gt;&gt; calc = TaxCalc()
+
+# pass strings within a list to the TaxCalc utility and the Java exception will be thrown
+&gt;&gt;&gt; vals = ['test1','test2']
+&gt;&gt;&gt; calc.main(vals)
+You must pass number values as arguments.  Exception:
+java.lang.NumberFormatException: For input string: "test1"
+
+# Now pass numeric values as strings in a list, this works as expected (except for the bad
+# rounding)
+&gt;&gt;&gt; vals = ['25.25', '20']
+&gt;&gt;&gt; calc.main(vals)
+The total gratutity based on 20 percent would be 5.050000000000001
+The total bill would be 30.3</pre>
+</div>
+<p>You can also throw Java exceptions in Jython by simply importing them first and
+then using then raising them just like Python exceptions.</p>
+</div>
+<div class="section" id="raising-exceptions">
+<h3>Raising Exceptions<a class="headerlink" href="#raising-exceptions" title="Permalink to this headline">¶</a></h3>
+<p>Often you will find reason to raise your own exceptions. Maybe you are
+expecting a certain type of keyboard entry, and a user enters something
+incorrectly that your program does not like. This would be a case when you’d
+like to raise your own exception. The raise statement can be used to allow you
+to raise an exception where you deem appropriate. Using the raise statement,
+you can cause any of the Python exception types to be raised, you could raise
+your own exception that you define (discussed in the next section). The raise
+statement is analogous to the throw statement in the Java language. In Java we
+may opt to throw an exception if necessary. However, Java also allows you to
+apply a throws clause to a particular method if an exception may possibly be
+thrown within instead of using try-catch handler in the method. Python does not
+allow you do perform such techniques using the raise statement.</p>
+<p><em>Listing 7-16. raise Statement Syntax</em></p>
+<div class="highlight-python"><pre>raise ExceptionType or String[, message[, traceback]]</pre>
+</div>
+<p>As you can see from the syntax, using raise allows you to become creative in
+that you could use your own string when raising an error. However, this is not
+really looked upon as a best practice as you should try to raise a defined
+exception type if at all possible. You can also provide a short message
+explaining the error. This message can be any string. Let’s take a look at an
+example.</p>
+<p><em>Listing 7-17. raising Exceptions Using Message</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;An exception is being raised&quot;</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n-Identifier">&lt;module&gt;</span>
+<span class="nc">Exception</span>: <span class="n-Identifier">An exception is being raised</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;You&#39;ve specified an incorrect type&quot;</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n-Identifier">&lt;module&gt;</span>
+<span class="nc">TypeError</span>: <span class="n-Identifier">You&#39;ve specified an incorrect type</span>
+</pre></div>
+</div>
+<p>Now you’ve surely seen some exceptions raised in the Python interpreter by now.
+Each time an exception is raised, a message appears that was created by the
+interpreter to give you feedback about the exception and where the offending
+line of code may be. There is always a traceback section when any exception is
+raised. This really gives you more information on where the exception was
+raised. Lastly, let’s take a look at raising an exception using a different
+format. Namely, we can use the format raise Exception, “message”.</p>
+<p><em>Listing 7-18. Using the raise Statement with the Exception, “message” Syntax</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">raise</span> <span class="ne">TypeError</span><span class="p">,</span><span class="s">&quot;This is a special message&quot;</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n-Identifier">&lt;module&gt;</span>
+<span class="nc">TypeError</span>: <span class="n-Identifier">This is a special message</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="defining-your-own-exceptions">
+<h2>Defining Your Own Exceptions<a class="headerlink" href="#defining-your-own-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>You can define your own exceptions in Python by creating an exception class.
+You simply define a class that inherits from the base Exception class. The
+easiest defined exception can simply use a pass statement inside the class.
+Exception classes can accept parameters using the initializer, and return the
+exception using the __str__ method. Any exception you write should accept a
+message. It is also a good practice to name your exception giving it a suffix
+of Error if the exception is referring to an error of some kind.</p>
+<p><em>Listing 7-19. Defining a Basic Exception Class</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyNewError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>This example is the simplest type of exception you can create. This exception
+that was created above can be raised just like any other exception now.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">raise</span> <span class="n">MyNewError</span><span class="p">(</span><span class="s">&quot;Something happened in my program&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A more involved exception class may be written as follows.</p>
+<p><em>Listing 7-20. Exception Class Using Initializer</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MegaError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; This is raised when there is a huge problem with my program&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="issuing-warnings">
+<h2>Issuing Warnings<a class="headerlink" href="#issuing-warnings" title="Permalink to this headline">¶</a></h2>
+<p>Warnings can be raised at any time in your program and can be used to display
+some type of warning message, but they do not necessarily cause execution to
+abort. A good example is when you wish to deprecate a method or implementation
+but still make it usable for compatibility. You could create a warning to alert
+the user and let them know that such methods are deprecated and point them to
+the new definition, but the program would not abort. Warnings are easy to
+define, but they can be complex if you wish to define rules on them using
+filters. Warning filters are used to modify the behavior of a particular
+warning. Much like exceptions, there are a number of defined warnings that can
+be used for categorizing. In order to allow these warnings to be easily
+converted into exceptions, they are all instances of the Exception type.
+Remember that exceptions are not necessarily errors, but rather alerts or
+messages. For instance, the StopIteration exception is raised by a program to
+stop the iteration of a loop…not to flag an error with the program.</p>
+<p>To issue a warning, you must first import the warnings module into your
+program. Once this has been done then it is as simple as making a call to the
+warnings.warn() function and passing it a string with the warning message.
+However, if you’d like to control the type of warning that is issued, you can
+also pass the warning class. Warnings are listed in Table 7-2.</p>
+<p><em>Listing 7-21. Issuing a Warning</em></p>
+<div class="highlight-python"><pre># Always import the warnings module first
+import warnings
+
+# A couple of examples for setting up warnings
+warnings.warn("this feature will be deprecated")
+warnings.warn("this is a more involved warning", RuntimeWarning)
+
+# Using A Warning in a Function
+
+# Suppose that use of the following function has been deprecated,
+# warnings can be used to alert the function users
+
+# The following function calculates what the year will be if we
+# add the specified number of days to the current year.  Of course,
+# this is pre-Y2K code so it is being deprecated.  We certainly do not
+# want this code around when we get to year 3000!
+&gt;&gt;&gt; def add_days(current_year, days):
+...     warnings.warn("This function has been deprecated as of version x.x",
+DeprecationWarning)
+...     num_years = 0
+...     if days &gt; 365:
+...         num_years = days/365
+...     return current_year + num_years
+...
+
+# Calling the function will return the warning that has been set up,
+# but it does not raise an error...the expected result is still returned.
+&gt;&gt;&gt; add_days(2009, 450)
+__main__:2: DeprecationWarning: This function has been deprecated as of version x.x
+2010</pre>
+</div>
+<p>Table 7-2. Python Warning Categories</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><strong>Warning</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr><td>Warning</td>
+<td>Root warning class</td>
+</tr>
+<tr><td>UserWarning</td>
+<td>A user-defined warning</td>
+</tr>
+<tr><td>DeprecationWarning</td>
+<td>Warns about use of a deprecated feature</td>
+</tr>
+<tr><td>SyntaxWarning</td>
+<td>Syntax issues</td>
+</tr>
+<tr><td>RuntimeWarning</td>
+<td>Runtime issues</td>
+</tr>
+<tr><td>FutureWarning</td>
+<td>Warns that a particular feature will be changing in a
+future release</td>
+</tr>
+</tbody>
+</table>
+<p>Importing the warnings module into your code gives you access to a number of
+built-in warning functions that can be used. If you’d like to filter a warning
+and change its behavior then you can do so by creating a filter. Table 7-3
+lists functions that come with the warnings module.</p>
+<p>Table 7-3. Warning Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><strong>Function</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr><td>warn(message[,
+category[,
+stacklevel]])</td>
+<td>Issues a warning. Parameters include a message
+string, the optional category of warning, and the
+optional stack level that tells which stack frame the
+warning should originate from, usually either the
+calling function or the source of the function
+itself.</td>
+</tr>
+<tr><td>warn_explicit(message,
+category, filename,
+lineno[, module[,
+registry]])</td>
+<td>This offers a more detailed warning message and makes
+category a mandatory parameter. filename, lineno, and
+module tell where the warning is located. registry
+represents all of the current warning filters that
+are active.</td>
+</tr>
+<tr><td>showwarning(message,
+category, filename,
+lineno[, file])</td>
+<td>Gives you the ability to write the warning to a file.</td>
+</tr>
+<tr><td>formatwarning(message,
+category, filename,
+lineno)</td>
+<td>Creates a formatted string representing the warning.</td>
+</tr>
+<tr><td>simplefilter(action[,
+category[, lineno[,
+append]]])</td>
+<td>Inserts simple entry into the ordered list of
+warnings filters. Regular expressions are not needed
+for simplefilter as the filter always matches any
+message in any module as long as the category and
+line number match. filterwarnings() described below
+uses a regular expression to match against warnings.</td>
+</tr>
+<tr><td>resetwarnings()</td>
+<td>Resets all of the warning filters.</td>
+</tr>
+<tr><td>filterwarnings(action[,
+message[, category[,
+module[, lineno[,
+append]]]]])</td>
+<td>This adds an entry into a warning filter list.
+Warning filters allow you to modify the behavior of a
+warning. The action in the warning filter can be one
+from those listed in Table 7-4, message is a regular
+expression, category is the type of a warning to be
+issued, module can be a regular expression, lineno is
+a line number to match against all lines, append
+specifies whether the filter should be appended to
+the list of all filters.</td>
+</tr>
+</tbody>
+</table>
+<p>Table 7-4. Python Filter Actions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Filter Actions</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>‘always’</td>
+<td>Always print warning message</td>
+</tr>
+<tr><td>‘default’</td>
+<td>Print warning once for each location where warning occurs</td>
+</tr>
+<tr><td>‘error’</td>
+<td>Converts a warning into an exception</td>
+</tr>
+<tr><td>‘ignore’</td>
+<td>Ignores the warning</td>
+</tr>
+<tr><td>‘module’</td>
+<td>Print warning once for each module in which warning occurs</td>
+</tr>
+<tr><td>‘once’</td>
+<td>Print warning only one time</td>
+</tr>
+</tbody>
+</table>
+<p>Let’s take a look at a few ways to use warning filters in the examples below.</p>
+<p><em>Listing 7-22. Warning Filter Examples</em></p>
+<div class="highlight-python"><pre># Set up a simple warnings filter to raise a warning as an exception
+
+&gt;&gt;&gt; warnings.simplefilter('error', UserWarning)
+&gt;&gt;&gt; warnings.warn('This will be raised as an exception')
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+  File "/Applications/Jython/jython2.5.1rc2/Lib/warnings.py", line 63, in warn
+    warn_explicit(message, category, filename, lineno, module, registry,
+  File "/Applications/Jython/jython2.5.1rc2/Lib/warnings.py", line 104, in warn_explicit
+    raise message
+UserWarning: This will be raised as an exception
+
+# Turn off all active filters using resetwarnings()
+&gt;&gt;&gt; warnings.resetwarnings()
+&gt;&gt;&gt; warnings.warn('This will not be raised as an exception')
+__main__:1: UserWarning: This will not be raised as an exception
+
+# Use a regular expression to filter warnings
+# In this case, we ignore all warnings containing the word “one”
+&gt;&gt;&gt; warnings.filterwarnings('ignore', '.*one*.',)
+&gt;&gt;&gt; warnings.warn('This is warning number zero')
+__main__:1: UserWarning: This is warning number zero
+&gt;&gt;&gt; warnings.warn('This is warning number one')
+&gt;&gt;&gt; warnings.warn('This is warning number two')
+__main__:1: UserWarning: This is warning number two
+&gt;&gt;&gt;</pre>
+</div>
+<p>There can be many different warning filters in use, and each call to the
+filterwarnings() function will append another warning to the ordered list of
+filters if so desired. The specific warning is matched against each filter
+specification in the list in turn until a match is found. In order to see which
+filters are currently in use, issue the command print warnings.filters. One can
+also specify a warning filter from the command line by use of the –W option.
+Lastly, all warnings can be reset to defaults by using the resetwarnings()
+function.</p>
+<p>It is also possible to set up a warnings filter using a command-line argument.
+This can be quite useful for filtering warnings on a per-script or per-module
+basis. For instance, if you are interested in filtering warnings on a
+per-script basis then you could issue the -W command line argument while
+invoking the script.</p>
+<p><em>Listing 7-23. -W command-line option</em></p>
+<div class="highlight-python"><pre>-Waction:message:category:module:lineno</pre>
+</div>
+<p><em>Listing 7-24. Example of using W command line option</em></p>
+<div class="highlight-python"><pre># Assume we have the following script test_warnings.py
+# and we are interested in running it from the command line
+import warnings
+def test_warnings():
+    print "The function has started"
+    warnings.warn("This function has been deprecated", DeprecationWarning)
+    print "The function has been completed"
+
+if __name__ == "__main__":
+    test_warnings()
+
+# Use the following syntax to start and run jython as usual without
+# filtering any warnings
+jython test_warnings.py
+The function has started
+test_warnings.py:4: DeprecationWarning: This function has been deprecated
+  warnings.warn("This function has been deprecated", DeprecationWarning)
+The function has been completed
+
+# Run the script and ignore all deprecation warnings
+jython -W "ignore::DeprecationWarning::0" test_warnings.py
+The function has started
+The function has been completed
+
+# Run the script one last time and treat the DeprecationWarning
+# as an exception.  As you see, it never completes
+jython -W "error::DeprecationWarning::0" test_warnings.py
+The function has started
+Traceback (most recent call last):
+  File "test_warnings.py", line 8, in &lt;module&gt;
+    test_warnings()
+  File "test_warnings.py", line 4, in test_warnings
+    warnings.warn("This function has been deprecated", DeprecationWarning)
+  File "/Applications/Jython/jython2.5.1rc2/Lib/warnings.py", line 63, in warn
+    warn_explicit(message, category, filename, lineno, module, registry,
+  File "/Applications/Jython/jython2.5.1rc2/Lib/warnings.py", line 104, in warn_explicit
+    raise message
+DeprecationWarning: This function has been deprecated</pre>
+</div>
+<p>Warnings can be very useful in some situations. They can be made as simplistic
+or sophisticated as need be.</p>
+</div>
+<div class="section" id="assertions-and-debugging">
+<h2>Assertions and Debugging<a class="headerlink" href="#assertions-and-debugging" title="Permalink to this headline">¶</a></h2>
+<p>Debugging can be an easy task in Python via use of the assert statement. In
+CPython, the __debug__ variable can also be used, but this feature is currently
+not usable in Jython as there is no <em>optimization</em> mode for the interpreter. .
+Assertions are statements that can print to indicate that a particular piece of
+code is not behaving as expected. The assertion checks an expression for a True
+or False value, and if it evaluates to False in a Boolean context then it
+issues an AssertionError along with an optional message. If the expression
+evaluates to True then the assertion is ignored completely.</p>
+<div class="highlight-python"><pre>assert expression [, message]</pre>
+</div>
+<p>By effectively using the assert statement throughout your program, you can
+easily catch any errors that may occur and make debugging life much easier.
+Listing 7-25 will show you the use of the assert statement.</p>
+<p><em>Listing 7-25. Using assert</em></p>
+<div class="highlight-python"><pre>#  The following example shows how assertions are evaluated
+&gt;&gt;&gt; x = 5
+&gt;&gt;&gt; y = 10
+&gt;&gt;&gt; assert x &lt; y, "The assertion is ignored"
+&gt;&gt;&gt; assert x &gt; y, "The assertion raises an exception"
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+AssertionError: The assertion raises an exception
+
+# Use assertions to validate parameters# Here we check the type of each parameter to ensure
+# that they are integers
+&gt;&gt;&gt; def add_numbers(x, y):
+...     assert type(x) is int, "The arguments must be integers, please check the first argument"
+...     assert type(y) is int, "The arguments must be integers, please check the second argument"
+...     return x + y
+...
+# When using the function, AssertionErrors are raised as necessary
+&gt;&gt;&gt; add_numbers(3, 4)
+7
+&gt;&gt;&gt; add_numbers('hello','goodbye')
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+  File "&lt;stdin&gt;", line 2, in add_numbers
+AssertionError: The arguments must be integers, please check the first argument</pre>
+</div>
+</div>
+<div class="section" id="context-managers">
+<h2>Context Managers<a class="headerlink" href="#context-managers" title="Permalink to this headline">¶</a></h2>
+<p>Ensuring that code is written properly in order to manage resources such as
+files or database connections is an important topic. If files or database
+connections are opened and never closed then our program could incur issues.
+Often times, developers elect to make use of the try-finally blocks to ensure
+that such resources are handled properly. While this is an acceptable method
+for resource management, it can sometimes be misused and lead to problems when
+exceptions are raised in programs. For instance, if we are working with a
+database connection and an exception occurs after we’ve opened the connection,
+the program control may break out of the current block and skip all further
+processing. The connection may never be closed in such a case. That is where
+the concept of context management becomes an important new feature in Jython.
+Context management via the use of the with statement is new to Jython 2.5, and
+it is a very nice way to ensure that resources are managed as expected.</p>
+<p>In order to use the with statement, you must import from __future__. The with
+statement basically allows you to take an object and use it without worrying
+about resource management. For instance, let’s say that we’d like to open a
+file on the system and read some lines from it. To perform a file operation you
+first need to open the file, perform any processing or reading of file content,
+and then close the file to free the resource. Context management using the with
+statement allows you to simply open the file and work with it in a concise
+syntax.</p>
+<p><em>Listing 7-26. Python with Statement Example</em></p>
+<div class="highlight-python"><pre>#  Read from a text file named players.txt
+&gt;&gt;&gt; from __future__ import with_statement
+&gt;&gt;&gt; with open('players.txt','r') as file:
+...     x = file.read()
+...
+&gt;&gt;&gt; print x
+Sports Team Management
+---------------------------------
+Josh – forward
+Jim – defense</pre>
+</div>
+<p>In this example, we did not worry about closing the file because the context
+took care of that for us. This works with object that extends the context
+management protocol. In other words, any object that implements two methods
+named <em>__enter__()</em> and <em>__exit__()</em> adhere to the context management protocol.
+When the with statement begins, the <em>__enter__()</em> method is executed. Likewise,
+as the last action performed when the with statement is ending, the <em>__exit__()</em>
+method is executed. The <em>__enter__()</em> method takes no arguments, whereas the
+<em>__exit__()</em> method takes three optional arguments type, value, and traceback.
+The <em>__exit__()</em> method returns a True or False value to indicate whether an
+exception was thrown. The as variable clause on the with statement is optional
+as it will allow you to make use of the object from within the code block. If
+you are working with resources such as a lock then you may not need the
+optional clause.</p>
+<p>If you follow the context management protocol, it is possible to create your
+own objects that can be used with this technique. The <em>__enter__()</em> method should
+create whatever object you are trying to work if needed.</p>
+<p><em>Listing 7-27. Creating a Simple Object That Follows Context Management Protocol</em></p>
+<div class="highlight-python"><pre># In this example, my_object facilitates the context management protocol
+# as it defines an __enter__ and __exit__ method
+class my_object:
+    def __enter__(self):
+        # Perform setup tasks
+        return object
+
+    def __exit__(self, type, value, traceback):
+        # Perform cleanup</pre>
+</div>
+<p>If you are working with an immutable object then you’ll need to create a copy
+of that object to work with in the <em>__enter__()</em> method. The <em>__exit__()</em> method on
+the other hand can simply return False unless there is some other type of
+cleanup processing that needs to take place. If an exception is raised
+somewhere within the context manager, then <em>__exit__()</em> is called with three
+arguments representing type, value, and traceback. However, if there are no
+exceptions raised then <em>__exit__()</em> is passed three None arguments. If <em>__exit__()</em>
+returns True, then any exceptions are “swallowed” or ignored, and execution
+continues at the next statement after the with-statement.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>In this chapter, we discussed many different topics regarding exceptions and
+exception handling within a Python application. First, you learned the
+exception handling syntax of the ­try-except-finally­ code block and how it is
+used. We then discussed why it may be important to raise your own exceptions at
+times and how to do so. That topic led to the discussion of how to define an
+exception and we learned that in order to do so we must define a class that
+extends the Exception type object.</p>
+<p>After learning about exceptions, we went into the warnings framework and
+discussed how to use it. It may be important to use warnings in such cases
+where code may be deprecated and you want to warn users, but you do not wish to
+raise any exceptions. That topic was followed by assertions and how assertion
+statement can be used to help us debug our programs. Lastly, we touched upon
+the topic of context managers and using the with statement that is new in
+Jython 2.5.</p>
+<p>In the next chapter you will delve into the arena of building larger programs,
+learning about modules and packages.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Chapter 7: &nbsp;Exception Handling and Debugging</a><ul>
+<li><a class="reference external" href="#exception-handling-syntax-and-differences-with-java">Exception Handling Syntax and Differences with Java</a><ul>
+<li><a class="reference external" href="#catching-exceptions">Catching Exceptions</a></li>
+<li><a class="reference external" href="#raising-exceptions">Raising Exceptions</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#defining-your-own-exceptions">Defining Your Own Exceptions</a></li>
+<li><a class="reference external" href="#issuing-warnings">Issuing Warnings</a></li>
+<li><a class="reference external" href="#assertions-and-debugging">Assertions and Debugging</a></li>
+<li><a class="reference external" href="#context-managers">Context Managers</a></li>
+<li><a class="reference external" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="ObjectOrientedJython.html"
+                                  title="previous chapter">Chapter 6:  Object-Oriented Jython</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="ModulesPackages.html"
+                                  title="next chapter">Chapter 8:  Modules and Packages for Code Reuse</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/ExceptionHandlingDebug.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ModulesPackages.html" title="Chapter 8: Modules and Packages for Code Reuse"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ObjectOrientedJython.html" title="Chapter 6: Object-Oriented Jython"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+    <div class="footer">
+      &copy; Copyright 2009,2010, Josh Juneau, Frank Wierzbicki, Jim Baker, Leo Soto, Victor Ng.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-13131153-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  </body>
+</html>

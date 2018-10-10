@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.17. copy — Shallow and deep copy operations &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="8. Data Types" href="datatypes.html" />
+    <link rel="next" title="8.18. pprint — Data pretty printer" href="pprint.html" />
+    <link rel="prev" title="8.16. new — Creation of runtime internal objects" href="new.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="pprint.html" title="8.18. pprint — Data pretty printer"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="new.html" title="8.16. new — Creation of runtime internal objects"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" accesskey="U">8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="new.html"
+                                  title="previous chapter">8.16. <tt class="docutils literal"><span class="pre">new</span></tt> &#8212; Creation of runtime internal objects</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="pprint.html"
+                                  title="next chapter">8.18. <tt class="docutils literal"><span class="pre">pprint</span></tt> &#8212; Data pretty printer</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/copy.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="copy-shallow-and-deep-copy-operations">
+<h1>8.17. <tt class="docutils literal"><span class="pre">copy</span></tt> &#8212; Shallow and deep copy operations<a class="headerlink" href="#copy-shallow-and-deep-copy-operations" title="Permalink to this headline">¶</a></h1>
+<p>This module provides generic (shallow and deep) copying operations.</p>
+<p>Interface summary:</p>
+<blockquote>
+<p>import copy</p>
+<p>x = copy.copy(y)        # make a shallow copy of y
+x = copy.deepcopy(y)    # make a deep copy of y</p>
+</blockquote>
+<p>For module specific errors, <tt class="docutils literal"><span class="pre">copy.error</span></tt> is raised.</p>
+<p>The difference between shallow and deep copying is only relevant for
+compound objects (objects that contain other objects, like lists or
+class instances):</p>
+<ul class="simple">
+<li>A <em>shallow copy</em> constructs a new compound object and then (to the
+extent possible) inserts <em>references</em> into it to the objects found
+in the original.</li>
+<li>A <em>deep copy</em> constructs a new compound object and then,
+recursively, inserts <em>copies</em> into it of the objects found in the
+original.</li>
+</ul>
+<p>Two problems often exist with deep copy operations that don&#8217;t exist
+with shallow copy operations:</p>
+<ul class="simple">
+<li>Recursive objects (compound objects that, directly or indirectly,
+contain a reference to themselves) may cause a recursive loop.</li>
+<li>Because deep copy copies <em>everything</em> it may copy too much, e.g.,
+administrative data structures that should be shared even between
+copies.</li>
+</ul>
+<p>The <tt class="docutils literal"><span class="pre">deepcopy()</span></tt> function avoids these problems by:</p>
+<ul class="simple">
+<li>keeping a &#8220;memo&#8221; dictionary of objects already copied during the
+current copying pass; and</li>
+<li>letting user-defined classes override the copying operation or the
+set of components copied.</li>
+</ul>
+<p>This module does not copy types like module, method, stack trace,
+stack frame, file, socket, window, array, or any similar types.  It
+does &#8220;copy&#8221; functions and classes (shallow and deeply), by returning
+the original object unchanged; this is compatible with the way these
+are treated by the <tt class="docutils literal"><span class="pre">pickle</span></tt> module.</p>
+<p>Shallow copies of dictionaries can be made using <tt class="docutils literal"><span class="pre">dict.copy()</span></tt>, and
+of lists by assigning a slice of the entire list, for example,
+<tt class="docutils literal"><span class="pre">copied_list</span> <span class="pre">=</span> <span class="pre">original_list[:]</span></tt>.</p>
+<p>Changed in version 2.5: Added copying functions.</p>
+<p>Classes can use the same interfaces to control copying that they use
+to control pickling.  See the description of module <tt class="docutils literal"><span class="pre">pickle</span></tt> for
+information on these methods.  The <tt class="docutils literal"><span class="pre">copy</span></tt> module does not use the
+<tt class="docutils literal"><span class="pre">copy_reg</span></tt> registration module.</p>
+<p>In order for a class to define its own copy implementation, it can
+define special methods <tt class="docutils literal"><span class="pre">__copy__()</span></tt> and <tt class="docutils literal"><span class="pre">__deepcopy__()</span></tt>.  The
+former is called to implement the shallow copy operation; no
+additional arguments are passed. The latter is called to implement the
+deep copy operation; it is passed one argument, the memo dictionary.
+If the <tt class="docutils literal"><span class="pre">__deepcopy__()</span></tt> implementation needs to make a deep copy of
+a component, it should call the <tt class="docutils literal"><span class="pre">deepcopy()</span></tt> function with the
+component as first argument and the memo dictionary as second
+argument.</p>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">pickle</span></tt></dt>
+<dd>Discussion of the special methods used to support object state
+retrieval and restoration.</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pprint.html" title="8.18. pprint — Data pretty printer"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="new.html" title="8.16. new — Creation of runtime internal objects"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="datatypes.html" >8. Data Types</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

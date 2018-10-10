@@ -1,0 +1,1216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Chapter 19: Concurrency &mdash; Jython Book v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '1.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Book v1.0 documentation" href="index.html" />
+    <link rel="next" title="Appendix A: Using Other Tools with Jython" href="appendixA.html" />
+    <link rel="prev" title="Chapter 18: Testing and Continuous Integration" href="TestingIntegration.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="appendixA.html" title="Appendix A: Using Other Tools with Jython"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="TestingIntegration.html" title="Chapter 18: Testing and Continuous Integration"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="chapter-19-concurrency">
+<h1>Chapter 19: Concurrency<a class="headerlink" href="#chapter-19-concurrency" title="Permalink to this headline">¶</a></h1>
+<p>Supporting concurrency is increasingly important.
+In the past, mainstream concurrent programming generally meant ensuring that the code interacting with relatively slow network, disk, database, and other I/O resources did not unduly slow things down.
+Exploiting parallelism was typically only seen in such domains as scientific computing with the apps running on supercomputers.</p>
+<p>But there are new factors at work now.
+The semiconductor industry continues to work feverishly to uphold Moore’s Law of exponential increase in chip density.
+Chip designers used to apply this bounty to speeding up an individual CPU.
+For a variety of reasons this old approach no longer works as well, so now chip designers are cramming chips with more CPUs and hardware threads.
+Speeding up execution means harnessing the parallelism of the hardware, and it is now our job as software developers to do that work.</p>
+<p>The Java platform can help out here.
+The Java platform is arguably the most robust environment for running concurrent code today, and this functionality can be readily be used from Jython.
+The problem remains that writing concurrent code is still not easy.
+This is especially true with respect to a concurrency model based on threads, which is what today’s hardware natively exposes.</p>
+<p>This means we have to be concerned with thread safety, which arises as an issue because of the existence of mutable objects that are shared between threads.
+(Mutable state might be avoidable in functional programming, but it would be hard to avoid in any but the most trivial Python code.) If you attempt to solve concurrency issues through synchronization, you run into other problems: besides the potential performance hit, there are opportunities for deadlock and livelock.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Implementations of the JVM (like HotSpot) can often avoid the overhead of synchronization.
+We will discuss what’s necessary for this scenario to happen later in this chapter.</p>
+</div>
+<p>Given all of these issues, it has been argued that threading is just too difficult to get right.
+We’re not convinced by that argument.
+Useful concurrent systems have been written on the JVM, and that includes apps written in Jython.
+Key success factors in writing such code include:</p>
+<ul class="simple">
+<li>Keep the concurrency simple.</li>
+<li>Use tasks, which can be mapped to a thread pool.</li>
+<li>Use immutable objects where possible.</li>
+<li>Avoid unnecessary sharing of mutable objects.</li>
+<li>Minimize sharing of mutable objects.
+Queues and related objects &#8211; like synchronization barriers &#8211; provide a structured mechanism to hand over objects between threads.
+This can enable a design where an object is visible to only one thread when its state changes.</li>
+<li>Code defensively.
+Make it possible to cancel or interrupt tasks.
+Use timeouts.</li>
+</ul>
+<div class="section" id="java-or-python-apis">
+<h2>Java or Python APIs?<a class="headerlink" href="#java-or-python-apis" title="Permalink to this headline">¶</a></h2>
+<p>One issue that you will have to consider in writing concurrent code is how much to make your implementation dependent on the Java platform.
+Here are our recommendations:</p>
+<ul class="simple">
+<li>If you are porting an existing Python code base that uses concurrency, you can just use the standard Python threading module.
+Such code can still interoperate with Java, because Jython threads are always mapped to Java threads.
+(If you are coming from Java, you will recognize this API, since it is substantially based on Java’s.)</li>
+<li>Jython implements dict and set by using Java’s ConcurrentHashMap.
+This means you can just use these standard Python types, and still get high performance concurrency.
+(They are also atomic like in CPython, as we will describe.)</li>
+<li>You can also any use of the collections from java.util.concurrent.
+So if it fits your app’s needs, you may want to consider using such collections as CopyOnWriteArrayList and ConcurrentSkipListMap (new in Java 6).
+The Google Collections Library is another good choice that works well with Jython.</li>
+<li>Use higher-level primitives from Java instead of creating your own.
+This is particular true of the executor services for running and managing tasks against thread pools.
+So for example, avoid using threading.Timer, because you can use timed execution services in its place.
+But still use threading.Condition and threading.Lock.
+In particular, these constructs have been optimized to work in the context of a with-statement, as we will discuss.</li>
+</ul>
+<p>In practice, using Java’s support for higher level primitives should not impact the portability of your code so much.
+Using tasks in particular tends to keep all of this well isolated, and such thread safety considerations as thread confinement and safe publication remain the same.</p>
+<p>Lastly, remember you can always mix and match.</p>
+</div>
+<div class="section" id="working-with-threads">
+<h2>Working With Threads<a class="headerlink" href="#working-with-threads" title="Permalink to this headline">¶</a></h2>
+<p>Creating threads is easy, perhaps too easy.
+This example downloads a web page concurrently.</p>
+<p>Listing 19-1. test_thread_creation.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+
+<span class="n">downloaded_page</span> <span class="o">=</span> <span class="bp">None</span> <span class="c"># global</span>
+
+<span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Download ``url`` as a single string&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">downloaded_page</span>
+
+    <span class="n">downloaded_page</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">&quot;Downloaded&quot;</span><span class="p">,</span> <span class="n">downloaded_page</span><span class="p">[:</span><span class="mf">200</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">main_work</span><span class="p">():</span>
+    <span class="c"># do some busy work in parallel</span>
+    <span class="k">print</span> <span class="s">&quot;Started main task&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mf">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mf">100000000</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">+=</span> <span class="mf">1</span>
+    <span class="k">print</span> <span class="s">&quot;Completed main task&quot;</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c"># perform the download in the background</span>
+    <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">download</span><span class="p">(</span><span class="s">&quot;http://www.jython.org&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">main_work</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Be careful not to inadvertently invoke the function; target takes a reference to the function object (typically a name if a normal function).
+Calling the function instead creates an amusing bug where your target function runs now, so everything looks fine at first.
+But no concurrency is happening, because the function call is actually being run by the invoking thread, not this new thread.</p>
+<p>The target function can be a regular function, or an object that is callable (implements __call__).
+This latter case can make it harder to see that the target is a function object!</p>
+<p>To wait for a thread to complete, call join on it.
+This enables working with the concurrent result.
+The only problem is getting the result.
+As we will see, publishing results into variables is safe in Jython, but it’s not the nicest way.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Daemon threads present an alluring alternative to managing the lifecycle of threads.
+A thread is set to be a daemon thread before it is started:</p>
+<p># create a thread t</p>
+<div class="highlight-python"><pre>t.setDaemon(True)t.start()</pre>
+</div>
+<p>Daemon status is inherited by any child threads.
+Upon JVM shutdown, any daemon threads are simply terminated, without an opportunity—or need—to perform cleanup or orderly shutdown.</p>
+<p>This lack of cleanup means it’s important that daemon threads never hold any external resources, such as database connections or file handles.
+Any such resource will not be properly closed upon a JVM exit.
+For similar reasons, a daemon thread should never make an import attempt, as this can interfere with Jython’s orderly shutdown.</p>
+<p>In production, the only use case for daemon threads is when they are strictly used to work with in-memory objects, typically for some sort of housekeeping.
+For example, you might use them to maintain a cache or compute an index.</p>
+<p>Having said that, daemon threads are certainly convenient when playing around with some ideas.
+Maybe your lifecycle management of a program is to use &#8220;Control-C&#8221; to terminate.
+Unlike regular threads, running daemon threads won’t get in the way and prevent JVM shutdown.
+Likewise, a later example demonstrating deadlock uses daemon threads to enable shutdown without waiting on these deadlocked threads.</p>
+<p class="last">With that in mind, it’s generally best not use daemon threads.
+At the very least, serious thought should be given to their usage.</p>
+</div>
+</div>
+<div class="section" id="thread-locals">
+<h2>Thread Locals<a class="headerlink" href="#thread-locals" title="Permalink to this headline">¶</a></h2>
+<p>The threading.local class enables each thread to have its own instances of some objects in an otherwise shared environment.
+Its usage is deceptively simple:simply create an instance of threading.local, or a subclass, and assign it to a variable or other name.
+This variable could be global, or part of some other namespace.
+So far, this is just like working with any other object in Python.</p>
+<p>Threads can then share the variable, but with a twist: each thread will see a different, thread-specific version of the object.
+This object can have arbitrary attributes added to it, each of which will not be visible to other threads.</p>
+<p>Other options include subclassing threading.local.
+As usual, this allows one to define defaults and specify a more nuanced properties model.
+But one unique, and potentially useful, aspect is that any attributes specified in __slots__ will be <em>shared</em> across threads.</p>
+<p>However, there’s a big problem when working with thread locals.
+Usually they don’t make sense because threads are not the right scope, but an object or a function is, especially through a closure.
+If you are using thread locals, you are implicitly adopting a model where threads are partitioning the work.
+But then you are binding the given piece of work to a thread.
+This makes using a thread pool problematic, because you have to clean up after the thread.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In fact, we see this very problem in the Jython runtime.
+A certain amount of context needs to be made available to execute Python code.
+In the past, we would look this “ThreadState” up from the thread.
+Historically, this may have been in fact faster, but it now slows things down, and unnecessarily limits what a given thread can do.
+A future refactoring of Jython will likely remove the use of “ThreadState” completely, simultaneously speeding and cleaning things up.
+Having said that, thread locals might be useful in certain cases.
+One common scenario is where your code is being called by a component that you didn’t write.
+Or you may need to access a thread-local singleton.
+And of course, if you are using code whose architecture mandates thread locals, it’s just something you will have to work with.</p>
+</div>
+<p>But often this is unnecessary.
+Your code may be different, but Python gives you good tools to avoid action at a distance.
+You can use closures, decorators, even sometimes selectively monkey patching modules.
+Take advantage of the fact that Python is a dynamic language, with strong support for metaprogramming, and remember that the Jython implementation makes these techniques accessible when working with even recalcitrant Java code.</p>
+<p>In the end, thread locals are an interesting aside.
+They do not work well in a task-oriented model, because you don’t want to associate context with a worker thread that will be assigned to arbitrary tasks.
+Without a lot of care, this can make for a confused mess.</p>
+</div>
+<div class="section" id="no-global-interpreter-lock">
+<h2>No Global Interpreter Lock<a class="headerlink" href="#no-global-interpreter-lock" title="Permalink to this headline">¶</a></h2>
+<p>Jython lacks the global interpreter lock (GIL), which is an implementation detail of CPython.
+For CPython, the GIL means that only one thread <em>at a time</em> can run Python code.
+This restriction also applies to much of the supporting runtime as well as extension modules that do not release the GIL.
+(Unfortunately development efforts to remove the GIL in CPython have so far only had the effect of slowing down Python execution significantly.)</p>
+<p>The impact of the GIL on CPython programming is that threads are not as useful as they are in Jython.
+Concurrency will only be seen in interacting with I/O as well as scenarios where computation is performed by an extension module on data structures managed outside of CPython’s runtime.
+Instead, developers typically will use a process-oriented model to evade the restrictiveness of the GIL.</p>
+<p>Again, Jython does not have the straightjacket of the GIL.
+This is because all Python threads are mapped to Java threads and use standard Java garbage collection support (the main reason for the GIL in CPython is because of the reference counting GC system).
+The important ramification here is that you can use threads for compute-intensive tasks that are written in Python.</p>
+</div>
+<div class="section" id="module-import-lock">
+<h2>Module Import Lock<a class="headerlink" href="#module-import-lock" title="Permalink to this headline">¶</a></h2>
+<p>Python does, however, define a <em>module import lock</em>, which is implemented by Jython.
+This lock is acquired whenever an import of any name is made.
+This is true whether the import goes through the import statement, the equivalent __import__ builtin, or related code.
+It’s important to note that even if the corresponding module has already been imported, the module import lock will still be acquired, if only briefly.</p>
+<p>So don’t write code like this in a hot loop, especially in threaded code:</p>
+<p>Listing 19-2.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">slow_things_way_down</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">foo</span> <span class="kn">import</span> <span class="n">bar</span><span class="p">,</span> <span class="n">baz</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>It may still make sense to defer your imports.
+Such deferral can decrease the start time of your app.
+Just keep in mind that thread(s) performing such imports will be forced to run single threaded because of this lock.
+So it might make sense for your code to perform deferred imports in a background thread.</p>
+<p>Listing 19-3. background_import.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="k">def</span> <span class="nf">make_imports</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">unicodedata</span>
+
+<span class="n">background_import</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">make_imports</span><span class="p">)</span>
+<span class="n">background_import</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="k">print</span> <span class="s">&quot;Do something else while we wait for the import&quot;</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mf">10</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">i</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Now join...&quot;</span>
+<span class="n">background_import</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+<span class="k">print</span> <span class="s">&quot;And actually use unicodedata&quot;</span>
+<span class="kn">import</span> <span class="nn">unicodedata</span>
+</pre></div>
+</div>
+<p>So as you can see, you need to do at least two imports of a given module; one in the background thread; the other in the actual place(s) where the module’s namespace is being used.</p>
+<p>Here’s why we need the module import lock: upon the first import, the import procedure runs the (implicit) top-level function of the module.
+Even though many modules are often declarative in nature, in Python all definitions are done at runtime.
+Such definitions potentially include further imports (recursive imports), and the top-level function can certainly perform much more complex tasks.
+The module import lock simplifies this setup so that it’s safely published.
+We will discuss this concept further later in this chapter.</p>
+<p>Note that in the current implementation, the module import lock is global for the entire Jython runtime.
+This may change in the future.</p>
+</div>
+<div class="section" id="working-with-tasks">
+<h2>Working With Tasks<a class="headerlink" href="#working-with-tasks" title="Permalink to this headline">¶</a></h2>
+<p>It’s usually best to avoid managing the lifecycle of threads directly.
+Instead, the task model often provides a better abstraction.</p>
+<p><em>Tasks</em> describe the asynchronous computation to be performed.
+Although there are other options, the object you submit to be executed should implement Java’s Callable interface (a call method without arguments), as this best maps into working with a Python method or function.
+Tasks move through the states of being created, submitted (to an executor), started, and completed.
+Tasks can also be canceled or interrupted.</p>
+<p><em>Executors</em> run tasks using a set of threads.
+This might be one thread, a thread pool, or as many threads as necessary to run all currently submitted tasks concurrently.
+The specific choice comprises the executor policy, but generally you want to use a thread pool so as to control the degree of concurrency.</p>
+<p><em>Futures</em> allow code to access the result of a computation &#8211; or an exception, if thrown &#8211; in a task only at the point when it’s needed.
+Up until that point, the using code can run concurrently with that task.
+If it’s not ready, a wait-on dependency is introduced.</p>
+<p>We are going to look at how we can use this functionality by using the example of downloading web pages.
+We will wrap this up so it’s easy to work with, tracking the state of the download, as well as any timing information.</p>
+<p>Listing 19-4. downloader.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="kn">from</span> <span class="nn">java.util.concurrent</span> <span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="k">class</span> <span class="nc">Downloader</span><span class="p">(</span><span class="n">Callable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">started</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread_used</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exception</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception</span><span class="p">:</span>
+             <span class="k">return</span> <span class="s">&quot;[</span><span class="si">%s</span><span class="s">] </span><span class="si">%s</span><span class="s"> download error </span><span class="si">%s</span><span class="s"> in </span><span class="si">%.2f</span><span class="s">s&quot;</span> <span class="o">%</span> \
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_used</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">completed</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">started</span><span class="p">,</span> <span class="p">)</span> <span class="c">#, self.result)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;[</span><span class="si">%s</span><span class="s">] </span><span class="si">%s</span><span class="s"> downloaded </span><span class="si">%d</span><span class="s">K in </span><span class="si">%.2f</span><span class="s">s&quot;</span> <span class="o">%</span> \
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_used</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">)</span><span class="o">/</span><span class="mf">1024</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">completed</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">started</span><span class="p">,</span> <span class="p">)</span> <span class="c">#, self.result)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">started</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;[</span><span class="si">%s</span><span class="s">] </span><span class="si">%s</span><span class="s"> started at </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> \
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_used</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">started</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;[</span><span class="si">%s</span><span class="s">] </span><span class="si">%s</span><span class="s"> not yet scheduled&quot;</span> <span class="o">%</span> \
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_used</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="c"># needed to implement the Callable interface;</span>
+    <span class="c"># any exceptions will be wrapped as either ExecutionException</span>
+    <span class="c"># or InterruptedException</span>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread_used</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">started</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exception</span> <span class="o">=</span> <span class="n">ex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+</pre></div>
+</div>
+<p>In Jython any other task could be done in this fashion, whether it is a database query or a computationally intensive task written in Python.
+It just needs to support the Callable interface.</p>
+<p>Next, we need to create the futures.
+Upon completion of a future, either the result is returned, or an exception is thrown into the caller.
+This exception will be one of:</p>
+<ul class="simple">
+<li>InterruptedException</li>
+<li>ExecutionException.
+Your code can retrieve the underlying exception with the cause attribute.</li>
+</ul>
+<p>(This pushing of the exception into the asynchronous caller is thus similar to how a coroutine works when send is called on it.)</p>
+<p>Now we have what we need to multiplex the downloads of several web pages over a thread pool.</p>
+<p>Listing 19-5. test_futures.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">downloader</span> <span class="kn">import</span> <span class="n">Downloader</span>
+<span class="kn">from</span> <span class="nn">shutdown</span> <span class="kn">import</span> <span class="n">shutdown_and_await_termination</span>
+<span class="kn">from</span> <span class="nn">java.util.concurrent</span> <span class="kn">import</span> <span class="n">Executors</span><span class="p">,</span> <span class="n">TimeUnit</span>
+
+<span class="n">MAX_CONCURRENT</span> <span class="o">=</span> <span class="mf">3</span>
+<span class="n">SITES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&quot;http://www.cnn.com/&quot;</span><span class="p">,</span>
+    <span class="s">&quot;http://www.nytimes.com/&quot;</span><span class="p">,</span>
+    <span class="s">&quot;http://www.washingtonpost.com/&quot;</span><span class="p">,</span>
+    <span class="s">&quot;http://www.dailycamera.com/&quot;</span><span class="p">,</span>
+    <span class="s">&quot;http://www.timescall.com/&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+<span class="n">pool</span> <span class="o">=</span> <span class="n">Executors</span><span class="o">.</span><span class="n">newFixedThreadPool</span><span class="p">(</span><span class="n">MAX_CONCURRENT</span><span class="p">)</span>
+<span class="n">downloaders</span> <span class="o">=</span> <span class="p">[</span><span class="n">Downloader</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">SITES</span><span class="p">]</span>
+<span class="n">futures</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">invokeAll</span><span class="p">(</span><span class="n">downloaders</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">futures</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">future</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mf">5</span><span class="p">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="n">SECONDS</span><span class="p">)</span>
+
+<span class="n">shutdown_and_await_termination</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="mf">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Up until the get method on the returned future, the caller runs concurrently with this task.
+The get call then introduces a wait-on dependency on the task’s completion.
+(So this is like calling join on the supporting thread.)</p>
+<p>Shutting down a thread pool should be as simple as calling the shutdown method on the pool.
+However, you may need to take into account that this shutdown can happen during extraordinary times in your code.
+Here’s the Jython version of a robust shutdown function, shutdown_and_await_termination, as provided in the standard Java docs.</p>
+<p>Listing 19-6. shutdown.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">java.util.concurrent</span> <span class="kn">import</span> <span class="n">TimeUnit</span>
+
+<span class="k">def</span> <span class="nf">shutdown_and_await_termination</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pool</span><span class="o">.</span><span class="n">awaitTermination</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="n">SECONDS</span><span class="p">):</span>
+            <span class="n">pool</span><span class="o">.</span><span class="n">shutdownNow</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">pool</span><span class="o">.</span><span class="n">awaitTermination</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="n">SECONDS</span><span class="p">)):</span>
+                <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Pool did not terminate&quot;</span>
+    <span class="k">except</span> <span class="n">InterruptedException</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="c"># (Re-)Cancel if current thread also interrupted</span>
+        <span class="n">pool</span><span class="o">.</span><span class="n">shutdownNow</span><span class="p">()</span>
+        <span class="c"># Preserve interrupt status</span>
+        <span class="n">Thread</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span><span class="o">.</span><span class="n">interrupt</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The CompletionService interface provides a nice abstraction to working with futures.
+The scenario is that instead of waiting for all the futures to complete, as our code did with invokeAll, or otherwise polling them, the completion service will push futures as they are completed onto a synchronized queue.
+This queue can then be consumed, by consumers running in one or more threads.</p>
+<p>Listing 19-7. test_completion.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">downloader</span> <span class="kn">import</span> <span class="n">Downloader</span>
+<span class="kn">from</span> <span class="nn">shutdown</span> <span class="kn">import</span> <span class="n">shutdown_and_await_termination</span>
+<span class="kn">from</span> <span class="nn">java.util.concurrent</span> <span class="kn">import</span> <span class="n">Executors</span><span class="p">,</span> <span class="n">ExecutorCompletionService</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+
+<span class="n">MAX_CONCURRENT</span> <span class="o">=</span> <span class="mf">3</span>
+<span class="n">SITES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&quot;http://www.cnn.com/&quot;</span><span class="p">,</span>
+    <span class="s">&quot;http://www.nytimes.com/&quot;</span><span class="p">,</span>
+    <span class="s">&quot;http://www.washingtonpost.com/&quot;</span><span class="p">,</span>
+    <span class="s">&quot;http://www.dailycamera.com/&quot;</span><span class="p">,</span>
+    <span class="s">&quot;http://www.timescall.com/&quot;</span><span class="p">,</span>
+    <span class="c"># generate a random web site name that is very, very unlikely to exist</span>
+    <span class="s">&quot;http://&quot;</span> <span class="o">+</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span>
+        <span class="s">&quot;unlikely-web-site-&quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mf">4</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;.com&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+<span class="n">pool</span> <span class="o">=</span> <span class="n">Executors</span><span class="o">.</span><span class="n">newFixedThreadPool</span><span class="p">(</span><span class="n">MAX_CONCURRENT</span><span class="p">)</span>
+<span class="n">ecs</span> <span class="o">=</span> <span class="n">ExecutorCompletionService</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span>
+
+<span class="c"># this function could spider the links from these roots;</span>
+<span class="c"># for now just schedule these roots directly</span>
+<span class="k">def</span> <span class="nf">scheduler</span><span class="p">(</span><span class="n">roots</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">roots</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">site</span>
+
+<span class="c"># submit tasks indefinitely</span>
+<span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">scheduler</span><span class="p">(</span><span class="n">SITES</span><span class="p">):</span>
+    <span class="n">ecs</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">Downloader</span><span class="p">(</span><span class="n">site</span><span class="p">))</span>
+
+<span class="c"># work with results as soon as they become available</span>
+<span class="n">submitted</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">SITES</span><span class="p">)</span>
+<span class="k">while</span> <span class="n">submitted</span> <span class="o">&gt;</span> <span class="mf">0</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">ecs</span><span class="o">.</span><span class="n">take</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="c"># here we just do something unimaginative with the result;</span>
+    <span class="c"># consider parsing it with tools like beautiful soup</span>
+    <span class="k">print</span> <span class="n">result</span>
+    <span class="n">submitted</span> <span class="o">-=</span> <span class="mf">1</span>
+
+<span class="k">print</span> <span class="s">&quot;shutting pool down...&quot;</span>
+<span class="n">shutdown_and_await_termination</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="mf">5</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;done&quot;</span>
+</pre></div>
+</div>
+<p>This setup enables a natural flow.
+Although it may be tempting to then schedule everything through the completion service’s queue, there are limits.
+For example, if you’re writing a scalable web spider, you would want to externalize this work queue, but for simple management, it would certainly suffice.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Why use tasks instead of threads? A common practice too often seen in production code is the addition of threading in a haphazard fashion:</p>
+<p>Heterogeneous threads.
+Perhaps you have one thread that queries the database.
+And another that rebuilds an associated index.
+What happens when you need to add another query?</p>
+<p>Dependencies are managed through a variety of channels, instead of being formally structured.
+This can result in a rats’ nest of threads synchronizing on a variety of objects, often with timers and other event sources thrown in the mix.</p>
+<p class="last">It’s certainly possible to make this sort of setup work—just debug away—but using tasks, with explicit wait-on dependencies and time scheduling, makes it far simpler to build a simple, scalable system.</p>
+</div>
+</div>
+<div class="section" id="thread-safety">
+<h2>Thread Safety<a class="headerlink" href="#thread-safety" title="Permalink to this headline">¶</a></h2>
+<p>Thread safety addresses such questions as:</p>
+<ul class="simple">
+<li>Can the (unintended) interaction of two or more threads corrupt a mutable object? This is especially dangerous for a collection like a list or a dictionary, because such corruption could potentially render the underlying data structure unusable or even produce infinite loops when traversing it.</li>
+<li>Can an update get lost? Perhaps the canonical example is incrementing a counter.
+In this case, there can be a data race with another thread in the time between retrieving the current value, and then updating with the incremented value.</li>
+</ul>
+<p>Jython ensures that its underlying mutable collection types &#8211; dict, list, and set &#8211; cannot be corrupted.
+But updates still might get lost in a data race.</p>
+<p>However, other Java collection objects that your code might use would typically not have such no-corruption guarantees.
+If you need to use LinkedHashMap, so as to support an ordered dictionary, you will need to consider thread safety if it will be both shared and mutated.</p>
+<p>Here’s a simple test harness we will use in our examples.
+ThreadSafetyTestCase subclasses unittest.TestCase, adding a new method assertContended.</p>
+<p>Listing 19-8. threadsafety.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="k">class</span> <span class="nc">ThreadSafetyTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">assertContended</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">num_threads</span><span class="o">=</span><span class="mf">20</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">()):</span>
+        <span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">num_threads</span><span class="p">):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+            <span class="n">timeout</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">isAlive</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>This new method runs a target function and asserts that all threads properly terminate.
+Then the testing code needs to check for any other invariants.</p>
+<p>For example, we use this idea in Jython to test that certain operations on the list type are atomic.
+The idea is to apply a sequence of operations that perform an operation, then reverse it.
+One step forward, one step back.
+The net result should be right where you started, an empty list, which is what the test code asserts.</p>
+<p>Listing 19-9. test_list.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">threadsafety</span> <span class="kn">import</span> <span class="n">ThreadSafetyTestCase</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="k">class</span> <span class="nc">ListThreadSafety</span><span class="p">(</span><span class="n">ThreadSafetyTestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">test_append_remove</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">lst</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">def</span> <span class="nf">tester</span><span class="p">():</span>
+            <span class="c"># preserve invariant by adding, then removing a unique</span>
+            <span class="c"># value (in this case, a reference to the worker thread</span>
+            <span class="c"># executing this function)</span>
+            <span class="n">ct</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">1000</span><span class="p">):</span>
+                <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ct</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">)</span>
+                <span class="n">lst</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">ct</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertContended</span><span class="p">(</span><span class="n">tester</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="p">[])</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Of course these concerns do not apply at all to immutable objects.
+Commonly used objects like strings, numbers, datetimes, tuples, and frozen sets are immutable, and you can create your own immutable objects too.</p>
+<p>There are a number of other strategies in solving thread safety issues.
+We will look at them as follows:</p>
+<ul class="simple">
+<li>Synchronization</li>
+<li>Atomicity</li>
+<li>Thread Confinement</li>
+<li>Safe Publication</li>
+</ul>
+<div class="section" id="synchronization">
+<h3>Synchronization<a class="headerlink" href="#synchronization" title="Permalink to this headline">¶</a></h3>
+<p>We use synchronization to control the entry of threads into code blocks corresponding to synchronized resources.
+Through this control we can prevent data races, assuming a correct synchronization protocol.
+(This can be a big assumption!)</p>
+<p>A threading.Lock ensures entry by only one thread.
+(In Jython, but unlike CPython, such locks are always reentrant; there’s no distinction between threading.Lock and threading.RLock.) Other threads have to wait until that thread exits the lock.
+Such explicit locks are the simplest and perhaps most portable synchronization to perform.</p>
+<p>You should generally manage the entry and exit of such locks through a with-statement; failing that, you must use a try-finally to ensure that the lock is always released when exiting a block of code.</p>
+<p>Here’s some example code using the with-statement.
+The code allocates a lock, then shares it amongst some tasks.</p>
+<p>Listing 19-10. test_lock.py—LockTestCase.test_with_lock</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">test_with_lock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+        <span class="n">lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">loop100</span><span class="p">(</span><span class="n">counter</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mf">100</span><span class="p">):</span>
+                <span class="k">with</span> <span class="n">lock</span><span class="p">:</span>
+                    <span class="n">counter</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1</span>
+                <span class="c"># sleeping helps ensures that all threads run in our test</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertContended</span><span class="p">(</span><span class="n">loop100</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">counter</span><span class="p">,),</span> <span class="n">num_threads</span><span class="o">=</span><span class="mf">20</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">counter</span><span class="p">[</span><span class="mf">0</span><span class="p">],</span> <span class="mf">2000</span><span class="p">)</span> <span class="c"># 20 threads * 100 loops/thread</span>
+</pre></div>
+</div>
+<p>Alternatively, you can do this with try-finally.</p>
+<p>Listing 19-11. test_lock.py—LockTestCase.test_try_finally_lock</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">test_try_finally_lock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+        <span class="n">lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">loop100</span><span class="p">(</span><span class="n">counter</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mf">100</span><span class="p">):</span>
+                <span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">counter</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertContended</span><span class="p">(</span><span class="n">loop100</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">counter</span><span class="p">,),</span> <span class="n">num_threads</span><span class="o">=</span><span class="mf">20</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">counter</span><span class="p">[</span><span class="mf">0</span><span class="p">],</span> <span class="mf">2000</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>But don’t do this.
+It’s actually slower than the with-statement, and using the with-statement version also results in more idiomatic Python code.</p>
+<p>Another possibility is to use the synchronize module, which is specific to Jython.
+This module provides a <tt class="docutils literal"><span class="pre">make_synchronized</span></tt> decorator function, which wraps any callable in Jython in a synchronized block.</p>
+<p>Listing 19-12. test_synchronized.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">synchronize</span> <span class="kn">import</span> <span class="n">make_synchronized</span>
+<span class="kn">from</span> <span class="nn">threadsafety</span> <span class="kn">import</span> <span class="n">ThreadSafetyTestCase</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="nd">@make_synchronized</span>
+<span class="k">def</span> <span class="nf">increment_counter</span><span class="p">(</span><span class="n">counter</span><span class="p">):</span>
+    <span class="n">counter</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1</span>
+    <span class="c"># sleeping helps ensures that all threads run in our test</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">SynchronizedTestCase</span><span class="p">(</span><span class="n">ThreadSafetyTestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">test_counter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">loop100</span><span class="p">(</span><span class="n">counter</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mf">100</span><span class="p">):</span>
+                <span class="n">increment_counter</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+
+        <span class="n">counter</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertContended</span><span class="p">(</span><span class="n">loop100</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">counter</span><span class="p">,),</span> <span class="n">num_threads</span><span class="o">=</span><span class="mf">20</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">counter</span><span class="p">[</span><span class="mf">0</span><span class="p">],</span> <span class="mf">2000</span><span class="p">)</span> <span class="c"># 20 threads * 100 loops/thread</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In this case, you don’t need to explicitly release anything.
+Even in the case of an exception, the synchronization lock is always released upon exit from the function.
+Again, this version is also slower than the with-statement form, and it doesn’t use explicit locks.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Synchronization and the with-statement</p>
+<p>Jython’s current runtime (as of 2.5.1) can execute the with-statement form more efficiently through both runtime support and how this statement is compiled.
+The reason is that most JVMs can perform analysis on a chunk of code (the <em>compilation unit</em>, including any inlining) to avoid synchronization overhead, so long as two conditions are met.
+First, the chunk contains both the lock and unlock.
+And second, the chunk is not too long for the JVM to perform its analysis.
+The with-statement’s semantics make it relatively easy for us to do that when working with built-in types like threading.Lock, while avoiding the overhead of Java runtime reflection.</p>
+<p class="last">In the future, support of the new invokedynamic bytecode should collapse these performance differences.</p>
+</div>
+<p>The threading module offers portability, but it’s also minimalist.
+You may want to use the synchronizers in Java.util.concurrent instead of their wrapped versions in threading.
+In particular, this approach is necessary if you want to wait on a lock with a timeout.
+Also, you may want to use factories like Collections.synchronizedMap, when applicable, to ensure the underlying Java object has the desired synchronization.</p>
+</div>
+<div class="section" id="deadlocks">
+<h3>Deadlocks<a class="headerlink" href="#deadlocks" title="Permalink to this headline">¶</a></h3>
+<p>But use synchronization carefully: this code will always eventually deadlock.</p>
+<p>Listing 19-13. deadlock.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span><span class="p">,</span> <span class="n">Lock</span>
+<span class="kn">from</span> <span class="nn">java.lang.management</span> <span class="kn">import</span> <span class="n">ManagementFactory</span>
+<span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">threading</span>
+
+<span class="k">def</span> <span class="nf">cause_deadlock</span><span class="p">():</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+    <span class="n">lock_one</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+    <span class="n">lock_two</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+    <span class="n">threads</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Thread</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&quot;thread #1&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">acquire_locks</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="n">lock_one</span><span class="p">,</span> <span class="n">lock_two</span><span class="p">)),</span>
+        <span class="n">Thread</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&quot;thread #2 (reversed)&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">acquire_locks</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="n">lock_two</span><span class="p">,</span> <span class="n">lock_one</span><span class="p">))]</span>
+    <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+        <span class="n">thread</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span> <span class="c"># make shutdown possible after deadlock</span>
+        <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="n">thread_mxbean</span> <span class="o">=</span> <span class="n">ManagementFactory</span><span class="o">.</span><span class="n">getThreadMXBean</span><span class="p">()</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&quot;monitoring thread&quot;</span><span class="p">,</span> <span class="n">counter</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+        <span class="n">thread_ids</span> <span class="o">=</span> <span class="n">thread_mxbean</span><span class="o">.</span><span class="n">findDeadlockedThreads</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">thread_ids</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;monitoring thread: deadlock detected, shutting down&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">thread_ids</span><span class="p">)</span>
+            <span class="k">break</span>
+
+<span class="k">def</span> <span class="nf">acquire_locks</span><span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="n">lock1</span><span class="p">,</span> <span class="n">lock2</span><span class="p">):</span>
+    <span class="c"># Should eventually deadlock if locks are acquired in different order</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">lock1</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">lock2</span><span class="p">:</span>
+                <span class="n">counter</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1</span>
+                <span class="k">print</span> <span class="n">name</span><span class="p">,</span> <span class="n">counter</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">cause_deadlock</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Deadlock results from a cycle of any length of wait-on dependencies.
+For example, Alice is waiting on Bob, but Bob is waiting on Alice.
+Without a timeout or other change in strategy—Alice just gets tired of waiting on Bob!—this deadlock will not be broken.</p>
+<p>Avoiding deadlocks can be done by never acquiring locks such that a cycle like that can be created.
+If we rewrote the example so that locks are acquired in the same order (Bob always allows Alice to go first), there would be no deadlocks.
+However, this ordering is not always so easy to do.
+Often, a more robust strategy is to allow for timeouts.</p>
+</div>
+<div class="section" id="other-synchronization-objects">
+<h3>Other Synchronization Objects<a class="headerlink" href="#other-synchronization-objects" title="Permalink to this headline">¶</a></h3>
+<p>The Queue module implements a first-in, first-out synchronized queue.
+(Synchronized queues are also called blocking queues, and that’s how they are described in java.util.concurrent.) Such queues represent a thread-safe way to send objects from one or more producing threads to one or more consuming threads.</p>
+<p>Often, you will define a poison object to shut down the queue.
+This will allow any consuming, but waiting, threads to immediately shut down.
+Or just use Java’s support for executors to get an off-the-shelf solution.</p>
+<p>If you need to implement another policy, such as last-in, first-out or based on a priority, you can use the comparable synchronized queues in java.util.concurrent as appropriate.
+(Note these have since been implemented in Python 2.6, so they will be made available when Jython 2.6 is eventually released.)</p>
+<p>Condition objects allow for one thread to notify another thread that’s waiting on a condition to wake up; notifyAll is used to wake up all such threads.
+Along with Queue, this is probably the most versatile of the synchronizing objects for real usage.</p>
+<p>Condition objects are always associated with a Lock.
+Your code needs to bracket waiting and notifying the condition by acquiring the corresponding lock, then finally (as always!) releasing it.
+As usual, this is easiest done in the context of the with-statement.</p>
+<p>For example, here’s how we actually implement a Queue in the standard library of Jython (just modified here to use the with-statement).
+We can’t use a standard Java blocking queue, because the requirement of being able to join on the queue when there’s no more work to be performed requires a third condition variable.</p>
+<p>Listing 19-15. Queue.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;A multi-producer, multi-consumer queue.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span> <span class="k">as</span> <span class="n">_time</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Empty&#39;</span><span class="p">,</span> <span class="s">&#39;Full&#39;</span><span class="p">,</span> <span class="s">&#39;Queue&#39;</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">Empty</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="s">&quot;Exception raised by Queue.get(block=0)/get_nowait().&quot;</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">Full</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="s">&quot;Exception raised by Queue.put(block=0)/put_nowait().&quot;</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">Queue</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Create a queue object with a given maximum size.</span>
+
+<span class="sd">    If maxsize is &lt;= 0, the queue size is infinite.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maxsize</span><span class="o">=</span><span class="mf">0</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">threading</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">dummy_threading</span> <span class="kn">as</span> <span class="nn">threading</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">(</span><span class="n">maxsize</span><span class="p">)</span>
+        <span class="c"># mutex must be held whenever the queue is mutating.  All methods</span>
+        <span class="c"># that acquire mutex must release it before returning.  mutex</span>
+        <span class="c"># is shared between the three conditions, so acquiring and</span>
+        <span class="c"># releasing the conditions also acquires and releases mutex.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutex</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="c"># Notify not_empty whenever an item is added to the queue; a</span>
+        <span class="c"># thread waiting to get is notified then.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">not_empty</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Condition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="p">)</span>
+        <span class="c"># Notify not_full whenever an item is removed from the queue;</span>
+        <span class="c"># a thread waiting to put is notified then.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">not_full</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Condition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="p">)</span>
+        <span class="c"># Notify all_tasks_done whenever the number of unfinished tasks</span>
+        <span class="c"># drops to zero; thread waiting to join() is notified to resume</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_tasks_done</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Condition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unfinished_tasks</span> <span class="o">=</span> <span class="mf">0</span>
+
+    <span class="k">def</span> <span class="nf">task_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Indicate that a formerly enqueued task is complete.</span>
+
+<span class="sd">        Used by Queue consumer threads.  For each get() used to fetch a task,</span>
+<span class="sd">        a subsequent call to task_done() tells the queue that the processing</span>
+<span class="sd">        on the task is complete.</span>
+
+<span class="sd">        If a join() is currently blocking, it will resume when all items</span>
+<span class="sd">        have been processed (meaning that a task_done() call was received</span>
+<span class="sd">        for every item that had been put() into the queue).</span>
+
+<span class="sd">        Raises a ValueError if called more times than there were items</span>
+<span class="sd">        placed in the queue.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_tasks_done</span><span class="p">:</span>
+            <span class="n">unfinished</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unfinished_tasks</span> <span class="o">-</span> <span class="mf">1</span>
+            <span class="k">if</span> <span class="n">unfinished</span> <span class="o">&lt;=</span> <span class="mf">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">unfinished</span> <span class="o">&lt;</span> <span class="mf">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;task_done() called too many times&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">all_tasks_done</span><span class="o">.</span><span class="n">notifyAll</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unfinished_tasks</span> <span class="o">=</span> <span class="n">unfinished</span>
+
+    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Blocks until all items in the Queue have been gotten and processed.</span>
+
+<span class="sd">        The count of unfinished tasks goes up whenever an item is added to the</span>
+<span class="sd">        queue. The count goes down whenever a consumer thread calls task_done()</span>
+<span class="sd">        to indicate the item was retrieved and all work on it is complete.</span>
+
+<span class="sd">        When the count of unfinished tasks drops to zero, join() unblocks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_tasks_done</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">unfinished_tasks</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">all_tasks_done</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">qsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the approximate size of the queue (not reliable!).&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qsize</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">n</span>
+
+    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if the queue is empty, False otherwise (not reliable!).&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_empty</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">n</span>
+
+    <span class="k">def</span> <span class="nf">full</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if the queue is full, False otherwise (not reliable!).&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_full</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">n</span>
+
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Put an item into the queue.</span>
+
+<span class="sd">        If optional args &#39;block&#39; is true and &#39;timeout&#39; is None (the default),</span>
+<span class="sd">        block if necessary until a free slot is available. If &#39;timeout&#39; is</span>
+<span class="sd">        a positive number, it blocks at most &#39;timeout&#39; seconds and raises</span>
+<span class="sd">        the Full exception if no free slot was available within that time.</span>
+<span class="sd">        Otherwise (&#39;block&#39; is false), put an item on the queue if a free slot</span>
+<span class="sd">        is immediately available, else raise the Full exception (&#39;timeout&#39;</span>
+<span class="sd">        is ignored in that case).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">not_full</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">block</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_full</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="n">Full</span>
+            <span class="k">elif</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_full</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">not_full</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">timeout</span> <span class="o">&lt;</span> <span class="mf">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;&#39;timeout&#39; must be a positive number&quot;</span><span class="p">)</span>
+                <span class="n">endtime</span> <span class="o">=</span> <span class="n">_time</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout</span>
+                <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_full</span><span class="p">():</span>
+                    <span class="n">remaining</span> <span class="o">=</span> <span class="n">endtime</span> <span class="o">-</span> <span class="n">_time</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">remaining</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">Full</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">not_full</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">remaining</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_put</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unfinished_tasks</span> <span class="o">+=</span> <span class="mf">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">not_empty</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">put_nowait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Put an item into the queue without blocking.</span>
+
+<span class="sd">        Only enqueue the item if a free slot is immediately available.</span>
+<span class="sd">        Otherwise raise the Full exception.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove and return an item from the queue.</span>
+
+<span class="sd">        If optional args &#39;block&#39; is true and &#39;timeout&#39; is None (the default),</span>
+<span class="sd">        block if necessary until an item is available. If &#39;timeout&#39; is</span>
+<span class="sd">        a positive number, it blocks at most &#39;timeout&#39; seconds and raises</span>
+<span class="sd">        the Empty exception if no item was available within that time.</span>
+<span class="sd">        Otherwise (&#39;block&#39; is false), return an item if one is immediately</span>
+<span class="sd">        available, else raise the Empty exception (&#39;timeout&#39; is ignored</span>
+<span class="sd">        in that case).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">not_empty</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">block</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_empty</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="n">Empty</span>
+            <span class="k">elif</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_empty</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">not_empty</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">timeout</span> <span class="o">&lt;</span> <span class="mf">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;&#39;timeout&#39; must be a positive number&quot;</span><span class="p">)</span>
+                <span class="n">endtime</span> <span class="o">=</span> <span class="n">_time</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout</span>
+                <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_empty</span><span class="p">():</span>
+                    <span class="n">remaining</span> <span class="o">=</span> <span class="n">endtime</span> <span class="o">-</span> <span class="n">_time</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">remaining</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">Empty</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">not_empty</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">remaining</span><span class="p">)</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">not_full</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">item</span>
+
+    <span class="k">def</span> <span class="nf">get_nowait</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove and return an item from the queue without blocking.</span>
+
+<span class="sd">        Only get an item if one is immediately available. Otherwise</span>
+<span class="sd">        raise the Empty exception.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="c"># Override these methods to implement other queue organizations</span>
+    <span class="c"># (e.g. stack or priority queue).</span>
+    <span class="c"># These will only be called with appropriate locks held</span>
+
+    <span class="c"># Initialize the queue representation</span>
+    <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maxsize</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxsize</span> <span class="o">=</span> <span class="n">maxsize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_qsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span>
+
+    <span class="c"># Check whether the queue is empty</span>
+    <span class="k">def</span> <span class="nf">_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span>
+
+    <span class="c"># Check whether the queue is full</span>
+    <span class="k">def</span> <span class="nf">_full</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxsize</span> <span class="o">&gt;</span> <span class="mf">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxsize</span>
+
+    <span class="c"># Put a new item in the queue</span>
+    <span class="k">def</span> <span class="nf">_put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="c"># Get an item from the queue</span>
+    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>There are other mechanisms to synchronize, including exchangers, barriers, latches, etc.
+You can use semaphores to describe scenarios where it’s possible for multiple threads to enter, or use locks that are set up to distinguish reads from writes.
+There are many possibilities for the Java platform.
+In our experience, Jython should be able to work with any of them.</p>
+</div>
+<div class="section" id="atomic-operations">
+<h3>Atomic Operations<a class="headerlink" href="#atomic-operations" title="Permalink to this headline">¶</a></h3>
+<p>An atomic operation is inherently thread safe.
+Data races and object corruption do not occur, and it’s not possible for other threads to see an inconsistent view.</p>
+<p>Atomic operations are therefore simpler to use than synchronization.
+In addition, atomic operations will often use underlying support in the CPU, such as a compare-and-swap instruction.
+They may use locking too.
+The important thing to know is that the lock is not directly visible.
+Also, if synchronization is used, it’s not possible to expand the scope of the synchronization.
+In particular, callbacks and iteration are not feasible.</p>
+<p>Python guarantees the atomicity of certain operations, although at best it’s only informally documented.
+Fredrik Lundh’s article on “Thread Synchronization Methods in Python” summarizes the mailing list discussions and the state of the CPython implementation.
+Quoting his article, the following are atomic operations for Python code:</p>
+<ul class="simple">
+<li>Reading or replacing a single instance attribute</li>
+<li>Reading or replacing a single global variable</li>
+<li>Fetching an item from a list</li>
+<li>Modifying a list in place (e.g. adding an item using append)</li>
+<li>Fetching an item from a dictionary</li>
+<li>Modifying a dictionary in place (e.g. adding an item, or calling the clear method)</li>
+</ul>
+<p>Although unstated, this also applies to equivalent ops on the builtin set type.</p>
+<p>For CPython, this atomicity emerges from combining its Global Interpreter Lock (GIL), the Python bytecode virtual machine execution loop, and the fact that types like dict and list are implemented natively in C and do not release the GIL.</p>
+<p>Despite the fact that this is in some sense accidentally emergent, it is a useful simplification for the developer.
+It’s what existing Python code expects, so this is what we have implemented in Jython.</p>
+<p>In particular, because dict is a ConcurrentHashMap, we also expose the following methods to atomically update dictionaries:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">setifabsent</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">update</span></tt></li>
+</ul>
+<p>It’s important to note that iterations are not atomic, even on a ConcurrentHashMap.</p>
+<p>Atomic operations are useful, but they are pretty limited too.
+Often, you still need to use synchronization to prevent data races, and this has to be done with care to avoid deadlocks and starvation.</p>
+</div>
+<div class="section" id="thread-confinement">
+<h3>Thread Confinement<a class="headerlink" href="#thread-confinement" title="Permalink to this headline">¶</a></h3>
+<p>Thread confinement is often the best way to resolve problems seen in working with mutable objects.
+In practice, you probably don’t need to share a large percentage of the mutable objects used in your code.
+Very simply put, if you don’t share, then thread safety issues go away.</p>
+<p>Not all problems can be reduced to using thread confinement.
+There are likely some shared objects in your system, but in practice most can be eliminated.
+And often the shared state can be someone else’s problem:</p>
+<ul class="simple">
+<li>Intermediate objects don’t require sharing.
+For example, if you are building up a buffer that is only pointed to by a local variable, you don’t need to synchronize.
+It’s an easy prescription to follow, so long as you are not trying to keep around these intermediate objects to avoid allocation overhead: don’t do that.</li>
+<li>Producer-consumer.
+Construct an object in one thread, then hand it off to another thread.
+You just need to use an appropriate synchronizer object, such as a Queue.</li>
+<li>Application containers.
+The typical database-driven web application makes for the classic case.
+For example, if you are using modjy, then the database connection pools and thread pools are the responsibility of the servlet container.
+And they are not directly observable.
+(But don’t do things like share database connections across threads.) Caches and databases then are where you will see shared state.</li>
+<li>Actors.
+The actor model is another good example.
+Send and receive messages to an actor (effectively an independent thread) and let it manipulate any objects it owns on your behalf.
+Effectively this reduces the problem to sharing one mutable object, the message queue.
+The message queue can then ensure any accesses are appropriately serialized, so there are no thread safety issues.</li>
+</ul>
+<p>Unfortunately thread confinement is not without issues in Jython.
+For example, if you use StringIO, you have to pay the cost that this class uses list, which is synchronized.
+Although it’s possible to further optimize the Jython implementation of the Python standard library, if a section of code is hot enough, you may want to consider rewriting that in Java to ensure no additional synchronization overhead.</p>
+<p>Lastly, thread confinement is not perfect in Python, because of the possibility of introspecting on frame objects.
+This means your code can see local variables in other threads, and the objects they point to.
+But this is really more of an issue for how optimizable Jython is when run on the JVM.
+It won’t cause thread safety issues if you don’t exploit this loophole.
+We will discuss this more in the next section, on the Python Memory Model.</p>
+</div>
+</div>
+<div class="section" id="python-memory-model">
+<h2>Python Memory Model<a class="headerlink" href="#python-memory-model" title="Permalink to this headline">¶</a></h2>
+<p>Reasoning about concurrency in Python is easier than in Java.
+This is because the memory model is not as surprising to our conventional reasoning about how programs operate.
+However, this also means that Python code sacrifices significant performance to keep it simpler.</p>
+<p>Here’s why.
+In order to maximize Java performance, it’s allowed for a CPU to arbitrarily re-order the operations performed by Java code, subject to the constraints imposed by <em>happens-before</em> and <em>synchronizes-with</em> relationships.
+(The published Java memory model goes into more details on these constraints.) Although such reordering is not visible within a given thread, the problem is that it’s visible to other threads.
+Of course, this visibility only applies to changes made to non-local objects; thread confinement still applies.
+In particular, this means you cannot rely on the apparent sequential ordering of Java code when looking at two or more threads.</p>
+<p>Python is different.
+The fundamental thing to know about Python, and what we have implemented in Jython, is that setting any attribute in Python is a volatile write; and getting any attribute is a volatile read.
+This is because Python attributes are stored in dictionaries, and in Jython, this follows the semantics of the backing ConcurrentHashMap.
+So get and set are volatile.
+So this means that Python code has sequential consistency.
+Execution follows the ordering of statements in the code.
+There are no surprises here.</p>
+<p>This means that <em>safe publication</em> is pretty much trivial in Python, when compared to Java.
+Safe publication means the thread safe association of an object with a name.
+Because this is always a memory-fenced operation in Python, your code simply needs to ensure that the object itself is built in a thread-safe fashion; then publish it all at once by setting the appropriate variable to this object.</p>
+<p>If you need to create module-level objects—singletons—then you should do this in the top-level script of the module so that the module import lock is in effect.</p>
+</div>
+<div class="section" id="interruption">
+<h2>Interruption<a class="headerlink" href="#interruption" title="Permalink to this headline">¶</a></h2>
+<p>Long-threading threads should provide some opportunity for cancellation.
+The typical pattern is something like the following example.</p>
+<p>Listing 19-16.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">DoSomething</span><span class="p">(</span><span class="n">Runnable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cancelled</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">:</span>
+            <span class="n">do_stuff</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Remember, Python variables are always volatile, unlike Java.
+There are no problems with using a cancelled flag like this.</p>
+<p>Thread interruption allows for even more responsive cancellation.
+In particular, if a thread is waiting on most any synchronizers, such as a condition variable or on file I/O, this action will cause the waited-on method to exit with an InterruptedException.
+(Unfortunately lock acquisition, except under certain cases such as using lockInterruptibly on the underlying Java lock, is not interruptible.)</p>
+<p>Although Python’s threading module does not itself support interruption, it is available through the standard Java thread API.
+First, let’s import this class (we will rename it to JThread so it doesn’t conflict with Python’s version).</p>
+<p>Listing 19-17.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">java.lang</span> <span class="kn">import</span> <span class="n">Thread</span> <span class="k">as</span> <span class="n">JThread</span>
+</pre></div>
+</div>
+<p>As you have seen, you can use Java threads as if they are Python threads.
+So logically you should be able to do the converse: use Python threads as if they are Java threads.
+It would be nice to make calls like JThread.interrupt(obj).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Incidentally, this formulation, instead of obj.interrupt(), looks like a static method on a class, as long as we pass in the object as the first argument.
+This adaptation is a good use of Python’s explicit self.</p>
+</div>
+<p>But there’s a problem here.
+As of the latest released version (Jython 2.5.1), we forgot to include an appropriate __tojava__ method on the Thread class! So this looks like you can’t do this trick after all.</p>
+<p>Or can you? What if you didn’t have to wait until we fix this bug? You could explore the source code &#8211; or look at the class with dir.
+One possibility would be to use the nominally private _thread attribute on the Thread object.
+After all _thread is the attribute for the underlying Java thread.
+Yes, this is an implementation detail, but it’s probably fine to use.
+It’s not so likely to change.</p>
+<p>But we can do even better.
+We can <em>monkey patch</em> the Thread class such that it has an appropriate __tojava__ method, but only if it doesn’t exist.
+So this patching is likely to work with a future version of Jython because we are going to fix this missing method before we even consider changing its implementation and removing _thread.</p>
+<p>So here’s how we can monkey patch, following a recipe of Guido van Rossum.</p>
+<p>Listing 19-18. monkeypatch.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># http://mail.python.org/pipermail/python-dev/2008-January/076194.html</span>
+<span class="c"># - a recipe of Guido van Rossum</span>
+
+<span class="k">def</span> <span class="nf">monkeypatch_method</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span>
+    <span class="k">return</span> <span class="n">decorator</span>
+
+<span class="c"># and a useful variant, with a good ugly name</span>
+
+<span class="k">def</span> <span class="nf">monkeypatch_method_if_not_set</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">__name__</span><span class="p">):</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span>
+    <span class="k">return</span> <span class="n">decorator</span>
+</pre></div>
+</div>
+<p>This monkeypatch_method decorator allows us to add a method to a class after the fact.
+(This is what Ruby developers call <em>opening</em> a class.) Use this power with care.
+But again, you shouldn’t worry too much when you keep such fixes to a minimum, especially when it’s essentially a bug fix like this one.
+In our case, we will use a variant, the monkeypatch_method_if_not_set decorator, to ensure we only patch if it has not been fixed by a later version.</p>
+<p>Putting it all together, we have this code:</p>
+<p>Listing 19-19. interrupt.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Condition</span><span class="p">,</span> <span class="n">Lock</span><span class="p">,</span> <span class="n">Thread</span>
+<span class="kn">from</span> <span class="nn">java.lang</span> <span class="kn">import</span> <span class="n">Thread</span> <span class="k">as</span> <span class="n">JThread</span><span class="p">,</span> <span class="n">InterruptedException</span>
+<span class="kn">from</span> <span class="nn">monkeypatch</span> <span class="kn">import</span> <span class="n">monkeypatch_method_if_not_set</span>
+<span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">threading</span>
+
+<span class="nd">@monkeypatch_method_if_not_set</span><span class="p">(</span><span class="n">Thread</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">__tojava__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">java_type</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span>
+
+<span class="k">def</span> <span class="nf">be_unfair</span><span class="p">():</span>
+    <span class="n">unfair_condition</span> <span class="o">=</span> <span class="n">Condition</span><span class="p">()</span>
+    <span class="n">threads</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Thread</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&quot;thread #</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">,</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">wait_until_interrupted</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">unfair_condition</span><span class="p">,))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mf">5</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+        <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">5</span><span class="p">)</span>
+
+    <span class="c"># threads should not be doing anything now, can verify by looking at some shared state</span>
+
+    <span class="c"># instead of notifying, we will interrupt the threads</span>
+    <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+        <span class="n">JThread</span><span class="o">.</span><span class="n">interrupt</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
+        <span class="c"># or you can use this equivalent op</span>
+        <span class="c"># thread.__tojava__(JThread).interrupt()</span>
+    <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+        <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">wait_until_interrupted</span><span class="p">(</span><span class="n">cv</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">cv</span><span class="p">:</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">JThread</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span><span class="o">.</span><span class="n">isInterrupted</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&quot;Waiting pointlessly </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span>
+                <span class="n">cv</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">InterruptedException</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">break</span>
+    <span class="k">print</span> <span class="s">&quot;Finished </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">be_unfair</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(It does rely on the use of threading.Condition to have something to wait on.)</p>
+<p>Lastly, you could simply access interruption through the cancel method provided by a Future.
+No need to monkey patch!</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Jython can fully take advantage of the underlying Java platform’s support for concurrency.
+You can also use the standard Python threading constructs, which in most cases just wrap the corresponding Java functionality.
+The standard mutable Python collection types have been implemented in Jython with concurrency in mind; and Python’s sequential consistency removes some potential bugs.</p>
+<p>But concurrent programming is still not easy to get right, either in Python or in Java.
+You should consider higher-level concurrency primitives, such as tasks, and you should be disciplined in how your code shares mutable state.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Chapter 19: Concurrency</a><ul>
+<li><a class="reference external" href="#java-or-python-apis">Java or Python APIs?</a></li>
+<li><a class="reference external" href="#working-with-threads">Working With Threads</a></li>
+<li><a class="reference external" href="#thread-locals">Thread Locals</a></li>
+<li><a class="reference external" href="#no-global-interpreter-lock">No Global Interpreter Lock</a></li>
+<li><a class="reference external" href="#module-import-lock">Module Import Lock</a></li>
+<li><a class="reference external" href="#working-with-tasks">Working With Tasks</a></li>
+<li><a class="reference external" href="#thread-safety">Thread Safety</a><ul>
+<li><a class="reference external" href="#synchronization">Synchronization</a></li>
+<li><a class="reference external" href="#deadlocks">Deadlocks</a></li>
+<li><a class="reference external" href="#other-synchronization-objects">Other Synchronization Objects</a></li>
+<li><a class="reference external" href="#atomic-operations">Atomic Operations</a></li>
+<li><a class="reference external" href="#thread-confinement">Thread Confinement</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#python-memory-model">Python Memory Model</a></li>
+<li><a class="reference external" href="#interruption">Interruption</a></li>
+<li><a class="reference external" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="TestingIntegration.html"
+                                  title="previous chapter">Chapter 18: Testing and Continuous Integration</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="appendixA.html"
+                                  title="next chapter">Appendix A: Using Other Tools with Jython</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/Concurrency.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="appendixA.html" title="Appendix A: Using Other Tools with Jython"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="TestingIntegration.html" title="Chapter 18: Testing and Continuous Integration"
+             >previous</a> |</li>
+        <li><a href="index.html">Jython Book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+    <div class="footer">
+      &copy; Copyright 2009,2010, Josh Juneau, Frank Wierzbicki, Jim Baker, Leo Soto, Victor Ng.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-13131153-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  </body>
+</html>

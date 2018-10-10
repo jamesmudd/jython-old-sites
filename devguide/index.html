@@ -1,0 +1,579 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Jython Developer’s Guide &mdash; Jython Developer&#39;s Guide </title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jython Developer&#39;s Guide " href="#" />
+    <link rel="next" title="1. Getting Started" href="setup.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="setup.html" title="1. Getting Started"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">Jython Developer&#39;s Guide </a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="jython-developer-s-guide">
+<h1>Jython Developer&#8217;s Guide<a class="headerlink" href="#jython-developer-s-guide" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These instructions are a modified version of the
+<a class="reference external" href="http://docs.python.org/devguide/">CPython devguide</a></p>
+</div>
+<p>This guide is a comprehensive resource for <a class="reference internal" href="#contributing"><em>contributing</em></a>
+to <a class="reference external" href="http://www.jython.org/">Jython</a> &#8211; for both new and experienced contributors.  It is
+<a class="reference internal" href="docquality.html#helping-with-the-developers-guide"><em>maintained</em></a> by the same community
+that maintains Jython.  We welcome your contributions to Jython!</p>
+<div class="section" id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<p>Here are the basic steps needed to get <a class="reference internal" href="setup.html#setup"><em>set up</em></a> and contribute a
+patch:</p>
+<ol class="arabic">
+<li><p class="first"><a class="reference internal" href="setup.html#checkout"><em>Get the source code</em></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre>hg clone http://hg.python.org/jython
+</pre></div>
+</div>
+</li>
+<li><p class="first"><a class="reference internal" href="setup.html#compiling"><em>Build Jython</em></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ant</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><a class="reference internal" href="runtests.html"><em>Run the tests</em></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre>ant regrtest
+</pre></div>
+</div>
+</li>
+<li><p class="first">Make the <a class="reference internal" href="patch.html"><em>patch</em></a>.</p>
+</li>
+<li><p class="first">Submit it to the <a class="reference external" href="http://bugs.jython.org/">issue tracker</a>.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="quick-links">
+<h2>Quick Links<a class="headerlink" href="#quick-links" title="Permalink to this headline">¶</a></h2>
+<p>Here are some links that you probably will reference frequently while
+contributing to Jython.</p>
+<ul class="simple">
+<li><a class="reference external" href="http://bugs.jython.org/">Issue tracker</a></li>
+<li><a class="reference internal" href="faq.html"><em>Jython Developer FAQ</em></a></li>
+<li><a class="reference external" href="http://www.python.org/dev/peps/">PEPs</a> (Python Enhancement Proposals)</li>
+</ul>
+</div>
+<div class="section" id="contributing">
+<span id="id1"></span><h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
+<p>We encourage everyone to contribute to Jython and that&#8217;s why we have put up this
+developer&#8217;s guide.  If you still have questions after reviewing the material in
+this guide, then the <a class="reference external" href="http://pythonmentors.com/">Python Mentors</a> group is available to help guide new
+contributors through the process.  The <a class="reference internal" href="faq.html"><em>Developer FAQ</em></a> is another
+useful source of information.</p>
+<p>Guide for contributing to Jython:</p>
+<ul>
+<li><p class="first"><a class="reference internal" href="setup.html"><em>Getting Started</em></a></p>
+</li>
+<li><p class="first"><a class="reference internal" href="help.html"><em>Where to Get Help</em></a></p>
+</li>
+<li><p class="first"><a class="reference internal" href="patch.html"><em>Lifecycle of a Patch</em></a></p>
+</li>
+<li><p class="first"><a class="reference internal" href="runtests.html"><em>Running &amp; Writing Tests</em></a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Beginner tasks to become familiar with the development process</dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="docquality.html"><em>Helping with Documentation</em></a></li>
+<li><a class="reference internal" href="coverage.html"><em>Note for Jython</em></a></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Advanced tasks for once you are comfortable</dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="silencewarnings.html"><em>Silence Warnings From the Test Suite</em></a></li>
+<li>Fixing issues found by the <a class="reference internal" href="buildbots.html"><em>buildbots</em></a></li>
+<li><a class="reference internal" href="fixingissues.html"><em>Fixing &#8220;easy&#8221; Issues (and Beyond)</em></a></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="tracker.html#tracker"><em>Using the Issue Tracker</em></a> and <a class="reference internal" href="tracker.html#helptriage"><em>Helping Triage Issues</em></a></dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="triaging.html"><em>Triaging an Issue</em></a></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><a class="reference internal" href="communication.html"><em>Following Jython&#8217;s Development</em></a></p>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="coredev.html"><em>How to Become a Core Developer</em></a></dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="committing.html"><em>Committing and Pushing Changes</em></a></li>
+<li><a class="reference internal" href="devcycle.html"><em>Development Cycle</em></a></li>
+<li><a class="reference internal" href="buildbots.html"><em>Continuous Integration</em></a></li>
+<li><a class="reference internal" href="coverity.html"><em>Coverity Scan</em></a></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>It is <strong>recommended</strong> that the above documents be read in the order listed.  You
+can stop where you feel comfortable and begin contributing immediately without
+reading and understanding these documents all at once.  If you do choose to skip
+around within the documentation, be aware that it is written assuming preceding
+documentation has been read so you may find it necessary to backtrack to fill in
+missing concepts and terminology.</p>
+</div>
+<div class="section" id="other-interpreter-implementations">
+<h2>Other Interpreter Implementations<a class="headerlink" href="#other-interpreter-implementations" title="Permalink to this headline">¶</a></h2>
+<p>This guide is specifically for contributing to <a class="reference external" href="http://www.jython.org/">Jython</a>: A Python interpreter
+focused on good integration with the Java Virtual Machine (JVM) environment.</p>
+<p>There are other Python implementations, each with a different focus.  Like
+CPython, they always have more things they would like to do than they have
+developers to work on them.  Some major example that may be of interest are:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.python.org/">CPython</a>: The Python reference interpreter, also called simply &#8220;Python&#8221;</li>
+<li><a class="reference external" href="http://www.pypy.org/">PyPy</a>: A Python interpreter focused on high speed (JIT-compiled) operation
+on major platforms</li>
+<li><a class="reference external" href="http://ironpython.net/">IronPython</a>: A Python interpreter focused on good integration with the
+Common Language Runtime (CLR) provided by .NET and Mono</li>
+<li><a class="reference external" href="http://www.stackless.com/">Stackless</a>: A Python interpreter focused on providing lightweight
+microthreads while remaining largely compatible with CPython specific
+extension modules</li>
+</ul>
+</div>
+<div class="section" id="key-resources">
+<h2>Key Resources<a class="headerlink" href="#key-resources" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><dl class="first docutils">
+<dt>Coding style guides</dt>
+<dd><ul class="first last simple">
+<li><span class="target" id="index-0"></span><a class="pep reference external" href="http://www.python.org/dev/peps/pep-0008"><strong>PEP 8</strong></a> (Style Guide for Python Code)</li>
+<li>Oracle&#8217;s Java guidelines #TODO need link</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference external" href="http://bugs.jython.org/">Issue tracker</a></dt>
+<dd><ul class="first last simple">
+<li><a class="reference external" href="http://psf.upfronthosting.co.za/roundup/meta">Meta tracker</a> (issue
+tracker for the issue tracker)</li>
+<li><a class="reference internal" href="experts.html"><em>Experts Index</em></a></li>
+<li><a class="reference external" href="http://www.python.org/dev/searchplugin/">Firefox search engine plug-in</a></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><a class="reference external" href="http://python.org/dev/buildbot/">Buildbot status</a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Source code</dt>
+<dd><ul class="first last simple">
+<li><a class="reference external" href="http://hg.python.org/jython/file/default/">Browse online</a></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><a class="reference external" href="http://www.python.org/dev/peps/">PEPs</a> (Python Enhancement Proposals)</p>
+</li>
+<li><p class="first"><a class="reference internal" href="faq.html"><em>Jython Developer FAQ</em></a></p>
+</li>
+<li><p class="first"><a class="reference internal" href="developers.html"><em>Developer Log</em></a></p>
+</li>
+</ul>
+</div>
+<div class="section" id="additional-resources">
+<span id="resources"></span><h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Anyone can clone the sources for this guide.  See
+<a class="reference internal" href="docquality.html#helping-with-the-developers-guide"><em>Helping with the Developer&#8217;s Guide</em></a>.</p>
+</li>
+<li><dl class="first docutils">
+<dt>Help with ...</dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="grammar.html"><em>Changing CPython&#8217;s Grammar</em></a></li>
+<li><a class="reference internal" href="compiler.html"><em>Design of CPython&#8217;s Compiler</em></a></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Tool support</dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="emacs.html"><em>Emacs support</em></a></li>
+<li>Various tools with configuration files as found in the <a class="reference external" href="http://hg.python.org/cpython/file/default/Misc">Misc directory</a></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><a class="reference external" href="http://python.org/dev/pydotorg/">python.org maintenance</a></p>
+</li>
+<li><p class="first"><a class="reference internal" href="search.html"><em>Search this guide</em></a></p>
+</li>
+</ul>
+</div>
+<div class="section" id="full-table-of-contents">
+<span id="contents"></span><h2>Full Table of Contents<a class="headerlink" href="#full-table-of-contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">1. Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#getting-set-up">1.1. Getting Set Up</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="setup.html#version-control-setup">1.1.1. Version Control Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="setup.html#getting-the-source-code">1.1.2. Getting the Source Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="setup.html#compiling">1.1.3. Compiling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="setup.html#build-dependencies">1.1.3.1. Build dependencies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#editors-and-tools">1.2. Editors and Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#directory-structure">1.3. Directory Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="help.html">2. Where to Get Help</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="help.html#ask-jython">2.1. Ask #jython</a></li>
+<li class="toctree-l2"><a class="reference internal" href="help.html#core-mentorship">2.2. Core Mentorship</a></li>
+<li class="toctree-l2"><a class="reference internal" href="help.html#mailing-lists">2.3. Mailing Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="help.html#file-a-bug">2.4. File a Bug</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="patch.html">3. Lifecycle of a Patch</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="patch.html#creating">3.1. Creating</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="patch.html#tool-usage">3.1.1. Tool Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="patch.html#preparation">3.1.2. Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="patch.html#generation">3.1.3. Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="patch.html#licensing">3.2. Licensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="patch.html#submitting">3.3. Submitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="patch.html#reviewing">3.4. Reviewing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="patch.html#committing-rejecting">3.5. Committing/Rejecting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="patch.html#crediting">3.6. Crediting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="runtests.html">4. Running &amp; Writing Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="runtests.html#running">4.1. Running</a></li>
+<li class="toctree-l2"><a class="reference internal" href="runtests.html#writing">4.2. Writing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="coverage.html">5. Note for Jython</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coverage.html#increase-test-coverage">6. Increase Test Coverage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="coverage.html#common-gotchas">6.1. Common Gotchas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coverage.html#measuring-coverage">6.2. Measuring Coverage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="coverage.html#using-coverage-py">6.2.1. Using coverage.py</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coverage.html#branch-coverage">6.2.1.1. Branch Coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coverage.html#coverage-results-for-modules-imported-early-on">6.2.1.2. Coverage Results For Modules Imported Early On</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coverage.html#using-test-regrtest">6.2.2. Using test.regrtest</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="coverage.html#filing-the-issue">6.3. Filing the Issue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coverage.html#measuring-coverage-of-java-code">6.4. Measuring coverage of Java code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docquality.html">7. Helping with Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docquality.html#helping-with-issues-filed-on-the-issue-tracker">7.1. Helping with issues filed on the issue tracker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docquality.html#proofreading">7.2. Proofreading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docquality.html#helping-with-the-developer-s-guide">7.3. Helping with the Developer&#8217;s Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="documenting.html">8. Documenting Jython</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="documenting.html#introduction">8.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documenting.html#style-guide">8.2. Style guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#use-of-whitespace">8.2.1. Use of whitespace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#footnotes">8.2.2. Footnotes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#capitalization">8.2.3. Capitalization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#affirmative-tone">8.2.4. Affirmative Tone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#economy-of-expression">8.2.5. Economy of Expression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#security-considerations-and-other-concerns">8.2.6. Security Considerations (and Other Concerns)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#code-examples">8.2.7. Code Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#code-equivalents">8.2.8. Code Equivalents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#audience">8.2.9. Audience</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="documenting.html#restructuredtext-primer">8.3. reStructuredText Primer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#paragraphs">8.3.1. Paragraphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#inline-markup">8.3.2. Inline markup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#lists-and-quotes">8.3.3. Lists and Quotes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#source-code">8.3.4. Source Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#hyperlinks">8.3.5. Hyperlinks</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="documenting.html#external-links">8.3.5.1. External links</a></li>
+<li class="toctree-l4"><a class="reference internal" href="documenting.html#internal-links">8.3.5.2. Internal links</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#sections">8.3.6. Sections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#explicit-markup">8.3.7. Explicit Markup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#directives">8.3.8. Directives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#id1">8.3.9. Footnotes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#comments">8.3.10. Comments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#source-encoding">8.3.11. Source encoding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#gotchas">8.3.12. Gotchas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="documenting.html#additional-markup-constructs">8.4. Additional Markup Constructs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#meta-information-markup">8.4.1. Meta-information markup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#module-specific-markup">8.4.2. Module-specific markup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#information-units">8.4.3. Information units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#showing-code-examples">8.4.4. Showing code examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#id3">8.4.5. Inline markup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#cross-linking-markup">8.4.6. Cross-linking markup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#paragraph-level-markup">8.4.7. Paragraph-level markup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#table-of-contents-markup">8.4.8. Table-of-contents markup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#index-generating-markup">8.4.9. Index-generating markup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#grammar-production-displays">8.4.10. Grammar production displays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#substitutions">8.4.11. Substitutions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="documenting.html#building-the-documentation">8.5. Building the documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#using-make-make-bat">8.5.1. Using make / make.bat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documenting.html#without-make">8.5.2. Without make</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="silencewarnings.html">9. Silence Warnings From the Test Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fixingissues.html">10. Fixing &#8220;easy&#8221; Issues (and Beyond)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tracker.html">11. Issue Tracking</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tracker.html#using-the-issue-tracker">11.1. Using the Issue Tracker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tracker.html#checking-if-a-bug-already-exists">11.1.1. Checking if a bug already exists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tracker.html#reporting-an-issue">11.1.2. Reporting an issue</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tracker.html#helping-triage-issues">11.2. Helping Triage Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tracker.html#classifying-reports">11.2.1. Classifying Reports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tracker.html#reviewing-patches">11.2.2. Reviewing Patches</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tracker.html#finding-an-issue-you-can-help-with">11.2.3. Finding an Issue You Can Help With</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tracker.html#gaining-the-developer-role-on-the-issue-tracker">11.3. Gaining the &#8220;Developer&#8221; Role on the Issue Tracker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tracker.html#the-meta-tracker">11.4. The Meta Tracker</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="triaging.html">12. Triaging an Issue</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="triaging.html#fields">12.1. Fields</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#title">12.1.1. Title</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#type">12.1.2. Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#stage">12.1.3. Stage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#components">12.1.4. Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#versions">12.1.5. Versions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#priority">12.1.6. Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#keywords">12.1.7. Keywords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#nosy-list">12.1.8. Nosy List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#assigned-to">12.1.9. Assigned To</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#dependencies">12.1.10. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#superseder">12.1.11. Superseder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#status">12.1.12. Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#resolution">12.1.13. Resolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triaging.html#mercurial-repository">12.1.14. Mercurial Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="triaging.html#generating-special-links-in-a-comment">12.2. Generating Special Links in a Comment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="communication.html">13. Following Jython&#8217;s Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="communication.html#mailing-lists">13.1. Mailing Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="communication.html#irc">13.2. IRC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="communication.html#blogs">13.3. Blogs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="coredev.html">14. How to Become a Core Developer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="coredev.html#what-it-takes">14.1. What it Takes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coredev.html#gaining-commit-privileges">14.2. Gaining Commit Privileges</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="coredev.html#mailing-lists">14.2.1. Mailing Lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coredev.html#issue-tracker">14.2.2. Issue Tracker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coredev.html#ssh">14.2.3. SSH</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coredev.html#sign-a-contributor-agreement">14.2.4. Sign a Contributor Agreement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coredev.html#read-write-checkout">14.2.5. Read/Write Checkout</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="coredev.html#responsibilities">14.3. Responsibilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developers.html">15. Developer Log</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developers.html#permissions-history">15.1. Permissions History</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developers.html#permissions-dropped-on-request">15.2. Permissions Dropped on Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developers.html#permissions-dropped-after-loss-of-contact">15.3. Permissions Dropped after Loss of Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developers.html#initials-of-project-admins">15.4. Initials of Project Admins</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="committing.html">16. Committing and Pushing Changes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#is-the-change-ready-for-committing">16.1. Is the change ready for committing?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="committing.html#does-the-test-suite-still-pass">16.1.1. Does the test suite still pass?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="committing.html#patch-checklist">16.1.2. Patch checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#commit-style">16.2. Commit Style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#handling-others-code">16.3. Handling Others&#8217; Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#contributor-licensing-agreements">16.4. Contributor Licensing Agreements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#news-entries">16.5. NEWS Entries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#commit-messages">16.6. Commit Messages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="committing.html#mercurial-hooks">16.6.1. Mercurial hooks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="committing.html#working-with-mercurial">17. Working with Mercurial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#minimal-configuration">17.1. Minimal Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#clones-setup">17.2. Clones Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="committing.html#single-clone-approach">17.2.1. Single Clone Approach</a></li>
+<li class="toctree-l3"><a class="reference internal" href="committing.html#multiple-clones-approach">17.2.2. Multiple Clones Approach</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#active-branches">17.3. Active branches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#merging-order">17.4. Merging order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#merging-between-different-branches-within-the-same-major-version">17.5. Merging between different branches (within the same major version)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#porting-changesets-between-the-two-major-python-versions-2-x-and-3-x">17.6. Porting changesets between the two major Python versions (2.x and 3.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="committing.html#long-term-development-of-features">17.7. Long-term development of features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="committing.html#uploading-a-patch-for-review">17.7.1. Uploading a patch for review</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="devcycle.html">18. Development Cycle</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devcycle.html#branches">18.1. Branches</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="devcycle.html#in-development-main-branch">18.1.1. In-development (main) branch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devcycle.html#maintenance-branches">18.1.2. Maintenance branches</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devcycle.html#security-branches">18.1.3. Security branches</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devcycle.html#summary">18.1.4. Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="devcycle.html#stages">18.2. Stages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="devcycle.html#pre-alpha">18.2.1. Pre-alpha</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devcycle.html#alpha">18.2.2. Alpha</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devcycle.html#beta">18.2.3. Beta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devcycle.html#release-candidate-rc">18.2.4. Release Candidate (RC)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devcycle.html#final">18.2.5. Final</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="buildbots.html">19. Continuous Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="buildbots.html#checking-results-of-automatic-builds">19.1. Checking results of automatic builds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="buildbots.html#stability">19.2. Stability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="buildbots.html#flags-dependent-failures">19.3. Flags-dependent failures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="buildbots.html#ordering-dependent-failures">19.4. Ordering-dependent failures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="buildbots.html#transient-failures">19.5. Transient failures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="buildbots.html#custom-builders">19.6. Custom builders</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="experts.html">20. Experts Index</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="experts.html#stdlib">20.1. Stdlib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="experts.html#tools">20.2. Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="experts.html#platforms">20.3. Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="experts.html#miscellaneous">20.4. Miscellaneous</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="emacs.html">21. Emacs support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">22. Jython Developer FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#communications">22.1. Communications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#version-control">22.2. Version Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#ssh">22.3. SSH</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="releasejython.html">23. How To Release Jython</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releasejython.html#post-publish">23.1. Post Publish</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Jython Developer&#8217;s Guide</a><ul>
+<li><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li><a class="reference internal" href="#quick-links">Quick Links</a></li>
+<li><a class="reference internal" href="#contributing">Contributing</a></li>
+<li><a class="reference internal" href="#other-interpreter-implementations">Other Interpreter Implementations</a></li>
+<li><a class="reference internal" href="#key-resources">Key Resources</a></li>
+<li><a class="reference internal" href="#additional-resources">Additional Resources</a></li>
+<li><a class="reference internal" href="#full-table-of-contents">Full Table of Contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="setup.html"
+                        title="next chapter">1. Getting Started</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="setup.html" title="1. Getting Started"
+             >next</a> |</li>
+        <li><a href="#">Jython Developer&#39;s Guide </a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Python Software Foundation.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>20.13. smtpd — SMTP Server &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="20. Internet Protocols and Support" href="internet.html" />
+    <link rel="next" title="20.14. telnetlib — Telnet client" href="telnetlib.html" />
+    <link rel="prev" title="20.12. smtplib — SMTP protocol client" href="smtplib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="telnetlib.html" title="20.14. telnetlib — Telnet client"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="smtplib.html" title="20.12. smtplib — SMTP protocol client"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" accesskey="U">20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">20.13. <tt class="docutils literal"><span class="pre">smtpd</span></tt> &#8212; SMTP Server</a><ul>
+<li><a class="reference external" href="#smtpserver-objects">20.13.1. SMTPServer Objects</a></li>
+<li><a class="reference external" href="#debuggingserver-objects">20.13.2. DebuggingServer Objects</a></li>
+<li><a class="reference external" href="#pureproxy-objects">20.13.3. PureProxy Objects</a></li>
+<li><a class="reference external" href="#mailmanproxy-objects">20.13.4. MailmanProxy Objects</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="smtplib.html"
+                                  title="previous chapter">20.12. <tt class="docutils literal docutils literal"><span class="pre">smtplib</span></tt> &#8212; SMTP protocol client</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="telnetlib.html"
+                                  title="next chapter">20.14. <tt class="docutils literal"><span class="pre">telnetlib</span></tt> &#8212; Telnet client</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/smtpd.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="smtpd-smtp-server">
+<h1>20.13. <tt class="docutils literal"><span class="pre">smtpd</span></tt> &#8212; SMTP Server<a class="headerlink" href="#smtpd-smtp-server" title="Permalink to this headline">¶</a></h1>
+<p>This module offers several classes to implement SMTP servers.  One is
+a generic do-nothing implementation, which can be overridden, while
+the other two offer specific mail-sending strategies.</p>
+<div class="section" id="smtpserver-objects">
+<h2>20.13.1. SMTPServer Objects<a class="headerlink" href="#smtpserver-objects" title="Permalink to this headline">¶</a></h2>
+<p>class class smtpd.SMTPServer(localaddr, remoteaddr)</p>
+<blockquote>
+<p>Create a new <tt class="docutils literal"><span class="pre">SMTPServer</span></tt> object, which binds to local address
+<em>localaddr</em>.  It will treat <em>remoteaddr</em> as an upstream SMTP
+relayer.  It inherits from <tt class="docutils literal"><span class="pre">asyncore.dispatcher</span></tt>, and so will
+insert itself into <tt class="docutils literal"><span class="pre">asyncore</span></tt>&#8216;s event loop on instantiation.</p>
+<p>process_message(peer, mailfrom, rcpttos, data)</p>
+<blockquote>
+Raise <tt class="docutils literal"><span class="pre">NotImplementedError</span></tt> exception. Override this in
+subclasses to do something useful with this message. Whatever
+was passed in the constructor as <em>remoteaddr</em> will be available
+as the <tt class="docutils literal"><span class="pre">_remoteaddr</span></tt> attribute. <em>peer</em> is the remote host&#8217;s
+address, <em>mailfrom</em> is the envelope originator, <em>rcpttos</em> are
+the envelope recipients and <em>data</em> is a string containing the
+contents of the e-mail (which should be in <strong>RFC 2822</strong> format).</blockquote>
+</blockquote>
+</div>
+<div class="section" id="debuggingserver-objects">
+<h2>20.13.2. DebuggingServer Objects<a class="headerlink" href="#debuggingserver-objects" title="Permalink to this headline">¶</a></h2>
+<p>class class smtpd.DebuggingServer(localaddr, remoteaddr)</p>
+<blockquote>
+Create a new debugging server.  Arguments are as per
+<tt class="docutils literal"><span class="pre">SMTPServer</span></tt>. Messages will be discarded, and printed on stdout.</blockquote>
+</div>
+<div class="section" id="pureproxy-objects">
+<h2>20.13.3. PureProxy Objects<a class="headerlink" href="#pureproxy-objects" title="Permalink to this headline">¶</a></h2>
+<p>class class smtpd.PureProxy(localaddr, remoteaddr)</p>
+<blockquote>
+Create a new pure proxy server. Arguments are as per
+<tt class="docutils literal"><span class="pre">SMTPServer</span></tt>. Everything will be relayed to <em>remoteaddr</em>.  Note
+that running this has a good chance to make you into an open relay,
+so please be careful.</blockquote>
+</div>
+<div class="section" id="mailmanproxy-objects">
+<h2>20.13.4. MailmanProxy Objects<a class="headerlink" href="#mailmanproxy-objects" title="Permalink to this headline">¶</a></h2>
+<p>class class smtpd.MailmanProxy(localaddr, remoteaddr)</p>
+<blockquote>
+Create a new pure proxy server. Arguments are as per
+<tt class="docutils literal"><span class="pre">SMTPServer</span></tt>. Everything will be relayed to <em>remoteaddr</em>, unless
+local mailman configurations knows about an address, in which case
+it will be handled via mailman.  Note that running this has a good
+chance to make you into an open relay, so please be careful.</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="telnetlib.html" title="20.14. telnetlib — Telnet client"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="smtplib.html" title="20.12. smtplib — SMTP protocol client"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" >20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

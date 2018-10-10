@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>32.3. grp — The group database &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="32. Unix Specific Services" href="unix.html" />
+    <link rel="next" title="32.4. pipes — Interface to shell pipelines" href="pipes.html" />
+    <link rel="prev" title="32.2. pwd — The password database" href="pwd.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="pipes.html" title="32.4. pipes — Interface to shell pipelines"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pwd.html" title="32.2. pwd — The password database"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="unix.html" accesskey="U">32. Unix Specific Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="pwd.html"
+                                  title="previous chapter">32.2. <tt class="docutils literal"><span class="pre">pwd</span></tt> &#8212; The password database</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="pipes.html"
+                                  title="next chapter">32.4. <tt class="docutils literal"><span class="pre">pipes</span></tt> &#8212; Interface to shell pipelines</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/grp.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="grp-the-group-database">
+<h1>32.3. <tt class="docutils literal"><span class="pre">grp</span></tt> &#8212; The group database<a class="headerlink" href="#grp-the-group-database" title="Permalink to this headline">¶</a></h1>
+<p>Platform: Unix</p>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>Platforms: <a href="#id3"><span class="problematic" id="id4">*</span></a>Unix</p>
+<p>This module provides access to the Unix group database. It is
+available on all Unix versions.</p>
+<p>Group database entries are reported as a tuple-like object, whose
+attributes correspond to the members of the <tt class="docutils literal"><span class="pre">group</span></tt> structure
+(Attribute field below, see <tt class="docutils literal"><span class="pre">&lt;pwd.h&gt;</span></tt>):</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="23%" />
+<col width="61%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Index</th>
+<th class="head">Attribute</th>
+<th class="head">Meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>0</td>
+<td>gr_name</td>
+<td>the name of the group</td>
+</tr>
+<tr><td>1</td>
+<td>gr_passwd</td>
+<td>the (encrypted) group password;
+often empty</td>
+</tr>
+<tr><td>2</td>
+<td>gr_gid</td>
+<td>the numerical group ID</td>
+</tr>
+<tr><td>3</td>
+<td>gr_mem</td>
+<td>all the group member&#8217;s  user
+names</td>
+</tr>
+</tbody>
+</table>
+<p>The gid is an integer, name and password are strings, and the member
+list is a list of strings. (Note that most users are not explicitly
+listed as members of the group they are in according to the password
+database.  Check both databases to get complete membership
+information.)</p>
+<p>It defines the following items:</p>
+<p>grp.getgrgid(gid)</p>
+<blockquote>
+Return the group database entry for the given numeric group ID.
+<tt class="docutils literal"><span class="pre">KeyError</span></tt> is raised if the entry asked for cannot be found.</blockquote>
+<p>grp.getgrnam(name)</p>
+<blockquote>
+Return the group database entry for the given group name.
+<tt class="docutils literal"><span class="pre">KeyError</span></tt> is raised if the entry asked for cannot be found.</blockquote>
+<p>grp.getgrall()</p>
+<blockquote>
+Return a list of all available group entries, in arbitrary order.</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">pwd</span></tt></dt>
+<dd>An interface to the user database, similar to this.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">spwd</span></tt></dt>
+<dd>An interface to the shadow password database, similar to this.</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pipes.html" title="32.4. pipes — Interface to shell pipelines"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pwd.html" title="32.2. pwd — The password database"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="unix.html" >32. Unix Specific Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

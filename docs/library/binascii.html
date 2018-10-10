@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>18.13. binascii — Convert between binary and ASCII &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="18. Internet Data Handling" href="netdata.html" />
+    <link rel="next" title="18.14. quopri — Encode and decode MIME quoted-printable data" href="quopri.html" />
+    <link rel="prev" title="18.12. binhex — Encode and decode binhex4 files" href="binhex.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="quopri.html" title="18.14. quopri — Encode and decode MIME quoted-printable data"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="binhex.html" title="18.12. binhex — Encode and decode binhex4 files"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" accesskey="U">18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="binhex.html"
+                                  title="previous chapter">18.12. <tt class="docutils literal docutils literal"><span class="pre">binhex</span></tt> &#8212; Encode and decode binhex4 files</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="quopri.html"
+                                  title="next chapter">18.14. <tt class="docutils literal"><span class="pre">quopri</span></tt> &#8212; Encode and decode MIME quoted-printable data</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/binascii.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="binascii-convert-between-binary-and-ascii">
+<h1>18.13. <tt class="docutils literal"><span class="pre">binascii</span></tt> &#8212; Convert between binary and ASCII<a class="headerlink" href="#binascii-convert-between-binary-and-ascii" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">binascii</span></tt> module contains a number of methods to convert
+between binary and various ASCII-encoded binary representations.
+Normally, you will not use these functions directly but use wrapper
+modules like <tt class="docutils literal"><span class="pre">uu</span></tt>, <tt class="docutils literal"><span class="pre">base64</span></tt>, or <tt class="docutils literal"><span class="pre">binhex</span></tt> instead. The
+<tt class="docutils literal"><span class="pre">binascii</span></tt> module contains low-level functions written in C for
+greater speed that are used by the higher-level modules.</p>
+<p>The <tt class="docutils literal"><span class="pre">binascii</span></tt> module defines the following functions:</p>
+<p>binascii.a2b_uu(string)</p>
+<blockquote>
+Convert a single line of uuencoded data back to binary and return
+the binary data. Lines normally contain 45 (binary) bytes, except
+for the last line. Line data may be followed by whitespace.</blockquote>
+<p>binascii.b2a_uu(data)</p>
+<blockquote>
+Convert binary data to a line of ASCII characters, the return value
+is the converted line, including a newline char. The length of
+<em>data</em> should be at most 45.</blockquote>
+<p>binascii.a2b_base64(string)</p>
+<blockquote>
+Convert a block of base64 data back to binary and return the binary
+data. More than one line may be passed at a time.</blockquote>
+<p>binascii.b2a_base64(data)</p>
+<blockquote>
+Convert binary data to a line of ASCII characters in base64 coding.
+The return value is the converted line, including a newline char.
+The length of <em>data</em> should be at most 57 to adhere to the base64
+standard.</blockquote>
+<p>binascii.a2b_qp(string[, header])</p>
+<blockquote>
+Convert a block of quoted-printable data back to binary and return
+the binary data. More than one line may be passed at a time. If the
+optional argument <em>header</em> is present and true, underscores will be
+decoded as spaces.</blockquote>
+<p>binascii.b2a_qp(data[, quotetabs, istext, header])</p>
+<blockquote>
+Convert binary data to a line(s) of ASCII characters in quoted-
+printable encoding.  The return value is the converted line(s). If
+the optional argument <em>quotetabs</em> is present and true, all tabs and
+spaces will be encoded.   If the optional argument <em>istext</em> is
+present and true, newlines are not encoded but trailing whitespace
+will be encoded. If the optional argument <em>header</em> is present and
+true, spaces will be encoded as underscores per RFC1522. If the
+optional argument <em>header</em> is present and false, newline characters
+will be encoded as well; otherwise linefeed conversion might
+corrupt the binary data stream.</blockquote>
+<p>binascii.a2b_hqx(string)</p>
+<blockquote>
+Convert binhex4 formatted ASCII data to binary, without doing RLE-
+decompression. The string should contain a complete number of
+binary bytes, or (in case of the last portion of the binhex4 data)
+have the remaining bits zero.</blockquote>
+<p>binascii.rledecode_hqx(data)</p>
+<blockquote>
+Perform RLE-decompression on the data, as per the binhex4 standard.
+The algorithm uses <tt class="docutils literal"><span class="pre">0x90</span></tt> after a byte as a repeat indicator,
+followed by a count. A count of <tt class="docutils literal"><span class="pre">0</span></tt> specifies a byte value of
+<tt class="docutils literal"><span class="pre">0x90</span></tt>. The routine returns the decompressed data, unless data
+input data ends in an orphaned repeat indicator, in which case the
+<tt class="docutils literal"><span class="pre">Incomplete</span></tt> exception is raised.</blockquote>
+<p>binascii.rlecode_hqx(data)</p>
+<blockquote>
+Perform binhex4 style RLE-compression on <em>data</em> and return the
+result.</blockquote>
+<p>binascii.b2a_hqx(data)</p>
+<blockquote>
+Perform hexbin4 binary-to-ASCII translation and return the
+resulting string. The argument should already be RLE-coded, and
+have a length divisible by 3 (except possibly the last fragment).</blockquote>
+<p>binascii.crc_hqx(data, crc)</p>
+<blockquote>
+Compute the binhex4 crc value of <em>data</em>, starting with an initial
+<em>crc</em> and returning the result.</blockquote>
+<p>binascii.crc32(data[, crc])</p>
+<blockquote>
+<p>Compute CRC-32, the 32-bit checksum of data, starting with an
+initial crc.  This is consistent with the ZIP file checksum.  Since
+the algorithm is designed for use as a checksum algorithm, it is
+not suitable for use as a general hash algorithm.  Use as follows:</p>
+<blockquote>
+print binascii.crc32(&#8220;hello world&#8221;)
+# Or, in two pieces:
+crc = binascii.crc32(&#8220;hello&#8221;)
+crc = binascii.crc32(&#8221; world&#8221;, crc) &amp; 0xffffffff
+print &#8216;crc32 = 0x%08x&#8217; % crc</blockquote>
+</blockquote>
+<dl class="docutils">
+<dt>Note: To generate the same numeric value across all Python versions and</dt>
+<dd>platforms use crc32(data) &amp; 0xffffffff.  If you are only using the
+checksum in packed binary format this is not necessary as the return
+value is the correct 32bit binary representation regardless of sign.</dd>
+</dl>
+<p>Changed in version 2.6: The return value is in the range [-2**31,
+2**31-1] regardless of platform.  In the past the value would be
+signed on some platforms and unsigned on others.  Use &amp; 0xffffffff on
+the value if you want it to match 3.0 behavior.</p>
+<p>Changed in version 3.0: The return value is unsigned and in the range
+[0, 2**32-1] regardless of platform.</p>
+<p>binascii.b2a_hex(data)
+binascii.hexlify(data)</p>
+<blockquote>
+Return the hexadecimal representation of the binary <em>data</em>.  Every
+byte of <em>data</em> is converted into the corresponding 2-digit hex
+representation.  The resulting string is therefore twice as long as
+the length of <em>data</em>.</blockquote>
+<p>binascii.a2b_hex(hexstr)
+binascii.unhexlify(hexstr)</p>
+<blockquote>
+Return the binary data represented by the hexadecimal string
+<em>hexstr</em>.  This function is the inverse of <tt class="docutils literal"><span class="pre">b2a_hex()</span></tt>. <em>hexstr</em>
+must contain an even number of hexadecimal digits (which can be
+upper or lower case), otherwise a <tt class="docutils literal"><span class="pre">TypeError</span></tt> is raised.</blockquote>
+<p>exception exception binascii.Error</p>
+<blockquote>
+Exception raised on errors. These are usually programming errors.</blockquote>
+<p>exception exception binascii.Incomplete</p>
+<blockquote>
+Exception raised on incomplete data. These are usually not
+programming errors, but may be handled by reading a little more
+data and trying again.</blockquote>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">base64</span></tt></dt>
+<dd>Support for base64 encoding used in MIME email messages.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">binhex</span></tt></dt>
+<dd>Support for the binhex format used on the Macintosh.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">uu</span></tt></dt>
+<dd>Support for UU encoding used on Unix.</dd>
+<dt>Module <tt class="docutils literal"><span class="pre">quopri</span></tt></dt>
+<dd>Support for quoted-printable encoding used in MIME email
+messages.</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="quopri.html" title="18.14. quopri — Encode and decode MIME quoted-printable data"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="binhex.html" title="18.12. binhex — Encode and decode binhex4 files"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" >18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

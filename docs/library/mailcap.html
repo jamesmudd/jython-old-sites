@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>18.2. mailcap — Mailcap file handling &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="18. Internet Data Handling" href="netdata.html" />
+    <link rel="next" title="18.3. mailbox — Manipulate mailboxes in various formats" href="mailbox.html" />
+    <link rel="prev" title="18.1. email — An email and MIME handling package" href="email.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="mailbox.html" title="18.3. mailbox — Manipulate mailboxes in various formats"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="email.html" title="18.1. email — An email and MIME handling package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" accesskey="U">18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="email.html"
+                                  title="previous chapter">18.1. <tt class="docutils literal docutils literal"><span class="pre">email</span></tt> &#8212; An email and MIME handling package</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="mailbox.html"
+                                  title="next chapter">18.3. <tt class="docutils literal docutils literal"><span class="pre">mailbox</span></tt> &#8212; Manipulate mailboxes in various formats</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/mailcap.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="mailcap-mailcap-file-handling">
+<h1>18.2. <tt class="docutils literal"><span class="pre">mailcap</span></tt> &#8212; Mailcap file handling<a class="headerlink" href="#mailcap-mailcap-file-handling" title="Permalink to this headline">¶</a></h1>
+<p>Mailcap files are used to configure how MIME-aware applications such
+as mail readers and Web browsers react to files with different MIME
+types. (The name &#8220;mailcap&#8221; is derived from the phrase &#8220;mail
+capability&#8221;.)  For example, a mailcap file might contain a line like
+<tt class="docutils literal"><span class="pre">video/mpeg;</span> <span class="pre">xmpeg</span> <span class="pre">%s</span></tt>.  Then, if the user encounters an email
+message or Web document with the MIME type <em>video/mpeg</em>, <tt class="docutils literal"><span class="pre">%s</span></tt> will
+be replaced by a filename (usually one belonging to a temporary file)
+and the <strong>xmpeg</strong> program can be automatically started to view the
+file.</p>
+<p>The mailcap format is documented in <strong>RFC 1524</strong>, &#8220;A User Agent
+Configuration Mechanism For Multimedia Mail Format Information,&#8221; but
+is not an Internet standard.  However, mailcap files are supported on
+most Unix systems.</p>
+<p>mailcap.findmatch(caps, MIMEtype[, key[, filename[, plist]]])</p>
+<blockquote>
+<p>Return a 2-tuple; the first element is a string containing the
+command line to be executed (which can be passed to
+<tt class="docutils literal"><span class="pre">os.system()</span></tt>), and the second element is the mailcap entry for a
+given MIME type.  If no matching MIME type can be found, <tt class="docutils literal"><span class="pre">(None,</span>
+<span class="pre">None)</span></tt> is returned.</p>
+<p><em>key</em> is the name of the field desired, which represents the type
+of activity to be performed; the default value is &#8216;view&#8217;, since in
+the  most common case you simply want to view the body of the MIME-
+typed data.  Other possible values might be &#8216;compose&#8217; and &#8216;edit&#8217;,
+if you wanted to create a new body of the given MIME type or alter
+the existing body data.  See <strong>RFC 1524</strong> for a complete list of
+these fields.</p>
+<p><em>filename</em> is the filename to be substituted for <tt class="docutils literal"><span class="pre">%s</span></tt> in the
+command line; the default value is <tt class="docutils literal"><span class="pre">'/dev/null'</span></tt> which is almost
+certainly not what you want, so usually you&#8217;ll override it by
+specifying a filename.</p>
+<p><em>plist</em> can be a list containing named parameters; the default
+value is simply an empty list.  Each entry in the list must be a
+string containing the parameter name, an equals sign (<tt class="docutils literal"><span class="pre">'='</span></tt>), and
+the parameter&#8217;s value.  Mailcap entries can contain  named
+parameters like <tt class="docutils literal"><span class="pre">%{foo}</span></tt>, which will be replaced by the value of
+the parameter named &#8216;foo&#8217;.  For example, if the command line
+<tt class="docutils literal"><span class="pre">showpartial</span> <span class="pre">%{id}</span> <span class="pre">%{number}</span> <span class="pre">%{total}</span></tt> was in a mailcap file, and
+<em>plist</em> was set to <tt class="docutils literal"><span class="pre">['id=1',</span> <span class="pre">'number=2',</span> <span class="pre">'total=3']</span></tt>, the
+resulting command line would be <tt class="docutils literal"><span class="pre">'showpartial</span> <span class="pre">1</span> <span class="pre">2</span> <span class="pre">3'</span></tt>.</p>
+<p>In a mailcap file, the &#8220;test&#8221; field can optionally be specified to
+test some external condition (such as the machine architecture, or
+the window system in use) to determine whether or not the mailcap
+line applies.  <tt class="docutils literal"><span class="pre">findmatch()</span></tt> will automatically check such
+conditions and skip the entry if the check fails.</p>
+</blockquote>
+<p>mailcap.getcaps()</p>
+<blockquote>
+<p>Returns a dictionary mapping MIME types to a list of mailcap file
+entries. This dictionary must be passed to the <tt class="docutils literal"><span class="pre">findmatch()</span></tt>
+function.  An entry is stored as a list of dictionaries, but it
+shouldn&#8217;t be necessary to know the details of this representation.</p>
+<p>The information is derived from all of the mailcap files found on
+the system. Settings in the user&#8217;s mailcap file <tt class="docutils literal"><span class="pre">$HOME/.mailcap</span></tt>
+will override settings in the system mailcap files
+<tt class="docutils literal"><span class="pre">/etc/mailcap</span></tt>, <tt class="docutils literal"><span class="pre">/usr/etc/mailcap</span></tt>, and
+<tt class="docutils literal"><span class="pre">/usr/local/etc/mailcap</span></tt>.</p>
+</blockquote>
+<p>An example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mailcap</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">=</span><span class="n">mailcap</span><span class="o">.</span><span class="n">getcaps</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mailcap</span><span class="o">.</span><span class="n">findmatch</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s">&#39;video/mpeg&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;/tmp/tmp1223&#39;</span><span class="p">)</span>
+<span class="go">(&#39;xmpeg /tmp/tmp1223&#39;, {&#39;view&#39;: &#39;xmpeg %s&#39;})</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mailbox.html" title="18.3. mailbox — Manipulate mailboxes in various formats"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="email.html" title="18.1. email — An email and MIME handling package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="netdata.html" >18. Internet Data Handling</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

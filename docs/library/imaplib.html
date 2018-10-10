@@ -1,0 +1,535 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>20.10. imaplib — IMAP4 protocol client &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="20. Internet Protocols and Support" href="internet.html" />
+    <link rel="next" title="20.11. nntplib — NNTP protocol client" href="nntplib.html" />
+    <link rel="prev" title="20.9. poplib — POP3 protocol client" href="poplib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="nntplib.html" title="20.11. nntplib — NNTP protocol client"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="poplib.html" title="20.9. poplib — POP3 protocol client"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" accesskey="U">20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">20.10. <tt class="docutils literal"><span class="pre">imaplib</span></tt> &#8212; IMAP4 protocol client</a><ul>
+<li><a class="reference external" href="#imap4-objects">20.10.1. IMAP4 Objects</a></li>
+<li><a class="reference external" href="#imap4-example">20.10.2. IMAP4 Example</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="poplib.html"
+                                  title="previous chapter">20.9. <tt class="docutils literal docutils literal"><span class="pre">poplib</span></tt> &#8212; POP3 protocol client</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="nntplib.html"
+                                  title="next chapter">20.11. <tt class="docutils literal"><span class="pre">nntplib</span></tt> &#8212; NNTP protocol client</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/imaplib.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="imaplib-imap4-protocol-client">
+<h1>20.10. <tt class="docutils literal"><span class="pre">imaplib</span></tt> &#8212; IMAP4 protocol client<a class="headerlink" href="#imaplib-imap4-protocol-client" title="Permalink to this headline">¶</a></h1>
+<p>This module defines three classes, <tt class="docutils literal"><span class="pre">IMAP4</span></tt>, <tt class="docutils literal"><span class="pre">IMAP4_SSL</span></tt> and
+<tt class="docutils literal"><span class="pre">IMAP4_stream</span></tt>, which encapsulate a connection to an IMAP4 server
+and implement a large subset of the IMAP4rev1 client protocol as
+defined in <strong>RFC 2060</strong>. It is backward compatible with IMAP4 (<strong>RFC
+1730</strong>) servers, but note that the <tt class="docutils literal"><span class="pre">STATUS</span></tt> command is not supported
+in IMAP4.</p>
+<p>Three classes are provided by the <tt class="docutils literal"><span class="pre">imaplib</span></tt> module, <tt class="docutils literal"><span class="pre">IMAP4</span></tt> is the
+base class:</p>
+<p>class class imaplib.IMAP4([host[, port]])</p>
+<blockquote>
+This class implements the actual IMAP4 protocol.  The connection is
+created and protocol version (IMAP4 or IMAP4rev1) is determined
+when the instance is initialized. If <em>host</em> is not specified,
+<tt class="docutils literal"><span class="pre">''</span></tt> (the local host) is used. If <em>port</em> is omitted, the standard
+IMAP4 port (143) is used.</blockquote>
+<p>Three exceptions are defined as attributes of the <tt class="docutils literal"><span class="pre">IMAP4</span></tt> class:</p>
+<p>exception exception IMAP4.error</p>
+<blockquote>
+Exception raised on any errors.  The reason for the exception is
+passed to the constructor as a string.</blockquote>
+<p>exception exception IMAP4.abort</p>
+<blockquote>
+IMAP4 server errors cause this exception to be raised.  This is a
+sub-class of <tt class="docutils literal"><span class="pre">IMAP4.error</span></tt>.  Note that closing the instance and
+instantiating a new one will usually allow recovery from this
+exception.</blockquote>
+<p>exception exception IMAP4.readonly</p>
+<blockquote>
+This exception is raised when a writable mailbox has its status
+changed by the server.  This is a sub-class of <tt class="docutils literal"><span class="pre">IMAP4.error</span></tt>.
+Some other client now has write permission, and the mailbox will
+need to be re-opened to re-obtain write permission.</blockquote>
+<p>There&#8217;s also a subclass for secure connections:</p>
+<p>class class imaplib.IMAP4_SSL([host[, port[, keyfile[, certfile]]]])</p>
+<blockquote>
+This is a subclass derived from <tt class="docutils literal"><span class="pre">IMAP4</span></tt> that connects over an SSL
+encrypted socket (to use this class you need a socket module that
+was compiled with SSL support).  If <em>host</em> is not specified, <tt class="docutils literal"><span class="pre">''</span></tt>
+(the local host) is used. If <em>port</em> is omitted, the standard IMAP4
+-over-SSL port (993) is used.  <em>keyfile</em> and <em>certfile</em> are also
+optional - they can contain a PEM formatted private key and
+certificate chain file for the SSL connection.</blockquote>
+<p>The second subclass allows for connections created by a child process:</p>
+<p>class class imaplib.IMAP4_stream(command)</p>
+<blockquote>
+<p>This is a subclass derived from <tt class="docutils literal"><span class="pre">IMAP4</span></tt> that connects to the
+<tt class="docutils literal"><span class="pre">stdin/stdout</span></tt> file descriptors created by passing <em>command</em> to
+<tt class="docutils literal"><span class="pre">os.popen2()</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>The following utility functions are defined:</p>
+<p>imaplib.Internaldate2tuple(datestr)</p>
+<blockquote>
+Converts an IMAP4 INTERNALDATE string to Coordinated Universal
+Time. Returns a <tt class="docutils literal"><span class="pre">time</span></tt> module tuple.</blockquote>
+<p>imaplib.Int2AP(num)</p>
+<blockquote>
+Converts an integer into a string representation using characters
+from the set [<tt class="docutils literal"><span class="pre">A</span></tt> .. <tt class="docutils literal"><span class="pre">P</span></tt>].</blockquote>
+<p>imaplib.ParseFlags(flagstr)</p>
+<blockquote>
+Converts an IMAP4 <tt class="docutils literal"><span class="pre">FLAGS</span></tt> response to a tuple of individual
+flags.</blockquote>
+<p>imaplib.Time2Internaldate(date_time)</p>
+<blockquote>
+Converts a <tt class="docutils literal"><span class="pre">time</span></tt> module tuple to an IMAP4 <tt class="docutils literal"><span class="pre">INTERNALDATE</span></tt>
+representation. Returns a string in the form: <tt class="docutils literal"><span class="pre">&quot;DD-Mmm-YYYY</span>
+<span class="pre">HH:MM:SS</span> <span class="pre">+HHMM&quot;</span></tt> (including double-quotes).</blockquote>
+<p>Note that IMAP4 message numbers change as the mailbox changes; in
+particular, after an <tt class="docutils literal"><span class="pre">EXPUNGE</span></tt> command performs deletions the
+remaining messages are renumbered. So it is highly advisable to use
+UIDs instead, with the UID command.</p>
+<p>At the end of the module, there is a test section that contains a more
+extensive example of usage.</p>
+<p>See also:</p>
+<blockquote>
+Documents describing the protocol, and sources and binaries  for
+servers implementing it, can all be found at the University of
+Washington&#8217;s <em>IMAP Information Center</em>
+(<a class="reference external" href="http://www.washington.edu/imap/">http://www.washington.edu/imap/</a>).</blockquote>
+<div class="section" id="imap4-objects">
+<h2>20.10.1. IMAP4 Objects<a class="headerlink" href="#imap4-objects" title="Permalink to this headline">¶</a></h2>
+<p>All IMAP4rev1 commands are represented by methods of the same name,
+either upper-case or lower-case.</p>
+<p>All arguments to commands are converted to strings, except for
+<tt class="docutils literal"><span class="pre">AUTHENTICATE</span></tt>, and the last argument to <tt class="docutils literal"><span class="pre">APPEND</span></tt> which is passed
+as an IMAP4 literal.  If necessary (the string contains IMAP4
+protocol-sensitive characters and isn&#8217;t enclosed with either
+parentheses or double quotes) each string is quoted. However, the
+<em>password</em> argument to the <tt class="docutils literal"><span class="pre">LOGIN</span></tt> command is always quoted. If you
+want to avoid having an argument string quoted (eg: the <em>flags</em>
+argument to <tt class="docutils literal"><span class="pre">STORE</span></tt>) then enclose the string in parentheses (eg:
+<tt class="docutils literal"><span class="pre">r'(\Deleted)'</span></tt>).</p>
+<p>Each command returns a tuple: <tt class="docutils literal"><span class="pre">(type,</span> <span class="pre">[data,</span> <span class="pre">...])</span></tt> where <em>type</em> is
+usually <tt class="docutils literal"><span class="pre">'OK'</span></tt> or <tt class="docutils literal"><span class="pre">'NO'</span></tt>, and <em>data</em> is either the text from the
+command response, or mandated results from the command. Each <em>data</em> is
+either a string, or a tuple. If a tuple, then the first part is the
+header of the response, and the second part contains the data (ie:
+&#8216;literal&#8217; value).</p>
+<p>The <em>message_set</em> options to commands below is a string specifying one
+or more messages to be acted upon.  It may be a simple message number
+(<tt class="docutils literal"><span class="pre">'1'</span></tt>), a range of message numbers (<tt class="docutils literal"><span class="pre">'2:4'</span></tt>), or a group of non-
+contiguous ranges separated by commas (<tt class="docutils literal"><span class="pre">'1:3,6:9'</span></tt>).  A range can
+contain an asterisk to indicate an infinite upper bound (<tt class="docutils literal"><span class="pre">'3:*'</span></tt>).</p>
+<p>An <tt class="docutils literal"><span class="pre">IMAP4</span></tt> instance has the following methods:</p>
+<p>IMAP4.append(mailbox, flags, date_time, message)</p>
+<blockquote>
+Append <em>message</em> to named mailbox.</blockquote>
+<p>IMAP4.authenticate(mechanism, authobject)</p>
+<blockquote>
+<p>Authenticate command &#8212; requires response processing.</p>
+<p><em>mechanism</em> specifies which authentication mechanism is to be used
+- it should appear in the instance variable <tt class="docutils literal"><span class="pre">capabilities</span></tt> in the
+form <tt class="docutils literal"><span class="pre">AUTH=mechanism</span></tt>.</p>
+<p><em>authobject</em> must be a callable object:</p>
+<blockquote>
+data = authobject(response)</blockquote>
+<p>It will be called to process server continuation responses. It
+should return <tt class="docutils literal"><span class="pre">data</span></tt> that will be encoded and sent to server. It
+should return <tt class="xref docutils literal"><span class="pre">None</span></tt> if the client abort response <tt class="docutils literal"><span class="pre">*</span></tt> should be
+sent instead.</p>
+</blockquote>
+<p>IMAP4.check()</p>
+<blockquote>
+Checkpoint mailbox on server.</blockquote>
+<p>IMAP4.close()</p>
+<blockquote>
+Close currently selected mailbox. Deleted messages are removed from
+writable mailbox. This is the recommended command before
+<tt class="docutils literal"><span class="pre">LOGOUT</span></tt>.</blockquote>
+<p>IMAP4.copy(message_set, new_mailbox)</p>
+<blockquote>
+Copy <em>message_set</em> messages onto end of <em>new_mailbox</em>.</blockquote>
+<p>IMAP4.create(mailbox)</p>
+<blockquote>
+Create new mailbox named <em>mailbox</em>.</blockquote>
+<p>IMAP4.delete(mailbox)</p>
+<blockquote>
+Delete old mailbox named <em>mailbox</em>.</blockquote>
+<p>IMAP4.deleteacl(mailbox, who)</p>
+<blockquote>
+<p>Delete the ACLs (remove any rights) set for who on mailbox.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>IMAP4.expunge()</p>
+<blockquote>
+Permanently remove deleted items from selected mailbox. Generates
+an <tt class="docutils literal"><span class="pre">EXPUNGE</span></tt> response for each deleted message. Returned data
+contains a list of <tt class="docutils literal"><span class="pre">EXPUNGE</span></tt> message numbers in order received.</blockquote>
+<p>IMAP4.fetch(message_set, message_parts)</p>
+<blockquote>
+Fetch (parts of) messages.  <em>message_parts</em> should be a string of
+message part names enclosed within parentheses, eg: <tt class="docutils literal"><span class="pre">&quot;(UID</span>
+<span class="pre">BODY[TEXT])&quot;</span></tt>.  Returned data are tuples of message part envelope
+and data.</blockquote>
+<p>IMAP4.getacl(mailbox)</p>
+<blockquote>
+Get the <tt class="docutils literal"><span class="pre">ACL``s</span> <span class="pre">for</span> <span class="pre">*mailbox*.</span> <span class="pre">The</span> <span class="pre">method</span> <span class="pre">is</span> <span class="pre">non-standard,</span> <span class="pre">but</span> <span class="pre">is</span>
+<span class="pre">supported</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">``Cyrus</span></tt> server.</blockquote>
+<p>IMAP4.getannotation(mailbox, entry, attribute)</p>
+<blockquote>
+<p>Retrieve the specified <tt class="docutils literal"><span class="pre">ANNOTATION``s</span> <span class="pre">for</span> <span class="pre">*mailbox*.</span> <span class="pre">The</span> <span class="pre">method</span> <span class="pre">is</span>
+<span class="pre">non-standard,</span> <span class="pre">but</span> <span class="pre">is</span> <span class="pre">supported</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">``Cyrus</span></tt> server.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>IMAP4.getquota(root)</p>
+<blockquote>
+<p>Get the <tt class="docutils literal"><span class="pre">quota</span></tt> <em>root</em>&#8216;s resource usage and limits. This method
+is part of the IMAP4 QUOTA extension defined in rfc2087.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>IMAP4.getquotaroot(mailbox)</p>
+<blockquote>
+<p>Get the list of <tt class="docutils literal"><span class="pre">quota</span></tt> <tt class="docutils literal"><span class="pre">roots</span></tt> for the named <em>mailbox</em>. This
+method is part of the IMAP4 QUOTA extension defined in rfc2087.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>IMAP4.list([directory[, pattern]])</p>
+<blockquote>
+List mailbox names in <em>directory</em> matching <em>pattern</em>.  <em>directory</em>
+defaults to the top-level mail folder, and <em>pattern</em> defaults to
+match anything.  Returned data contains a list of <tt class="docutils literal"><span class="pre">LIST</span></tt>
+responses.</blockquote>
+<p>IMAP4.login(user, password)</p>
+<blockquote>
+Identify the client using a plaintext password. The <em>password</em> will
+be quoted.</blockquote>
+<p>IMAP4.login_cram_md5(user, password)</p>
+<blockquote>
+<p>Force use of <tt class="docutils literal"><span class="pre">CRAM-MD5</span></tt> authentication when identifying the
+client to protect the password.  Will only work if the server
+<tt class="docutils literal"><span class="pre">CAPABILITY</span></tt> response includes the phrase <tt class="docutils literal"><span class="pre">AUTH=CRAM-MD5</span></tt>.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>IMAP4.logout()</p>
+<blockquote>
+Shutdown connection to server. Returns server <tt class="docutils literal"><span class="pre">BYE</span></tt> response.</blockquote>
+<p>IMAP4.lsub([directory[, pattern]])</p>
+<blockquote>
+List subscribed mailbox names in directory matching pattern.
+<em>directory</em> defaults to the top level directory and <em>pattern</em>
+defaults to match any mailbox. Returned data are tuples of message
+part envelope and data.</blockquote>
+<p>IMAP4.myrights(mailbox)</p>
+<blockquote>
+<p>Show my ACLs for a mailbox (i.e. the rights that I have on
+mailbox).</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>IMAP4.namespace()</p>
+<blockquote>
+<p>Returns IMAP namespaces as defined in RFC2342.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>IMAP4.noop()</p>
+<blockquote>
+Send <tt class="docutils literal"><span class="pre">NOOP</span></tt> to server.</blockquote>
+<p>IMAP4.open(host, port)</p>
+<blockquote>
+Opens socket to <em>port</em> at <em>host</em>. The connection objects
+established by this method will be used in the <tt class="docutils literal"><span class="pre">read</span></tt>,
+<tt class="docutils literal"><span class="pre">readline</span></tt>, <tt class="docutils literal"><span class="pre">send</span></tt>, and <tt class="docutils literal"><span class="pre">shutdown</span></tt> methods. You may override
+this method.</blockquote>
+<p>IMAP4.partial(message_num, message_part, start, length)</p>
+<blockquote>
+Fetch truncated part of a message. Returned data is a tuple of
+message part envelope and data.</blockquote>
+<p>IMAP4.proxyauth(user)</p>
+<blockquote>
+<p>Assume authentication as <em>user</em>. Allows an authorised administrator
+to proxy into any user&#8217;s mailbox.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>IMAP4.read(size)</p>
+<blockquote>
+Reads <em>size</em> bytes from the remote server. You may override this
+method.</blockquote>
+<p>IMAP4.readline()</p>
+<blockquote>
+Reads one line from the remote server. You may override this
+method.</blockquote>
+<p>IMAP4.recent()</p>
+<blockquote>
+Prompt server for an update. Returned data is <tt class="xref docutils literal"><span class="pre">None</span></tt> if no new
+messages, else value of <tt class="docutils literal"><span class="pre">RECENT</span></tt> response.</blockquote>
+<p>IMAP4.rename(oldmailbox, newmailbox)</p>
+<blockquote>
+Rename mailbox named <em>oldmailbox</em> to <em>newmailbox</em>.</blockquote>
+<p>IMAP4.response(code)</p>
+<blockquote>
+Return data for response <em>code</em> if received, or <tt class="xref docutils literal"><span class="pre">None</span></tt>. Returns
+the given code, instead of the usual type.</blockquote>
+<p>IMAP4.search(charset, criterion[, ...])</p>
+<blockquote>
+<p>Search mailbox for matching messages.  <em>charset</em> may be <tt class="xref docutils literal"><span class="pre">None</span></tt>,
+in which case no <tt class="docutils literal"><span class="pre">CHARSET</span></tt> will be specified in the request to
+the server.  The IMAP protocol requires that at least one criterion
+be specified; an exception will be raised when the server returns
+an error.</p>
+<p>Example:</p>
+<blockquote>
+<p># M is a connected IMAP4 instance...
+typ, msgnums = M.search(None, &#8216;FROM&#8217;, &#8216;&#8220;LDJ&#8221;&#8217;)</p>
+<p># or:
+typ, msgnums = M.search(None, &#8216;(FROM &#8220;LDJ&#8221;)&#8217;)</p>
+</blockquote>
+</blockquote>
+<p>IMAP4.select([mailbox[, readonly]])</p>
+<blockquote>
+Select a mailbox. Returned data is the count of messages in
+<em>mailbox</em> (<tt class="docutils literal"><span class="pre">EXISTS</span></tt> response).  The default <em>mailbox</em> is
+<tt class="docutils literal"><span class="pre">'INBOX'</span></tt>.  If the <em>readonly</em> flag is set, modifications to the
+mailbox are not allowed.</blockquote>
+<p>IMAP4.send(data)</p>
+<blockquote>
+Sends <tt class="docutils literal"><span class="pre">data</span></tt> to the remote server. You may override this method.</blockquote>
+<p>IMAP4.setacl(mailbox, who, what)</p>
+<blockquote>
+Set an <tt class="docutils literal"><span class="pre">ACL</span></tt> for <em>mailbox</em>. The method is non-standard, but is
+supported by the <tt class="docutils literal"><span class="pre">Cyrus</span></tt> server.</blockquote>
+<p>IMAP4.setannotation(mailbox, entry, attribute[, ...])</p>
+<blockquote>
+<p>Set <tt class="docutils literal"><span class="pre">ANNOTATION``s</span> <span class="pre">for</span> <span class="pre">*mailbox*.</span> <span class="pre">The</span> <span class="pre">method</span> <span class="pre">is</span> <span class="pre">non-standard,</span> <span class="pre">but</span>
+<span class="pre">is</span> <span class="pre">supported</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">``Cyrus</span></tt> server.</p>
+<p>New in version 2.5.</p>
+</blockquote>
+<p>IMAP4.setquota(root, limits)</p>
+<blockquote>
+<p>Set the <tt class="docutils literal"><span class="pre">quota</span></tt> <em>root</em>&#8216;s resource <em>limits</em>. This method is part
+of the IMAP4 QUOTA extension defined in rfc2087.</p>
+<p>New in version 2.3.</p>
+</blockquote>
+<p>IMAP4.shutdown()</p>
+<blockquote>
+Close connection established in <tt class="docutils literal"><span class="pre">open</span></tt>. You may override this
+method.</blockquote>
+<p>IMAP4.socket()</p>
+<blockquote>
+Returns socket instance used to connect to server.</blockquote>
+<p>IMAP4.sort(sort_criteria, charset, search_criterion[, ...])</p>
+<blockquote>
+<p>The <tt class="docutils literal"><span class="pre">sort</span></tt> command is a variant of <tt class="docutils literal"><span class="pre">search</span></tt> with sorting
+semantics for the results.  Returned data contains a space
+separated list of matching message numbers.</p>
+<p>Sort has two arguments before the <em>search_criterion</em> argument(s); a
+parenthesized list of <em>sort_criteria</em>, and the searching <em>charset</em>.
+Note that unlike <tt class="docutils literal"><span class="pre">search</span></tt>, the searching <em>charset</em> argument is
+mandatory.  There is also a <tt class="docutils literal"><span class="pre">uid</span> <span class="pre">sort</span></tt> command which corresponds
+to <tt class="docutils literal"><span class="pre">sort</span></tt> the way that <tt class="docutils literal"><span class="pre">uid</span> <span class="pre">search</span></tt> corresponds to <tt class="docutils literal"><span class="pre">search</span></tt>.
+The <tt class="docutils literal"><span class="pre">sort</span></tt> command first searches the mailbox for messages that
+match the given searching criteria using the charset argument for
+the interpretation of strings in the searching criteria.  It then
+returns the numbers of matching messages.</p>
+<p>This is an <tt class="docutils literal"><span class="pre">IMAP4rev1</span></tt> extension command.</p>
+</blockquote>
+<p>IMAP4.status(mailbox, names)</p>
+<blockquote>
+Request named status conditions for <em>mailbox</em>.</blockquote>
+<p>IMAP4.store(message_set, command, flag_list)</p>
+<blockquote>
+<p>Alters flag dispositions for messages in mailbox.  <em>command</em> is
+specified by section 6.4.6 of <strong>RFC 2060</strong> as being one of &#8220;FLAGS&#8221;,
+&#8220;+FLAGS&#8221;, or &#8220;-FLAGS&#8221;, optionally with a suffix of &#8220;.SILENT&#8221;.</p>
+<p>For example, to set the delete flag on all messages:</p>
+<blockquote>
+<p>typ, data = M.search(None, &#8216;ALL&#8217;)
+for num in data[0].split():</p>
+<blockquote>
+M.store(num, &#8216;+FLAGS&#8217;, &#8216;\Deleted&#8217;)</blockquote>
+<p>M.expunge()</p>
+</blockquote>
+</blockquote>
+<p>IMAP4.subscribe(mailbox)</p>
+<blockquote>
+Subscribe to new mailbox.</blockquote>
+<p>IMAP4.thread(threading_algorithm, charset, search_criterion[, ...])</p>
+<blockquote>
+<p>The <tt class="docutils literal"><span class="pre">thread</span></tt> command is a variant of <tt class="docutils literal"><span class="pre">search</span></tt> with threading
+semantics for the results.  Returned data contains a space
+separated list of thread members.</p>
+<p>Thread members consist of zero or more messages numbers, delimited
+by spaces, indicating successive parent and child.</p>
+<p>Thread has two arguments before the <em>search_criterion</em> argument(s);
+a <em>threading_algorithm</em>, and the searching <em>charset</em>.  Note that
+unlike <tt class="docutils literal"><span class="pre">search</span></tt>, the searching <em>charset</em> argument is mandatory.
+There is also a <tt class="docutils literal"><span class="pre">uid</span> <span class="pre">thread</span></tt> command which corresponds to
+<tt class="docutils literal"><span class="pre">thread</span></tt> the way that <tt class="docutils literal"><span class="pre">uid</span> <span class="pre">search</span></tt> corresponds to <tt class="docutils literal"><span class="pre">search</span></tt>.
+The <tt class="docutils literal"><span class="pre">thread</span></tt> command first searches the mailbox for messages that
+match the given searching criteria using the charset argument for
+the interpretation of strings in the searching criteria. It then
+returns the matching messages threaded according to the specified
+threading algorithm.</p>
+<p>This is an <tt class="docutils literal"><span class="pre">IMAP4rev1</span></tt> extension command.</p>
+<p>New in version 2.4.</p>
+</blockquote>
+<p>IMAP4.uid(command, arg[, ...])</p>
+<blockquote>
+Execute command args with messages identified by UID, rather than
+message number.  Returns response appropriate to command.  At least
+one argument must be supplied; if none are provided, the server
+will return an error and an exception will be raised.</blockquote>
+<p>IMAP4.unsubscribe(mailbox)</p>
+<blockquote>
+Unsubscribe from old mailbox.</blockquote>
+<p>IMAP4.xatom(name[, arg[, ...]])</p>
+<blockquote>
+Allow simple extension commands notified by server in
+<tt class="docutils literal"><span class="pre">CAPABILITY</span></tt> response.</blockquote>
+<p>Instances of <tt class="docutils literal"><span class="pre">IMAP4_SSL</span></tt> have just one additional method:</p>
+<p>IMAP4_SSL.ssl()</p>
+<blockquote>
+Returns SSLObject instance used for the secure connection with the
+server.</blockquote>
+<p>The following attributes are defined on instances of <tt class="docutils literal"><span class="pre">IMAP4</span></tt>:</p>
+<p>IMAP4.PROTOCOL_VERSION</p>
+<blockquote>
+The most recent supported protocol in the <tt class="docutils literal"><span class="pre">CAPABILITY</span></tt> response
+from the server.</blockquote>
+<p>IMAP4.debug</p>
+<blockquote>
+Integer value to control debugging output.  The initialize value is
+taken from the module variable <tt class="docutils literal"><span class="pre">Debug</span></tt>.  Values greater than
+three trace each command.</blockquote>
+</div>
+<div class="section" id="imap4-example">
+<h2>20.10.2. IMAP4 Example<a class="headerlink" href="#imap4-example" title="Permalink to this headline">¶</a></h2>
+<p>Here is a minimal example (without error checking) that opens a
+mailbox and retrieves and prints all messages:</p>
+<blockquote>
+<p>import getpass, imaplib</p>
+<p>M = imaplib.IMAP4()
+M.login(getpass.getuser(), getpass.getpass())
+M.select()
+typ, data = M.search(None, &#8216;ALL&#8217;)
+for num in data[0].split():</p>
+<blockquote>
+typ, data = M.fetch(num, &#8216;(RFC822)&#8217;)
+print &#8216;Message %sn%sn&#8217; % (num, data[0][1])</blockquote>
+<p>M.close()
+M.logout()</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nntplib.html" title="20.11. nntplib — NNTP protocol client"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="poplib.html" title="20.9. poplib — POP3 protocol client"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="internet.html" >20. Internet Protocols and Support</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

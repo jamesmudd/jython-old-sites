@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>29.8. py_compile — Compile Python source files &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="29. Python Language Services" href="language.html" />
+    <link rel="next" title="29.9. compileall — Byte-compile Python libraries" href="compileall.html" />
+    <link rel="prev" title="29.7. pyclbr — Python class browser support" href="pyclbr.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="compileall.html" title="29.9. compileall — Byte-compile Python libraries"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyclbr.html" title="29.7. pyclbr — Python class browser support"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="language.html" accesskey="U">29. Python Language Services</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="pyclbr.html"
+                                  title="previous chapter">29.7. <tt class="docutils literal"><span class="pre">pyclbr</span></tt> &#8212; Python class browser support</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="compileall.html"
+                                  title="next chapter">29.9. <tt class="docutils literal docutils literal docutils literal"><span class="pre">compileall</span></tt> &#8212; Byte-compile Python libraries</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/py_compile.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="py-compile-compile-python-source-files">
+<h1>29.8. <tt class="docutils literal"><span class="pre">py_compile</span></tt> &#8212; Compile Python source files<a class="headerlink" href="#py-compile-compile-python-source-files" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">py_compile</span></tt> module provides a function to generate a byte-code
+file from a source file, and another function used when the module
+source file is invoked as a script.</p>
+<p>Though not often needed, this function can be useful when installing
+modules for shared use, especially if some of the users may not have
+permission to write the byte-code cache files in the directory
+containing the source code.</p>
+<p>exception exception py_compile.PyCompileError</p>
+<blockquote>
+Exception raised when an error occurs while attempting to compile
+the file.</blockquote>
+<p>py_compile.compile(file[, cfile[, dfile[, doraise]]])</p>
+<blockquote>
+Compile a source file to byte-code and write out the byte-code
+cache  file.  The source code is loaded from the file name <em>file</em>.
+The  byte-code is written to <em>cfile</em>, which defaults to <em>file</em>
+<tt class="docutils literal"><span class="pre">+</span></tt> <tt class="docutils literal"><span class="pre">'c'</span></tt> (<tt class="docutils literal"><span class="pre">'o'</span></tt> if optimization is enabled in the current
+interpreter).  If <em>dfile</em> is specified, it is used as the name of
+the source file in error messages instead of <em>file</em>.  If <em>doraise</em>
+is true, a <tt class="docutils literal"><span class="pre">PyCompileError</span></tt> is raised when an error is
+encountered while compiling <em>file</em>. If <em>doraise</em> is false (the
+default), an error string is written to <tt class="docutils literal"><span class="pre">sys.stderr</span></tt>, but no
+exception is raised.</blockquote>
+<p>py_compile.main([args])</p>
+<blockquote>
+Compile several source files.  The files named in <em>args</em> (or on the
+command line, if <em>args</em> is not specified) are compiled and the
+resulting bytecode is cached in the normal manner.  This function
+does not search a directory structure to locate source files; it
+only compiles files named explicitly.</blockquote>
+<p>When this module is run as a script, the <tt class="docutils literal"><span class="pre">main()</span></tt> is used to compile
+all the files named on the command line.  The exit status is nonzero
+if one of the files could not be compiled.</p>
+<p>Changed in version 2.6: Added the nonzero exit status when module is
+run as a script.</p>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Module <tt class="docutils literal"><span class="pre">compileall</span></tt></dt>
+<dd>Utilities to compile all Python source files in a directory
+tree.</dd>
+</dl>
+</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compileall.html" title="29.9. compileall — Byte-compile Python libraries"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyclbr.html" title="29.7. pyclbr — Python class browser support"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="language.html" >29. Python Language Services</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

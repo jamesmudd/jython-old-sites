@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>28.2. zipimport — Import modules from Zip archives &mdash; Jython v2.5.2 documentation</title>
+    <link rel="stylesheet" href="../_static/green-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="top" title="Jython v2.5.2 documentation" href="../index.html" />
+    <link rel="up" title="28. Importing Modules" href="modules.html" />
+    <link rel="next" title="28.3. pkgutil — Package extension utility" href="pkgutil.html" />
+    <link rel="prev" title="28.1. imp — Access the import internals" href="imp.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="pkgutil.html" title="28.3. pkgutil — Package extension utility"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="imp.html" title="28.1. imp — Access the import internals"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">28. Importing Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/jython.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">28.2. <tt class="docutils literal"><span class="pre">zipimport</span></tt> &#8212; Import modules from Zip archives</a><ul>
+<li><a class="reference external" href="#zipimporter-objects">28.2.1. zipimporter Objects</a></li>
+<li><a class="reference external" href="#examples">28.2.2. Examples</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="imp.html"
+                                  title="previous chapter">28.1. <tt class="docutils literal docutils literal docutils literal"><span class="pre">imp</span></tt> &#8212; Access the <tt class="docutils literal docutils literal docutils literal"><span class="pre">import</span></tt> internals</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="pkgutil.html"
+                                  title="next chapter">28.3. <tt class="docutils literal docutils literal docutils literal"><span class="pre">pkgutil</span></tt> &#8212; Package extension utility</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/library/zipimport.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="zipimport-import-modules-from-zip-archives">
+<h1>28.2. <tt class="docutils literal"><span class="pre">zipimport</span></tt> &#8212; Import modules from Zip archives<a class="headerlink" href="#zipimport-import-modules-from-zip-archives" title="Permalink to this headline">¶</a></h1>
+<p>New in version 2.3.</p>
+<p>This module adds the ability to import Python modules (<tt class="docutils literal"><span class="pre">*.py</span></tt>,
+<tt class="docutils literal"><span class="pre">*.py[co]</span></tt>) and packages from ZIP-format archives. It is usually not
+needed to use the <tt class="docutils literal"><span class="pre">zipimport</span></tt> module explicitly; it is automatically
+used by the builtin <tt class="docutils literal"><span class="pre">import</span></tt> mechanism for <tt class="docutils literal"><span class="pre">sys.path</span></tt> items that
+are paths to ZIP archives.</p>
+<p>Typically, <tt class="docutils literal"><span class="pre">sys.path</span></tt> is a list of directory names as strings.  This
+module also allows an item of <tt class="docutils literal"><span class="pre">sys.path</span></tt> to be a string naming a ZIP
+file archive. The ZIP archive can contain a subdirectory structure to
+support package imports, and a path within the archive can be
+specified to only import from a subdirectory.  For example, the path
+<tt class="docutils literal"><span class="pre">/tmp/example.zip/lib/</span></tt> would only import from the <tt class="docutils literal"><span class="pre">lib/</span></tt>
+subdirectory within the archive.</p>
+<p>Any files may be present in the ZIP archive, but only files <tt class="docutils literal"><span class="pre">.py</span></tt>
+and <tt class="docutils literal"><span class="pre">.py[co]</span></tt> are available for import.  ZIP import of dynamic
+modules (<tt class="docutils literal"><span class="pre">.pyd</span></tt>, <tt class="docutils literal"><span class="pre">.so</span></tt>) is disallowed. Note that if an archive
+only contains <tt class="docutils literal"><span class="pre">.py</span></tt> files, Python will not attempt to modify the
+archive by adding the corresponding <tt class="docutils literal"><span class="pre">.pyc</span></tt> or <tt class="docutils literal"><span class="pre">.pyo</span></tt> file, meaning
+that if a ZIP archive doesn&#8217;t contain <tt class="docutils literal"><span class="pre">.pyc</span></tt> files, importing may be
+rather slow.</p>
+<p>Using the built-in <tt class="docutils literal"><span class="pre">reload()</span></tt> function will fail if called on a
+module loaded from a ZIP archive; it is unlikely that <tt class="docutils literal"><span class="pre">reload()</span></tt>
+would be needed, since this would imply that the ZIP has been altered
+during runtime.</p>
+<p>See also:</p>
+<blockquote>
+<dl class="docutils">
+<dt>PKZIP Application Note</dt>
+<dd>Documentation on the ZIP file format by Phil Katz, the creator
+of the format and algorithms used.</dd>
+<dt><strong>PEP 0273</strong> - Import Modules from Zip Archives</dt>
+<dd>Written by James C. Ahlstrom, who also provided an
+implementation. Python 2.3 follows the specification in PEP 273,
+but uses an implementation written by Just van Rossum that uses
+the import hooks described in PEP 302.</dd>
+<dt><strong>PEP 0302</strong> - New Import Hooks</dt>
+<dd>The PEP to add the import hooks that help this module work.</dd>
+</dl>
+</blockquote>
+<p>This module defines an exception:</p>
+<p>exception exception zipimport.ZipImportError</p>
+<blockquote>
+Exception raised by zipimporter objects. It&#8217;s a subclass of
+<tt class="docutils literal"><span class="pre">ImportError</span></tt>, so it can be caught as <tt class="docutils literal"><span class="pre">ImportError</span></tt>, too.</blockquote>
+<div class="section" id="zipimporter-objects">
+<h2>28.2.1. zipimporter Objects<a class="headerlink" href="#zipimporter-objects" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">zipimporter</span></tt> is the class for importing ZIP files.</p>
+<p>class class zipimport.zipimporter(archivepath)</p>
+<blockquote>
+<p>Create a new zipimporter instance. <em>archivepath</em> must be a path to
+a ZIP file, or to a specific path within a ZIP file.  For example,
+an <em>archivepath</em> of <tt class="docutils literal"><span class="pre">foo/bar.zip/lib</span></tt> will look for modules in
+the <tt class="docutils literal"><span class="pre">lib</span></tt> directory inside the ZIP file <tt class="docutils literal"><span class="pre">foo/bar.zip</span></tt> (provided
+that it exists).</p>
+<p><tt class="docutils literal"><span class="pre">ZipImportError</span></tt> is raised if <em>archivepath</em> doesn&#8217;t point to a
+valid ZIP archive.</p>
+<p>find_module(fullname[, path])</p>
+<blockquote>
+Search for a module specified by <em>fullname</em>. <em>fullname</em> must be
+the fully qualified (dotted) module name. It returns the
+zipimporter instance itself if the module was found, or <tt class="xref docutils literal"><span class="pre">None</span></tt>
+if it wasn&#8217;t. The optional <em>path</em> argument is ignored&#8212;it&#8217;s
+there for compatibility with the importer protocol.</blockquote>
+<p>get_code(fullname)</p>
+<blockquote>
+Return the code object for the specified module. Raise
+<tt class="docutils literal"><span class="pre">ZipImportError</span></tt> if the module couldn&#8217;t be found.</blockquote>
+<p>get_data(pathname)</p>
+<blockquote>
+Return the data associated with <em>pathname</em>. Raise <tt class="docutils literal"><span class="pre">IOError</span></tt> if
+the file wasn&#8217;t found.</blockquote>
+<p>get_source(fullname)</p>
+<blockquote>
+Return the source code for the specified module. Raise
+<tt class="docutils literal"><span class="pre">ZipImportError</span></tt> if the module couldn&#8217;t be found, return
+<tt class="xref docutils literal"><span class="pre">None</span></tt> if the archive does contain the module, but has no
+source for it.</blockquote>
+<p>is_package(fullname)</p>
+<blockquote>
+Return True if the module specified by <em>fullname</em> is a package.
+Raise <tt class="docutils literal"><span class="pre">ZipImportError</span></tt> if the module couldn&#8217;t be found.</blockquote>
+<p>load_module(fullname)</p>
+<blockquote>
+Load the module specified by <em>fullname</em>. <em>fullname</em> must be the
+fully qualified (dotted) module name. It returns the imported
+module, or raises <tt class="docutils literal"><span class="pre">ZipImportError</span></tt> if it wasn&#8217;t found.</blockquote>
+<p>archive</p>
+<blockquote>
+The file name of the importer&#8217;s associated ZIP file, without a
+possible subpath.</blockquote>
+<p>prefix</p>
+<blockquote>
+The subpath within the ZIP file where modules are searched.
+This is the empty string for zipimporter objects which point to
+the root of the ZIP file.</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">archive</span></tt> and <tt class="docutils literal"><span class="pre">prefix</span></tt> attributes, when combined with a
+slash, equal the original <em>archivepath</em> argument given to the
+<tt class="docutils literal"><span class="pre">zipimporter</span></tt> constructor.</p>
+</blockquote>
+</div>
+<div class="section" id="examples">
+<h2>28.2.2. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>Here is an example that imports a module from a ZIP archive - note
+that the <tt class="docutils literal"><span class="pre">zipimport</span></tt> module is not explicitly used.</p>
+<blockquote>
+<p>$ unzip -l /tmp/example.zip
+Archive:  /tmp/example.zip</p>
+<blockquote>
+<blockquote>
+Length     Date   Time    Name</blockquote>
+<dl class="docutils">
+<dt>&#8212;&#8212;&#8211;    &#8212;-   &#8212;-    &#8212;-</dt>
+<dd>8467  11-26-02 22:30   jwzthreading.py</dd>
+<dt>&#8212;&#8212;&#8211;                   &#8212;&#8212;-</dt>
+<dd>8467                   1 file</dd>
+</dl>
+</blockquote>
+<p>$ ./python
+Python 2.3 (#1, Aug 1 2003, 19:54:32)
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; sys.path.insert(0, &#8216;/tmp/example.zip&#8217;)  # Add .zip file to front of path
+&gt;&gt;&gt; import jwzthreading
+&gt;&gt;&gt; jwzthreading.__file__
+&#8216;/tmp/example.zip/jwzthreading.py&#8217;</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pkgutil.html" title="28.3. pkgutil — Package extension utility"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="imp.html" title="28.1. imp — Access the import internals"
+             >previous</a> |</li>
+        <li><a href="../index.html">Jython v2.5.2 documentation</a> &raquo;</li>
+          <li><a href="indexprogress.html" >The Python Standard Library and What Comes with Jython</a> &raquo;</li>
+          <li><a href="modules.html" >28. Importing Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; <a href="../copyright.html">Copyright</a> 2011, Jython Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>
